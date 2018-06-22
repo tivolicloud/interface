@@ -226,7 +226,6 @@ void GLBackend::updateInput() {
                 glVertexBindingDivisor(bufferChannelNum, frequency);
 #endif
             }
-            _input._lastUpdateStereoState = isStereoNow;
 
             if (_input._hadColorAttribute && !hasColorAttribute) {
                 // The previous input stage had a color attribute but this one doesn't so reset
