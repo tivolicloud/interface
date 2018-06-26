@@ -18,6 +18,7 @@ OtherAvatar::OtherAvatar(QThread* thread) : Avatar(thread) {
     connect(_skeletonModel.get(), &Model::rigReset, this, &Avatar::rigReset);
 
     //add the purple orb
+    
     if (_purpleOrbMeshPlaceholderID == UNKNOWN_OVERLAY_ID || !qApp->getOverlays().isAddedOverlay(_purpleOrbMeshPlaceholderID)) {
         _purpleOrbMeshPlaceholder = std::make_shared<Sphere3DOverlay>();
         _purpleOrbMeshPlaceholder->setAlpha(1.0f);
@@ -35,4 +36,5 @@ OtherAvatar::OtherAvatar(QThread* thread) : Avatar(thread) {
         _purpleOrbMeshPlaceholder->setDimensions(glm::vec3(0.5f, 0.5f, 0.5f));
         _purpleOrbMeshPlaceholder->setVisible(true);
     }
+    
 }
