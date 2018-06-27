@@ -33,7 +33,7 @@
 #include <SoftAttachmentModel.h>
 #include <render/TransitionStage.h>
 #include "ModelEntityItem.h"
-#include "RenderableModelEntityItem.h"											
+#include "RenderableModelEntityItem.h"
 
 #include <graphics-scripting/Forward.h>
 
@@ -1869,8 +1869,6 @@ void Avatar::processMaterials() {
         }
     }
 }
-
-
 
 scriptable::ScriptableModelBase Avatar::getScriptableModel() {
     if (!_skeletonModel || !_skeletonModel->isLoaded()) {
