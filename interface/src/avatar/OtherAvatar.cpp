@@ -13,6 +13,7 @@ OtherAvatar::OtherAvatar(QThread* thread) : Avatar(thread) {
     // give the pointer to our head to inherited _headData variable from AvatarData
     _headData = new Head(this);
     _skeletonModel = std::make_shared<SkeletonModel>(this, nullptr);
+    const float OTHERAVATAR_LOADING_PRIORITY = M_PI;
     _skeletonModel->setLoadingPriority(OTHERAVATAR_LOADING_PRIORITY);
     connect(_skeletonModel.get(), &Model::setURLFinished, this, &Avatar::setModelURLFinished);
     connect(_skeletonModel.get(), &Model::rigReady, this, &Avatar::rigReady);
