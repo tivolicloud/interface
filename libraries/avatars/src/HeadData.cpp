@@ -77,18 +77,6 @@ void HeadData::computeBlendshapesLookupMap() {
     }
 }
 
-//Lazily construct a lookup map from the blendshapes
-static const QMap<QString, int>& getBlendshapesLookupMap() {
-    static std::once_flag once;
-    static QMap<QString, int> blendshapeLookupMap;
-    std::call_once(once, [&] {
-        for (int i = 0; i < NUM_FACESHIFT_BLENDSHAPES; i++) {
-            blendshapeLookupMap[FACESHIFT_BLENDSHAPES[i]] = i;
-        }
-    });
-    return blendshapeLookupMap;
-}
-
 int HeadData::getNumSummedBlendshapeCoefficients() const {
     int maxSize = std::max(_blendshapeCoefficients.size(), _transientBlendshapeCoefficients.size());
     return maxSize;
