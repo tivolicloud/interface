@@ -219,6 +219,7 @@ void Head::calculateMouthShapes(float deltaTime) {
 }
 
 void Head::applyEyelidOffset(glm::quat headOrientation) {
+    
     // Adjusts the eyelid blendshape coefficients so that the eyelid follows the iris as the head pitches.
     bool isBlinking = (_rightEyeBlinkVelocity != 0.0f && _rightEyeBlinkVelocity != 0.0f);
     if (disableEyelidAdjustment || isBlinking) {
