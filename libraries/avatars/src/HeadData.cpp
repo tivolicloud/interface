@@ -147,7 +147,6 @@ static const QString JSON_AVATAR_HEAD_LOOKAT = QStringLiteral("lookAt");
 
 QJsonObject HeadData::toJson() const {
     QJsonObject headJson;
-    const auto& blendshapeLookupMap = getBlendshapesLookupMap();
     QJsonObject blendshapesJson;
     for (auto name : _blendshapeLookupMap.keys()) {
         auto index = _blendshapeLookupMap[name];
