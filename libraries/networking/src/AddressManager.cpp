@@ -852,16 +852,17 @@ void AddressManager::refreshPreviousLookup() {
 
 void AddressManager::copyAddress() {
     if (QThread::currentThread() != qApp->thread()) {
-        QMetaObject::invokeMethod(qApp, "copyToClipboard", Q_ARG(QString, currentShareableAddress().toString()));
+        QMetaObject::invokeMethod(this, "copyAddress");
         return;
     }
+
     // assume that the address is being copied because the user wants a shareable address
     QGuiApplication::clipboard()->setText(currentShareableAddress().toString());
 }
 
 void AddressManager::copyPath() {
     if (QThread::currentThread() != qApp->thread()) {
-        QMetaObject::invokeMethod(qApp, "copyToClipboard", Q_ARG(QString, currentPath()));
+        QMetaObject::invokeMethod(this, "copyPath");
         return;
     }
 
