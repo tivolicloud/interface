@@ -1336,6 +1336,9 @@ void Avatar::scaleVectorRelativeToPosition(glm::vec3 &positionToScale) const {
 }
 
 void Avatar::setSkeletonModelURL(const QUrl& skeletonModelURL) {
+    if (!isMyAvatar()) {
+        createOrb();
+    }
     AvatarData::setSkeletonModelURL(skeletonModelURL);
     if (QThread::currentThread() == thread()) {
         _skeletonModel->setURL(_skeletonModelURL);
