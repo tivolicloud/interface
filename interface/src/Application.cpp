@@ -4830,9 +4830,7 @@ void Application::loadSettings() {
         // should be enabled by default in desktop mode.
 
         auto myAvatar = getMyAvatar();
-        bool initialFlyingVal = !isFirstPerson;
-        myAvatar->setFlyingEnabled(initialFlyingVal);
-        Setting::Handle<bool> initFlyingSetting {"enabledFlying", initialFlyingVal};
+        myAvatar->setFlyingEnabled(!isFirstPerson);
 
     } else {
         // if this is not the first run, the camera will be initialized differently depending on user settings
