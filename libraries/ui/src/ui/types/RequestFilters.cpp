@@ -13,6 +13,9 @@
 #include "NetworkingConstants.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
+
 #include <SettingHandle.h>
 
 #include "AccountManager.h"
@@ -20,7 +23,6 @@
 #if !defined(Q_OS_ANDROID)
 
 namespace {
-
     bool isAuthableHighFidelityURL(const QUrl& url) {
         auto metaverseServerURL = NetworkingConstants::METAVERSE_SERVER_URL();
         static const QStringList HF_HOSTS = {
@@ -42,9 +44,55 @@ namespace {
         return filename.endsWith(".json", Qt::CaseInsensitive);
      }
 
-}
+
+     bool isApplicationFilePath(const QString& path) {
+         static const QString applicationRootDir;
+         static std::once_flag once;
+         std::call_once(once, [&] {
+             auto dir = QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir();
+#if defined(Q_OS_OSX)
+             dir.cdUp();
+#endif
+             const_cast<QString&>(applicationRootDir) = dir.canonicalPath();
+         });
+         return path.startsWith(applicationRootDir);
+     }
+
+    static bool ALLOW_WEB_LOCAL_FILE_ACCESS() {
+        static bool result = false;
+        static std::once_flag once;
+        std::call_once(once, [&] {
+            const QString ALLOW_WEB_LOCAL_FILE_ACCESS_FLAG("HIFI_ALLOW_WEB_LOCAL_FILE_ACCESS");
+            result = QProcessEnvironment::systemEnvironment().contains(ALLOW_WEB_LOCAL_FILE_ACCESS_FLAG);
+        });
+        return result;
+    }
+
+     bool blockLocalFiles(QWebEngineUrlRequestInfo& info) {
+         if (ALLOW_WEB_LOCAL_FILE_ACCESS()) {
+             return false;
+         }
+
+         auto requestUrl = info.requestUrl();
+         if (requestUrl.isLocalFile()) {
+             QString targetFilePath = QFileInfo(requestUrl.toLocalFile()).canonicalFilePath();
+             // Files installed by the application are allowed to be rendered in web views
+             if (isApplicationFilePath(targetFilePath)) {
+                 return false;
+             }
+             qWarning() << "Blocking web access to local file path" << targetFilePath;
+             info.block(true);
+             return true;
+         }
+         return false;
+     }
+} // anonymous namespace
 
 void RequestFilters::interceptHFWebEngineRequest(QWebEngineUrlRequestInfo& info) {
+    if (blockLocalFiles(info)) {
+        return;
+    }
+
     // check if this is a request to a highfidelity URL
     bool isAuthable = isAuthableHighFidelityURL(info.requestUrl());
     if (isAuthable) {
