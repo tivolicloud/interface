@@ -63,8 +63,6 @@ Windows.ScrollingWindow {
             anchors.fill: parent
             focus: true
 
-            profile: HFWebEngineProfile;
-
             property string userScriptUrl: ""
 
             // Create a global EventBridge object for raiseAndLowerKeyboard.
