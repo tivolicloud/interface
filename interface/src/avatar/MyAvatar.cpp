@@ -2842,8 +2842,6 @@ void MyAvatar::setFlyingDesktopPref(bool enabled) {
         return;
     }
 
-    //if (!(qApp->isHMDMode())) { _enableFlying = enabled; }
-
     _flyingPrefDesktop = enabled;
 }
 
@@ -2856,8 +2854,6 @@ void MyAvatar::setFlyingHMDPref(bool enabled) {
         QMetaObject::invokeMethod(this, "setFlyingHMDPref", Q_ARG(bool, enabled));
         return;
     }
-
-    //if ((qApp->isHMDMode())) { _enableFlying = enabled; }
 
     _flyingPrefHMD = enabled;
 }
