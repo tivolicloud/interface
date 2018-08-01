@@ -266,6 +266,7 @@ void setupPreferences() {
         preferences->addPreference(new SliderPreference(FACE_TRACKING, "Eye Deflection", getter, setter));
     }
 
+<<<<<<< HEAD
     static const QString MOVEMENT{ "Movement" };
     {
         static const QString movementsControlChannel = QStringLiteral("Hifi-Advanced-Movement-Disabler");
@@ -301,6 +302,8 @@ void setupPreferences() {
         preferences->addPreference(preference);
     }
 
+=======
+>>>>>>> 35740956b0... Change flying settings so HMD flying is exposed to users in both Desktop and HMD modes.
     static const QString VR_MOVEMENT{ "VR Movement" };
     {
         static const QString movementsControlChannel = QStringLiteral("Hifi-Advanced-Movement-Disabler");
