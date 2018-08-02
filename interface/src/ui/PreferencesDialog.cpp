@@ -266,44 +266,6 @@ void setupPreferences() {
         preferences->addPreference(new SliderPreference(FACE_TRACKING, "Eye Deflection", getter, setter));
     }
 
-<<<<<<< HEAD
-    static const QString MOVEMENT{ "Movement" };
-    {
-        static const QString movementsControlChannel = QStringLiteral("Hifi-Advanced-Movement-Disabler");
-        auto getter = [=]()->bool { return myAvatar->useAdvancedMovementControls(); };
-        auto setter = [=](bool value) { myAvatar->setUseAdvancedMovementControls(value); };
-        preferences->addPreference(new CheckPreference(MOVEMENT,
-                                                       QStringLiteral("Advanced movement for hand controllers"),
-                                                       getter, setter));
-    }
-    {
-        auto getter = [=]()->int { return myAvatar->getSnapTurn() ? 0 : 1; };
-        auto setter = [=](int value) { myAvatar->setSnapTurn(value == 0); };
-        auto preference = new RadioButtonsPreference(MOVEMENT, "Snap turn / Smooth turn", getter, setter);
-        QStringList items;
-        items << "Snap turn" << "Smooth turn";
-        preference->setItems(items);
-        preferences->addPreference(preference);
-    }
-    {
-        auto getter = [=]()->float { return myAvatar->getUserHeight(); };
-        auto setter = [=](float value) { myAvatar->setUserHeight(value); };
-        auto preference = new SpinnerPreference(MOVEMENT, "User real-world height (meters)", getter, setter);
-        preference->setMin(1.0f);
-        preference->setMax(2.2f);
-        preference->setDecimals(3);
-        preference->setStep(0.001f);
-        preferences->addPreference(preference);
-    }
-    {
-        auto preference = new ButtonPreference(MOVEMENT, "RESET SENSORS", [] {
-            qApp->resetSensors();
-        });
-        preferences->addPreference(preference);
-    }
-
-=======
->>>>>>> 35740956b0... Change flying settings so HMD flying is exposed to users in both Desktop and HMD modes.
     static const QString VR_MOVEMENT{ "VR Movement" };
     {
         static const QString movementsControlChannel = QStringLiteral("Hifi-Advanced-Movement-Disabler");
