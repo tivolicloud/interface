@@ -278,7 +278,7 @@ void setupPreferences() {
     {
         auto getter = [=]()->bool { return myAvatar->getFlyingHMDPref(); };
         auto setter = [=](bool value) { myAvatar->setFlyingHMDPref(value); };
-        preferences->addPreference(new CheckPreference(VR_MOVEMENT, "Flying & jumping", getter, setter));
+        preferences->addPreference(new CheckPreference(VR_MOVEMENT, "Flying & jumping (HMD)", getter, setter));
     }
     {
         auto getter = [=]()->int { return myAvatar->getSnapTurn() ? 0 : 1; };
