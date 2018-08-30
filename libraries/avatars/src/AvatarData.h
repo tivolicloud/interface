@@ -963,6 +963,8 @@ public:
     qint64 packTraitInstance(AvatarTraits::TraitType traitType, AvatarTraits::TraitInstanceID instanceID,
                              ExtendedIODevice& destination, AvatarTraits::TraitVersion traitVersion = AvatarTraits::NULL_TRAIT_VERSION);
 
+    void prepareResetTraitInstances();
+
     void processTrait(AvatarTraits::TraitType traitType, QByteArray traitBinaryData);
     void processTraitInstance(AvatarTraits::TraitType traitType,
                               AvatarTraits::TraitInstanceID instanceID, QByteArray traitBinaryData);
