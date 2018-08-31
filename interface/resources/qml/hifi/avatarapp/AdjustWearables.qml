@@ -298,8 +298,10 @@ Rectangle {
 
                 function notifyJointChanged() {
                     modified = true;
+                    var jointIndex = jointsModel.get(jointsCombobox.currentIndex).jointIndex;
+
                     var properties = {
-                        parentJointIndex: currentIndex,
+                        parentJointIndex: jointIndex,
                         localPosition: {
                             x: positionVector.xvalue,
                             y: positionVector.yvalue,
@@ -312,7 +314,7 @@ Rectangle {
                         }
                     };
 
-                    wearableUpdated(getCurrentWearable().id, jointsModel.get(jointsCombobox.currentIndex).jointIndex, properties);
+                    wearableUpdated(getCurrentWearable().id, jointIndex, properties);
                 }
 
                 onCurrentIndexChanged: {
