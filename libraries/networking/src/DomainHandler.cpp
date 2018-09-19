@@ -497,7 +497,7 @@ void DomainHandler::processDomainServerConnectionDeniedPacket(QSharedPointer<Rec
         } else {
             emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
         }
-       #endif
+#endif
     }
 
     auto accountManager = DependencyManager::get<AccountManager>();
