@@ -55,7 +55,7 @@ void ConnectionMonitor::init() {
             qDebug() << "ConnectionMonitor: Showing connection failure window";
             DependencyManager::get<DialogsManager>()->setDomainConnectionFailureVisibility(true);
         }
-    }
+    });
 }
 
 void ConnectionMonitor::startTimer() {
