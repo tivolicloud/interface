@@ -15,6 +15,9 @@
 #include <QObject>
 #include <QTimer>
 
+#include <SettingHandle.h>
+
+class QUrl;
 class QString;
 
 class ConnectionMonitor : public QObject {
@@ -22,12 +25,16 @@ class ConnectionMonitor : public QObject {
 public:
     void init();
 
+signals:
+    void setRedirectErrorState(QUrl errorURL, int reasonCode);
+
 private slots:
     void startTimer();
     void stopTimer();
 
 private:
     QTimer _timer;
+    Setting::Handle<bool> _enableInterstitialMode{ "enableInterstitialMode", false };
 };
 
 #endif // hifi_ConnectionMonitor_h
