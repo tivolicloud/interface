@@ -485,13 +485,18 @@ void DomainHandler::processDomainServerConnectionDeniedPacket(QSharedPointer<Rec
 #if defined(Q_OS_ANDROID)
         emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
 #else
-        if (reasonCode == ConnectionRefusedReason::ProtocolMismatch || reasonCode == ConnectionRefusedReason::NotAuthorized) {
-            // ingest the error - this is a "hard" connection refusal.
-            setRedirectErrorState(_errorDomainURL, (int)reasonCode);
+
+        if (_enableInterstitialMode.get()) {
+            if (reasonCode == ConnectionRefusedReason::ProtocolMismatch || reasonCode == ConnectionRefusedReason::NotAuthorized) {
+                // ingest the error - this is a "hard" connection refusal.
+                setRedirectErrorState(_errorDomainURL, (int)reasonCode);
+            } else {
+                emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
+            }
+            _lastDomainConnectionError = (int)reasonCode;
         } else {
             emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
         }
-        _lastDomainConnectionError = (int)reasonCode;
 #endif
     }
 

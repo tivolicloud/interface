@@ -231,8 +231,7 @@ public slots:
      *     location history is correctly maintained.
      */
     void goToLocalSandbox(QString path = "", LookupTrigger trigger = LookupTrigger::StartupFromSettings) {
-        handleUrl(SANDBOX_HIFI_ADDRESS + path, trigger);
-    }
+        handleUrl(SANDBOX_HIFI_ADDRESS + path, trigger); }
 
     /**jsdoc
      * Go to the default "welcome" metaverse address.
