@@ -46,7 +46,7 @@ void ConnectionMonitor::init() {
         bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
         if (enableInterstitial) {
             qDebug() << "ConnectionMonitor: Redirecting to 404 error domain";
-            emit setRedirectErrorState(REDIRECT_HIFI_ADDRESS, 5);
+            emit setRedirectErrorState(REDIRECT_HIFI_ADDRESS, "", 5);
         } else {
             qDebug() << "ConnectionMonitor: Showing connection failure window";
             DependencyManager::get<DialogsManager>()->setDomainConnectionFailureVisibility(true);
