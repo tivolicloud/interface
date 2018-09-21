@@ -31,6 +31,7 @@
 #include "udt/PacketHeaders.h"
 
 const QString DEFAULT_HIFI_ADDRESS = "file:///~/serverless/tutorial.json";
+const QString REDIRECT_HIFI_ADDRESS = "file:///~/serverless/redirect.json";
 const QString ADDRESS_MANAGER_SETTINGS_GROUP = "AddressManager";
 const QString SETTINGS_CURRENT_ADDRESS_KEY = "address";
 
@@ -111,6 +112,9 @@ QUrl AddressManager::currentFacingPublicAddress() const {
     return shareableAddress;
 }
 
+QUrl AddressManager::lastAddress() const {
+    return _lastVisitedURL;
+}
 
 void AddressManager::loadSettings(const QString& lookupString) {
 #if defined(USE_GLES) && defined(Q_OS_WIN)
@@ -247,6 +251,9 @@ bool AddressManager::handleUrl(const QUrl& lookupUrl, LookupTrigger trigger) {
 
             UserActivityLogger::getInstance().wentTo(trigger, URL_TYPE_USER, lookupUrl.toString());
 
+            // save the last visited domain URL.
+            _lastVisitedURL = lookupUrl;
+
             // in case we're failing to connect to where we thought this user was
             // store their username as previous lookup so we can refresh their location via API
             _previousAPILookup = lookupUrl;
@@ -258,6 +265,9 @@ bool AddressManager::handleUrl(const QUrl& lookupUrl, LookupTrigger trigger) {
                                      + (lookupUrl.port() == -1 ? "" : ":" + QString::number(lookupUrl.port())), trigger, hostChanged)) {
 
                 UserActivityLogger::getInstance().wentTo(trigger, URL_TYPE_NETWORK_ADDRESS, lookupUrl.toString());
+
+                // save the last visited domain URL.
+                _lastVisitedURL = lookupUrl;
 
                 // a network address lookup clears the previous lookup since we don't expect to re-attempt it
                 _previousAPILookup.clear();
@@ -278,6 +288,9 @@ bool AddressManager::handleUrl(const QUrl& lookupUrl, LookupTrigger trigger) {
             } else if (handleDomainID(lookupUrl.host())){
                 UserActivityLogger::getInstance().wentTo(trigger, URL_TYPE_DOMAIN_ID, lookupUrl.toString());
 
+                // save the last visited domain URL.
+                _lastVisitedURL = lookupUrl;
+
                 // store this domain ID as the previous lookup in case we're failing to connect and want to refresh API info
                 _previousAPILookup = lookupUrl;
 
@@ -286,6 +299,9 @@ bool AddressManager::handleUrl(const QUrl& lookupUrl, LookupTrigger trigger) {
                 attemptDomainIDLookup(lookupUrl.host(), lookupUrl.path(), trigger);
             } else {
                 UserActivityLogger::getInstance().wentTo(trigger, URL_TYPE_PLACE, lookupUrl.toString());
+
+                // save the last visited domain URL.
+                _lastVisitedURL = lookupUrl;
 
                 // store this place name as the previous lookup in case we fail to connect and want to refresh API info
                 _previousAPILookup = lookupUrl;
@@ -314,6 +330,9 @@ bool AddressManager::handleUrl(const QUrl& lookupUrl, LookupTrigger trigger) {
         // be loaded over http(s)
         // lookupUrl.scheme() == URL_SCHEME_HTTP ||
         // lookupUrl.scheme() == URL_SCHEME_HTTPS ||
+        // TODO once a file can return a connection refusal if there were to be some kind of load error, we'd 
+        // need to store the previous domain tried in _lastVisitedURL. For now , do not store it.
+
         _previousAPILookup.clear();
         _shareablePlaceName.clear();
         setDomainInfo(lookupUrl, trigger);
@@ -709,7 +728,6 @@ bool AddressManager::handleViewpoint(const QString& viewpointString, bool should
         // We use _newHostLookupPath to determine if the client has already stored its last address
         // before moving to a new host thanks to the information in the same lookup URL.
 
-
         if (definitelyPathOnly || (!pathString.isEmpty() && pathString != _newHostLookupPath)
             || trigger == Back || trigger == Forward) {
             addCurrentAddressToHistory(trigger);
@@ -798,8 +816,10 @@ bool AddressManager::setDomainInfo(const QUrl& domainURL, LookupTrigger trigger)
     const QString hostname = domainURL.host();
     quint16 port = domainURL.port();
     bool emitHostChanged { false };
+    // Check if domain handler is in error state. always emit host changed if true.
+    bool isInErrorState = DependencyManager::get<NodeList>()->getDomainHandler().isInErrorState();
 
-    if (domainURL != _domainURL) {
+    if (domainURL != _domainURL || isInErrorState) {
         addCurrentAddressToHistory(trigger);
         emitHostChanged = true;
     }

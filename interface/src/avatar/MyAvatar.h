@@ -201,6 +201,8 @@ class MyAvatar : public Avatar {
     Q_PROPERTY(bool hasAudioEnabledFaceMovement READ getHasAudioEnabledFaceMovement WRITE setHasAudioEnabledFaceMovement)
     Q_PROPERTY(float rotationRecenterFilterLength READ getRotationRecenterFilterLength WRITE setRotationRecenterFilterLength)
     Q_PROPERTY(float rotationThreshold READ getRotationThreshold WRITE setRotationThreshold)
+    Q_PROPERTY(bool enableStepResetRotation READ getEnableStepResetRotation WRITE setEnableStepResetRotation)
+    Q_PROPERTY(bool enableDrawAverageFacing READ getEnableDrawAverageFacing WRITE setEnableDrawAverageFacing)
     //TODO: make gravity feature work Q_PROPERTY(glm::vec3 gravity READ getGravity WRITE setGravity)
 
     Q_PROPERTY(glm::vec3 leftHandPosition READ getLeftHandPosition)
@@ -317,6 +319,9 @@ public:
     // This can also update the avatar's position to follow the HMD
     // as it moves through the world.
     void updateFromHMDSensorMatrix(const glm::mat4& hmdSensorMatrix);
+
+    // compute the hip to hand average azimuth.
+    glm::vec2 computeHandAzimuth() const;
 
     // read the location of a hand controller and save the transform
     void updateJointFromController(controller::Action poseKey, ThreadSafeValueCache<glm::mat4>& matrixCache);
@@ -909,6 +914,10 @@ public:
 
     virtual void rebuildCollisionShape() override;
 
+    const glm::vec2& getHipToHandController() const { return _hipToHandController; }
+    void setHipToHandController(glm::vec2 currentHipToHandController) { _hipToHandController = currentHipToHandController; }
+    const glm::vec2& getHeadControllerFacing() const { return _headControllerFacing; }
+    void setHeadControllerFacing(glm::vec2 currentHeadControllerFacing) { _headControllerFacing = currentHeadControllerFacing; }
     const glm::vec2& getHeadControllerFacingMovingAverage() const { return _headControllerFacingMovingAverage; }
     void setHeadControllerFacingMovingAverage(glm::vec2 currentHeadControllerFacing) { _headControllerFacingMovingAverage = currentHeadControllerFacing; }
     float getCurrentStandingHeight() const { return _currentStandingHeight; }
@@ -931,7 +940,8 @@ public:
     * @returns {object[]}
     */
     Q_INVOKABLE QVariantList getAvatarEntitiesVariant();
-    void removeAvatarEntities(const std::function<bool(const QUuid& entityID)>& condition = {});
+    void clearAvatarEntities();
+    void removeWearableAvatarEntities();
 
     /**jsdoc
      * @function MyAvatar.isFlying
@@ -1008,6 +1018,12 @@ public:
     Q_INVOKABLE bool getCollisionsEnabled();
 
     /**jsdoc
+    * @function MyAvatar.getCollisionCapsule
+    * @returns {object}
+    */
+    Q_INVOKABLE QVariantMap getCollisionCapsule() const;
+
+    /**jsdoc
      * @function MyAvatar.setCharacterControllerEnabled
      * @param {boolean} enabled
      * @deprecated
@@ -1024,7 +1040,7 @@ public:
     virtual glm::quat getAbsoluteJointRotationInObjectFrame(int index) const override;
     virtual glm::vec3 getAbsoluteJointTranslationInObjectFrame(int index) const override;
 
-    // all calibration matrices are in absolute avatar space.
+    // all calibration matrices are in absolute sensor space.
     glm::mat4 getCenterEyeCalibrationMat() const;
     glm::mat4 getHeadCalibrationMat() const;
     glm::mat4 getSpine2CalibrationMat() const;
@@ -1044,6 +1060,8 @@ public:
     // derive avatar body position and orientation from the current HMD Sensor location.
     // results are in sensor frame (-z forward)
     glm::mat4 deriveBodyFromHMDSensor() const;
+
+    glm::mat4 getSpine2RotationRigSpace() const;
 
     glm::vec3 computeCounterBalance();
 
@@ -1074,6 +1092,8 @@ public:
 
     const QUuid& getSelfID() const { return AVATAR_SELF_ID; }
 
+    void setIsInWalkingState(bool isWalking);
+    bool getIsInWalkingState() const;
     void setWalkSpeed(float value);
     float getWalkSpeed() const;
     void setWalkBackwardSpeed(float value);
@@ -1166,11 +1186,12 @@ public slots:
      * @param {boolean} [hasOrientation=false] - Set to <code>true</code> to set the orientation of the avatar.
      * @param {Quat} [orientation=Quat.IDENTITY] - The new orientation for the avatar.
      * @param {boolean} [shouldFaceLocation=false] - Set to <code>true</code> to position the avatar a short distance away from 
+     * @param {boolean} [withSafeLanding=true] - Set to <code>false</code> MyAvatar::safeLanding will not be called (used when teleporting).
      *     the new position and orientate the avatar to face the position.
      */
     void goToLocation(const glm::vec3& newPosition,
                       bool hasOrientation = false, const glm::quat& newOrientation = glm::quat(),
-                      bool shouldFaceLocation = false);
+                      bool shouldFaceLocation = false, bool withSafeLanding = true);
     /**jsdoc
      * @function MyAvatar.goToLocation
      * @param {object} properties
@@ -1484,6 +1505,7 @@ signals:
 
 private slots:
     void leaveDomain();
+    void updateCollisionCapsuleCache();
 
 protected:
     virtual void beParentOfChild(SpatiallyNestablePointer newChild) const override;
@@ -1515,6 +1537,10 @@ private:
     float getRotationRecenterFilterLength() const { return _rotationRecenterFilterLength; }
     void setRotationThreshold(float angleRadians);
     float getRotationThreshold() const { return _rotationThreshold; }
+    void setEnableStepResetRotation(bool stepReset) { _stepResetRotationEnabled = stepReset; }
+    bool getEnableStepResetRotation() const { return _stepResetRotationEnabled; }
+    void setEnableDrawAverageFacing(bool drawAverage) { _drawAverageFacingEnabled = drawAverage; }
+    bool getEnableDrawAverageFacing() const { return _drawAverageFacingEnabled; }
     bool isMyAvatar() const override { return true; }
     virtual int parseDataFromBuffer(const QByteArray& buffer) override;
     virtual glm::vec3 getSkeletonPosition() const override;
@@ -1637,6 +1663,8 @@ private:
     std::atomic<bool> _hasScriptedBlendShapes { false };
     std::atomic<float> _rotationRecenterFilterLength { 4.0f };
     std::atomic<float> _rotationThreshold { 0.5235f };  // 30 degrees in radians
+    std::atomic<bool> _stepResetRotationEnabled { true };
+    std::atomic<bool> _drawAverageFacingEnabled { false };
 
     // working copy -- see AvatarData for thread-safe _sensorToWorldMatrixCache, used for outward facing access
     glm::mat4 _sensorToWorldMatrix { glm::mat4() };
@@ -1649,6 +1677,8 @@ private:
     glm::vec2 _headControllerFacing;  // facing vector in xz plane (sensor space)
     glm::vec2 _headControllerFacingMovingAverage { 0.0f, 0.0f };   // facing vector in xz plane (sensor space)
     glm::quat _averageHeadRotation { 0.0f, 0.0f, 0.0f, 1.0f };
+
+    glm::vec2 _hipToHandController { 0.0f, -1.0f };  // spine2 facing vector in xz plane (avatar space)
 
     float _currentStandingHeight { 0.0f };
     bool _resetMode { true };
@@ -1700,6 +1730,7 @@ private:
 
     bool _goToPending { false };
     bool _physicsSafetyPending { false };
+    bool _goToSafe { true };
     glm::vec3 _goToPosition;
     glm::quat _goToOrientation;
 
@@ -1768,6 +1799,7 @@ private:
     ThreadSafeValueCache<float> _walkBackwardSpeed { DEFAULT_AVATAR_MAX_WALKING_BACKWARD_SPEED };
     ThreadSafeValueCache<float> _sprintSpeed { AVATAR_SPRINT_SPEED_SCALAR };
     float _walkSpeedScalar { AVATAR_WALK_SPEED_SCALAR };
+    bool _isInWalkingState { false };
 
     // load avatar scripts once when rig is ready
     bool _shouldLoadScripts { false };
@@ -1781,5 +1813,7 @@ void audioListenModeFromScriptValue(const QScriptValue& object, AudioListenerMod
 
 QScriptValue driveKeysToScriptValue(QScriptEngine* engine, const MyAvatar::DriveKeys& driveKeys);
 void driveKeysFromScriptValue(const QScriptValue& object, MyAvatar::DriveKeys& driveKeys);
+
+bool isWearableEntity(const EntityItemPointer& entity);
 
 #endif // hifi_MyAvatar_h

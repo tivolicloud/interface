@@ -50,8 +50,6 @@ enum ScreenTintLayer {
 
 class Texture;
 
-using AvatarPhysicsCallback = std::function<void(uint32_t)>;
-
 class Avatar : public AvatarData, public scriptable::ModelProvider {
     Q_OBJECT
 
@@ -75,6 +73,7 @@ public:
 
     void init();
     void updateAvatarEntities();
+    void removeAvatarEntitiesFromTree();
     void simulate(float deltaTime, bool inView);
     virtual void simulateAttachments(float deltaTime);
 
@@ -108,6 +107,14 @@ public:
 
     virtual bool isMyAvatar() const override { return false; }
     virtual void createOrb() { }
+
+    enum class LoadingStatus {
+        NoModel,
+        LoadModel,
+        LoadSuccess,
+        LoadFailure
+    };
+    virtual void indicateLoadingStatus(LoadingStatus loadingStatus) { _loadingStatus = loadingStatus; }
 
     virtual QVector<glm::quat> getJointRotations() const override;
     using AvatarData::getJointRotation;
@@ -244,7 +251,7 @@ public:
     // (otherwise floating point error will cause problems at large positions).
     void applyPositionDelta(const glm::vec3& delta);
 
-    virtual void rebuildCollisionShape();
+    virtual void rebuildCollisionShape() = 0;
 
     virtual void computeShapeInfo(ShapeInfo& shapeInfo);
     void getCapsule(glm::vec3& start, glm::vec3& end, float& radius);
@@ -331,10 +338,6 @@ public:
     bool isInScene() const { return render::Item::isValidID(_renderItemID); }
     render::ItemID getRenderItemID() { return _renderItemID; }
     bool isMoving() const { return _moving; }
-
-    void setPhysicsCallback(AvatarPhysicsCallback cb);
-    void addPhysicsFlags(uint32_t flags);
-    bool isInPhysicsSimulation() const { return _physicsCallback != nullptr; }
 
     void fadeIn(render::ScenePointer scene);
     void fadeOut(render::ScenePointer scene, KillAvatarReason reason);
@@ -464,7 +467,6 @@ protected:
     glm::vec3 _lastAngularVelocity;
     glm::vec3 _angularAcceleration;
     glm::quat _lastOrientation;
-
     glm::vec3 _worldUpDirection { Vectors::UP };
     bool _moving { false }; ///< set when position is changing
 
@@ -530,8 +532,6 @@ protected:
 
     int _voiceSphereID;
 
-    AvatarPhysicsCallback _physicsCallback { nullptr };
-
     float _displayNameTargetAlpha { 1.0f };
     float _displayNameAlpha { 1.0f };
 
@@ -549,6 +549,8 @@ protected:
     static const float MYAVATAR_LOADING_PRIORITY;
     static const float OTHERAVATAR_LOADING_PRIORITY;
     static const float ATTACHMENT_LOADING_PRIORITY;
+
+    LoadingStatus _loadingStatus { LoadingStatus::NoModel };
 };
 
 #endif // hifi_Avatar_h
