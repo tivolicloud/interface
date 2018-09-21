@@ -173,7 +173,7 @@ public slots:
     void processDomainServerConnectionDeniedPacket(QSharedPointer<ReceivedMessage> message);
 
     // sets domain handler in error state.
-    void setRedirectErrorState(QUrl errorUrl, int reasonCode);
+    void setRedirectErrorState(QUrl errorUrl, QString reasonMessage = "", int reason = -1, const QString& extraInfo = "");
 
     bool isInErrorState() { return _isInErrorState; }
 
@@ -223,7 +223,6 @@ private:
     NetworkPeer _icePeer;
     bool _isConnected { false };
     bool _isInErrorState { false };
-    Setting::Handle<bool> _enableInterstitialMode{ "enableInterstitialMode", false };
     QJsonObject _settingsObject;
     QString _pendingPath;
     QTimer _settingsTimer;

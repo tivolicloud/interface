@@ -340,11 +340,17 @@ void DomainHandler::loadedErrorDomain(std::map<QString, QString> namedPaths) {
     DependencyManager::get<AddressManager>()->goToViewpointForPath(viewpoint, QString());
 }
 
-void DomainHandler::setRedirectErrorState(QUrl errorUrl, int reasonCode) {
-    _errorDomainURL = errorUrl;
+void DomainHandler::setRedirectErrorState(QUrl errorUrl, QString reasonMessage, int reasonCode, const QString& extraInfo) {
     _lastDomainConnectionError = reasonCode;
-    _isInErrorState = true;
-    emit redirectToErrorDomainURL(_errorDomainURL);
+    Settings settings;
+    bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
+    if (enableInterstitial) {
+        _errorDomainURL = errorUrl;
+        _isInErrorState = true;
+        emit redirectToErrorDomainURL(_errorDomainURL);
+    } else {
+        emit domainConnectionRefused(reasonMessage, reasonCode, extraInfo);
+    }
 }
 
 void DomainHandler::requestDomainSettings() {
@@ -486,18 +492,9 @@ void DomainHandler::processDomainServerConnectionDeniedPacket(QSharedPointer<Rec
         emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
 #else
 
-        if (_enableInterstitialMode.get()) {
-            if (reasonCode == ConnectionRefusedReason::ProtocolMismatch || reasonCode == ConnectionRefusedReason::NotAuthorized) {
-                // ingest the error - this is a "hard" connection refusal.
-                setRedirectErrorState(_errorDomainURL, (int)reasonCode);
-            } else {
-                emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
-            }
-            _lastDomainConnectionError = (int)reasonCode;
-        } else {
-            emit domainConnectionRefused(reasonMessage, (int)reasonCode, extraInfo);
-        }
-       #endif
+        // ingest the error - this is a "hard" connection refusal.
+        setRedirectErrorState(_errorDomainURL, reasonMessage, (int)reasonCode, extraInfo);
+#endif
     }
 
     auto accountManager = DependencyManager::get<AccountManager>();
