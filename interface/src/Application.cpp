@@ -3499,7 +3499,7 @@ bool Application::isServerlessMode() const {
 
 void Application::setIsInterstitialMode(bool interstitialMode) {
     Settings settings;
-    bool enableInterstitial = settings.value("enableIntersitialMode", false).toBool();
+    bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
     if (_interstitialMode != interstitialMode && enableInterstitial) {
         _interstitialMode = interstitialMode;
 
