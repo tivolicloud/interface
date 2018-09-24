@@ -15,8 +15,6 @@
 #include <QObject>
 #include <QTimer>
 
-#include <SettingHandle.h>
-
 class QUrl;
 class QString;
 

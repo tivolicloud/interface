@@ -42,8 +42,7 @@ void ConnectionMonitor::init() {
 
     connect(&_timer, &QTimer::timeout, this, [this]() {
         // set in a timeout error
-        Settings settings;
-        bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
+        bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
         if (enableInterstitial) {
             qDebug() << "ConnectionMonitor: Redirecting to 404 error domain";
             emit setRedirectErrorState(REDIRECT_HIFI_ADDRESS, "", 5);
@@ -60,8 +59,7 @@ void ConnectionMonitor::startTimer() {
 
 void ConnectionMonitor::stopTimer() {
     _timer.stop();
-    Settings settings;
-    bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
+    bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
     if (!enableInterstitial) {
         DependencyManager::get<DialogsManager>()->setDomainConnectionFailureVisibility(false);
     }

@@ -14,6 +14,9 @@
 #include <math.h>
 
 #include <PathUtils.h>
+#include <shared/QtHelpers.h>
+
+#include <QThread>
 
 #include <QtCore/QJsonDocument>
 #include <QtCore/QDataStream>
@@ -342,9 +345,7 @@ void DomainHandler::loadedErrorDomain(std::map<QString, QString> namedPaths) {
 
 void DomainHandler::setRedirectErrorState(QUrl errorUrl, QString reasonMessage, int reasonCode, const QString& extraInfo) {
     _lastDomainConnectionError = reasonCode;
-    Settings settings;
-    bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
-    if (enableInterstitial) {
+    if (_enableInterstitialMode.get()) {
         _errorDomainURL = errorUrl;
         _isInErrorState = true;
         emit redirectToErrorDomainURL(_errorDomainURL);

@@ -3498,8 +3498,7 @@ bool Application::isServerlessMode() const {
 }
 
 void Application::setIsInterstitialMode(bool interstitialMode) {
-    Settings settings;
-    bool enableInterstitial = settings.value("enableInterstitialMode", false).toBool();
+    bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
     if (_interstitialMode != interstitialMode && enableInterstitial) {
         _interstitialMode = interstitialMode;
 
