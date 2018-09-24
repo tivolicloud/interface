@@ -145,9 +145,6 @@ public:
     QString getPreviousScriptLocation();
     void setPreviousScriptLocation(const QString& previousScriptLocation);
 
-    bool getEnableInterstitialMode();
-    void setEnableInterstitialMode(const bool& enableInterstitalMode);
-
     // Return an HTTP User-Agent string with OS and device information.
     Q_INVOKABLE QString getUserAgent();
 
