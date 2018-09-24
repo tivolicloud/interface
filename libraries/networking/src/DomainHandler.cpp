@@ -16,7 +16,6 @@
 #include <PathUtils.h>
 
 #include <shared/QtHelpers.h>
-#include <shared/ReadWriteLockable.h>
 
 #include <QThread>
 

@@ -19,6 +19,7 @@
 #include <QtCore/QUrl>
 #include <QtNetwork/QHostInfo>
 
+#include <shared/ReadWriteLockable.h>
 #include <SettingHandle.h>
 
 #include "HifiSockAddr.h"
