@@ -85,8 +85,8 @@ public:
     bool isConnected() const { return _isConnected; }
     void setIsConnected(bool isConnected);
     bool isServerless() const { return _domainURL.scheme() != URL_SCHEME_HIFI; }
-    bool getInterstitialModeEnabled() const { return _enableInterstitialMode.get(); }
-    void setInterstitialModeEnabled(bool enableInterstitialMode) { _enableInterstitialMode.set(enableInterstitialMode); }
+    bool getInterstitialModeEnabled() const;
+    void setInterstitialModeEnabled(bool enableInterstitialMode);
 
     void connectedToServerless(std::map<QString, QString> namedPaths);
 
@@ -228,6 +228,7 @@ private:
     QJsonObject _settingsObject;
     QString _pendingPath;
     QTimer _settingsTimer;
+    mutable ReadWriteLockable _interstitialModeSettingLock;
     Setting::Handle<bool> _enableInterstitialMode{ "enableInterstitialMode", false };
 
     QSet<QString> _domainConnectionRefusals;

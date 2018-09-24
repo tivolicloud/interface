@@ -14,7 +14,9 @@
 #include <math.h>
 
 #include <PathUtils.h>
+
 #include <shared/QtHelpers.h>
+#include <shared/ReadWriteLockable.h>
 
 #include <QThread>
 
@@ -135,6 +137,18 @@ void DomainHandler::hardReset() {
 
     // clear any pending path we may have wanted to ask the previous DS about
     _pendingPath.clear();
+}
+
+bool DomainHandler::getInterstitialModeEnabled() const {
+    return _interstitialModeSettingLock.resultWithReadLock<bool>([&] {
+        return _enableInterstitialMode.get(); 
+    });
+}
+
+void DomainHandler::setInterstitialModeEnabled(bool enableInterstitialMode) {
+    _interstitialModeSettingLock.withWriteLock([&] {
+        _enableInterstitialMode.set(enableInterstitialMode);
+    });
 }
 
 void DomainHandler::setErrorDomainURL(const QUrl& url) {
