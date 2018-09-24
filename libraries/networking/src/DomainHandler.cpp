@@ -141,7 +141,7 @@ void DomainHandler::hardReset() {
 
 bool DomainHandler::getInterstitialModeEnabled() const {
     return _interstitialModeSettingLock.resultWithReadLock<bool>([&] {
-        return _enableInterstitialMode.get(); 
+        return _enableInterstitialMode.get();
     });
 }
 
