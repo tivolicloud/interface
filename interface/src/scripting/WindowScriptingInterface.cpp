@@ -184,7 +184,7 @@ bool WindowScriptingInterface::getInterstitialModeEnabled() const {
     return DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
 }
 
-void WindowScriptingInterface::setInterstitialModeEnabled(const bool& enableInterstitialMode) {
+void WindowScriptingInterface::setInterstitialModeEnabled(bool enableInterstitialMode) {
     DependencyManager::get<NodeList>()->getDomainHandler().setInterstitialModeEnabled(enableInterstitialMode);
 }
 

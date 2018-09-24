@@ -86,7 +86,7 @@ public:
     void setIsConnected(bool isConnected);
     bool isServerless() const { return _domainURL.scheme() != URL_SCHEME_HIFI; }
     bool getInterstitialModeEnabled() const { return _enableInterstitialMode.get(); }
-    void setInterstitialModeEnabled(const bool& enableInterstitialMode) { _enableInterstitialMode.set(enableInterstitialMode); }
+    void setInterstitialModeEnabled(bool enableInterstitialMode) { _enableInterstitialMode.set(enableInterstitialMode); }
 
     void connectedToServerless(std::map<QString, QString> namedPaths);
 

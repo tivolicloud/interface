@@ -760,7 +760,7 @@ private:
     void setPreviousBrowseAssetLocation(const QString& location);
 
     bool getInterstitialModeEnabled() const;
-    void setInterstitialModeEnabled(const bool& enableInterstitialMode);
+    void setInterstitialModeEnabled(bool enableInterstitialMode);
 
     void ensureReticleVisible() const;
 
