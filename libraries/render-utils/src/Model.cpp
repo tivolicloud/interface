@@ -1533,11 +1533,8 @@ void Model::updateClusterMatrices() {
 
 bool Model::maybeStartBlender() {
     if (isLoaded()) {
-        const FBXGeometry& fbxGeometry = getFBXGeometry();
-        if (fbxGeometry.hasBlendedMeshes()) {
-            QThreadPool::globalInstance()->start(new Blender(getThisPointer(), ++_blendNumber, _renderGeometry, _blendshapeCoefficients));
-            return true;
-        }
+        QThreadPool::globalInstance()->start(new Blender(getThisPointer(), ++_blendNumber, _renderGeometry, _blendshapeCoefficients));
+        return true;
     }
     return false;
 }
@@ -1783,14 +1780,23 @@ ModelBlender::~ModelBlender() {
 
 void ModelBlender::noteRequiresBlend(ModelPointer model) {
     Lock lock(_mutex);
-    if (_pendingBlenders < QThread::idealThreadCount()) {
-        if (model->maybeStartBlender()) {
-            _pendingBlenders++;
-            return;
-        }
+    if (_modelsRequiringBlendsSet.find(model) == _modelsRequiringBlendsSet.end()) {
+        _modelsRequiringBlendsQueue.push(model);
+        _modelsRequiringBlendsSet.insert(model);
     }
 
-    _modelsRequiringBlends.insert(model);
+    if (_pendingBlenders < QThread::idealThreadCount()) {
+        while (!_modelsRequiringBlendsQueue.empty()) {
+            auto weakPtr = _modelsRequiringBlendsQueue.front();
+            _modelsRequiringBlendsQueue.pop();
+            _modelsRequiringBlendsSet.erase(weakPtr);
+            ModelPointer nextModel = weakPtr.lock();
+            if (nextModel && nextModel->maybeStartBlender()) {
+                _pendingBlenders++;
+                return;
+            }
+        }
+    }
 }
 
 void ModelBlender::setBlendedVertices(ModelPointer model, int blendNumber, QVector<glm::vec3> vertices, QVector<NormalType> normalsAndTangents) {
@@ -1800,20 +1806,15 @@ void ModelBlender::setBlendedVertices(ModelPointer model, int blendNumber, QVect
     {
         Lock lock(_mutex);
         _pendingBlenders--;
-        _modelsRequiringBlends.erase(model);
-        std::set<ModelWeakPointer, std::owner_less<ModelWeakPointer>> modelsToErase;
-        for (auto i = _modelsRequiringBlends.begin(); i != _modelsRequiringBlends.end(); i++) {
-            auto weakPtr = *i;
+        while (!_modelsRequiringBlendsQueue.empty()) {
+            auto weakPtr = _modelsRequiringBlendsQueue.front();
+            _modelsRequiringBlendsQueue.pop();
+            _modelsRequiringBlendsSet.erase(weakPtr);
             ModelPointer nextModel = weakPtr.lock();
             if (nextModel && nextModel->maybeStartBlender()) {
                 _pendingBlenders++;
                 break;
-            } else {
-                modelsToErase.insert(weakPtr);
             }
-        }
-        for (auto& weakPtr : modelsToErase) {
-            _modelsRequiringBlends.erase(weakPtr);
         }
     }
 }
