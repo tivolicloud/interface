@@ -377,7 +377,7 @@ void AvatarHashMap::processBulkAvatarTraits(QSharedPointer<ReceivedMessage> mess
                 }
             }
 
-            if (skipBinaryTrait) {
+            if (skipBinaryTrait && traitBinarySize > 0) {
                 // we didn't read this trait because it was older or because we didn't have an avatar to process it for
                 message->seek(message->getPosition() + traitBinarySize);
             }
