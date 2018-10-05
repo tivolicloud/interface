@@ -5887,6 +5887,10 @@ void Application::update(float deltaTime) {
             // update the rendering without any simulation
             getEntities()->update(false);
         }
+        // remove recently dead avatarEntities
+        SetOfEntities deadAvatarEntities;
+        _entitySimulation->takeDeadAvatarEntities(deadAvatarEntities);
+        avatarManager->removeDeadAvatarEntities(deadAvatarEntities);
     }
 
     // AvatarManager update
