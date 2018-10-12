@@ -57,7 +57,7 @@ struct WorkloadView {
     vec4 regions[3];
 };
 
-#if !defined(GPU_GL450)
+#if !defined(GPU_SSBO_TRANSFORM_OBJECT)
 layout(binding=1) uniform samplerBuffer workloadViewsBuffer;
 WorkloadView getWorkloadView(int i) {
     int offset = 8 * i;
