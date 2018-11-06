@@ -6467,7 +6467,7 @@ void Application::copyDisplayViewFrustum(ViewFrustum& viewOut) const {
 void Application::resetSensors(bool andReload) {
     DependencyManager::get<DdeFaceTracker>()->reset();
     DependencyManager::get<EyeTracker>()->reset();
-    getActiveDisplayPlugin()->resetSensors();
+    //getActiveDisplayPlugin()->resetSensors();
     _overlayConductor.centerUI();
     getMyAvatar()->reset(true, andReload);
     QMetaObject::invokeMethod(DependencyManager::get<AudioClient>().data(), "reset", Qt::QueuedConnection);
