@@ -231,7 +231,7 @@ private:
     QString _pendingPath;
     QTimer _settingsTimer;
     mutable ReadWriteLockable _interstitialModeSettingLock;
-    Setting::Handle<bool> _enableInterstitialMode{ "enableInterstitialMode", true };
+    Setting::Handle<bool> _enableInterstitialMode{ "enableInterstitialMode", false };
 
     QSet<QString> _domainConnectionRefusals;
     bool _hasCheckedForAccessToken { false };
