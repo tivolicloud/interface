@@ -52,6 +52,8 @@ class Audio : public AudioScriptingInterface, protected ReadWriteLockable {
      *     removed.
      * @property {boolean} isSoloing <em>Read-only.</em> <code>true</code> if any nodes are soloed.
      * @property {Uuid[]} soloList <em>Read-only.</em> Get the list of currently soloed node UUIDs.
+     * @property {boolean} isInOculusStoreMode <em>Read-only.</em> <code>true</code> if Interface is launched with --oculus-store.
+     *     Equivalent to <code>Window.isInOculusStoreMode</code>; required here because of what is accessible to Audio.qml.
      */
 
     Q_PROPERTY(bool muted READ isMuted WRITE setMuted NOTIFY mutedChanged)
@@ -60,6 +62,7 @@ class Audio : public AudioScriptingInterface, protected ReadWriteLockable {
     Q_PROPERTY(float inputLevel READ getInputLevel NOTIFY inputLevelChanged)
     Q_PROPERTY(QString context READ getContext NOTIFY contextChanged)
     Q_PROPERTY(AudioDevices* devices READ getDevices NOTIFY nop)
+    Q_PROPERTY(bool isInOculusStoreMode READ getIsInOculusStoreMode NOTIFY nop)
 
 public:
     static QString AUDIO;
@@ -252,6 +255,7 @@ private:
     bool _contextIsHMD { false };
     AudioDevices* getDevices() { return &_devices; }
     AudioDevices _devices;
+    bool getIsInOculusStoreMode();
 };
 
 };

@@ -52,6 +52,7 @@ class WindowScriptingInterface : public QObject, public Dependency {
     Q_PROPERTY(int x READ getX)
     Q_PROPERTY(int y READ getY)
     Q_PROPERTY(bool interstitialModeEnabled READ getInterstitialModeEnabled WRITE setInterstitialModeEnabled)
+    Q_PROPERTY(bool isInOculusStoreMode READ getIsInOculusStoreMode)
 
 public:
     WindowScriptingInterface();
@@ -572,6 +573,8 @@ public slots:
     void closeMessageBox(int id);
 
     float domainLoadingProgress();
+
+    bool getIsInOculusStoreMode();
 
 private slots:
     void onWindowGeometryChanged(const QRect& geometry);
