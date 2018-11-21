@@ -194,15 +194,15 @@ Rectangle {
             width: parent.width - margins.paddings*2
             x: margins.paddings
             height: Math.min(150, contentHeight);
-            spacing: 4;
+            spacing: AudioScriptingInterface.isInOculusStoreMode ? 0 : 4;
             snapMode: ListView.SnapToItem;
             clip: true;
             model: AudioScriptingInterface.devices.input;
             delegate: Item {
                 visible: !AudioScriptingInterface.isInOculusStoreMode || (AudioScriptingInterface.isInOculusStoreMode && (bar.currentIndex === 0 ? selectedDesktop : selectedHMD))
                 width: rightMostInputLevelPos
-                height: margins.sizeCheckBox > checkBoxInput.implicitHeight ?
-                            margins.sizeCheckBox : checkBoxInput.implicitHeight
+                height: visible ? (margins.sizeCheckBox > checkBoxInput.implicitHeight ?
+                            margins.sizeCheckBox : checkBoxInput.implicitHeight) : 0
 
                 AudioControls.CheckBox {
                     id: checkBoxInput
@@ -270,15 +270,15 @@ Rectangle {
             width: parent.width - margins.paddings*2
             x: margins.paddings
             height: Math.min(360 - inputView.height, contentHeight);
-            spacing: 4;
+            spacing: AudioScriptingInterface.isInOculusStoreMode ? 0 : 4;
             snapMode: ListView.SnapToItem;
             clip: true;
             model: AudioScriptingInterface.devices.output;
             delegate: Item {
                 visible: !AudioScriptingInterface.isInOculusStoreMode || (AudioScriptingInterface.isInOculusStoreMode && (bar.currentIndex === 0 ? selectedDesktop :  selectedHMD))
                 width: rightMostInputLevelPos
-                height: margins.sizeCheckBox > checkBoxOutput.implicitHeight ?
-                            margins.sizeCheckBox : checkBoxOutput.implicitHeight
+                height: visible ? (margins.sizeCheckBox > checkBoxOutput.implicitHeight ?
+                            margins.sizeCheckBox : checkBoxOutput.implicitHeight) : 0
 
                 AudioControls.CheckBox {
                     id: checkBoxOutput
