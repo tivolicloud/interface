@@ -554,8 +554,9 @@ var toolBar = (function () {
                 }
             }
 
-            SelectionManager.saveProperties();
             entityID = Entities.addEntity(properties);
+			SelectionManager.addEntity(entityID, false, this);
+			SelectionManager.saveProperties();
             pushCommandForSelections([{
                 entityID: entityID,
                 properties: properties
@@ -1273,6 +1274,7 @@ function mouseClickEvent(event) {
             } else {
                 selectionManager.addEntity(foundEntity, true, this);
             }
+			selectionManager.saveProperties();
 
             if (wantDebug) {
                 print("Model selected: " + foundEntity);
@@ -2168,7 +2170,7 @@ function pushCommandForSelections(createdEntityData, deletedEntityData, doNotSav
         } else {
             currentProperties = Entities.getEntityProperties(entityID);
         }
-
+		
         undoData.editEntities.push({
             entityID: entityID,
             properties: initialProperties
@@ -2324,7 +2326,6 @@ var PropertiesTool = function (opts) {
         }
         var i, properties, dY, diff, newPosition;
         if (data.type === "update") {
-            selectionManager.saveProperties();
             if (selectionManager.selections.length > 1) {
                 for (i = 0; i < selectionManager.selections.length; i++) {
                     Entities.editEntity(selectionManager.selections[i], data.properties);
@@ -2360,10 +2361,16 @@ var PropertiesTool = function (opts) {
                     entityListTool.sendUpdate();
                 }
             }
-            pushCommandForSelections();
-            blockPropertyUpdates = data.blockUpdateCallback === true;
-            selectionManager._update(false, this);
-            blockPropertyUpdates = false;
+			if (data.onlyUpdateEntities) {
+				blockPropertyUpdates = data.blockUpdateCallback;
+			} else {
+				pushCommandForSelections();
+				SelectionManager.saveProperties();
+			}
+			selectionManager._update(false, this);
+			if (data.onlyUpdateEntities) {
+				blockPropertyUpdates = false;
+			}
         } else if (data.type === 'saveUserData' || data.type === 'saveMaterialData') {
             //the event bridge and json parsing handle our avatar id string differently.
             var actualID = data.id.split('"')[1];
@@ -2473,8 +2480,6 @@ var PropertiesTool = function (opts) {
                 tooltips: Script.require('./assets/data/createAppTooltips.json'),
                 hmdActive: HMD.active,
             });
-        } else if (data.type === "updateProperties") {
-            updateSelections(true);
         }
     };
 

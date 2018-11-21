@@ -24,7 +24,7 @@ function DraggableNumber(min, max, step, decimals, dragStart, dragEnd) {
 
 DraggableNumber.prototype = {
     mouseDown: function(event) {
-        if (event.target === this.elText) {
+        if (event.target === this.elText && !this.isDisabled()) {
             this.initialMouseEvent = event;
             this.lastMouseEvent = event;
             document.addEventListener("mousemove", this.onDocumentMouseMove);
@@ -44,32 +44,33 @@ DraggableNumber.prototype = {
     },
     
     documentMouseMove: function(event) {
-        if (this.initialMouseEvent) {
+        if (!this.dragging && this.initialMouseEvent) {
             let dxFromInitial = event.clientX - this.initialMouseEvent.clientX;
-            if (Math.abs(dxFromInitial) > DELTA_X_FOCUS_THRESHOLD && this.lastMouseEvent) {
-                let initialValue = this.elInput.value;
-                let dx = event.clientX - this.lastMouseEvent.clientX;
-                let changeValue = dx !== 0;
-                if (changeValue) {
-                    while (dx !== 0) {
-                        if (dx > 0) {
-                            this.elInput.stepUp();
-                            --dx;
-                        } else {
-                            this.elInput.stepDown();
-                            ++dx;
-                        }
-                    }
-                    this.inputChange();
-                    if (this.valueChangeFunction) {
-                        this.valueChangeFunction();
+            if (Math.abs(dxFromInitial) > DELTA_X_FOCUS_THRESHOLD) {
+                if (this.dragStartFunction) {
+                    this.dragStartFunction();
+                }
+                this.dragging = true;
+            }
+            this.lastMouseEvent = event;
+        }
+        if (this.dragging && this.lastMouseEvent) {
+            let initialValue = this.elInput.value;
+            let dx = event.clientX - this.lastMouseEvent.clientX;
+            let changeValue = dx !== 0;
+            if (changeValue) {
+                while (dx !== 0) {
+                    if (dx > 0) {
+                        this.elInput.stepUp();
+                        --dx;
+                    } else {
+                        this.elInput.stepDown();
+                        ++dx;
                     }
                 }
-                if (!this.dragging) {
-                    if (this.dragStartFunction) {
-                        this.dragStartFunction();
-                    }
-                    this.dragging = true;
+                this.inputChange();
+                if (this.valueChangeFunction) {
+                    this.valueChangeFunction();
                 }
             }
             this.lastMouseEvent = event;
@@ -89,18 +90,22 @@ DraggableNumber.prototype = {
     },
     
     stepUp: function() {
-        this.elInput.stepUp();
-        this.inputChange();
-        if (this.valueChangeFunction) {
-            this.valueChangeFunction();
+        if (!this.isDisabled()) {
+            this.elInput.stepUp();
+            this.inputChange();
+            if (this.valueChangeFunction) {
+                this.valueChangeFunction();
+            }
         }
     },
     
     stepDown: function() {
-        this.elInput.stepDown();
-        this.inputChange();
-        if (this.valueChangeFunction) {
-            this.valueChangeFunction();
+        if (!this.isDisabled()) {
+            this.elInput.stepDown();
+            this.inputChange();
+            if (this.valueChangeFunction) {
+                this.valueChangeFunction();
+            }
         }
     },
     
@@ -114,9 +119,6 @@ DraggableNumber.prototype = {
     },
 
     setValueChangeFunction: function(valueChangeFunction) {
-        if (this.valueChangeFunction) {
-            this.elInput.removeEventListener("change", this.valueChangeFunction);
-        }
         this.valueChangeFunction = valueChangeFunction.bind(this.elInput);
         this.elInput.addEventListener("change", this.valueChangeFunction);
     },
@@ -128,6 +130,10 @@ DraggableNumber.prototype = {
     inputBlur: function() {
         this.elInput.style.visibility = "hidden";
         this.elText.style.visibility = "visible";
+    },
+    
+    isDisabled: function() {
+        return this.elText.getAttribute("disabled") === "disabled";
     },
     
     initialize: function() {
