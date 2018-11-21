@@ -131,6 +131,12 @@ DraggableNumber.prototype = {
         this.elInput.style.visibility = "hidden";
         this.elText.style.visibility = "visible";
     },
+  
+    keyPress: function(event) {
+        if (event.keyCode === 13) {
+            this.inputBlur();
+        }
+    },
     
     isDisabled: function() {
         return this.elText.getAttribute("disabled") === "disabled";
@@ -145,6 +151,7 @@ DraggableNumber.prototype = {
         this.onStepDown = this.stepDown.bind(this);
         this.onInputChange = this.inputChange.bind(this);
         this.onInputBlur = this.inputBlur.bind(this);
+        this.onKeyPress = this.keyPress.bind(this);
         
         this.elDiv = document.createElement('div');
         this.elDiv.className = "draggable-number";
@@ -180,6 +187,7 @@ DraggableNumber.prototype = {
         this.elInput.style.visibility = "hidden";
         this.elInput.addEventListener("change", this.onInputChange);
         this.elInput.addEventListener("blur", this.onInputBlur);
+        this.elInput.addEventListener("keypress", this.onKeyPress);
         
         this.elText.appendChild(this.elLeftArrow);
         this.elText.appendChild(this.elInput);

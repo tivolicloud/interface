@@ -1878,7 +1878,7 @@ function createNumberProperty(property, elProperty) {
     elProperty.appendChild(elDraggableNumber.elDiv);
 
     if (propertyData.buttons !== undefined) {
-        addButtons(elDraggableNumber.elText, elementID, propertyData.buttons, false);
+        addButtons(elDraggableNumber.elDiv, elementID, propertyData.buttons, false);
     }
     
     return elDraggableNumber;
