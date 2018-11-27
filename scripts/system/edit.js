@@ -2362,15 +2362,13 @@ var PropertiesTool = function (opts) {
                 }
             }
             if (data.onlyUpdateEntities) {
-                blockPropertyUpdates = data.blockUpdateCallback;
+                blockPropertyUpdates = true;
             } else {
                 pushCommandForSelections();
                 SelectionManager.saveProperties();
             }
             selectionManager._update(false, this);
-            if (data.onlyUpdateEntities) {
-                blockPropertyUpdates = false;
-            }
+            blockPropertyUpdates = false;
         } else if (data.type === 'saveUserData' || data.type === 'saveMaterialData') {
             //the event bridge and json parsing handle our avatar id string differently.
             var actualID = data.id.split('"')[1];

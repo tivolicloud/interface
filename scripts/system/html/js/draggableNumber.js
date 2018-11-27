@@ -47,7 +47,7 @@ DraggableNumber.prototype = {
     },
     
     mouseUp: function(event) {
-        if (event.target === this.elText && this.initialMouseEvent) {
+        if (!this.dragging && event.target === this.elText && this.initialMouseEvent) {
             let dx = event.clientX - this.initialMouseEvent.clientX;
             if (Math.abs(dx) <= DELTA_X_FOCUS_THRESHOLD) {
                 this.showInput();
@@ -144,8 +144,8 @@ DraggableNumber.prototype = {
     inputBlur: function(ev) {
         this.hideInput();
     },
-	
-	keyPress: function(event) {
+    
+    keyPress: function(event) {
         if (event.keyCode === 13) {
             this.inputBlur();
         }
@@ -153,7 +153,7 @@ DraggableNumber.prototype = {
     
     isDisabled: function() {
         return this.elText.getAttribute("disabled") === "disabled";
-	},
+    },
     
     initialize: function() {
         this.onMouseDown = this.mouseDown.bind(this);

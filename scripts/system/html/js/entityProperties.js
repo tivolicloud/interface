@@ -980,7 +980,7 @@ const GROUPS = [
                         label: "Start",
                         type: "number",
                         min: -180,
-                        max: 0,
+                        max: 180,
                         step: 1,
                         decimals: 0,
                         multiplier: DEGREES_TO_RADIANS,
@@ -990,7 +990,7 @@ const GROUPS = [
                     {
                         label: "Finish",
                         type: "number",
-                        min: 0,
+                        min: -180,
                         max: 180,
                         step: 1,
                         decimals: 0,
