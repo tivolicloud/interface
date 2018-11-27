@@ -2150,7 +2150,7 @@ function createTupleNumberInput(property, subLabel) {
                                                 propertyData.decimals, dragStartFunction, dragEndFunction); 
     elDraggableNumber.elInput.setAttribute("id", elementID);
     elDraggableNumber.elDiv.className += " fstuple";
-    elDraggableNumber.elText.insertBefore(elLabel, elDraggableNumber.elLeftArrow);
+    elDraggableNumber.elDiv.insertBefore(elLabel, elDraggableNumber.elLeftArrow);
     
     return elDraggableNumber;
 }
