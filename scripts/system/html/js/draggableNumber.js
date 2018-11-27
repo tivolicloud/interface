@@ -144,7 +144,7 @@ DraggableNumber.prototype = {
     inputBlur: function(ev) {
         this.hideInput();
     },
-    
+
     keyPress: function(event) {
         if (event.keyCode === 13) {
             this.inputBlur();
