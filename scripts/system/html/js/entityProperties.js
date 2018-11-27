@@ -197,7 +197,7 @@ const GROUPS = [
                 multiplier: DEGREES_TO_RADIANS,
                 decimals: 2,
                 unit: "deg",
-                propertyID: "keyLight.direction.x",
+                propertyID: "keyLight.direction.y",
                 showPropertyRule: { "keyLightMode": "enabled" },
             },
             {
@@ -206,7 +206,7 @@ const GROUPS = [
                 multiplier: DEGREES_TO_RADIANS,
                 decimals: 2,
                 unit: "deg",
-                propertyID: "keyLight.direction.y",
+                propertyID: "keyLight.direction.x",
                 showPropertyRule: { "keyLightMode": "enabled" },
             },
             {
@@ -1182,7 +1182,7 @@ const GROUPS = [
             },
             {
                 label: "Lifetime",
-                type: "number",
+                type: "string",
                 unit: "s",
                 propertyID: "lifetime",
             },
@@ -1878,7 +1878,7 @@ function createNumberProperty(property, elProperty) {
     elProperty.appendChild(elDraggableNumber.elDiv);
 
     if (propertyData.buttons !== undefined) {
-        addButtons(elDraggableNumber.elText, elementID, propertyData.buttons, false);
+        addButtons(elDraggableNumber.elDiv, elementID, propertyData.buttons, false);
     }
     
     return elDraggableNumber;
