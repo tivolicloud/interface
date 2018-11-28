@@ -1789,7 +1789,6 @@ function onPromptTextChanged(prompt) {
 }
 
 function handleMenuEvent(menuItem) {
-    print("DBACK TEST menuEvent");
     if (menuItem === "Allow Selecting of Small Models") {
         allowSmallModels = Menu.isOptionChecked("Allow Selecting of Small Models");
     } else if (menuItem === "Allow Selecting of Large Models") {
@@ -1799,7 +1798,6 @@ function handleMenuEvent(menuItem) {
     } else if (menuItem === "Delete") {
         deleteSelectedEntities();
     } else if (menuItem === "Undo") {
-        print("DBACK TEST menuEvent undo");
         undoHistory.undo();
     } else if (menuItem === "Redo") {
         undoHistory.redo();
