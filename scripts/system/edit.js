@@ -1789,6 +1789,7 @@ function onPromptTextChanged(prompt) {
 }
 
 function handleMenuEvent(menuItem) {
+    print("DBACK TEST menuEvent");
     if (menuItem === "Allow Selecting of Small Models") {
         allowSmallModels = Menu.isOptionChecked("Allow Selecting of Small Models");
     } else if (menuItem === "Allow Selecting of Large Models") {
@@ -1798,6 +1799,7 @@ function handleMenuEvent(menuItem) {
     } else if (menuItem === "Delete") {
         deleteSelectedEntities();
     } else if (menuItem === "Undo") {
+        print("DBACK TEST menuEvent undo");
         undoHistory.undo();
     } else if (menuItem === "Redo") {
         undoHistory.redo();
@@ -2747,17 +2749,16 @@ keyUpEventFromUIWindow = function(keyUpEvent) {
         selectionManager.pasteEntities();
     } else if (keyUpEvent.controlKey && keyUpEvent.keyCodeString === "D") {
         selectionManager.duplicateSelection();
-    } else if (keyUpEvent.controlKey && !keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "Z") {
-        undoHistory.undo();
+    } else if (!isOnMacPlatform && keyUpEvent.controlKey && !keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "Z") {
+        undoHistory.undo(); // undo is only handled via handleMenuItem on Mac
     } else if (keyUpEvent.controlKey && !keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "P") {
         parentSelectedEntities();
     } else if (keyUpEvent.controlKey && keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "P") {
         unparentSelectedEntities();
-    } else if (
-        (keyUpEvent.controlKey && keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "Z") ||
-        (keyUpEvent.controlKey && keyUpEvent.keyCodeString === "Y")) {
-
-        undoHistory.redo();
+    } else if (!isOnMacPlatform &&
+              ((keyUpEvent.controlKey && keyUpEvent.shiftKey && keyUpEvent.keyCodeString === "Z") ||
+               (keyUpEvent.controlKey && keyUpEvent.keyCodeString === "Y"))) {
+        undoHistory.redo(); // redo is only handled via handleMenuItem on Mac
     } else if (WANT_DEBUG_MISSING_SHORTCUTS) {
         console.warn("unhandled key event: " + JSON.stringify(keyUpEvent))
     }
