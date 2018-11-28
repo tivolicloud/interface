@@ -2132,12 +2132,17 @@ function applyEntityProperties(data) {
             entityID = DELETED_ENTITY_MAP[entityID];
         }
         Entities.deleteEntity(entityID);
+        var index = selectedEntityIDs.indexOf(entityID);
+        if (index >= 0) {
+            selectedEntityIDs.splice(index, 1);
+        }
     }
 
     // We might be getting an undo while edit.js is disabled. If that is the case, don't set
     // our selections, causing the edit widgets to display.
     if (isActive) {
         selectionManager.setSelections(selectedEntityIDs, this);
+        selectionManager.saveProperties();
     }
 }
 
@@ -2170,7 +2175,7 @@ function pushCommandForSelections(createdEntityData, deletedEntityData, doNotSav
         } else {
             currentProperties = Entities.getEntityProperties(entityID);
         }
-        
+
         undoData.editEntities.push({
             entityID: entityID,
             properties: initialProperties
