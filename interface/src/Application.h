@@ -797,5 +797,12 @@ private:
 
     bool _showTrackedObjects { false };
     bool _prevShowTrackedObjects { false };
+
+    std::shared_ptr<ProceduralSkybox> _splashScreen { std::make_shared<ProceduralSkybox>() };
+#ifndef Q_OS_ANDROID
+    std::atomic<bool> _programsCompiled { false };
+#else
+    std::atomic<bool> _programsCompiled { true };
+#endif
 };
 #endif // hifi_Application_h

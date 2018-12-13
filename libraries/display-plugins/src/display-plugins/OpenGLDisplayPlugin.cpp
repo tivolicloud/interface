@@ -522,6 +522,9 @@ void OpenGLDisplayPlugin::updateFrameData() {
             // We're changing frames, so we can cleanup any GL resources that might have been used by the old frame
             _gpuContext->recycle();
         }
+
+        _gpuContext->processProgramsToSync();
+
         if (_newFrameQueue.size() > 1) {
             _droppedFrameRate.increment(_newFrameQueue.size() - 1);
         }
