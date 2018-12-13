@@ -15,6 +15,7 @@
 #include <algorithm>
 
 #include <shared/QtHelpers.h>
+#include <shared/GlobalAppProperties.h>
 #include <plugins/DisplayPlugin.h>
 
 #include "Application.h"
@@ -56,7 +57,7 @@ QHash<int, QByteArray> AudioDeviceList::_roles {
 static QString getTargetDevice(bool hmd, QAudio::Mode mode) {
     QString deviceName;
     auto& setting = getSetting(hmd, mode);
-    if (setting.isSet()) {
+    if (!qApp->property(hifi::properties::OCULUS_STORE).toBool() && setting.isSet()) {
         deviceName = setting.get();
     } else if (hmd) {
         if (mode == QAudio::AudioInput) {
@@ -71,6 +72,11 @@ static QString getTargetDevice(bool hmd, QAudio::Mode mode) {
 Qt::ItemFlags AudioDeviceList::_flags { Qt::ItemIsSelectable | Qt::ItemIsEnabled };
 
 AudioDeviceList::AudioDeviceList(QAudio::Mode mode) : _mode(mode) {
+    if (qApp->property(hifi::properties::OCULUS_STORE).toBool()) {
+        qDebug() << "Interface is in Oculus Store mode; Audio devices will not be set from Settings.";
+        return;
+    }
+
     auto& setting1 = getSetting(true, QAudio::AudioInput);
     if (setting1.isSet()) {
         qDebug() << "Device name in settings for HMD, Input" << setting1.get();
@@ -101,6 +107,11 @@ AudioDeviceList::AudioDeviceList(QAudio::Mode mode) : _mode(mode) {
 }
 
 AudioDeviceList::~AudioDeviceList() {
+    // Don't store any selected device if we're in Oculus Store mode
+    if (qApp->property(hifi::properties::OCULUS_STORE).toBool()) {
+        return;
+    }
+
     //save all selected devices
     auto& settingHMD = getSetting(true, _mode);
     auto& settingDesktop = getSetting(false, _mode);
@@ -389,13 +400,15 @@ void AudioDevices::onDeviceSelected(QAudio::Mode mode, const QAudioDeviceInfo& d
                                     const QAudioDeviceInfo& previousDevice, bool isHMD) {
     QString deviceName = device.isNull() ? QString() : device.deviceName();
 
-    auto& setting = getSetting(isHMD, mode);
+    bool wasDefault = false;
 
-    // check for a previous device
-    auto wasDefault = setting.get().isNull();
-
-    // store the selected device
-    setting.set(deviceName);
+    // store the selected device if we're not in Oculus Store mode
+    // Also set `wasDefault` properly if we're not in Oculus Store mode
+    if (!qApp->property(hifi::properties::OCULUS_STORE).toBool()) {
+        auto& setting = getSetting(isHMD, mode);
+        setting.set(deviceName);
+        wasDefault = setting.get().isNull();
+    }
 
     // log the selected device
     if (!device.isNull()) {
