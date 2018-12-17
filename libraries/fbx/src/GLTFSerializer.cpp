@@ -1188,22 +1188,7 @@ void GLTFSerializer::hfmDebugDump(const HFMModel& hfmModel) {
     qCDebug(modelformat) << "  hasSkeletonJoints =" << hfmModel.hasSkeletonJoints;
     qCDebug(modelformat) << "  offset =" << hfmModel.offset;
 
-    qCDebug(modelformat) << "  leftEyeJointIndex =" << hfmModel.leftEyeJointIndex;
-    qCDebug(modelformat) << "  rightEyeJointIndex =" << hfmModel.rightEyeJointIndex;
-    qCDebug(modelformat) << "  neckJointIndex =" << hfmModel.neckJointIndex;
-    qCDebug(modelformat) << "  rootJointIndex =" << hfmModel.rootJointIndex;
-    qCDebug(modelformat) << "  leanJointIndex =" << hfmModel.leanJointIndex;
-    qCDebug(modelformat) << "  headJointIndex =" << hfmModel.headJointIndex;
-    qCDebug(modelformat) << "  leftHandJointIndex" << hfmModel.leftHandJointIndex;
-    qCDebug(modelformat) << "  rightHandJointIndex" << hfmModel.rightHandJointIndex;
-    qCDebug(modelformat) << "  leftToeJointIndex" << hfmModel.leftToeJointIndex;
-    qCDebug(modelformat) << "  rightToeJointIndex" << hfmModel.rightToeJointIndex;
-    qCDebug(modelformat) << "  leftEyeSize = " << hfmModel.leftEyeSize;
-    qCDebug(modelformat) << "  rightEyeSize = " << hfmModel.rightEyeSize;
-
     qCDebug(modelformat) << "  palmDirection = " << hfmModel.palmDirection;
-
-    qCDebug(modelformat) << "  neckPivot = " << hfmModel.neckPivot;
 
     qCDebug(modelformat) << "  bindExtents.size() = " << hfmModel.bindExtents.size();
     qCDebug(modelformat) << "  meshExtents.size() = " << hfmModel.meshExtents.size();
