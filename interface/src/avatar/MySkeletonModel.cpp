@@ -301,8 +301,9 @@ void MySkeletonModel::updateRig(float deltaTime, glm::mat4 parentTransform) {
     eyeParams.eyeSaccade = head->getSaccade();
     eyeParams.modelRotation = getRotation();
     eyeParams.modelTranslation = getTranslation();
-    eyeParams.leftEyeJointIndex = myAvatar->getJointIndex("LeftEye");
-    eyeParams.rightEyeJointIndex = myAvatar->getJointIndex("RightEye");
+
+    eyeParams.leftEyeJointIndex = _rig.indexOfJoint("LeftEye");
+    eyeParams.rightEyeJointIndex = _rig.indexOfJoint("RightEye");
 
     _rig.updateFromEyeParameters(eyeParams);
 
