@@ -2447,7 +2447,9 @@ bool EntityItem::shouldSuppressLocationEdits() const {
         }
         i++;
     }
-    return false;
+
+    // if any of the ancestors are MyAvatar, suppress
+    return isChildOfMyAvatar();
 }
 
 QList<EntityDynamicPointer> EntityItem::getActionsOfType(EntityDynamicType typeToGet) const {
