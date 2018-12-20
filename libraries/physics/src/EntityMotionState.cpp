@@ -441,7 +441,7 @@ bool EntityMotionState::shouldSendUpdate(uint32_t simulationStep) {
     if (_entity->shouldSuppressLocationEdits()) {
         // "shouldSuppressLocationEdits" really means: "the entity has a 'Hold' action therefore
         // we don't need send an update unless the entity is not contained by its queryAACube"
-        return _entity->queryAACubeNeedsUpdate();
+        return !_entity->isChildOfMyAvatar() && _entity->queryAACubeNeedsUpdate();
     }
 
     return remoteSimulationOutOfSync(simulationStep);
