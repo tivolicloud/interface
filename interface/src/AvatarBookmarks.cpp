@@ -151,8 +151,29 @@ void AvatarBookmarks::removeBookmark(const QString& bookmarkName) {
 
 void AvatarBookmarks::updateAvatarEntities(const QVariantList &avatarEntities) {
     auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
-    myAvatar->removeWearableAvatarEntities();
-    addAvatarEntities(avatarEntities);
+    std::set<QUuid> newAvatarEntities;
+
+    // Update or add all the new avatar entities
+    for (auto& avatarEntityVariant : avatarEntities) {
+        auto avatarEntityVariantMap = avatarEntityVariant.toMap();
+        auto idItr = avatarEntityVariantMap.find("id");
+        if (idItr != avatarEntityVariantMap.end()) {
+            auto propertiesItr = avatarEntityVariantMap.find("properties");
+            if (propertiesItr != avatarEntityVariantMap.end()) {
+                EntityItemID id = idItr.value().toUuid();
+                newAvatarEntities.insert(id);
+                myAvatar->updateAvatarEntity(id, QJsonDocument::fromVariant(propertiesItr.value()).toBinaryData());
+            }
+        }
+    }
+
+    // Remove any old entities not in the new list
+    auto currentAvatarEntities = myAvatar->getAvatarEntityData();
+    for (auto& avatarEntityID : currentAvatarEntities.keys()) {
+        if (newAvatarEntities.find(avatarEntityID) == newAvatarEntities.end()) {
+            myAvatar->removeAvatarEntity(avatarEntityID);
+        }
+    }
 }
 
 void AvatarBookmarks::loadBookmark(const QString& bookmarkName) {
@@ -176,7 +197,7 @@ void AvatarBookmarks::loadBookmark(const QString& bookmarkName) {
             auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
             auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
             EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
-            myAvatar->removeWearableAvatarEntities();
+            myAvatar->clearAvatarEntities();
             const QString& avatarUrl = bookmark.value(ENTRY_AVATAR_URL, "").toString();
             myAvatar->useFullAvatarURL(avatarUrl);
             qCDebug(interfaceapp) << "Avatar On";

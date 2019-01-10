@@ -2755,23 +2755,31 @@ void AvatarData::setAttachmentsVariant(const QVariantList& variant) {
 const int MAX_NUM_AVATAR_ENTITIES = 42;
 
 void AvatarData::updateAvatarEntity(const QUuid& entityID, const QByteArray& entityData) {
+    bool changed = false;
     _avatarEntitiesLock.withWriteLock([&] {
         AvatarEntityMap::iterator itr = _avatarEntityData.find(entityID);
-        if (itr == _avatarEntityData.end()) {
+        auto data = QJsonDocument::fromBinaryData(entityData);
+        if (data.isEmpty() || data.isNull() || (data.isObject() && data.object().isEmpty())) {
+            qDebug() << "ERROR!  Trying to read invalid or empty avatar entity data.  Skipping.";
+        } else if (itr == _avatarEntityData.end()) {
             if (_avatarEntityData.size() < MAX_NUM_AVATAR_ENTITIES) {
                 _avatarEntityData.insert(entityID, entityData);
+                changed = true;
             }
         } else {
             itr.value() = entityData;
+            changed = true;
         }
     });
 
-    _avatarEntityDataChanged = true;
+    if (changed) {
+        _avatarEntityDataChanged = true;
 
-    if (_clientTraitsHandler) {
-        // we have a client traits handler, so we need to mark this instanced trait as changed
-        // so that changes will be sent next frame
-        _clientTraitsHandler->markInstancedTraitUpdated(AvatarTraits::AvatarEntity, entityID);
+        if (_clientTraitsHandler) {
+            // we have a client traits handler, so we need to mark this instanced trait as changed
+            // so that changes will be sent next frame
+            _clientTraitsHandler->markInstancedTraitUpdated(AvatarTraits::AvatarEntity, entityID);
+        }
     }
 }
 

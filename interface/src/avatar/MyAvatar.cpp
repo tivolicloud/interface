@@ -1902,42 +1902,29 @@ bool isWearableEntity(const EntityItemPointer& entity) {
             || entity->getParentID() == AVATAR_SELF_ID);
 }
 
-void MyAvatar::clearAvatarEntities() {
+void MyAvatar::removeAvatarEntity(const EntityItemID& entityID) {
     auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
     EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
 
-    AvatarEntityMap avatarEntities = getAvatarEntityData();
-    for (auto entityID : avatarEntities.keys()) {
-        entityTree->withWriteLock([&entityID, &entityTree] {
-            // remove this entity first from the entity tree
-            entityTree->deleteEntity(entityID, true, true);
-        });
+    if (entityTree) {
+        auto entity = entityTree->findEntityByID(entityID);
+        if (entity && isWearableEntity(entity)) {
+            entityTree->withWriteLock([&entityID, &entityTree] {
+                // remove this entity first from the entity tree
+                entityTree->deleteEntity(entityID, true, true);
+            });
 
-        // remove the avatar entity from our internal list
-        // (but indicate it doesn't need to be pulled from the tree)
-        clearAvatarEntity(entityID, false);
+            // remove the avatar entity from our internal list
+            // (but indicate it doesn't need to be pulled from the tree)
+            clearAvatarEntity(entityID, false);
+        }
     }
 }
 
-void MyAvatar::removeWearableAvatarEntities() {
-    auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
-    EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
-    
-    if (entityTree) {
-        AvatarEntityMap avatarEntities = getAvatarEntityData();
-        for (auto entityID : avatarEntities.keys()) {
-            auto entity = entityTree->findEntityByID(entityID);
-            if (entity && isWearableEntity(entity)) {
-                entityTree->withWriteLock([&entityID, &entityTree] {
-                    // remove this entity first from the entity tree
-                    entityTree->deleteEntity(entityID, true, true);
-                });
-
-                // remove the avatar entity from our internal list
-                // (but indicate it doesn't need to be pulled from the tree)
-                clearAvatarEntity(entityID, false);
-            }
-        }
+void MyAvatar::clearAvatarEntities() {
+    AvatarEntityMap avatarEntities = getAvatarEntityData();
+    for (auto entityID : avatarEntities.keys()) {
+        removeAvatarEntity(entityID);
     }
 }
 
@@ -1960,6 +1947,7 @@ QVariantList MyAvatar::getAvatarEntitiesVariant() {
             desiredProperties += PROP_LOCAL_ROTATION;
             EntityItemProperties entityProperties = entity->getProperties(desiredProperties);
             QScriptValue scriptProperties = EntityItemPropertiesToScriptValue(&scriptEngine, entityProperties);
+            avatarEntityData["id"] = entityID;
             avatarEntityData["properties"] = scriptProperties.toVariant();
             avatarEntitiesData.append(QVariant(avatarEntityData));
         }
