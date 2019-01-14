@@ -55,7 +55,7 @@ void addAvatarEntities(const QVariantList& avatarEntities) {
         QVariantMap asMap = variantProperties.toMap();
         QScriptValue scriptProperties = variantMapToScriptValue(asMap, scriptEngine);
         EntityItemProperties entityProperties;
-        EntityItemPropertiesFromScriptValueHonorReadOnly(scriptProperties, entityProperties);
+        EntityItemPropertiesFromScriptValueIgnoreReadOnly(scriptProperties, entityProperties);
 
         entityProperties.setParentID(myNodeID);
         entityProperties.setEntityHostType(entity::HostType::AVATAR);
@@ -151,6 +151,7 @@ void AvatarBookmarks::removeBookmark(const QString& bookmarkName) {
 
 void AvatarBookmarks::updateAvatarEntities(const QVariantList &avatarEntities) {
     auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
+    auto currentAvatarEntities = myAvatar->getAvatarEntityData();
     std::set<QUuid> newAvatarEntities;
 
     // Update or add all the new avatar entities
@@ -168,7 +169,6 @@ void AvatarBookmarks::updateAvatarEntities(const QVariantList &avatarEntities) {
     }
 
     // Remove any old entities not in the new list
-    auto currentAvatarEntities = myAvatar->getAvatarEntityData();
     for (auto& avatarEntityID : currentAvatarEntities.keys()) {
         if (newAvatarEntities.find(avatarEntityID) == newAvatarEntities.end()) {
             myAvatar->removeAvatarEntity(avatarEntityID);

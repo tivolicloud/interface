@@ -4623,7 +4623,7 @@ bool EntityItemProperties::blobToProperties(QScriptEngine& scriptEngine, const Q
     QVariant variant = jsonProperties.toVariant();
     QVariantMap variantMap = variant.toMap();
     QScriptValue scriptValue = variantMapToScriptValue(variantMap, scriptEngine);
-    EntityItemPropertiesFromScriptValueHonorReadOnly(scriptValue, properties);
+    EntityItemPropertiesFromScriptValueIgnoreReadOnly(scriptValue, properties);
     // end recipe
     return true;
 }

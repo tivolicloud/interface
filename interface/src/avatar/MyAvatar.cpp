@@ -1610,10 +1610,12 @@ void MyAvatar::handleChangedAvatarEntityData() {
                 skip = true;
             }
         });
-        sanitizeAvatarEntityProperties(properties);
-        entityTree->withWriteLock([&] {
-            entityTree->updateEntity(id, properties);
-        });
+        if (!skip) {
+            sanitizeAvatarEntityProperties(properties);
+            entityTree->withWriteLock([&] {
+                entityTree->updateEntity(id, properties);
+            });
+        }
     }
 
     // DELETE cached blobs
