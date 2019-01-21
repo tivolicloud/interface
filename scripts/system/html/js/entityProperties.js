@@ -1360,7 +1360,8 @@ const GROUPS = [
             {
                 label: "Compound Shape URL",
                 type: "string",
-                propertyID: "compoundShapeURL",
+                propertyID: "zoneCompoundShapeURL",
+                propertyName: "compoundShapeURL", // actual entity property name
             },
         ]
     },
