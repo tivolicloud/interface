@@ -126,6 +126,14 @@
     "bloom.bloomSize": {
         "tooltip": "The radius of bloom. The higher the value, the larger the bloom."
     },
+    "zoneShapeType": {
+        "tooltip": "The shape of the zone's geometry.",
+        "jsPropertyName": "shapeType"
+    },
+    "zoneCompoundShapeURL": {
+        "tooltip": "The OBJ file to use for the compound shape if Shape Type is \"Use Compound Shape URL\".",
+        "jsPropertyName": "compoundShapeURL"
+    },
     "modelURL": {
         "tooltip": "A mesh model from an FBX or OBJ file."
     },

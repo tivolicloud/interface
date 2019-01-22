@@ -1354,12 +1354,14 @@ const GROUPS = [
                 type: "dropdown",
                 options: { "box": "Box", "sphere": "Sphere", "ellipsoid": "Ellipsoid", 
                            "cylinder-y": "Cylinder", "compound": "Use Compound Shape URL" },
-                propertyID: "shapeType",
+                propertyID: "zoneShapeType",
+                propertyName: "shapeType", // actual entity property name
             },
             {
                 label: "Compound Shape URL",
                 type: "string",
-                propertyID: "compoundShapeURL",
+                propertyID: "zoneCompoundShapeURL",
+                propertyName: "compoundShapeURL", // actual entity property name
             },
         ]
     },
