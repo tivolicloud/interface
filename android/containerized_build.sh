@@ -5,6 +5,10 @@ DOCKER_IMAGE_NAME="hifi_androidbuild"
 
 docker build --build-arg BUILD_UID=`id -u` -t "${DOCKER_IMAGE_NAME}" -f docker/Dockerfile docker
 
+# The Jenkins PR builds use VERSION_CODE, but the release builds use VERSION
+# So make sure we use VERSION_CODE consistently
+test -z "$VERSION_CODE" && export VERSION_CODE=$VERSION
+
 docker run \
    --rm \
     --security-opt seccomp:unconfined \
