@@ -728,12 +728,6 @@ int OctreePacketData::unpackDataFromBytes(const unsigned char *dataBytes, QVecto
     uint16_t length;
     memcpy(&length, dataBytes, sizeof(uint16_t));
     dataBytes += sizeof(length);
-
-    // FIXME - this size check is wrong if we allow larger packets
-    if (length * sizeof(glm::vec3) > MAX_OCTREE_UNCOMRESSED_PACKET_SIZE) {
-        result.resize(0);
-        return sizeof(uint16_t);
-    }
     result.resize(length);
     memcpy(result.data(), dataBytes, length * sizeof(glm::vec3));
     return sizeof(uint16_t) + length * sizeof(glm::vec3);
@@ -743,19 +737,11 @@ int OctreePacketData::unpackDataFromBytes(const unsigned char *dataBytes, QVecto
     uint16_t length;
     memcpy(&length, dataBytes, sizeof(uint16_t));
     dataBytes += sizeof(length);
-
-    // FIXME - this size check is wrong if we allow larger packets
-    if (length * sizeof(glm::quat) > MAX_OCTREE_UNCOMRESSED_PACKET_SIZE) {
-        result.resize(0);
-        return sizeof(uint16_t);
-    }
     result.resize(length);
-
     const unsigned char *start = dataBytes;
     for (int i = 0; i < length; i++) {
         dataBytes += unpackOrientationQuatFromBytes(dataBytes, result[i]);
     }
-
     return (dataBytes - start) + (int)sizeof(uint16_t);
 }
 
