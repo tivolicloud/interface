@@ -321,6 +321,7 @@ bool EntityRenderer::addToScene(const ScenePointer& scene, Transaction& transact
     transaction.resetItem(_renderItemID, renderPayload);
     onAddToScene(_entity);
     updateInScene(scene, transaction);
+    _entity->bumpAncestorChainRenderableVersion();
     return true;
 }
 
@@ -328,6 +329,7 @@ void EntityRenderer::removeFromScene(const ScenePointer& scene, Transaction& tra
     onRemoveFromScene(_entity);
     transaction.removeItem(_renderItemID);
     Item::clearID(_renderItemID);
+    _entity->bumpAncestorChainRenderableVersion();
 }
 
 void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& transaction) {
