@@ -49,7 +49,8 @@ int EntityItem::_maxActionsDataSize = 800;
 quint64 EntityItem::_rememberDeletedActionTime = 20 * USECS_PER_SECOND;
 QString EntityItem::_marketplacePublicKey;
 
-std::function<glm::quat(const glm::vec3&, const glm::quat&, BillboardMode)> EntityItem::_getBillboardRotationOperator = [](const glm::vec3&, const glm::quat& rotation, BillboardMode) { return rotation; };
+std::function<glm::quat(const glm::vec3&, const glm::quat&, BillboardMode, const glm::vec3&)> EntityItem::_getBillboardRotationOperator = [](const glm::vec3&, const glm::quat& rotation, BillboardMode, const glm::vec3&) { return rotation; };
+std::function<glm::vec3()> EntityItem::_getPrimaryViewFrustumPositionOperator = []() { return glm::vec3(0.0f); };
 
 EntityItem::EntityItem(const EntityItemID& entityItemID) :
     SpatiallyNestable(NestableType::Entity, entityItemID)
@@ -2935,6 +2936,7 @@ void EntityItem::setVisible(bool value) {
     });
 
     if (changed) {
+        bumpAncestorChainRenderableVersion();
         emit requestRenderUpdate();
     }
 }
@@ -3248,25 +3250,6 @@ void EntityItem::setSpaceIndex(int32_t index) {
 }
 
 void EntityItem::preDelete() {
-}
-
-void EntityItem::addMaterial(graphics::MaterialLayer material, const std::string& parentMaterialName) {
-    std::lock_guard<std::mutex> lock(_materialsLock);
-    _materials[parentMaterialName].push(material);
-}
-
-void EntityItem::removeMaterial(graphics::MaterialPointer material, const std::string& parentMaterialName) {
-    std::lock_guard<std::mutex> lock(_materialsLock);
-    _materials[parentMaterialName].remove(material);
-}
-
-std::unordered_map<std::string, graphics::MultiMaterial> EntityItem::getMaterials() {
-    std::unordered_map<std::string, graphics::MultiMaterial> toReturn;
-    {
-        std::lock_guard<std::mutex> lock(_materialsLock);
-        toReturn = _materials;
-    }
-    return toReturn;
 }
 
 bool EntityItem::getCloneable() const {

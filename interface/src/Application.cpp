@@ -622,8 +622,6 @@ public:
             switch (type) {
             case NestableType::Entity:
                 return getEntityModelProvider(static_cast<EntityItemID>(uuid));
-            case NestableType::Overlay:
-                return nullptr;
             case NestableType::Avatar:
                 return getAvatarModelProvider(uuid);
             }
@@ -1911,46 +1909,32 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         }
     }, Qt::QueuedConnection);
 
-    EntityTree::setAddMaterialToEntityOperator([this](const QUuid& entityID, graphics::MaterialLayer material, const std::string& parentMaterialName) {
+    EntityTreeRenderer::setAddMaterialToEntityOperator([this](const QUuid& entityID, graphics::MaterialLayer material, const std::string& parentMaterialName) {
         if (_aboutToQuit) {
             return false;
         }
 
-        // try to find the renderable
         auto renderable = getEntities()->renderableForEntityId(entityID);
         if (renderable) {
             renderable->addMaterial(material, parentMaterialName);
-        }
-
-        // even if we don't find it, try to find the entity
-        auto entity = getEntities()->getEntity(entityID);
-        if (entity) {
-            entity->addMaterial(material, parentMaterialName);
             return true;
         }
         return false;
     });
-    EntityTree::setRemoveMaterialFromEntityOperator([this](const QUuid& entityID, graphics::MaterialPointer material, const std::string& parentMaterialName) {
+    EntityTreeRenderer::setRemoveMaterialFromEntityOperator([this](const QUuid& entityID, graphics::MaterialPointer material, const std::string& parentMaterialName) {
         if (_aboutToQuit) {
             return false;
         }
 
-        // try to find the renderable
         auto renderable = getEntities()->renderableForEntityId(entityID);
         if (renderable) {
             renderable->removeMaterial(material, parentMaterialName);
-        }
-
-        // even if we don't find it, try to find the entity
-        auto entity = getEntities()->getEntity(entityID);
-        if (entity) {
-            entity->removeMaterial(material, parentMaterialName);
             return true;
         }
         return false;
     });
 
-    EntityTree::setAddMaterialToAvatarOperator([](const QUuid& avatarID, graphics::MaterialLayer material, const std::string& parentMaterialName) {
+    EntityTreeRenderer::setAddMaterialToAvatarOperator([](const QUuid& avatarID, graphics::MaterialLayer material, const std::string& parentMaterialName) {
         auto avatarManager = DependencyManager::get<AvatarManager>();
         auto avatar = avatarManager->getAvatarBySessionID(avatarID);
         if (avatar) {
@@ -1959,7 +1943,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         }
         return false;
     });
-    EntityTree::setRemoveMaterialFromAvatarOperator([](const QUuid& avatarID, graphics::MaterialPointer material, const std::string& parentMaterialName) {
+    EntityTreeRenderer::setRemoveMaterialFromAvatarOperator([](const QUuid& avatarID, graphics::MaterialPointer material, const std::string& parentMaterialName) {
         auto avatarManager = DependencyManager::get<AvatarManager>();
         auto avatar = avatarManager->getAvatarBySessionID(avatarID);
         if (avatar) {
@@ -2282,7 +2266,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 
     // Setup the mouse ray pick and related operators
     {
-        auto mouseRayPick = std::make_shared<RayPick>(Vectors::ZERO, Vectors::UP, PickFilter(PickScriptingInterface::PICK_ENTITIES()), 0.0f, true);
+        auto mouseRayPick = std::make_shared<RayPick>(Vectors::ZERO, Vectors::UP, PickFilter(PickScriptingInterface::PICK_ENTITIES() | PickScriptingInterface::PICK_LOCAL_ENTITIES()), 0.0f, true);
         mouseRayPick->parentTransform = std::make_shared<MouseTransformNode>();
         mouseRayPick->setJointState(PickQuery::JOINT_STATE_MOUSE);
         auto mouseRayPickID = DependencyManager::get<PickManager>()->addPick(PickQuery::Ray, mouseRayPick);
@@ -2308,30 +2292,30 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         DependencyManager::get<PickManager>()->setPrecisionPicking(rayPickID, value);
     });
 
-    EntityItem::setBillboardRotationOperator([this](const glm::vec3& position, const glm::quat& rotation, BillboardMode billboardMode) {
+    EntityItem::setBillboardRotationOperator([this](const glm::vec3& position, const glm::quat& rotation, BillboardMode billboardMode, const glm::vec3& frustumPos) {
         if (billboardMode == BillboardMode::YAW) {
             //rotate about vertical to face the camera
-            ViewFrustum frustum;
-            copyViewFrustum(frustum);
-            glm::vec3 dPosition = frustum.getPosition() - position;
+            glm::vec3 dPosition = frustumPos - position;
             // If x and z are 0, atan(x, z) is undefined, so default to 0 degrees
             float yawRotation = dPosition.x == 0.0f && dPosition.z == 0.0f ? 0.0f : glm::atan(dPosition.x, dPosition.z);
             return glm::quat(glm::vec3(0.0f, yawRotation, 0.0f));
         } else if (billboardMode == BillboardMode::FULL) {
-            ViewFrustum frustum;
-            copyViewFrustum(frustum);
-            glm::vec3 cameraPos = frustum.getPosition();
             // use the referencial from the avatar, y isn't always up
             glm::vec3 avatarUP = DependencyManager::get<AvatarManager>()->getMyAvatar()->getWorldOrientation() * Vectors::UP;
             // check to see if glm::lookAt will work / using glm::lookAt variable name
-            glm::highp_vec3 s(glm::cross(position - cameraPos, avatarUP));
+            glm::highp_vec3 s(glm::cross(position - frustumPos, avatarUP));
 
             // make sure s is not NaN for any component
             if (glm::length2(s) > 0.0f) {
-                return glm::conjugate(glm::toQuat(glm::lookAt(cameraPos, position, avatarUP)));
+                return glm::conjugate(glm::toQuat(glm::lookAt(frustumPos, position, avatarUP)));
             }
         }
         return rotation;
+    });
+    EntityItem::setPrimaryViewFrustumPositionOperator([this]() {
+        ViewFrustum viewFrustum;
+        copyViewFrustum(viewFrustum);
+        return viewFrustum.getPosition();
     });
 
     render::entities::WebEntityRenderer::setAcquireWebSurfaceOperator([this](const QString& url, bool htmlContent, QSharedPointer<OffscreenQmlSurface>& webSurface, bool& cachedWebSurface) {
