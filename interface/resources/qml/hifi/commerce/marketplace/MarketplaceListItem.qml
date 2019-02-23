@@ -226,6 +226,7 @@ Rectangle {
                     top: parent.top
                     left: parent.left
                     leftMargin: 15
+                    topMargin: 10
                 }
                 width: paintedWidth
                 
@@ -241,7 +242,7 @@ Rectangle {
                 anchors {
                     top: creatorLabel.top;
                     left: creatorLabel.right;
-                    leftMargin: 15;
+                    leftMargin: 10;
                 }
                 width: paintedWidth;
 
@@ -273,7 +274,7 @@ Rectangle {
                 anchors {
                     top: categoryLabel.top
                     left: categoryLabel.right
-                    leftMargin: 15
+                    leftMargin: 10
                 }
                 width: paintedWidth
 
@@ -298,11 +299,14 @@ Rectangle {
                     topMargin:10
                     bottomMargin: 10
                 }
+                width: 180
 
-                text: root.price ? root.price : "FREE"
-                buttonGlyph: root.price ? hifi.glyphs.hfc : ""
+                text: root.available ? (root.price ? root.price : "FREE") : "UNAVAILABLE"
+                buttonGlyph: (root.price > 0) && root.available ? hifi.glyphs.hfc : ""
                 color: hifi.buttons.blue;
-
+                enabled: root.available
+                buttonGlyphSize: 24
+                fontSize: 24
                 onClicked: root.buy();
             }
         }
