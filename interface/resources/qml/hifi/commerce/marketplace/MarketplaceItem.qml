@@ -52,13 +52,7 @@ Rectangle {
     }
     
     onDescriptionChanged: {
-    
-        if(root.supports3DHTML) {
-            descriptionTextModel.clear();
-            descriptionTextModel.append({text: description});
-        } else {
-            descriptionText.text = description;
-        }
+        descriptionText.text = description;
     }
 
     onAttributionsChanged: {
@@ -250,7 +244,6 @@ Rectangle {
         
         function evalHeight() {
             height = categoriesList.y - buyButton.y + categoriesList.height;
-            console.log("HEIGHT: " + height);
         }
         
         HifiControlsUit.Button {
@@ -274,7 +267,9 @@ Rectangle {
             enabled: isAvailable
             buttonGlyph: isAvailable ? (costToMe ? hifi.glyphs.hfc : "") : ""
             color: hifi.buttons.blue
-            
+            buttonGlyphSize: 24
+            fontSize: 24
+
             onClicked: root.buy();
         }
         

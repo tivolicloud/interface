@@ -41,6 +41,7 @@ Rectangle {
     property string searchScopeString: "Featured"
     property bool isLoggedIn: false
     property bool supports3DHTML: true
+    property bool pendingGetMarketplaceItemCall: false
 
     anchors.fill: (typeof parent === undefined) ? undefined : parent
 
@@ -100,7 +101,9 @@ Rectangle {
             getMarketplaceItems();
         }
         onGetMarketplaceItemsResult: {
-            marketBrowseModel.handlePage(result.status !== "success" && result.message, result);
+            if (!pendingGetMarketplaceItemCall) {
+                marketBrowseModel.handlePage(result.status !== "success" && result.message, result);
+            }
         }
         
         onGetMarketplaceItemResult: {
@@ -126,6 +129,7 @@ Rectangle {
                 marketplaceItemScrollView.contentHeight = marketplaceItemContent.height;
                 itemsList.visible = false;
                 marketplaceItemView.visible = true;
+                pendingGetMarketplaceItemCall = false;
             }
         }
     }
@@ -979,7 +983,6 @@ Rectangle {
                         xhr.open("GET", url);
                         xhr.onreadystatechange = function() {
                             if (xhr.readyState == XMLHttpRequest.DONE) {
-                                console.log(xhr.responseText);
                                 licenseText.text = xhr.responseText;
                                 licenseInfo.visible = true;
                             }
@@ -1224,6 +1227,7 @@ Rectangle {
                     console.log("A message with method 'updateMarketplaceQMLItem' was sent without an itemId!");
                     return;
                 }
+                pendingGetMarketplaceItemCall = true;
                 marketplaceItem.edition = message.params.edition ? message.params.edition : -1;
                 MarketplaceScriptingInterface.getMarketplaceItem(message.params.itemId);
                 break;
