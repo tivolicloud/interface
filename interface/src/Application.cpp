@@ -1070,6 +1070,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/FiraSans-SemiBold.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Raleway-Light.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Raleway-Regular.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/rawline-500.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Raleway-Bold.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Raleway-SemiBold.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Cairo-SemiBold.ttf");
@@ -4967,6 +4968,15 @@ void Application::idle() {
     }
 
     {
+        if (_keyboardFocusWaitingOnRenderable && getEntities()->renderableForEntityId(_keyboardFocusedEntity.get())) {
+            _keyboardFocusWaitingOnRenderable = false;
+            QUuid entityId = _keyboardFocusedEntity.get();
+            setKeyboardFocusEntity(UNKNOWN_ENTITY_ID);
+            setKeyboardFocusEntity(entityId);
+        }
+    }
+
+    {
         PerformanceTimer perfTimer("pluginIdle");
         PerformanceWarning warn(showWarnings, "Application::idle()... pluginIdle()");
         getActiveDisplayPlugin()->idle();
@@ -5794,7 +5804,7 @@ void Application::setKeyboardFocusEntity(const QUuid& id) {
         if (qApp->getLoginDialogPoppedUp() && !_loginDialogID.isNull()) {
             if (id == _loginDialogID) {
                 emit loginDialogFocusEnabled();
-            } else {
+            } else if (!_keyboardFocusWaitingOnRenderable) {
                 // that's the only entity we want in focus;
                 return;
             }
@@ -5811,7 +5821,10 @@ void Application::setKeyboardFocusEntity(const QUuid& id) {
             if (properties.getVisible()) {
                 auto entities = getEntities();
                 auto entityId = _keyboardFocusedEntity.get();
-                if (entities->wantsKeyboardFocus(entityId)) {
+                auto entityItemRenderable = entities->renderableForEntityId(entityId);
+                if (!entityItemRenderable) {
+                    _keyboardFocusWaitingOnRenderable = true;
+                } else if (entityItemRenderable->wantsKeyboardFocus()) {
                     entities->setProxyWindow(entityId, _window->windowHandle());
                     if (_keyboardMouseDevice->isActive()) {
                         _keyboardMouseDevice->pluginFocusOutEvent();
