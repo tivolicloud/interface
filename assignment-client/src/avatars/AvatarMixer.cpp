@@ -668,8 +668,11 @@ void AvatarMixer::handleRadiusIgnoreRequestPacket(QSharedPointer<ReceivedMessage
 }
 
 void AvatarMixer::sendStatsPacket() {
-    auto start = usecTimestampNow();
+    if (!_numTightLoopFrames) {
+        return;
+    }
 
+    auto start = usecTimestampNow();
 
     QJsonObject statsObject;
 
