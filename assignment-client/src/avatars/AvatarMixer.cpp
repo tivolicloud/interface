@@ -251,6 +251,10 @@ void AvatarMixer::start() {
             }, &lockWait, &nodeTransform, &functor);
             auto end = usecTimestampNow();
             _processQueuedAvatarDataPacketsElapsedTime += (end - start);
+
+            _broadcastAvatarDataLockWait += lockWait;
+            _broadcastAvatarDataNodeTransform += nodeTransform;
+            _broadcastAvatarDataNodeFunctor += functor;
         }
 
         // process pending display names... this doesn't currently run on multiple threads, because it
@@ -268,6 +272,10 @@ void AvatarMixer::start() {
             }, &lockWait, &nodeTransform, &functor);
             auto end = usecTimestampNow();
             _displayNameManagementElapsedTime += (end - start);
+
+            _broadcastAvatarDataLockWait += lockWait;
+            _broadcastAvatarDataNodeTransform += nodeTransform;
+            _broadcastAvatarDataNodeFunctor += functor;
         }
 
         // this is where we need to put the real work...
