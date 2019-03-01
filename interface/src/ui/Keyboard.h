@@ -188,6 +188,8 @@ private:
 
     QSet<QUuid> _itemsToIgnore;
     std::vector<QHash<QUuid, Key>> _keyboardLayers;
+
+    bool _created { false };
 };
 
 #endif
