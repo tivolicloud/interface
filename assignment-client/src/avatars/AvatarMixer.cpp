@@ -264,6 +264,10 @@ void AvatarMixer::start() {
             }, &lockWait, &nodeTransform, &functor);
             auto end = usecTimestampNow();
             _processQueuedAvatarDataPacketsElapsedTime += (end - start);
+
+            _broadcastAvatarDataLockWait += lockWait;
+            _broadcastAvatarDataNodeTransform += nodeTransform;
+            _broadcastAvatarDataNodeFunctor += functor;
         }
 
         // process pending display names... this doesn't currently run on multiple threads, because it
@@ -281,6 +285,10 @@ void AvatarMixer::start() {
             }, &lockWait, &nodeTransform, &functor);
             auto end = usecTimestampNow();
             _displayNameManagementElapsedTime += (end - start);
+
+            _broadcastAvatarDataLockWait += lockWait;
+            _broadcastAvatarDataNodeTransform += nodeTransform;
+            _broadcastAvatarDataNodeFunctor += functor;
         }
 
         // this is where we need to put the real work...
@@ -703,8 +711,11 @@ void AvatarMixer::handleRadiusIgnoreRequestPacket(QSharedPointer<ReceivedMessage
 }
 
 void AvatarMixer::sendStatsPacket() {
-    auto start = usecTimestampNow();
+    if (!_numTightLoopFrames) {
+        return;
+    }
 
+    auto start = usecTimestampNow();
 
     QJsonObject statsObject;
 
@@ -952,6 +963,14 @@ void AvatarMixer::parseDomainServerSettings(const QJsonObject& domainSettings) {
         _slavePool.setNumThreads(numThreads);
     } else {
         qCDebug(avatars) << "Avatar mixer will automatically determine number of threads to use. Using:" << _slavePool.numThreads() << "threads.";
+    }
+
+    {
+        const QString CONNECTION_RATE = "connection_rate";
+        auto nodeList = DependencyManager::get<NodeList>();
+        auto defaultConnectionRate = nodeList->getMaxConnectionRate();
+        int connectionRate = avatarMixerGroupObject[CONNECTION_RATE].toInt((int)defaultConnectionRate);
+        nodeList->setMaxConnectionRate(connectionRate);
     }
 
     const QString AVATARS_SETTINGS_KEY = "avatars";
