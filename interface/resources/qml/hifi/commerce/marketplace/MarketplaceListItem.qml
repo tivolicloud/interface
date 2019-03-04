@@ -34,7 +34,7 @@ Rectangle {
     property string creator: ""
     property string category: ""
     property int price: 0
-    property bool available: false
+    property string availability: "unknown"
     property bool isLoggedIn: false;
 
     signal buy()
@@ -301,10 +301,11 @@ Rectangle {
                 }
                 width: 180
 
-                text: root.available ? (root.price ? root.price : "FREE") : "UNAVAILABLE"
-                buttonGlyph: (root.price > 0) && root.available ? hifi.glyphs.hfc : ""
+                enabled: availability === 'available'
+                buttonGlyph: (enabled && (price > 0)) ? hifi.glyphs.hfc : ""
+                text: enabled ? (price || "FREE") : availability
+
                 color: hifi.buttons.blue;
-                enabled: root.available
                 buttonGlyphSize: 24
                 fontSize: 24
                 onClicked: root.buy();
