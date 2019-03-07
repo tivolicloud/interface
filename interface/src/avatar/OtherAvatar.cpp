@@ -295,6 +295,53 @@ void OtherAvatar::simulate(float deltaTime, bool inView) {
         setLocalPosition(_globalPosition);
     }
 
+    // Adjust the hero status by checking the position against the entity tree zones:
+    if (true) {
+     
+        auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
+        EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
+        if (!entityTree) {
+            setHasPriority(false);
+        } else {
+            // Operator to find if a point is within an avatar-priority (hero) Zone Entity.
+            struct FindPriorityZone {
+                glm::vec3 position;
+                bool isInPriorityZone{ false };
+                float zoneVolume{ std::numeric_limits<float>::max() };
+
+                static bool operation(const OctreeElementPointer& element, void* extraData) {
+                    auto findPriorityZone = static_cast<FindPriorityZone*>(extraData);
+                    if (element->getAACube().contains(findPriorityZone->position)) {
+                        const EntityTreeElementPointer entityTreeElement = std::static_pointer_cast<EntityTreeElement>(element);
+                        entityTreeElement->forEachEntity([&findPriorityZone](EntityItemPointer item) {
+                            if (item->getType() == EntityTypes::Zone && item->contains(findPriorityZone->position)) {
+                                auto zoneItem = std::static_pointer_cast<ZoneEntityItem>(item);
+                                if (zoneItem->getAvatarPriority() != COMPONENT_MODE_INHERIT) {
+                                    float volume = zoneItem->getVolumeEstimate();
+                                    if (volume < findPriorityZone->zoneVolume) {  // Smaller volume wins
+                                        findPriorityZone->isInPriorityZone =
+                                            zoneItem->getAvatarPriority() == COMPONENT_MODE_ENABLED;
+                                        findPriorityZone->zoneVolume = volume;
+                                    }
+                                }
+                            }
+                        });
+                        return true;  // Keep recursing
+                    } else {          // Position isn't within this subspace, so end recursion.
+                        return false;
+                    }
+                }
+            };
+
+            FindPriorityZone findPriorityZone{ _globalPosition, false };
+            entityTree->recurseTreeWithOperation(&FindPriorityZone::operation, &findPriorityZone);
+            setHasPriority(findPriorityZone.isInPriorityZone);
+        //if (findPriorityZone.isInPriorityZone) {
+        //    qCWarning(avatars) << "Avatar" << _avatar->getSessionDisplayName() << "in hero zone";
+        //}
+        }
+    }
+
     _simulationRate.increment();
     if (inView) {
         _simulationInViewRate.increment();

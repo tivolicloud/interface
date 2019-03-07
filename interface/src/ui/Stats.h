@@ -50,6 +50,7 @@ private: \
  * @property {number} avatarCount - <em>Read-only.</em>
  * @property {number} physicsObjectCount - <em>Read-only.</em>
  * @property {number} updatedAvatarCount - <em>Read-only.</em>
+ * @property {number} updatedHeroAvatarCount - <em>Read-only.</em>
  * @property {number} notUpdatedAvatarCount - <em>Read-only.</em>
  * @property {number} packetInCount - <em>Read-only.</em>
  * @property {number} packetOutCount - <em>Read-only.</em>
@@ -204,6 +205,7 @@ class Stats : public QQuickItem {
     STATS_PROPERTY(int, avatarCount, 0)
     STATS_PROPERTY(int, physicsObjectCount, 0)
     STATS_PROPERTY(int, updatedAvatarCount, 0)
+    STATS_PROPERTY(int, updatedHeroAvatarCount, 0)
     STATS_PROPERTY(int, notUpdatedAvatarCount, 0)
     STATS_PROPERTY(int, packetInCount, 0)
     STATS_PROPERTY(int, packetOutCount, 0)
@@ -441,6 +443,13 @@ signals:
      * @returns {Signal}
      */
     void updatedAvatarCountChanged();
+
+    /**jsdoc
+     * Triggered when the value of the <code>updatedHeroAvatarCount</code> property changes.
+     * @function Stats.updatedHeroAvatarCountChanged
+     * @returns {Signal}
+     */
+    void updatedHeroAvatarCountChanged();
 
     /**jsdoc
      * Triggered when the value of the <code>notUpdatedAvatarCount</code> property changes.

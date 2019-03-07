@@ -113,7 +113,7 @@ Item {
                     }
                     StatText {
                         visible: root.expanded
-                        text: "Avatars Updated: " + root.updatedAvatarCount
+                        text: "Avatars/Heros Updated: " + root.updatedAvatarCount + "/" +root.updatedHeroAvatarCount
                     }
                     StatText {
                         visible: root.expanded
