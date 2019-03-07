@@ -197,7 +197,7 @@ void OtherAvatar::resetDetailedMotionStates() {
 
 void OtherAvatar::setWorkloadRegion(uint8_t region) {
     _workloadRegion = region;
-    QString printRegion = "";
+  /*  QString printRegion = "";
     if (region == workload::Region::R1) {
         printRegion = "R1";
     } else if (region == workload::Region::R2) {
@@ -207,7 +207,7 @@ void OtherAvatar::setWorkloadRegion(uint8_t region) {
     } else {
         printRegion = "invalid";
     }
-    qCDebug(avatars) << "Setting workload region to " << printRegion;
+    qCDebug(avatars) << "Setting workload region to " << printRegion;*/
     computeShapeLOD();
 }
 
@@ -232,7 +232,7 @@ void OtherAvatar::computeShapeLOD() {
     if (newLOD != _bodyLOD) {
         _bodyLOD = newLOD;
         if (isInPhysicsSimulation()) {
-            qCDebug(avatars) << "Changing to body LOD " << newLOD;
+            //qCDebug(avatars) << "Changing to body LOD " << newLOD;
             _needsReinsertion = true;
         }
     }

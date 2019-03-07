@@ -238,6 +238,13 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
             AvatarData::_avatarSortCoefficientAge);
     sortedAvatars.reserve(avatarMap.size() - 1); // don't include MyAvatar
 
+    PrioritySortUtil::PriorityQueue<SortableAvatar> sortedHeros(views,
+        AvatarData::_avatarSortCoefficientSize,
+        AvatarData::_avatarSortCoefficientCenter,
+        AvatarData::_avatarSortCoefficientAge);
+    sortedAvatars.reserve(avatarMap.size() - 1); // don't include MyAvatar
+
+
     // Build vector and compute priorities
     auto nodeList = DependencyManager::get<NodeList>();
     AvatarHash::iterator itr = avatarMap.begin();
