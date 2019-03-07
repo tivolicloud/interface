@@ -70,10 +70,6 @@ public:
 
     friend AvatarManager;
 
-    // DOes the avatar is considered a hero ?
-    bool getHasPriority() const { return _hasPriority; }
-    void setHasPriority(bool hasPriority) { _hasPriority = hasPriority; }
-
  protected:
     void handleChangedAvatarEntityData();
     void updateAttachedAvatarEntities();
@@ -99,9 +95,6 @@ public:
     uint8_t _workloadRegion { workload::Region::INVALID };
     BodyLOD _bodyLOD { BodyLOD::Sphere };
     bool _needsReinsertion { false };
-
-    // Priority flag updated on osition change for now
-    bool _hasPriority{ false };
 };
 
 using OtherAvatarPointer = std::shared_ptr<OtherAvatar>;

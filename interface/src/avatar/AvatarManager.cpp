@@ -262,9 +262,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
         // DO NOT update _myAvatar!  Its update has already been done earlier in the main loop.
         // DO NOT update or fade out uninitialized Avatars
         if (avatar != _myAvatar && avatar->isInitialized() && !nodeList->isPersonalMutingNode(avatar->getID())) {
-            // this avatar pointer should cast to an "OtherAvatar"
-            const auto& otherAvatar = std::static_pointer_cast<OtherAvatar>(*itr);
-            if (otherAvatar->getHasPriority()) {
+            if (avatar->getHasPriority()) {
                 avatarPriorityQueues[kHero].push(SortableAvatar(avatar));
             } else {
                 avatarPriorityQueues[kNonHero].push(SortableAvatar(avatar));
@@ -278,7 +276,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
     
     const uint64_t MAX_UPDATE_HEROS_TIME_BUDGET = uint64_t( 0.8 * MAX_UPDATE_AVATARS_TIME_BUDGET );
 
-    uint64_t updatePriorityExpiries[NumVariants] = { {startTime + MAX_UPDATE_HEROS_TIME_BUDGET}, {startTime + MAX_UPDATE_AVATARS_TIME_BUDGET} };
+    uint64_t updatePriorityExpiries[NumVariants] = { startTime + MAX_UPDATE_HEROS_TIME_BUDGET, startTime + MAX_UPDATE_AVATARS_TIME_BUDGET };
     int numHerosUpdated = 0;
     int numHerosNotUpdated = 0;
     int numAvatarsUpdated = 0;
