@@ -3008,7 +3008,7 @@ void EntityTree::updateEntityQueryAACubeWorker(SpatiallyNestablePointer object, 
             queryAACubeChanged = entity->updateQueryAACube();
         } else {
             AACube oldCube = entity->getQueryAACube();
-            object->forEachDescendant([&](SpatiallyNestablePointer descendant) {
+            object->forEachChild([&](SpatiallyNestablePointer descendant) {
                 updateEntityQueryAACubeWorker(descendant, packetSender, moveOperator, force, tellServer);
             });
             queryAACubeChanged = oldCube != entity->getQueryAACube();
