@@ -341,7 +341,7 @@ QByteArray AvatarData::toByteArray(AvatarDataDetail dataDetail, quint64 lastSent
             hasLookAtPosition = sendAll || lookAtPositionChangedSince(lastSentTime);
             hasAudioLoudness = sendAll || audioLoudnessChangedSince(lastSentTime);
             hasSensorToWorldMatrix = sendAll || sensorToWorldMatrixChangedSince(lastSentTime);
-            hasAdditionalFlags = sendAll || additionalFlagsChangedSince(lastSentTime) || getHasPriority();
+            hasAdditionalFlags = sendAll || additionalFlagsChangedSince(lastSentTime);
             hasParentInfo = sendAll || parentInfoChangedSince(lastSentTime);
             hasAvatarLocalPosition = hasParent() && (sendAll ||
                 tranlationChangedSince(lastSentTime) ||
@@ -1181,7 +1181,7 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
         _headData->setHasProceduralEyeFaceMovement(newHasProceduralEyeFaceMovement);
         _headData->setHasProceduralBlinkFaceMovement(newHasProceduralBlinkFaceMovement);
         _collideWithOtherAvatars = newCollideWithOtherAvatars;
-        setHasPriority(newHasPriority);
+        setHasPriorityWithoutTimestampReset(newHasPriority);      
 
         sourceBuffer += sizeof(AvatarDataPacket::AdditionalFlags);
 

@@ -1127,7 +1127,15 @@ public:
 
     // An Avatar can be set Priority from the AvatarMixer side.
     bool getHasPriority() const { return _hasPriority; }
-    void setHasPriority(bool hasPriority) { _hasPriority = hasPriority; }
+    // regular setHasPriority does a check of state changed and if true reset 'additionalFlagsChanged' timestamp
+    void setHasPriority(bool hasPriority) {
+        if (_hasPriority != hasPriority)  {
+            _additionalFlagsChanged = usecTimestampNow();
+            _hasPriority = hasPriority;
+        }
+    }
+    // In some cases, we want to assign the hasPRiority flag without reseting timestamp
+    void setHasPriorityWithoutTimestampReset(bool hasPriority) { _hasPriority = hasPriority; }
 
     const glm::vec3& getTargetVelocity() const { return _targetVelocity; }
 

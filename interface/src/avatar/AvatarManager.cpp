@@ -281,7 +281,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
     uint64_t updatePriorityExpiries[NumVariants] = { startTime + MAX_UPDATE_HEROS_TIME_BUDGET, startTime + MAX_UPDATE_AVATARS_TIME_BUDGET };
     int numHerosUpdated = 0;
     int numAvatarsUpdated = 0;
-    int numAVatarsNotUpdated = 0;
+    int numAvatarsNotUpdated = 0;
 
     render::Transaction renderTransaction;
     workload::Transaction workloadTransaction;
@@ -336,23 +336,15 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                 avatar->setLastRenderUpdateTime(startTime);
             } else {
                 // we've spent our time budget for this priority bucket 
-                // let's deal with the reminding avatars f this pass and BREAK from the for loop
+                // let's deal with the reminding avatars if this pass and BREAK from the for loop
  
                 if (p == kHero) {
                     // Hero,
-                    // --> put them back in the non hero queue but only if visible
+                    // --> put them back in the non hero queue
 
                     auto& crowdQueue = avatarPriorityQueues[kNonHero];
                     while (it != sortedAvatarVector.end()) {
-                        
-                        const SortableAvatar& newSortData = *it;
-                        bool inView = newSortData.getPriority() > OUT_OF_VIEW_THRESHOLD;
-                        // Once we reach an avatar that's not in view, all avatars after it will also be out of view
-                        if (!inView) {
-                            break;
-                        }
-                        auto newAvatar = newSortData.getAvatar();
-                         crowdQueue.push(SortableAvatar(newAvatar));
+                         crowdQueue.push(SortableAvatar((*it).getAvatar()));
                         ++it;
                     }
                 } else {
@@ -363,17 +355,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                     // --> some avatar velocity measurements may be a little off
 
                     // no time to simulate, but we take the time to count how many were tragically missed
-                    while (it != sortedAvatarVector.end()) {
-                        const SortableAvatar& newSortData = *it;
-                        bool inView = newSortData.getPriority() > OUT_OF_VIEW_THRESHOLD;
-                        // Once we reach an avatar that's not in view, all avatars after it will also be out of view
-                        if (!inView) {
-                            break;
-                        }
-                        auto newAvatar = newSortData.getAvatar();
-                        numAVatarsNotUpdated += (int)(newAvatar->hasNewJointData());
-                        ++it;
-                    }
+                    numAvatarsNotUpdated = sortedAvatarVector.end() - it;
                 }
 
                 // We had to cut short this pass, we must break out of the for loop here
@@ -398,7 +380,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
     _space->enqueueTransaction(workloadTransaction);
 
     _numAvatarsUpdated = numAvatarsUpdated;
-    _numAvatarsNotUpdated = numAVatarsNotUpdated;
+    _numAvatarsNotUpdated = numAvatarsNotUpdated;
     _numHeroAvatarsUpdated = numHerosUpdated;
 
     simulateAvatarFades(deltaTime);

@@ -137,8 +137,8 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
         return false;
     }
 
-    // Regardless of what the client says, restore the priority as we know it.
-    _avatar->setHasPriority(oldHasPriority);
+    // Regardless of what the client says, restore the priority as we know it without triggering any update.
+    _avatar->setHasPriorityWithoutTimestampReset(oldHasPriority);
 
     auto newPosition = getPosition();
     if (newPosition != oldPosition) {
