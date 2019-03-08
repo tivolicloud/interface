@@ -219,7 +219,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
 
     class SortableAvatar: public PrioritySortUtil::Sortable {
     public:
-        SortableAvatar() {}
+        SortableAvatar() = delete;
         SortableAvatar(const std::shared_ptr<Avatar>& avatar) : _avatar(avatar) {}
         glm::vec3 getPosition() const override { return _avatar->getWorldPosition(); }
         float getRadius() const override { return _avatar->getBoundingRadius(); }
@@ -258,7 +258,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
     auto nodeList = DependencyManager::get<NodeList>();
     AvatarHash::iterator itr = avatarMap.begin();
     while (itr != avatarMap.end()) {
-        const auto& avatar = std::static_pointer_cast<Avatar>(*itr);
+        auto avatar = std::static_pointer_cast<Avatar>(*itr);
         // DO NOT update _myAvatar!  Its update has already been done earlier in the main loop.
         // DO NOT update or fade out uninitialized Avatars
         if (avatar != _myAvatar && avatar->isInitialized() && !nodeList->isPersonalMutingNode(avatar->getID())) {
@@ -280,7 +280,6 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
 
     uint64_t updatePriorityExpiries[NumVariants] = { startTime + MAX_UPDATE_HEROS_TIME_BUDGET, startTime + MAX_UPDATE_AVATARS_TIME_BUDGET };
     int numHerosUpdated = 0;
-    int numHerosNotUpdated = 0;
     int numAvatarsUpdated = 0;
     int numAVatarsNotUpdated = 0;
 
@@ -337,6 +336,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                 avatar->setLastRenderUpdateTime(startTime);
             } else {
                 // we've spent our time budget for this priority bucket 
+                // let's deal with the reminding avatars f this pass and BREAK from the for loop
  
                 if (p == kHero) {
                     // Hero,
@@ -346,17 +346,15 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                     while (it != sortedAvatarVector.end()) {
                         
                         const SortableAvatar& newSortData = *it;
-                        const auto& newAvatar = newSortData.getAvatar();
                         bool inView = newSortData.getPriority() > OUT_OF_VIEW_THRESHOLD;
                         // Once we reach an avatar that's not in view, all avatars after it will also be out of view
                         if (!inView) {
                             break;
                         }
-                        numHerosNotUpdated += (int)(newAvatar->hasNewJointData());
-                        crowdQueue.push(SortableAvatar(newAvatar));
+                        auto newAvatar = newSortData.getAvatar();
+                         crowdQueue.push(SortableAvatar(newAvatar));
                         ++it;
                     }
-
                 } else {
                     // Non Hero
                     // --> bail on the rest of the avatar updates
@@ -367,17 +365,19 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                     // no time to simulate, but we take the time to count how many were tragically missed
                     while (it != sortedAvatarVector.end()) {
                         const SortableAvatar& newSortData = *it;
-                        const auto& newAvatar = newSortData.getAvatar();
                         bool inView = newSortData.getPriority() > OUT_OF_VIEW_THRESHOLD;
                         // Once we reach an avatar that's not in view, all avatars after it will also be out of view
                         if (!inView) {
                             break;
                         }
+                        auto newAvatar = newSortData.getAvatar();
                         numAVatarsNotUpdated += (int)(newAvatar->hasNewJointData());
                         ++it;
                     }
-                    break;
                 }
+
+                // We had to cut short this pass, we must break out of the for loop here
+                break;
             }
         }
 
