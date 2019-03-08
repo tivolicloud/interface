@@ -89,6 +89,8 @@ public:
 
     int getNumAvatarsUpdated() const { return _numAvatarsUpdated; }
     int getNumAvatarsNotUpdated() const { return _numAvatarsNotUpdated; }
+    int getNumHeroAvatars() const { return _numHeroAvatars; }
+    int getNumHeroAvatarsUpdated() const { return _numHeroAvatarsUpdated; }
     float getAvatarSimulationTime() const { return _avatarSimulationTime; }
 
     void updateMyAvatar(float deltaTime);
@@ -241,6 +243,8 @@ private:
     RateCounter<> _myAvatarSendRate;
     int _numAvatarsUpdated { 0 };
     int _numAvatarsNotUpdated { 0 };
+    int _numHeroAvatars { 0 };
+    int _numHeroAvatarsUpdated { 0 };
     float _avatarSimulationTime { 0.0f };
     bool _shouldRender { true };
     bool _myAvatarDataPacketsPaused { false };

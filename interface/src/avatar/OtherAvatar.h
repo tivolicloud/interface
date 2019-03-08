@@ -70,7 +70,7 @@ public:
 
     friend AvatarManager;
 
-protected:
+ protected:
     void handleChangedAvatarEntityData();
     void updateAttachedAvatarEntities();
     void onAddAttachedAvatarEntity(const QUuid& id);
