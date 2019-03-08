@@ -137,6 +137,9 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
         return false;
     }
 
+    // Regardless of what the client says, restore the priority as we know it.
+    _avatar->setHasPriority(oldHasPriority);
+
     auto newPosition = getPosition();
     if (newPosition != oldPosition) {
 //#define AVATAR_HERO_TEST_HACK
@@ -154,9 +157,6 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
         //    qCWarning(avatars) << "Avatar" << _avatar->getSessionDisplayName() << "in hero zone";
         //}
 #endif
-    } else {
-        // if not moved, then ignore the client knwon state (always off) and restore the priority as we know it.
-        _avatar->setHasPriority(oldHasPriority);
     }
 
     return true;
