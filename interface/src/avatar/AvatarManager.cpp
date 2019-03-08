@@ -338,9 +338,11 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
             } else {
                 // we've spent our time budget for this priority bucket 
  
-                if (p == kHero) { // Heros, put them back in the non hero list but only if visible
-                    auto& crowdQueue = avatarPriorityQueues[kNonHero];
+                if (p == kHero) {
+                    // Hero,
+                    // --> put them back in the non hero queue but only if visible
 
+                    auto& crowdQueue = avatarPriorityQueues[kNonHero];
                     while (it != sortedAvatarVector.end()) {
                         
                         const SortableAvatar& newSortData = *it;
