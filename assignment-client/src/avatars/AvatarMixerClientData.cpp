@@ -130,6 +130,7 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
     }
     _lastReceivedSequenceNumber = sequenceNumber;
     glm::vec3 oldPosition = getPosition();
+    bool oldHasPriority = _avatar->getHasPriority();
 
     // compute the offset to the data payload
     if (!_avatar->parseDataFromBuffer(message.readWithoutCopy(message.getBytesLeftToRead()))) {
@@ -153,6 +154,9 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
         //    qCWarning(avatars) << "Avatar" << _avatar->getSessionDisplayName() << "in hero zone";
         //}
 #endif
+    } else {
+        // if not moved, then ignore the client knwon state (always off) and restore the priority as we know it.
+        _avatar->setHasPriority(oldHasPriority);
     }
 
     return true;

@@ -271,6 +271,8 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
         ++itr;
     }
 
+    _numHeroAvatars = (int) avatarPriorityQueues[kHero].size();
+
     // process in sorted order
     uint64_t startTime = usecTimestampNow();
     
@@ -349,7 +351,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                             break;
                         }
                         numHerosNotUpdated += (int)(newAvatar->hasNewJointData());
-                        crowdQueue.push(SortableAvatar(avatar));
+                        crowdQueue.push(SortableAvatar(newAvatar));
                         ++it;
                     }
 
