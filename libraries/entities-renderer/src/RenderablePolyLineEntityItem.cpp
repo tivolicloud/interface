@@ -19,8 +19,6 @@
 #include <PerfStat.h>
 #include <shaders/Shaders.h>
 
-#include <DisableDeferred.h>
-
 #include "paintStroke_Shared.slh"
 
 using namespace render;
