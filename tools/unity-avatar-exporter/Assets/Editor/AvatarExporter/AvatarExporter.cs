@@ -619,6 +619,11 @@ class AvatarExporter : MonoBehaviour {
                          "please ensure those textures are copied to " + texturesDirectory;
         EditorUtility.DisplayDialog("Success!", successDialog, "Ok");
     }
+
+    // The High Fidelity FBX Serializer omits the colon based prefixes. This will make the jointnames compatible.
+    static string removeTypeFromJointname(string jointName) {
+        return jointName.Substring(jointName.IndexOf(':') + 1);
+    }
     
     static void OnExportWindowClose() {
         // close the preview avatar scene and go back to user's previous scene when export project windows close
@@ -640,7 +645,7 @@ class AvatarExporter : MonoBehaviour {
         foreach (var userBoneInfo in userBoneInfos) {
             if (userBoneInfo.Value.HasHumanMapping()) {
                 string hifiJointName = HUMANOID_TO_HIFI_JOINT_NAME[userBoneInfo.Value.humanName];
-                File.AppendAllText(exportFstPath, "jointMap = " + hifiJointName + " = " + userBoneInfo.Key + "\n");
+                File.AppendAllText(exportFstPath, "jointMap = " + hifiJointName + " = " + removeTypeFromJointname(userBoneInfo.Key) + "\n");
             }
         }
         
@@ -681,7 +686,7 @@ class AvatarExporter : MonoBehaviour {
             
             // swap from left-handed (Unity) to right-handed (HiFi) coordinates and write out joint rotation offset to fst
             jointOffset = new Quaternion(-jointOffset.x, jointOffset.y, jointOffset.z, -jointOffset.w);
-            File.AppendAllText(exportFstPath, "jointRotationOffset2 = " + userBoneName + " = (" + jointOffset.x + ", " +
+            File.AppendAllText(exportFstPath, "jointRotationOffset2 = " + removeTypeFromJointname(userBoneName) + " = (" + jointOffset.x + ", " +
                                               jointOffset.y + ", " + jointOffset.z + ", " + jointOffset.w + ")\n");
         }
         
