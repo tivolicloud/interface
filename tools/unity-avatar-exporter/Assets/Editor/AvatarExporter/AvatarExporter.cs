@@ -401,9 +401,9 @@ class AvatarExporter : MonoBehaviour {
         // check if we should be substituting a bone for a missing UpperChest mapping
         AdjustUpperChestMapping();
 
-        // format resulting bone rule failure strings
-        // consider export-blocking bone rules to be errors and show them in an error dialog,
-        // and also include any other bone rule failures plus texture warnings as warnings in the dialog
+        // format resulting avatar rule failure strings
+        // consider export-blocking avatar rules to be errors and show them in an error dialog,
+        // and also include any other avatar rule failures plus texture warnings as warnings in the dialog
         string boneErrors = "";
         warnings = "";
         foreach (var failedAvatarRule in failedAvatarRules) {
@@ -531,7 +531,7 @@ class AvatarExporter : MonoBehaviour {
                     modelImporter.SaveAndReimport(); 
                     
                     // redo parent names, joint mappings, and user bone positions due to the fbx change
-                    // as well as re-check the bone rules for failures
+                    // as well as re-check the avatar rules for failures
                     humanDescription = modelImporter.humanDescription;
                     SetBoneAndMaterialInformation();
                 }
@@ -579,7 +579,7 @@ class AvatarExporter : MonoBehaviour {
             return;
         }
         
-        // display success dialog with any bone rule warnings
+        // display success dialog with any avatar rule warnings
         string successDialog = "Avatar successfully updated!";
         if (!string.IsNullOrEmpty(warnings)) {
             successDialog += "\n\nWarnings:\n" + warnings;
@@ -620,14 +620,14 @@ class AvatarExporter : MonoBehaviour {
         EditorUtility.DisplayDialog("Success!", successDialog, "Ok");
     }
 
-    // The High Fidelity FBX Serializer omits the colon based prefixes. This will make the jointnames compatible.
-    static string removeTypeFromJointname(string jointName) {
-        return jointName.Substring(jointName.IndexOf(':') + 1);
-    }
-    
     static void OnExportWindowClose() {
         // close the preview avatar scene and go back to user's previous scene when export project windows close
         ClosePreviewScene();
+    }
+    
+    // The High Fidelity FBX Serializer omits the colon based prefixes. This will make the jointnames compatible.
+    static string removeTypeFromJointname(string jointName) {
+        return jointName.Substring(jointName.IndexOf(':') + 1);
     }
     
     static bool WriteFST(string exportFstPath, string projectName, float scale) {        
@@ -750,7 +750,7 @@ class AvatarExporter : MonoBehaviour {
             }
         }
         
-        // generate the list of bone rule failure strings for any bone rules that are not satisfied by this avatar
+        // generate the list of avatar rule failure strings for any avatar rules that are not satisfied by this avatar
         SetFailedAvatarRules();
     }
 
@@ -764,7 +764,7 @@ class AvatarExporter : MonoBehaviour {
         bool light = gameObject.GetComponent<Light>() != null;
         bool camera = gameObject.GetComponent<Camera>() != null;
         
-        // if it is in fact a bone, add it to the bone tree as well as user bone infos list with position and parent name
+        // if this is a mesh and the model is using external materials then store its material data to be exported
         if (mesh && modelImporter.materialLocation == ModelImporterMaterialLocation.External) {
             Material[] materials = skinnedMeshRenderer != null ? skinnedMeshRenderer.sharedMaterials : meshRenderer.sharedMaterials;
             StoreMaterialData(materials);
@@ -848,8 +848,8 @@ class AvatarExporter : MonoBehaviour {
         
         Vector3 hipsPosition = new Vector3();
         
-        // iterate over all bone rules in order and add any rules that fail 
-        // to the failed bone rules map with appropriate error or warning text
+        // iterate over all avatar rules in order and add any rules that fail 
+        // to the failed avatar rules map with appropriate error or warning text
         for (AvatarRule avatarRule = 0; avatarRule < AvatarRule.AvatarRuleEnd; ++avatarRule) { 
             switch (avatarRule) {
                 case AvatarRule.RecommendedUnityVersion:
@@ -861,7 +861,7 @@ class AvatarExporter : MonoBehaviour {
                     }
                     break;
                 case AvatarRule.SingleRoot:
-                    // bone rule fails if the root bone node has more than one child bone
+                    // avatar rule fails if the root bone node has more than one child bone
                     if (userBoneTree.children.Count > 1) {
                         failedAvatarRules.Add(avatarRule, "There is more than one bone at the top level of the selected avatar's " +
                                                           "bone hierarchy. Please ensure all bones for Humanoid mappings are " +
@@ -869,7 +869,7 @@ class AvatarExporter : MonoBehaviour {
                     }
                     break;
                 case AvatarRule.NoDuplicateMapping:
-                    // bone rule fails if any user bone is mapped to more than one Humanoid bone
+                    // avatar rule fails if any user bone is mapped to more than one Humanoid bone
                     foreach (var userBoneInfo in userBoneInfos) {
                         string boneName = userBoneInfo.Key;
                         int mappingCount = userBoneInfo.Value.mappingCount;
@@ -989,7 +989,7 @@ class AvatarExporter : MonoBehaviour {
     
     static string CheckHumanBoneMappingRule(AvatarRule avatarRule, string humanBoneName) {
         string userBoneName = "";
-        // bone rule fails if bone is not mapped in Humanoid
+        // avatar rule fails if bone is not mapped in Humanoid
         if (!humanoidToUserBoneMappings.TryGetValue(humanBoneName, out userBoneName)) {
             failedAvatarRules.Add(avatarRule, "There is no " + humanBoneName + 
                                               " bone mapped in Humanoid for the selected avatar.");
@@ -1024,7 +1024,7 @@ class AvatarExporter : MonoBehaviour {
             }
         }
         
-        // bone rule fails if no ancestor of given user bone matched the descendant of name (no early return)
+        // avatar rule fails if no ancestor of given user bone matched the descendant of name (no early return)
         failedAvatarRules.Add(avatarRule, "The bone mapped to " + userBoneInfo.humanName + " in Humanoid (" + userBoneName + 
                                           ") is not a child of the bone mapped to " + descendantOfHumanName + " in Humanoid (" + 
                                           descendantOfUserBoneName + ").");
@@ -1045,7 +1045,7 @@ class AvatarExporter : MonoBehaviour {
                 ++rightCount;
             }
         }
-        // bone rule fails if number of left appendage mappings doesn't match number of right appendage mappings 
+        // avatar rule fails if number of left appendage mappings doesn't match number of right appendage mappings 
         if (leftCount != rightCount) {
             failedAvatarRules.Add(avatarRule, "The number of bones mapped in Humanoid for the left " + appendage + " (" +
                                               leftCount + ") does not match the number of bones mapped in Humanoid for the right " +
