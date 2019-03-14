@@ -26,6 +26,7 @@ class AvatarExporter : MonoBehaviour {
     static readonly string TEXTURES_DIRECTORY = "textures";
     static readonly string DEFAULT_MATERIAL_NAME = "No Name";
     static readonly string HEIGHT_REFERENCE_PREFAB = "Assets/Editor/AvatarExporter/HeightReference.prefab";
+    static readonly Vector3 PREVIEW_CAMERA_PIVOT = new Vector3(0.0f, 1.755f, 0.0f);
     static readonly Vector3 PREVIEW_CAMERA_DIRECTION = new Vector3(0.0f, 0.0f, -1.0f);
     
     // TODO: use regex
@@ -333,6 +334,8 @@ class AvatarExporter : MonoBehaviour {
     static string previousScene = "";
     static Vector3 previousScenePivot = Vector3.zero;
     static Quaternion previousSceneRotation = Quaternion.identity;
+    static float previousSceneSize = 0.0f;
+    static bool previousSceneOrthographic = false;
     static UnityEngine.Object avatarResource;
     static GameObject avatarPreviewObject;
     static GameObject heightReferenceObject;
@@ -633,8 +636,9 @@ class AvatarExporter : MonoBehaviour {
     static bool WriteFST(string exportFstPath, string projectName, float scale) {        
         // write out core fields to top of fst file
         try {
-            File.WriteAllText(exportFstPath, "name = " + projectName + "\ntype = body+head\nscale = " + scale + 
-                              "\nfilename = " + assetName + ".fbx\n" + "texdir = textures\n");
+            File.WriteAllText(exportFstPath, "exporterVersion = " + AVATAR_EXPORTER_VERSION + "\nname = " + projectName + 
+                                             "\ntype = body+head\nscale = " + scale + "\nfilename = " + assetName + 
+                                             ".fbx\n" + "texdir = textures\n");
         } catch { 
             EditorUtility.DisplayDialog("Error", "Failed to write file " + exportFstPath + 
                                         ". Please check the location and try again.", "Ok");
@@ -1187,7 +1191,7 @@ class AvatarExporter : MonoBehaviour {
         
         // store the user's current scene to re-open when done and open a new default scene in place of the user's scene
         previousScene = EditorSceneManager.GetActiveScene().path;
-        previewScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects);
+        previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
         
         // instantiate a game object to preview the avatar and a game object for the height reference prefab at 0, 0, 0
         UnityEngine.Object heightReferenceResource = AssetDatabase.LoadAssetAtPath(HEIGHT_REFERENCE_PREFAB, typeof(UnityEngine.Object));
@@ -1200,8 +1204,12 @@ class AvatarExporter : MonoBehaviour {
         if (sceneView != null) {
             previousScenePivot = sceneView.pivot;
             previousSceneRotation = sceneView.rotation;
-            sceneView.pivot = Vector3.zero;
+            previousSceneSize = sceneView.size;
+            previousSceneOrthographic = sceneView.orthographic;
+            sceneView.pivot = PREVIEW_CAMERA_PIVOT;
             sceneView.rotation = Quaternion.LookRotation(PREVIEW_CAMERA_DIRECTION);
+            sceneView.orthographic = true;
+            sceneView.size = 5.0f;
         }
         
         return true;
@@ -1212,26 +1220,29 @@ class AvatarExporter : MonoBehaviour {
         DestroyImmediate(avatarPreviewObject);
         DestroyImmediate(heightReferenceObject);
         
-        // close the preview scene and flag it to be removed
-        EditorSceneManager.CloseScene(previewScene, true);
-        
         // re-open the scene the user had open before switching to the preview scene
         if (!string.IsNullOrEmpty(previousScene)) {
             EditorSceneManager.OpenScene(previousScene);
         }
+        
+        // close the preview scene and flag it to be removed
+        EditorSceneManager.CloseScene(previewScene, true);
         
         // restore the camera pivot and rotation to the user's previous scene settings
         var sceneView = SceneView.lastActiveSceneView;
         if (sceneView != null) {
             sceneView.pivot = previousScenePivot;
             sceneView.rotation = previousSceneRotation;
+            sceneView.size = previousSceneSize;
+            sceneView.orthographic = previousSceneOrthographic;
         }
     }
 }
 
 class ExportProjectWindow : EditorWindow {
     const int WINDOW_WIDTH = 500;
-    const int WINDOW_HEIGHT = 520;
+    const int EXPORT_NEW_WINDOW_HEIGHT = 520;
+    const int UPDATE_EXISTING_WINDOW_HEIGHT = 465;
     const int BUTTON_FONT_SIZE = 16;
     const int LABEL_FONT_SIZE = 16;
     const int TEXT_FIELD_FONT_SIZE = 14;
@@ -1239,7 +1250,8 @@ class ExportProjectWindow : EditorWindow {
     const int ERROR_FONT_SIZE = 12;
     const int WARNING_SCROLL_HEIGHT = 170;
     const string EMPTY_ERROR_TEXT = "None\n";
-    const int SLIDER_WIDTH = 380;
+    const int SLIDER_WIDTH = 340;
+    const int SCALE_TEXT_WIDTH = 60;
     const float MIN_SCALE_SLIDER = 0.0f;
     const float MAX_SCALE_SLIDER = 2.0f;
     const int SLIDER_SCALE_EXPONENT = 10;
@@ -1247,8 +1259,8 @@ class ExportProjectWindow : EditorWindow {
     const float DEFAULT_AVATAR_HEIGHT = 1.755f;
     const float MAXIMUM_RECOMMENDED_HEIGHT = DEFAULT_AVATAR_HEIGHT * 1.5f;
     const float MINIMUM_RECOMMENDED_HEIGHT = DEFAULT_AVATAR_HEIGHT * 0.25f;
-    readonly Color COLOR_YELLOW = new Color(0.9176f, 0.8274f, 0.0f);
-    readonly Color COLOR_BACKGROUND = new Color(0.66f, 0.66f, 0.66f);
+    readonly Color COLOR_YELLOW = Color.yellow; //new Color(0.9176f, 0.8274f, 0.0f);
+    readonly Color COLOR_BACKGROUND = new Color(0.5f, 0.5f, 0.5f);
 
     GameObject avatarPreviewObject;
     bool updateExistingAvatar = false;
@@ -1261,7 +1273,6 @@ class ExportProjectWindow : EditorWindow {
     Vector2 warningScrollPosition = new Vector2(0, 0);
     string scaleWarningText = "";
     float sliderScale = 0.30103f;
-    bool scaleAutoAdjusted = false;
     
     public delegate void OnExportDelegate(string projectDirectory, string projectName, float scale);
     OnExportDelegate onExportCallback;
@@ -1271,10 +1282,11 @@ class ExportProjectWindow : EditorWindow {
     
     public void Init(string initialPath, string warnings, bool updateExisting, GameObject avatarObject,
                      OnExportDelegate exportCallback, OnCloseDelegate closeCallback) {
-        minSize = new Vector2(WINDOW_WIDTH, WINDOW_HEIGHT);
-        maxSize = new Vector2(WINDOW_WIDTH, WINDOW_HEIGHT);
-        avatarPreviewObject = avatarObject;
         updateExistingAvatar = updateExisting;
+        float windowHeight = updateExistingAvatar ? UPDATE_EXISTING_WINDOW_HEIGHT : EXPORT_NEW_WINDOW_HEIGHT;
+        minSize = new Vector2(WINDOW_WIDTH, windowHeight);
+        maxSize = new Vector2(WINDOW_WIDTH, windowHeight);
+        avatarPreviewObject = avatarObject;
         titleContent.text = updateExistingAvatar ? "Update Existing Avatar" : "Export New Avatar";
         initialProjectLocation = initialPath;
         projectLocation = updateExistingAvatar ? "" : initialProjectLocation;
@@ -1355,15 +1367,23 @@ class ExportProjectWindow : EditorWindow {
         // warning if scale is above/below recommended range or if scale was auto-adjusted initially
         GUILayout.Label(scaleWarningText, warningStyle);
         
-        // 
+        // from left to right show scale label, scale slider itself, and scale value input with % value
+        // slider value itself is from 0.0 to 2.0, and actual scale is an exponent of it with an offset of 1
+        // displayed scale is the actual scale value with 2 decimal places, and changing the displayed
+        // scale via keyboard does the inverse calculation to get the slider value via logarithm
         GUILayout.BeginHorizontal();
         GUILayout.Label("Scale:", labelStyle);
         sliderScale = GUILayout.HorizontalSlider(sliderScale, MIN_SCALE_SLIDER, MAX_SCALE_SLIDER, sliderStyle, sliderThumbStyle);
-        float actualScale = Mathf.Pow(SLIDER_SCALE_EXPONENT, sliderScale) - ACTUAL_SCALE_OFFSET;
-        string actualScaleStr = GUILayout.TextField(String.Format("{0:0.00}", actualScale), textStyle);
+        float actualScale = (Mathf.Pow(SLIDER_SCALE_EXPONENT, sliderScale) - ACTUAL_SCALE_OFFSET);
+        GUIStyle scaleInputStyle = new GUIStyle(textStyle);
+        scaleInputStyle.fixedWidth = SCALE_TEXT_WIDTH;
+        actualScale *= 100.0f; // convert to 100-based percentage for display purposes
+        string actualScaleStr = GUILayout.TextField(String.Format("{0:0.00}", actualScale), scaleInputStyle);
         actualScaleStr = Regex.Replace(actualScaleStr, @"[^0-9.]", "");
         actualScale = float.Parse(actualScaleStr);
+        actualScale /= 100.0f; // convert back to 1.0-based percentage
         SetAvatarScale(actualScale);
+        GUILayout.Label("%", labelStyle);
         GUILayout.EndHorizontal();
         
         GUILayout.Space(15);
