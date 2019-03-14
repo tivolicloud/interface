@@ -17,7 +17,7 @@ using System.Text.RegularExpressions;
 
 class AvatarExporter : MonoBehaviour {
     // update version number for every PR that changes this file, also set updated version in README file
-    static readonly string AVATAR_EXPORTER_VERSION = "0.3.4";
+    static readonly string AVATAR_EXPORTER_VERSION = "0.3.5";
     
     static readonly float HIPS_GROUND_MIN_Y = 0.01f;
     static readonly float HIPS_SPINE_CHEST_MIN_SEPARATION = 0.001f;
