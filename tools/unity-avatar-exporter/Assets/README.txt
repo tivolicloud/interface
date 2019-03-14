@@ -16,7 +16,7 @@ To update an existing avatar project:
 1. Select the existing .fbx avatar in the Assets window that you would like to re-export and choose High Fidelity menu > Update Existing Avatar
 2. Select the .fst project file that you wish to update.
 3. If the .fbx file in your Unity Assets folder is newer than the existing .fbx file in your selected avatar project or vice-versa, you will be prompted if you wish to replace the older file with the newer file before performing the update.
-4. Once it is updated, you will receive a successfully exported dialog with any warnings.
+4. Once it is updated, you will receive a successfully exported dialog with any warnings, and your project directory will open in File Explorer.
 
 * WARNING *
 If you are using any external textures as part of your .fbx model, be sure they are copied into the textures folder that is created in the project folder after exporting a new avatar.
