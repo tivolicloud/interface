@@ -304,11 +304,11 @@ class AvatarExporter : MonoBehaviour {
             if (!string.IsNullOrEmpty(occlusionMap)) {
                 json += "\"occlusionMap\": \"" + occlusionMap + "\", ";
             }
-            json += "\"emissive\": [" + emissive.r + ", " + emissive.g + ", " + emissive.b + "] ";
+            json += "\"emissive\": [" + emissive.r + ", " + emissive.g + ", " + emissive.b + "]";
             if (!string.IsNullOrEmpty(emissiveMap)) {
-                json += "\", emissiveMap\": \"" + emissiveMap + "\"";
+                json += ", \"emissiveMap\": \"" + emissiveMap + "\"";
             }
-            json += "} }";
+            json += " } }";
             return json;
         }
     }
@@ -327,8 +327,8 @@ class AvatarExporter : MonoBehaviour {
     static Dictionary<string, string> textureDependencies = new Dictionary<string, string>();
     static Dictionary<string, string> materialMappings = new Dictionary<string, string>();
     static Dictionary<string, MaterialData> materialDatas = new Dictionary<string, MaterialData>();
-    static List<string> materialAlternateStandardShader = new List<string>();
-    static Dictionary<string, string> materialUnsupportedShader = new Dictionary<string, string>();
+    static List<string> alternateStandardShaderMaterials = new List<string>();
+    static List<string> unsupportedShaderMaterials = new List<string>();
     
     static Scene previewScene;
     static string previousScene = "";
@@ -383,6 +383,8 @@ class AvatarExporter : MonoBehaviour {
         
         avatarResource = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object));
         humanDescription = modelImporter.humanDescription;
+        
+        string textureWarnings = SetTextureDependencies();
 
         // if the rig is optimized we should de-optimize it during the export process
         bool shouldDeoptimizeGameObjects = modelImporter.optimizeGameObjects;
@@ -399,8 +401,6 @@ class AvatarExporter : MonoBehaviour {
             modelImporter.SaveAndReimport();
         }
         
-        string textureWarnings = SetTextureDependencies();
-        
         // check if we should be substituting a bone for a missing UpperChest mapping
         AdjustUpperChestMapping();
 
@@ -416,18 +416,16 @@ class AvatarExporter : MonoBehaviour {
                 warnings += failedAvatarRule.Value + "\n\n";
             }           
         }
-        foreach (string materialName in materialAlternateStandardShader) {
-            warnings += "The material " + materialName + " is not using the recommended variation of the Standard shader. " +
-                        "We recommend you change it to Standard (Roughness setup) shader for improved performance.\n\n";
-        }
-        foreach (var material in materialUnsupportedShader) {
-            warnings += "The material " + material.Key + " is using an unsupported shader " + material.Value + 
-                        ". Please change it to a Standard shader type.\n\n";
-        }
+        
+        // add material and texture warnings after bone-related warnings
+        AddMaterialWarnings();  
         warnings += textureWarnings;
+        
+        // remove trailing newlines at the end of the warnings
         if (!string.IsNullOrEmpty(warnings)) {
             warnings = warnings.Substring(0, warnings.LastIndexOf("\n\n"));
         }
+        
         if (!string.IsNullOrEmpty(boneErrors)) {
             // if there are both errors and warnings then warnings will be displayed with errors in the error dialog
             if (!string.IsNullOrEmpty(warnings)) {
@@ -618,7 +616,7 @@ class AvatarExporter : MonoBehaviour {
         if (warnings != EMPTY_WARNING_TEXT) {
             successDialog += "Warnings:\n" + warnings;
         }
-        successDialog += "Note: If you are using any external textures with your model, " +
+        successDialog += "\n\nNote: If you are using any external textures with your model, " +
                          "please ensure those textures are copied to " + texturesDirectory;
         EditorUtility.DisplayDialog("Success!", successDialog, "Ok");
     }
@@ -727,8 +725,8 @@ class AvatarExporter : MonoBehaviour {
         userBoneTree = new BoneTreeNode();
         
         materialDatas.Clear();
-        materialAlternateStandardShader.Clear();
-        materialUnsupportedShader.Clear();
+        alternateStandardShaderMaterials.Clear();
+        unsupportedShaderMaterials.Clear();
 
         SetMaterialMappings();
 
@@ -768,8 +766,8 @@ class AvatarExporter : MonoBehaviour {
         bool light = gameObject.GetComponent<Light>() != null;
         bool camera = gameObject.GetComponent<Camera>() != null;
         
-        // if this is a mesh and the model is using external materials then store its material data to be exported
-        if (mesh && modelImporter.materialLocation == ModelImporterMaterialLocation.External) {
+        // if this is a mesh then store its material data to be exported if the material is mapped to an fbx material name
+        if (mesh) {
             Material[] materials = skinnedMeshRenderer != null ? skinnedMeshRenderer.sharedMaterials : meshRenderer.sharedMaterials;
             StoreMaterialData(materials);
         } else if (!light && !camera) { 
@@ -1109,11 +1107,11 @@ class AvatarExporter : MonoBehaviour {
             
             // don't store any material data for unsupported shader types
             if (Array.IndexOf(SUPPORTED_SHADERS, shaderName) == -1) {
-                if (!materialUnsupportedShader.ContainsKey(materialName)) {
-                    materialUnsupportedShader.Add(materialName, shaderName);
+                if (!unsupportedShaderMaterials.Contains(materialName)) {
+                    unsupportedShaderMaterials.Add(materialName);
                 }
                 continue;
-            }
+            }           
 
             MaterialData materialData = new MaterialData();
             materialData.albedo = material.GetColor("_Color");
@@ -1137,18 +1135,19 @@ class AvatarExporter : MonoBehaviour {
             // for non-roughness Standard shaders give a warning that is not the recommended Standard shader, 
             // and invert smoothness for roughness
             if (shaderName == STANDARD_SHADER || shaderName == STANDARD_SPECULAR_SHADER) {
-                if (!materialAlternateStandardShader.Contains(materialName)) {
-                    materialAlternateStandardShader.Add(materialName);
+                if (!alternateStandardShaderMaterials.Contains(materialName)) {
+                    alternateStandardShaderMaterials.Add(materialName);
                 }
                 materialData.roughness = 1.0f - materialData.roughness;
             }
-
-            // remap the material name from the Unity material name to the fbx material name that it overrides
-            if (materialMappings.ContainsKey(materialName)) {
-                materialName = materialMappings[materialName];
-            }
-            if (!materialDatas.ContainsKey(materialName)) {
-                materialDatas.Add(materialName, materialData);
+            
+            // store the material data under each fbx material name that it overrides from the material mapping
+            foreach (var materialMapping in materialMappings) {
+                string fbxMaterialName = materialMapping.Key;
+                string unityMaterialName = materialMapping.Value;
+                if (unityMaterialName == materialName && !materialDatas.ContainsKey(fbxMaterialName)) {
+                    materialDatas.Add(fbxMaterialName, materialData);
+                }
             }
         }
     }
@@ -1173,13 +1172,47 @@ class AvatarExporter : MonoBehaviour {
     static void SetMaterialMappings() {
         materialMappings.Clear();
         
-        // store the mappings from fbx material name to the Unity material name overriding it using external fbx mapping
+        // store the mappings from fbx material name to the Unity Material name that overrides it using external fbx mapping
         var objectMap = modelImporter.GetExternalObjectMap();
         foreach (var mapping in objectMap) {
             var material = mapping.Value as UnityEngine.Material;
             if (material != null) {
-                materialMappings.Add(material.name, mapping.Key.name);
+                materialMappings.Add(mapping.Key.name, material.name);
             }
+        }
+    }
+    
+    static void AddMaterialWarnings() {
+        string alternateStandardShaders = "";
+        string unsupportedShaders = "";
+        // combine all material names for each material warning into a comma-separated string
+        foreach (string materialName in alternateStandardShaderMaterials) {
+            if (!string.IsNullOrEmpty(alternateStandardShaders)) {
+                alternateStandardShaders += ", ";
+            }
+            alternateStandardShaders += materialName;
+        }
+        foreach (string materialName in unsupportedShaderMaterials) {
+            if (!string.IsNullOrEmpty(unsupportedShaders)) {
+                unsupportedShaders += ", ";
+            }
+            unsupportedShaders += materialName;
+        }
+        if (alternateStandardShaderMaterials.Count > 1) {
+            warnings += "The materials " + alternateStandardShaders + " are not using the " +
+                        "recommended variation of the Standard shader. We recommend you change " +
+                        "them to Standard (Roughness setup) shader for improved performance.\n\n";
+        } else if (alternateStandardShaderMaterials.Count == 1) {
+            warnings += "The material " + alternateStandardShaders + " is not using the " +
+                        "recommended variation of the Standard shader. We recommend you change " +
+                        "it to Standard (Roughness setup) shader for improved performance.\n\n";
+        }
+        if (unsupportedShaderMaterials.Count > 1) {
+            warnings += "The materials " + unsupportedShaders + " are using an unsupported shader. " +
+                        "Please change them to a Standard shader type.\n\n";
+        } else if (unsupportedShaderMaterials.Count == 1) {
+            warnings += "The material " + unsupportedShaders + " is using an unsupported shader. " +
+                        "Please change it to a Standard shader type.\n\n";
         }
     }
     
