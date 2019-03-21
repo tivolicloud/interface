@@ -174,7 +174,6 @@ function onAnimGraphUrlChanged(url) {
     }
 }
 
-var selectedAvatarEntityGrabbable = false;
 var selectedAvatarEntityID = null;
 var grabbedAvatarEntityChangeNotifier = null;
 
@@ -265,6 +264,7 @@ function fromQml(message) { // messages are {method, params}, like json-rpc. See
     case 'adjustWearablesOpened':
         currentAvatarWearablesBackup = getMyAvatarWearables();
         adjustWearables.setOpened(true);
+        lockWearables();
 
         Entities.mousePressOnEntity.connect(onSelectedEntity);
         Messages.subscribe('Hifi-Object-Manipulation');
@@ -422,18 +422,7 @@ function ensureWearableSelected(entityID) {
             Script.clearInterval(grabbedAvatarEntityChangeNotifier);
             grabbedAvatarEntityChangeNotifier = null;
         }
-
-        if(selectedAvatarEntityID !== null) {
-            setGrabbable(selectedAvatarEntityID, selectedAvatarEntityGrabbable);
-        }
-
         selectedAvatarEntityID = entityID;
-        selectedAvatarEntityGrabbable = isGrabbable(entityID);
-
-        if(selectedAvatarEntityID !== null) {
-            setGrabbable(selectedAvatarEntityID, true);
-        }
-
         return true;
     }
 
