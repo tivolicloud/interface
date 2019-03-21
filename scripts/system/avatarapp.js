@@ -453,12 +453,14 @@ function onAddingWearable(entityID) {
     updateAvatarWearables(currentAvatar, function() {
         sendToQml({'method' : 'updateAvatarInBookmarks'});
     });
+    sendToQml({ method : 'wearablesLockedChanged', wearablesLocked : getWearablesLocked()});
 }
 
 function onDeletingWearable(entityID) {
     updateAvatarWearables(currentAvatar, function() {
         sendToQml({'method' : 'updateAvatarInBookmarks'});
     });
+    sendToQml({ method : 'wearablesLockedChanged', wearablesLocked : getWearablesLocked()});
 }
 
 function handleWearableMessages(channel, message, sender) {
