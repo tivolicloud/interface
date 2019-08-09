@@ -6,7 +6,7 @@ if (WIN32)
     vcpkg_download_distfile(
         SRANIPAL_SOURCE_ARCHIVE
         URLS https://cdn.tivolicloud.com/dependencies/sranipal-1.1.0.1-windows.zip
-        SHA512 b09ce012abe4e3c71e8e69626bdd7823ff6576601a821ab365275f2764406a3e5f7b65fcf2eb1d0962eff31eb5958a148b00901f67c229dc6ace56eb5e6c9e1b
+        SHA512 3c1d379115e9b73daaafd177cc17c98ae245d958ff56507d1c47e48e4b14c5cc14300245f011c5e70e78c420d77b0b744950ca40797a40d7f36c31b545d6d8bd
         FILENAME sranipal-1.1.0.1-windows.zip
     )
 
