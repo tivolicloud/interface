@@ -266,6 +266,10 @@ Rectangle {
                     labelTextSize: 16;
                     backgroundOnColor: "#E3E3E3";
                     checked: AudioScriptingInterface.warnWhenMuted;
+<<<<<<< HEAD
+=======
+                    visible: bar.currentIndex !== 0;
+>>>>>>> d95a803324... Update interface/resources/qml/hifi/audio/Audio.qml
                     onClicked: {
                         AudioScriptingInterface.warnWhenMuted = checked;
                         checked = Qt.binding(function() { return AudioScriptingInterface.warnWhenMuted; }); // restore binding
