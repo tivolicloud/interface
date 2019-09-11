@@ -277,8 +277,13 @@ Rectangle {
                     id: audioLevelSwitch
                     height: root.switchHeight;
                     switchWidth: root.switchWidth;
+<<<<<<< HEAD
                     anchors.top: warnMutedSwitch.bottom
                     anchors.topMargin: 24
+=======
+                    anchors.top: warnMutedSwitch.visible ? warnMutedSwitch.bottom : parent.top
+                    anchors.topMargin: bar.currentIndex === 0 ? 0 : 24
+>>>>>>> a9da5b8f16... Update interface/resources/qml/hifi/audio/Audio.qml
                     anchors.left: parent.left
                     labelTextOn: qsTr("Audio Level Meter");
                     labelTextSize: 16;
