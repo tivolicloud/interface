@@ -769,44 +769,6 @@ Menu::Menu() {
 
         addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOnShutdown, 0, qApp, SLOT(crashOnShutdown()));
     }
-    
-    // Developer > Crash > Display Crash Options
-    addCheckableActionToQMenuAndActionHash(crashMenu, MenuOption::DisplayCrashOptions, 0, true);
-
-    addActionToQMenuAndActionHash(crashMenu, MenuOption::DeadlockInterface, 0, qApp, SLOT(deadlockApplication()));
-    addActionToQMenuAndActionHash(crashMenu, MenuOption::UnresponsiveInterface, 0, qApp, SLOT(unresponsiveApplication()));
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashPureVirtualFunction);
-    connect(action, &QAction::triggered, qApp, []() { crash::pureVirtualCall(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashPureVirtualFunctionThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::pureVirtualCall).join(); });
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashDoubleFree);
-    connect(action, &QAction::triggered, qApp, []() { crash::doubleFree(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashDoubleFreeThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::doubleFree).join(); });
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashAbort);
-    connect(action, &QAction::triggered, qApp, []() { crash::doAbort(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashAbortThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::doAbort).join(); });
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNullDereference);
-    connect(action, &QAction::triggered, qApp, []() { crash::nullDeref(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNullDereferenceThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::nullDeref).join(); });
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOutOfBoundsVectorAccess);
-    connect(action, &QAction::triggered, qApp, []() { crash::outOfBoundsVectorCrash(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOutOfBoundsVectorAccessThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::outOfBoundsVectorCrash).join(); });
-
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNewFault);
-    connect(action, &QAction::triggered, qApp, []() { crash::newFault(); });
-    action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNewFaultThreaded);
-    connect(action, &QAction::triggered, qApp, []() { std::thread(crash::newFault).join(); });
-
-    addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOnShutdown, 0, qApp, SLOT(crashOnShutdown()));
 
     // Developer > Show Statistics
     addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, 0, true);
