@@ -24,7 +24,6 @@
 	//"system/miniTablet.js",
 	//"system/audioMuteOverlay.js", // the big text that appears when you're muted
 	"system/keyboardShortcuts/keyboardShortcuts.js",
-	"system/hand-track-walk.js",
 
 	"system/controllers/controllerScripts.js"
 ].forEach(function(script) {
