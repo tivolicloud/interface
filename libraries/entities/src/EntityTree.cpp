@@ -697,6 +697,7 @@ void EntityTree::deleteEntitiesByID(const QSet<EntityItemID>& ids, bool force, b
         });
     } else {
         SetOfEntities entitiesToDelete;
+        SetOfEntities domainEntities;
         QUuid sessionID = DependencyManager::get<NodeList>()->getSessionUUID();
         withWriteLock([&] {
             for (auto id : ids) {
@@ -707,12 +708,10 @@ void EntityTree::deleteEntitiesByID(const QSet<EntityItemID>& ids, bool force, b
                 }
                 if (entity) {
                     if (entity->isDomainEntity()) {
-                        if (_simulation) {
-                            _simulation->queueEraseDomainEntity(entity->getID());
-                        }
+                        domainEntities.insert(entity);
                     } else if (entity->isLocalEntity() || entity->isMyAvatarEntity()) {
                         entitiesToDelete.insert(entity);
-                        entity->collectChildrenForDelete(entitiesToDelete, sessionID);
+                        entity->collectChildrenForDelete(entitiesToDelete, domainEntities, sessionID);
                     }
                 }
             }
@@ -720,6 +719,10 @@ void EntityTree::deleteEntitiesByID(const QSet<EntityItemID>& ids, bool force, b
                 deleteEntitiesByPointer(entitiesToDelete);
             }
         });
+        if (!domainEntities.empty() && _simulation) {
+            // interface-client can't delete domainEntities outright, they must roundtrip through the entity-server
+            _simulation->queueEraseDomainEntities(domainEntities);
+        }
     }
 }
 
@@ -2411,6 +2414,7 @@ int EntityTree::processEraseMessage(ReceivedMessage& message, const SharedNodePo
     #ifdef EXTRA_ERASE_DEBUGGING
         qCDebug(entities) << "EntityTree::processEraseMessage()";
     #endif
+    SetOfEntities consequentialDomainEntities;
     withWriteLock([&] {
         message.seek(sizeof(OCTREE_PACKET_FLAGS) + sizeof(OCTREE_PACKET_SEQUENCE) + sizeof(OCTREE_PACKET_SENT_TIME));
 
@@ -2457,7 +2461,7 @@ int EntityTree::processEraseMessage(ReceivedMessage& message, const SharedNodePo
             SetOfEntities entitiesToDelete;
             for (auto entity : domainEntities) {
                 entitiesToDelete.insert(entity);
-                entity->collectChildrenForDelete(entitiesToDelete, sessionID);
+                entity->collectChildrenForDelete(entitiesToDelete, consequentialDomainEntities, sessionID);
             }
 
             if (!entitiesToDelete.empty()) {
@@ -2465,6 +2469,9 @@ int EntityTree::processEraseMessage(ReceivedMessage& message, const SharedNodePo
             }
         }
     });
+    if (!consequentialDomainEntities.empty() && _simulation) {
+        _simulation->queueEraseDomainEntities(consequentialDomainEntities);
+    }
     return message.getPosition();
 }
 

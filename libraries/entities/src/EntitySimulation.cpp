@@ -261,10 +261,14 @@ void EntitySimulation::processDeadEntities() {
         return;
     }
     SetOfEntities entitiesToDeleteImmediately;
+    // NOTE: dummyList will be empty because this base-class implementation is only used server-side
+    // for which ATM we only process domain-entities, and since we are passing nullSessionID for authorization
+    // EntityItem::collectChildrenForDelete() will not collect domain-entities into this side list.
+    SetOfEntities dummyList;
     QUuid nullSessionID;
     foreach (auto entity, _deadEntitiesToRemoveFromTree) {
         entitiesToDeleteImmediately.insert(entity);
-        entity->collectChildrenForDelete(entitiesToDeleteImmediately, nullSessionID);
+        entity->collectChildrenForDelete(entitiesToDeleteImmediately, dummyList, nullSessionID);
     }
     if (_entityTree) {
         _entityTree->deleteEntitiesByPointer(entitiesToDeleteImmediately);
