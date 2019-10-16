@@ -346,7 +346,6 @@ protected:
         InAir,
         Seated
     };
-
     RigRole _state { RigRole::Idle };
     RigRole _desiredState { RigRole::Idle };
     float _desiredStateAge { 0.0f };
