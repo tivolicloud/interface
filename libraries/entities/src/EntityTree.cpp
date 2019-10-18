@@ -609,8 +609,8 @@ void EntityTree::setSimulation(EntitySimulationPointer simulation) {
 
 void EntityTree::deleteEntity(const EntityItemID& entityID, bool force, bool ignoreWarnings) {
     // NOTE: can be called without lock because deleteEntitiesByID() will lock
-    std::vector<EntityItemID> ids;
-    ids.push_back(entityID);
+    QSet<EntityItemID> ids;
+    ids << entityID;
     deleteEntitiesByID(ids, force, ignoreWarnings);
 }
 
@@ -674,7 +674,7 @@ void EntityTree::recursivelyFilterAndCollectForDelete(const EntityItemPointer& e
     }
 }
 
-void EntityTree::deleteEntitiesByID(const std::vector<EntityItemID>& ids, bool force, bool ignoreWarnings) {
+void EntityTree::deleteEntitiesByID(const QSet<EntityItemID>& ids, bool force, bool ignoreWarnings) {
     // this method has two paths:
     // (a) entity-server: applies delete filter
     // (b) interface-client: deletes local- and my-avatar-entities immediately, submits domainEntity deletes to the entity-server
@@ -2278,19 +2278,11 @@ void EntityTree::fixupNeedsParentFixups() {
 }
 
 void EntityTree::deleteDescendantsOfAvatar(QUuid avatarID) {
-    QHash<QUuid, QSet<EntityItemID>>::const_iterator itr = _childrenOfAvatars.constFind(avatarID);
-    if (itr != _childrenOfAvatars.end()) {
-        if (!itr.value().empty()) {
-            std::vector<EntityItemID> ids;
-            ids.reserve(itr.value().size());
-            for (const auto id : itr.value()) {
-                ids.push_back(id);
-            }
-            bool force = true;
-            bool ignoreWarnings = true;
-            deleteEntitiesByID(ids, force, ignoreWarnings);
-        }
-        _childrenOfAvatars.erase(itr);
+    if (_childrenOfAvatars.contains(avatarID)) {
+        bool force = true;
+        bool ignoreWarnings = true;
+        deleteEntitiesByID(_childrenOfAvatars[avatarID], force, ignoreWarnings);
+        _childrenOfAvatars.remove(avatarID);
     }
 }
 
@@ -2492,8 +2484,7 @@ int EntityTree::processEraseMessageDetails(const QByteArray& dataByteArray, cons
     processedBytes += sizeof(numberOfIds);
 
     if (numberOfIds > 0) {
-        std::vector<EntityItemID> ids;
-        ids.reserve(numberOfIds);
+        QSet<EntityItemID> ids;
 
         // extract ids from packet
         for (size_t i = 0; i < numberOfIds; i++) {
@@ -2511,7 +2502,7 @@ int EntityTree::processEraseMessageDetails(const QByteArray& dataByteArray, cons
             #endif
 
             EntityItemID entityID(id);
-            ids.push_back(entityID);
+            ids << entityID;
         }
 
         bool force = sourceNode->isAllowedEditor();

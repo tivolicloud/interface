@@ -1589,15 +1589,14 @@ void MyAvatar::handleChangedAvatarEntityData() {
     // move the lists to minimize lock time
     std::vector<QUuid> cachedBlobsToDelete;
     std::vector<QUuid> cachedBlobsToUpdate;
-    std::vector<EntityItemID> idsToDelete;
-    idsToDelete.reserve(_entitiesToDelete.size());
+    QSet<EntityItemID> idsToDelete;
     std::vector<QUuid> entitiesToAdd;
     std::vector<QUuid> entitiesToUpdate;
     _avatarEntitiesLock.withWriteLock([&] {
         cachedBlobsToDelete = std::move(_cachedAvatarEntityBlobsToDelete);
         cachedBlobsToUpdate = std::move(_cachedAvatarEntityBlobsToAddOrUpdate);
         foreach (auto id, _entitiesToDelete) {
-            idsToDelete.push_back(id);
+            idsToDelete.insert(id);
         }
         _entitiesToDelete.clear();
         entitiesToAdd = std::move(_entitiesToAdd);

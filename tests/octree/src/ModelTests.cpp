@@ -434,13 +434,12 @@ void EntityTests::entityTreeTests(bool verbose) {
         quint64 totalElapsedFind = 0;
         for (int i = 0; i < TEST_ITERATIONS; i++) {        
 
-            std::vector<EntityItemID> entitiesToDelete;
-            entitiesToDelete.reserve(ENTITIES_PER_ITERATION);
+            QSet<EntityItemID> entitiesToDelete;
             for (int j = 0; j < ENTITIES_PER_ITERATION; j++) {        
                 //uint32_t id = 2 + (i * ENTITIES_PER_ITERATION) + j; // These are the entities we added above
                 QUuid id = QUuid::createUuid();// make sure it doesn't collide with previous entity ids
                 EntityItemID entityID(id);
-                entitiesToDelete.push_back(entityID);
+                entitiesToDelete << entityID;
             }
 
             if (extraVerbose) {
