@@ -128,7 +128,7 @@ public:
     void deleteEntity(const EntityItemID& entityID, bool force = false, bool ignoreWarnings = true);
 
     void deleteEntitiesByID(const std::vector<EntityItemID>& entityIDs, bool force = false, bool ignoreWarnings = true);
-    void deleteEntitiesByPointer(const std::vector<EntityItemPointer>& entities);
+    void deleteEntitiesByPointer(const SetOfEntities& entities);
 
     EntityItemPointer findEntityByID(const QUuid& id) const;
     EntityItemPointer findEntityByEntityItemID(const EntityItemID& entityID) const;
@@ -297,7 +297,7 @@ signals:
 
 protected:
 
-    void recursivelyFilterAndCollectForDelete(const EntityItemPointer& entity, std::vector<EntityItemPointer>& entitiesToDelete, bool force) const;
+    void recursivelyFilterAndCollectForDelete(const EntityItemPointer& entity, SetOfEntities& entitiesToDelete, bool force) const;
     void processRemovedEntities(const DeleteEntityOperator& theOperator);
     bool updateEntity(EntityItemPointer entity, const EntityItemProperties& properties,
             const SharedNodePointer& senderNode = SharedNodePointer(nullptr));

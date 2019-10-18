@@ -939,7 +939,7 @@ void EntityScriptingInterface::deleteEntity(const QUuid& id) {
     EntityItemID entityID(id);
 
     // If we have a local entity tree set, then also update it.
-    std::vector<EntityItemPointer> entitiesToDeleteImmediately;
+    SetOfEntities entitiesToDeleteImmediately;
     _entityTree->withWriteLock([&] {
         EntityItemPointer entity = _entityTree->findEntityByEntityItemID(entityID);
         if (entity) {
@@ -955,19 +955,21 @@ void EntityScriptingInterface::deleteEntity(const QUuid& id) {
             // Local- and my-avatar-entities can be deleted immediately, but other-avatar-entities can't be deleted
             // by this context, and a domain-entity must rountrip through the entity-server for authorization.
             if (entity->isDomainEntity()) {
-                getEntityPacketSender()->queueEraseEntityMessage(id);
+                getEntityPacketSender()->queueEraseEntityMessage(entity->getID());
             } else {
-                entitiesToDeleteImmediately.push_back(entity);
+                entitiesToDeleteImmediately.insert(entity);
                 const auto sessionID = DependencyManager::get<NodeList>()->getSessionUUID();
                 entity->collectChildrenForDelete(entitiesToDeleteImmediately, sessionID);
+            }
+            if (!entitiesToDeleteImmediately.empty()) {
                 _entityTree->deleteEntitiesByPointer(entitiesToDeleteImmediately);
             }
         }
     });
 
-    for (auto entity : entitiesToDeleteImmediately) {
+    foreach (auto entity, entitiesToDeleteImmediately) {
         if (entity->isMyAvatarEntity()) {
-            getEntityPacketSender()->getMyAvatar()->clearAvatarEntity(entity->getID(), false);
+            getEntityPacketSender()->getMyAvatar()->clearAvatarEntity(entityID, false);
         }
     }
 }
