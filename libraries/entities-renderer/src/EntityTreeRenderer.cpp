@@ -279,7 +279,8 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
     _renderablesToUpdate = savedRenderables;
     _entitiesInScene = savedEntities;
 
-    if (_layeredZones.clearDomainAndNonOwnedZones()) {
+    auto sessionUUID = getTree()->getMyAvatarSessionUUID();
+    if (_layeredZones.clearDomainAndNonOwnedZones(sessionUUID)) {
         applyLayeredZones();
     }
 
@@ -1347,7 +1348,7 @@ void EntityTreeRenderer::updateZone(const EntityItemID& id) {
     }
 }
 
-bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones() {
+bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones(const QUuid& sessionUUID) {
     bool zonesChanged = false;
 
     auto it = begin();
