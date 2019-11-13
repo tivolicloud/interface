@@ -1587,20 +1587,24 @@ void MyAvatar::handleChangedAvatarEntityData() {
     // AvatarData::_packedAvatarEntityData via deeper logic.
 
     // move the lists to minimize lock time
-    std::vector<EntityItemID> cachedBlobsToDelete;
-    std::vector<EntityItemID> cachedBlobsToUpdate;
-    std::vector<EntityItemID> entitiesToDelete;
-    std::vector<EntityItemID> entitiesToAdd;
-    std::vector<EntityItemID> entitiesToUpdate;
+    std::vector<QUuid> cachedBlobsToDelete;
+    std::vector<QUuid> cachedBlobsToUpdate;
+    std::vector<EntityItemID> idsToDelete;
+    idsToDelete.reserve(_entitiesToDelete.size());
+    std::vector<QUuid> entitiesToAdd;
+    std::vector<QUuid> entitiesToUpdate;
     _avatarEntitiesLock.withWriteLock([&] {
-        cachedBlobsToDelete.swap(_cachedAvatarEntityBlobsToDelete);
-        cachedBlobsToUpdate.swap(_cachedAvatarEntityBlobsToAddOrUpdate);
-        entitiesToDelete.swap(_entitiesToDelete);
-        entitiesToAdd.swap(_entitiesToAdd);
-        entitiesToUpdate.swap(_entitiesToUpdate);
+        cachedBlobsToDelete = std::move(_cachedAvatarEntityBlobsToDelete);
+        cachedBlobsToUpdate = std::move(_cachedAvatarEntityBlobsToAddOrUpdate);
+        foreach (auto id, _entitiesToDelete) {
+            idsToDelete.push_back(id);
+        }
+        _entitiesToDelete.clear();
+        entitiesToAdd = std::move(_entitiesToAdd);
+        entitiesToUpdate = std::move(_entitiesToUpdate);
     });
 
-    auto removeAllInstancesHelper = [] (const EntityItemID& id, std::vector<EntityItemID>& v) {
+    auto removeAllInstancesHelper = [] (const QUuid& id, std::vector<QUuid>& v) {
         uint32_t i = 0;
         while (i < v.size()) {
             if (id == v[i]) {
@@ -1613,7 +1617,7 @@ void MyAvatar::handleChangedAvatarEntityData() {
     };
 
     // remove delete-add and delete-update overlap
-    for (const auto& id : entitiesToDelete) {
+    for (const auto& id : idsToDelete) {
         removeAllInstancesHelper(id, cachedBlobsToUpdate);
         removeAllInstancesHelper(id, entitiesToAdd);
         removeAllInstancesHelper(id, entitiesToUpdate);
@@ -1627,7 +1631,9 @@ void MyAvatar::handleChangedAvatarEntityData() {
     }
 
     // DELETE real entities
-    entityTree->deleteEntitiesByID(entitiesToDelete);
+    entityTree->withWriteLock([&] {
+        entityTree->deleteEntitiesByID(idsToDelete);
+    });
 
     // ADD real entities
     EntityEditPacketSender* packetSender = qApp->getEntityEditPacketSender();
@@ -1698,7 +1704,7 @@ void MyAvatar::handleChangedAvatarEntityData() {
                 _needToSaveAvatarEntitySettings = true;
             }
             // also remove from list of stale blobs to avoid failed entity lookup later
-            std::set<EntityItemID>::iterator blobItr = _staleCachedAvatarEntityBlobs.find(id);
+            std::set<QUuid>::iterator blobItr = _staleCachedAvatarEntityBlobs.find(id);
             if (blobItr != _staleCachedAvatarEntityBlobs.end()) {
                 _staleCachedAvatarEntityBlobs.erase(blobItr);
             }
@@ -1740,7 +1746,7 @@ void MyAvatar::handleChangedAvatarEntityData() {
         // we have a client traits handler
         // flag removed entities as deleted so that changes are sent next frame
         _avatarEntitiesLock.withWriteLock([&] {
-            for (const auto& id : entitiesToDelete) {
+            for (const auto& id : idsToDelete) {
                 if (_packedAvatarEntityData.find(id) != _packedAvatarEntityData.end()) {
                     _clientTraitsHandler->markInstancedTraitDeleted(AvatarTraits::AvatarEntity, id);
                 }
@@ -1766,9 +1772,9 @@ bool MyAvatar::updateStaleAvatarEntityBlobs() const {
         return false;
     }
 
-    std::set<EntityItemID> staleIDs = std::move(_staleCachedAvatarEntityBlobs);
+    std::set<QUuid> staleBlobs = std::move(_staleCachedAvatarEntityBlobs);
     int32_t numFound = 0;
-    for (const auto& id : staleIDs) {
+    for (const auto& id : staleBlobs) {
         bool found = false;
         EntityItemProperties properties;
         entityTree->withReadLock([&] {
@@ -1893,7 +1899,7 @@ void MyAvatar::setAvatarEntityData(const AvatarEntityMap& avatarEntityData) {
             ++constItr;
         }
         // find and erase deleted IDs from _cachedAvatarEntityBlobs
-        std::vector<EntityItemID> deletedIDs;
+        std::vector<QUuid> deletedIDs;
         AvatarEntityMap::iterator itr = _cachedAvatarEntityBlobs.begin();
         while (itr != _cachedAvatarEntityBlobs.end()) {
             QUuid id = itr.key();
@@ -2525,8 +2531,16 @@ void MyAvatar::clearWornAvatarEntities() {
     _avatarEntitiesLock.withReadLock([&] {
         avatarEntityIDs = _packedAvatarEntityData.keys();
     });
-    for (auto entityID : avatarEntityIDs) {
-        removeWornAvatarEntity(entityID);
+    auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
+    EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
+    if (entityTree) {
+        for (auto entityID : avatarEntityIDs) {
+            auto entity = entityTree->findEntityByID(entityID);
+            if (entity && isWearableEntity(entity)) {
+                treeRenderer->deleteEntity(entityID);
+                clearAvatarEntity(entityID);
+            }
+        }
     }
 }
 

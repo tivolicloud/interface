@@ -3027,19 +3027,19 @@ private:
     // correctly stored in _cachedAvatarEntityBlobs.  These come from loadAvatarEntityDataFromSettings() and
     // setAvatarEntityData().  These changes need to be extracted from _cachedAvatarEntityBlobs and applied to
     // real EntityItems.
-    std::vector<EntityItemID> _entitiesToDelete;
-    std::vector<EntityItemID> _entitiesToAdd;
-    std::vector<EntityItemID> _entitiesToUpdate;
+    std::vector<QUuid> _entitiesToDelete;
+    std::vector<QUuid> _entitiesToAdd;
+    std::vector<QUuid> _entitiesToUpdate;
     //
     // The _cachedAvatarEntityBlobsToDelete/Add/Update lists are for changes whose "authoritative sources" are
     // already reflected in real EntityItems. These changes need to be propagated to _cachedAvatarEntityBlobs
     // and eventually to settings.
-    std::vector<EntityItemID> _cachedAvatarEntityBlobsToDelete;
-    std::vector<EntityItemID> _cachedAvatarEntityBlobsToAddOrUpdate;
-    std::vector<EntityItemID> _cachedAvatarEntityBlobUpdatesToSkip;
+    std::vector<QUuid> _cachedAvatarEntityBlobsToDelete;
+    std::vector<QUuid> _cachedAvatarEntityBlobsToAddOrUpdate;
+    std::vector<QUuid> _cachedAvatarEntityBlobUpdatesToSkip;
     //
     // Also these lists for tracking delayed changes to blobs and Settings
-    mutable std::set<EntityItemID> _staleCachedAvatarEntityBlobs;
+    mutable std::set<QUuid> _staleCachedAvatarEntityBlobs;
     //
     // keep a ScriptEngine around so we don't have to instantiate on the fly (these are very slow to create/delete)
     mutable std::mutex _scriptEngineLock;
