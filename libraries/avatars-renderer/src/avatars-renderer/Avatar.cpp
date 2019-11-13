@@ -339,12 +339,14 @@ void Avatar::removeAvatarEntitiesFromTree() {
     auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
     EntityTreePointer entityTree = treeRenderer ? treeRenderer->getTree() : nullptr;
     if (entityTree) {
+        QList<QUuid> avatarEntityIDs;
+        _avatarEntitiesLock.withReadLock([&] {
+            avatarEntityIDs = _packedAvatarEntityData.keys();
+        });
         std::vector<EntityItemID> ids;
-        ids.reserve(_packedAvatarEntityData.size());
-        PackedAvatarEntityMap::const_iterator itr = _packedAvatarEntityData.constBegin();
-        while (itr != _packedAvatarEntityData.constEnd()) {
-            ids.push_back(itr.key());
-            ++itr;
+        ids.reserve(avatarEntityIDs.size());
+        foreach (auto id, avatarEntityIDs) {
+            ids.push_back(id);
         }
         bool force = true;
         bool ignoreWarnings = true;
