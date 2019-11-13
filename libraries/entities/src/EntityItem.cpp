@@ -3191,12 +3191,13 @@ void EntityItem::retrieveMarketplacePublicKey() {
 
 void EntityItem::collectChildrenForDelete(std::vector<EntityItemPointer>& entitiesToDelete, const QUuid& sessionID) const {
     // Deleting an entity has consequences for its children, however there are rules dictating what can be deleted.
-    // This method helps enforce those rules: not for this entity, but for its children.
+    // This method helps enforce those rules for the children of entity (not for this entity).
     for (SpatiallyNestablePointer child : getChildren()) {
         if (child && child->getNestableType() == NestableType::Entity) {
             EntityItemPointer childEntity = std::static_pointer_cast<EntityItem>(child);
-            // NOTE: null sessionID means "collect ALL known children", else we only collect: local-entities and myAvatar-entities
-            if (sessionID.isNull() || childEntity->isLocalEntity() || childEntity->isMyAvatarEntity()) {
+            // NOTE: null sessionID means "collect ALL known entities", else we only collect: local-entities and authorized avatar-entities
+            if (sessionID.isNull() || childEntity->isLocalEntity() || (childEntity->isAvatarEntity() &&
+                    (childEntity->isMyAvatarEntity() || childEntity->getOwningAvatarID() == sessionID))) {
                 if (std::find(entitiesToDelete.begin(), entitiesToDelete.end(), childEntity) == entitiesToDelete.end()) {
                     entitiesToDelete.push_back(childEntity);
                     childEntity->collectChildrenForDelete(entitiesToDelete, sessionID);
@@ -3342,7 +3343,7 @@ void EntityItem::prepareForSimulationOwnershipBid(EntityItemProperties& properti
     properties.setSimulationOwner(Physics::getSessionUUID(), priority);
     setPendingOwnershipPriority(priority);
 
-    // TODO: figure out if it would be OK to NOT bother set these properties here
+    // ANDREW TODO: figure out if it would be OK to NOT bother set these properties here
     properties.setEntityHostType(getEntityHostType());
     properties.setOwningAvatarID(getOwningAvatarID());
     setLastBroadcast(now);  // for debug/physics status icons
