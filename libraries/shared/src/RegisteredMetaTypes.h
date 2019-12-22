@@ -687,7 +687,7 @@ namespace graphics {
 using MeshPointer = std::shared_ptr<graphics::Mesh>;
 
 /**jsdoc
- * A mesh, such as returned by {@link Entities.getMeshes} or {@link Model} API functions.
+ * A handle for a mesh in an entity, such as returned by {@link Entities.getMeshes}.
  *
  * @class MeshProxy
  *
