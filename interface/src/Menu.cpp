@@ -73,16 +73,17 @@ Menu::Menu() {
     // File/Application menu ----------------------------------
     MenuWrapper* fileMenu = addMenu("File");
 
-    // File > Login menu items
-    {
-        addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
+    // TIVOLI commented out File>Login functionality
+    //// File > Login menu items
+    //{
+    //    addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
 
-        // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
-        connect(accountManager.data(), &AccountManager::profileChanged,
-                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-        connect(accountManager.data(), &AccountManager::logoutComplete,
-                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-    }
+    //    // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
+    //    connect(accountManager.data(), &AccountManager::profileChanged,
+    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+    //    connect(accountManager.data(), &AccountManager::logoutComplete,
+    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+    //}
 
     // File > Quit
     addActionToQMenuAndActionHash(fileMenu, MenuOption::Quit, Qt::CTRL | Qt::Key_Q, qApp, SLOT(quit()), QAction::QuitRole);

@@ -1596,7 +1596,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
             return;
         }
 
-        showLoginScreen();
+       // TIVOLI showLoginScreen();
 #else
         resumeAfterLoginDialogActionTaken();
 #endif
@@ -3170,6 +3170,8 @@ static void addDisplayPluginToMenu(const DisplayPluginPointer& displayPlugin, in
 #endif
 
 void Application::showLoginScreen() {
+
+    return; // TIVOLI 
 #if !defined(DISABLE_QML)
     auto accountManager = DependencyManager::get<AccountManager>();
     auto dialogsManager = DependencyManager::get<DialogsManager>();
