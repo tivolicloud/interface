@@ -22,11 +22,7 @@ Rectangle {
         y: 30
         spacing: 5
 
-        Image {
-            sourceSize.width: 295
-            sourceSize.height: 75
-            source: "../../../images/about-highfidelity.png"
-        }
+
         Item { height: 30; width: 1 }
         Column {
             id: buildColumm
@@ -45,7 +41,7 @@ Rectangle {
         }
         Item { height: 10; width: 1 }
         RalewayRegular {
-            text: "An open-source virtual reality platform."
+            text: "Tivoli Cloud VR"
             size: 20
             color: "white"
         }
@@ -53,10 +49,10 @@ Rectangle {
             textFormat: Text.StyledText
             linkColor: "#00B4EF"
             color: "white"
-            text: "<a href=\"https:/www.highfidelity.com\">www.highfidelity.com</a>."
+            text: "<a href=\"https:/www.tivolicloud.com\">www.tivolicloud.com</a>."
             size: 20
             onLinkActivated: {
-                HiFiAbout.openUrl("https:/www.highfidelity.com");
+                HiFiAbout.openUrl("https:/www.tivolicloud.com");
             }
         }
         Item { height: 40; width: 1 }
@@ -75,7 +71,7 @@ Rectangle {
             }
             RalewayRegular {
                 color: "white"
-                text: "Built using Qt " + HiFiAbout.qtVersion
+                text: "Built the High Fidelity architecture & Qt " + HiFiAbout.qtVersion
                 size: 12
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -93,31 +89,11 @@ Rectangle {
             }
         }
         Item { height: 20; width: 1 }
-        RalewayRegular {
-            textFormat: Text.StyledText
-            linkColor: "#00B4EF"
-            color: "white"
-            property string link: "https://eos.io/"
-            text: "Blockchain technology from <a href=\"" + link + "\">EOS</a>."
-            size: 14
-            onLinkActivated: {
-                HiFiAbout.openUrl(link);
-            }
-        }
+        
         RalewayRegular {
             color: "white"
-            text: "© 2012 - 2019 High Fidelity, Inc.. All rights reserved."
+            text: "Copyright 2020 Tivoli Cloud VR, Inc. All rights reserved."
             size: 14
-        }
-        RalewayRegular {
-            textFormat: Text.StyledText
-            color: "white"
-            linkColor: "#00B4EF"
-            text: "Distributed under the <a href=\"http://www.apache.org/licenses/LICENSE-2.0.html\">Apache License, Version 2.0.</a>."
-            size: 14
-            onLinkActivated: {
-                HiFiAbout.openUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-            }
         }
     }
 }
