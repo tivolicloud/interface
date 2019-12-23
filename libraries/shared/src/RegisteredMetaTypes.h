@@ -690,6 +690,7 @@ using MeshPointer = std::shared_ptr<graphics::Mesh>;
  * A handle for a mesh in an entity, such as returned by {@link Entities.getMeshes}.
  *
  * @class MeshProxy
+ * @hideconstructor
  *
  * @hifi-interface
  * @hifi-client-entity
