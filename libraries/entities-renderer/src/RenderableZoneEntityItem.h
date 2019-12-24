@@ -48,6 +48,7 @@ private:
     void updateHazeFromEntity(const TypedEntityPointer& entity);
     void updateKeyBackgroundFromEntity(const TypedEntityPointer& entity);
     void updateBloomFromEntity(const TypedEntityPointer& entity);
+    void updateZoneCullingFromEntity(const TypedEntityPointer& entity);
     void updateAmbientMap();
     void updateSkyboxMap();
     void setAmbientURL(const QString& ambientUrl);
@@ -58,6 +59,7 @@ private:
     void setAmbientLightMode(ComponentMode mode);
     void setSkyboxMode(ComponentMode mode);
     void setBloomMode(ComponentMode mode);
+    void setZoneCullingMode(ComponentMode mode);
 
     void setSkyboxColor(const glm::vec3& color);
     void setProceduralUserData(const QString& userData);
@@ -68,6 +70,7 @@ private:
     graphics::SkyboxPointer editSkybox() { return editBackground()->getSkybox(); }
     graphics::HazePointer editHaze() { _needHazeUpdate = true; return _haze; }
     graphics::BloomPointer editBloom() { _needBloomUpdate = true; return _bloom; }
+   // graphics::ZoneCullingPointer editZoneCulling() { _needZoneCullingUpdate = true; return _zoneCulling; }
 
     glm::vec3 _lastPosition;
     glm::vec3 _lastDimensions;
@@ -79,13 +82,15 @@ private:
     const graphics::LightPointer _ambientLight { std::make_shared<graphics::Light>() };
     const graphics::SunSkyStagePointer _background { std::make_shared<graphics::SunSkyStage>() };
     const graphics::HazePointer _haze { std::make_shared<graphics::Haze>() };
-    const graphics::BloomPointer _bloom { std::make_shared<graphics::Bloom>() };
+    const graphics::BloomPointer _bloom { std::make_shared<graphics::Bloom>() }; //
+ //   const graphics::ZoneCullingPointer _zoneCulling{ std::make_shared<graphics::ZoneCulling>() };  //
 
     ComponentMode _keyLightMode { COMPONENT_MODE_INHERIT };
     ComponentMode _ambientLightMode { COMPONENT_MODE_INHERIT };
     ComponentMode _skyboxMode { COMPONENT_MODE_INHERIT };
     ComponentMode _hazeMode { COMPONENT_MODE_INHERIT };
-    ComponentMode _bloomMode { COMPONENT_MODE_INHERIT };
+    ComponentMode _bloomMode{ COMPONENT_MODE_INHERIT };
+    ComponentMode _zoneCullingMode{ COMPONENT_MODE_INHERIT };
 
     indexed_container::Index _sunIndex { LightStage::INVALID_INDEX };
     indexed_container::Index _ambientIndex { LightStage::INVALID_INDEX };
@@ -104,13 +109,15 @@ private:
     bool _needAmbientUpdate{ true };
     bool _needBackgroundUpdate{ true };
     bool _needHazeUpdate{ true };
-    bool _needBloomUpdate { true };
+    bool _needBloomUpdate{ true };
+    bool _needZoneCullingUpdate{ true }; // TIVOLI This prob. isn't going to be used.
 
     KeyLightPropertyGroup _keyLightProperties;
     AmbientLightPropertyGroup _ambientLightProperties;
     HazePropertyGroup _hazeProperties;
     SkyboxPropertyGroup _skyboxProperties;
     BloomPropertyGroup _bloomProperties;
+    ZoneCullingPropertyGroup _zoneCullingProperties;
 
     // More attributes used for rendering:
     QString _ambientTextureURL;

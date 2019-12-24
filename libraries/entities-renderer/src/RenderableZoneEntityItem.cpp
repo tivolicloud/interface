@@ -205,6 +205,7 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
     bool skyboxChanged = entity->skyboxPropertiesChanged() || proceduralUserDataChanged;
     bool hazeChanged = entity->hazePropertiesChanged();
     bool bloomChanged = entity->bloomPropertiesChanged();
+    bool zoneCullingChanged = entity->zoneCullingPropertiesChanged();
     entity->resetRenderingPropertiesChanged();
 
     if (transformChanged) {
@@ -244,6 +245,10 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
         updateBloomFromEntity(entity);
     }
 
+    if (zoneCullingChanged) {
+        _zoneCullingProperties = entity->getZoneCullingProperties();
+        updateZoneCullingFromEntity(entity);
+    }
     bool visuallyReady = true;
     uint32_t skyboxMode = entity->getSkyboxMode();
     if (skyboxMode == COMPONENT_MODE_ENABLED && !_skyboxTextureURL.isEmpty()) {
@@ -379,6 +384,15 @@ void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity)
     bloom->setBloomSize(_bloomProperties.getBloomSize());
 }
 
+void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& entity) {
+    setZoneCullingMode((ComponentMode)entity->getZoneCullingMode());
+
+    //const auto& bloom = editBloom();
+
+  /*  bloom->setBloomIntensity(_bloomProperties.getBloomIntensity());
+    bloom->setBloomThreshold(_bloomProperties.getBloomThreshold());
+    bloom->setBloomSize(_bloomProperties.getBloomSize());*/
+}
 void ZoneEntityRenderer::updateKeyBackgroundFromEntity(const TypedEntityPointer& entity) {
     setSkyboxMode((ComponentMode)entity->getSkyboxMode());
 
@@ -501,6 +515,9 @@ void ZoneEntityRenderer::setBloomMode(ComponentMode mode) {
     _bloomMode = mode;
 }
 
+void ZoneEntityRenderer::setZoneCullingMode(ComponentMode mode) {
+    _zoneCullingMode = mode;
+}
 void ZoneEntityRenderer::setSkyboxColor(const glm::vec3& color) {
     editSkybox()->setColor(color);
 }
