@@ -808,7 +808,7 @@ Menu::Menu() {
     // Help > Report a Bug!
     action = addActionToQMenuAndActionHash(helpMenu, "Report a Bug!");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("mailto:support@highfidelity.com"));
+        QDesktopServices::openUrl(QUrl("mailto:support@tivolicloud.com"));
     });
 }
 

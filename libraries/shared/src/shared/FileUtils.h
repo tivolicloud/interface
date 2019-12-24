@@ -5,9 +5,8 @@
 //  Created by Stojce Slavkovski on 12/23/13.
 //  Copyright 2013 High Fidelity, Inc.
 //
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
-//
+//  Modified by Caitlyn Meeks on 12/24/19
+//  Copyright 2019 Tivoli Cloud VR
 
 #ifndef hifi_FileUtils_h
 #define hifi_FileUtils_h

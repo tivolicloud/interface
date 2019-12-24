@@ -22,7 +22,7 @@
 #include "SkyboxPropertyGroup.h"
 #include "HazePropertyGroup.h"
 #include "BloomPropertyGroup.h"
-#include "ZoneCullingPropertyGroup.h"
+#include "ZoneCullingPropertyGroup.h"  // TIVOLI
 
 class ZoneEntityItem : public EntityItem {
 public:

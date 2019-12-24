@@ -284,6 +284,13 @@ void EntityItemProperties::setBloomModeFromString(const QString& mode) {
     }
 }
 
+void EntityItemProperties::setZoneCullingModeFromString(const QString& mode) {
+    auto modeItr = stringToComponentMode.find(mode.toLower());
+    if (modeItr != stringToComponentMode.end()) {
+        _zoneCullingMode = modeItr.value();
+        _zoneCullingModeChanged = true;
+    }
+}
 inline void addAvatarPriorityMode(QHash<QString, AvatarPriorityMode>& lookup, AvatarPriorityMode mode) { lookup[AvatarPriorityModeHelpers::getNameForAvatarPriorityMode(mode)] = mode; }
 const QHash<QString, AvatarPriorityMode> stringToAvatarPriority = [] {
     QHash<QString, AvatarPriorityMode> toReturn;
