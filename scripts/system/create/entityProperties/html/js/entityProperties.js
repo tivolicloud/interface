@@ -2,10 +2,9 @@
 //
 //  Created by Ryan Huffman on 13 Nov 2014
 //  Modified by David Back on 19 Oct 2018
-//  Copyright 2014 High Fidelity, Inc.
 //
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
+//  Modified by Caitlyn Meeks on 12/24/19
+//  Copyright 2019 Tivoli Cloud VR
 
 /* global alert, augmentSpinButtons, clearTimeout, console, document, Element, 
    EventBridge, JSONEditor, openEventBridge, setTimeout, window, _, $ */
@@ -512,6 +511,12 @@
                    decimals: 3,
                    propertyID: "bloom.bloomSize",
                    showPropertyRule: { bloomMode: "enabled" }
+               },
+               {
+                   label: "Zone Culling",
+                   type: "dropdown",
+                   options: { inherit: "Inherit", disabled: "Off", enabled: "On" },
+                   propertyID: "zoneCullingMode"
                },
                {
                    label: "Avatar Priority",

@@ -181,7 +181,7 @@ protected:
     // Avatar-updates priority
     uint32_t _avatarPriority{ COMPONENT_MODE_INHERIT };
 
-    // Dirty flags turn true when either keylight properties is changing values.
+    // Dirty flags turn true when properties are changing values.
     bool _keyLightPropertiesChanged{ false };
     bool _ambientLightPropertiesChanged{ false };
     bool _skyboxPropertiesChanged{ false };

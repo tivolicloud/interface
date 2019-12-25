@@ -1,13 +1,7 @@
 //  edit.js
 //
-//  Created by Brad Hefta-Gaub on 10/2/14.
-//  Persist toolbar by HRS 6/11/15.
-//  Copyright 2014 High Fidelity, Inc.
-//
-//  This script allows you to edit entities with a new UI/UX for mouse and trackpad based editing
-//
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
+//  Modified by Caitlyn Meeks on 12/24/19
+//  Copyright 2019 Tivoli Cloud VR
 //
 
 /* global Script, SelectionDisplay, LightOverlayManager, CameraManager, Grid, GridTool, EntityListTool, Vec3, SelectionManager,
@@ -397,11 +391,13 @@
             dynamic: false
         },
         Shape: {
+            name: "Shape",
             shape: "Box",
             dimensions: { x: 0.2, y: 0.2, z: 0.2 },
             color: { red: 0, green: 180, blue: 239 }
         },
         Text: {
+            name: "Text",
             text: "Text",
             dimensions: {
                 x: 0.65,
@@ -414,6 +410,7 @@
             faceCamera: false
         },
         Zone: {
+            name: "Zone",
             dimensions: {
                 x: 10,
                 y: 10,
@@ -458,9 +455,11 @@
             },
             shapeType: "box",
             bloomMode: "inherit",
+            zoneCullingMode: "inherit",
             avatarPriority: "inherit"
         },
         Model: {
+            name: "Model",
             collisionShape: "none",
             compoundShapeURL: "",
             animation: {
@@ -476,6 +475,7 @@
             }
         },
         Image: {
+            name: "Image",
             dimensions: {
                 x: 0.5385,
                 y: 0.2819,
@@ -487,6 +487,7 @@
             imageURL: DEFAULT_IMAGE
         },
         Web: {
+            name: "Web Entity",
             dimensions: {
                 x: 1.6,
                 y: 0.9,
@@ -496,6 +497,7 @@
             dpi: 30
         },
         ParticleEffect: {
+            name: "Particle System",
             lifespan: 1.5,
             maxParticles: 10,
             textures:
@@ -541,6 +543,7 @@
             azimuthFinish: Math.PI
         },
         Light: {
+            name: "Light",
             color: { red: 255, green: 255, blue: 255 },
             intensity: 5.0,
             dimensions: DEFAULT_LIGHT_DIMENSIONS,
