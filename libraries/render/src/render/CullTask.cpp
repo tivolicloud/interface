@@ -64,6 +64,7 @@ bool CullTest::solidAngleTest(const AABox& bound) {
     return true;
 }
 
+// CPM Investigate
 void render::cullItems(const RenderContextPointer& renderContext, const CullFunctor& cullFunctor, RenderDetails::Item& details,
                        const ItemBounds& inItems, ItemBounds& outItems) {
     assert(renderContext->args);
@@ -75,14 +76,22 @@ void render::cullItems(const RenderContextPointer& renderContext, const CullFunc
     details._considered += (int)inItems.size();
 
     // Culling / LOD
-    for (auto item : inItems) {
-        if (item.bound.isNull()) {
-            outItems.emplace_back(item); // One more Item to render
+    // isNull lives in AABox.cpp:
+    // bool isNull() const { return _scale == glm::vec3(0.0f, 0.0f, 0.0f); }
+    // So if the scale of the object's AABox is 0 return true and then it gets rendered???????
+
+    for (auto item : inItems) { // iterate thru the list of items to consider culling
+        if (item.bound.isNull()) { // CPM question: this appears to be the criteria for adding it?
+            outItems.emplace_back(item); // One more Item to render. This adds it to the back of the list.
             continue;
         }
 
         // TODO: some entity types (like lights) might want to be rendered even
         // when they are outside of the view frustum...
+        // CPM How about PARTICLE SYSTEMS.
+        // Is the ViewFrustum origin (camera) in a top level zone with Zone Culling turned on?
+        // 
+
         bool inView;
         {
             PerformanceTimer perfTimer("boxIntersectsFrustum");
@@ -92,7 +101,7 @@ void render::cullItems(const RenderContextPointer& renderContext, const CullFunc
             bool bigEnoughToRender;
             {
                 PerformanceTimer perfTimer("shouldRender");
-                bigEnoughToRender = cullFunctor(args, item.bound);
+                bigEnoughToRender = cullFunctor(args, item.bound); // cpm investigate cullfunctor
             }
             if (bigEnoughToRender) {
                 outItems.emplace_back(item); // One more Item to render
@@ -175,6 +184,7 @@ void CullSpatialSelection::configure(const Config& config) {
     _overrideSkipCulling = config.skipCulling;
 }
 
+// CPM Investigate
 void CullSpatialSelection::run(const RenderContextPointer& renderContext,
                                const Inputs& inputs, ItemBounds& outItems) {
     assert(renderContext->args);
@@ -271,7 +281,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
             }
 
         } else {
-
+            // CPM investigate
             // inside & fit items: easy, just filter
             {
                 PerformanceTimer perfTimer("insideFitItems");
@@ -419,6 +429,7 @@ void CullShapeBounds::run(const RenderContextPointer& renderContext, const Input
     }
 }
 
+// CPM interesting. Can I use this and invert the results for zone culling?
 void ApplyCullFunctorOnItemBounds::run(const RenderContextPointer& renderContext, const Inputs& inputs, Outputs& outputs) {
     assert(renderContext->args);
     assert(renderContext->args->hasViewFrustum());
@@ -436,7 +447,7 @@ void ApplyCullFunctorOnItemBounds::run(const RenderContextPointer& renderContext
 
     for (auto& item : inItems) {
         if (_cullFunctor(args, item.bound)) {
-            outItems.emplace_back(item);
+            outItems.emplace_back(item); // cpm - add to render?
         }
     }
 

@@ -174,6 +174,10 @@ public:
     DEFINE_PROPERTY_REF(PROP_PARENT_ID, ParentID, parentID, QUuid, UNKNOWN_ENTITY_ID);
     DEFINE_PROPERTY_REF(PROP_PARENT_JOINT_INDEX, ParentJointIndex, parentJointIndex, quint16, -1);
     DEFINE_PROPERTY(PROP_VISIBLE, Visible, visible, bool, ENTITY_ITEM_DEFAULT_VISIBLE);
+    // TIVOLI new feature, Locally Visible.  Is like visible but does not transmit. For edit hide and zone culling.
+    // World builders can temporarily hide stuff in their viewer without designating them as not visible to others.
+    // Also will be used by Zone Culling
+    DEFINE_PROPERTY(PROP_LOCALLY_VISIBLE, LocallyVisible, locallyVisible, bool, ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE);
     DEFINE_PROPERTY_REF(PROP_NAME, Name, name, QString, ENTITY_ITEM_DEFAULT_NAME);
     DEFINE_PROPERTY(PROP_LOCKED, Locked, locked, bool, ENTITY_ITEM_DEFAULT_LOCKED);
     DEFINE_PROPERTY_REF(PROP_USER_DATA, UserData, userData, QString, ENTITY_ITEM_DEFAULT_USER_DATA);

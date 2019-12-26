@@ -1014,15 +1014,16 @@ Q_GUI_EXPORT QOpenGLContext *qt_gl_global_share_context();
 
 Setting::Handle<int> sessionRunTime{ "sessionRunTime", 0 };
 
-const float DEFAULT_HMD_TABLET_SCALE_PERCENT = 60.0f;
+const float DEFAULT_HMD_TABLET_SCALE_PERCENT = 100.0f;
 const float DEFAULT_DESKTOP_TABLET_SCALE_PERCENT = 75.0f;
 const bool DEFAULT_DESKTOP_TABLET_BECOMES_TOOLBAR = true;
 const bool DEFAULT_HMD_TABLET_BECOMES_TOOLBAR = false;
 const bool DEFAULT_PREFER_STYLUS_OVER_LASER = false;
 const bool DEFAULT_PREFER_AVATAR_FINGER_OVER_STYLUS = false;
 const QString DEFAULT_CURSOR_NAME = "DEFAULT";
-const bool DEFAULT_MINI_TABLET_ENABLED = true;
+const bool DEFAULT_MINI_TABLET_ENABLED = false; // TIVOLI changed to false
 const bool DEFAULT_AWAY_STATE_WHEN_FOCUS_LOST_IN_VR_ENABLED = true;
+const bool DEFAULT_LOAD_COMPLETE_ENTITY_TREE = false; // TIVOLI new feature
 
 QSharedPointer<OffscreenUi> getOffscreenUI() {
 #if !defined(DISABLE_QML)
@@ -1063,6 +1064,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _lastNackTime(usecTimestampNow()),
     _lastSendDownstreamAudioStats(usecTimestampNow()),
     _notifiedPacketVersionMismatchThisDomain(false),
+    _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE), // TIVOLI  new feature 
     _maxOctreePPS(maxOctreePacketsPerSecond.get()),
     _snapshotSound(nullptr),
     _sampleSound(nullptr)
@@ -1596,7 +1598,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
             return;
         }
 
-       // TIVOLI showLoginScreen();
+        // TIVOLI showLoginScreen();
 #else
         resumeAfterLoginDialogActionTaken();
 #endif
@@ -3170,8 +3172,7 @@ static void addDisplayPluginToMenu(const DisplayPluginPointer& displayPlugin, in
 #endif
 
 void Application::showLoginScreen() {
-
-    return; // TIVOLI 
+    return;  // TIVOLI
 #if !defined(DISABLE_QML)
     auto accountManager = DependencyManager::get<AccountManager>();
     auto dialogsManager = DependencyManager::get<DialogsManager>();
@@ -6033,6 +6034,7 @@ void Application::setKeyboardFocusEntity(const QUuid& id) {
         if (id != UNKNOWN_ENTITY_ID) {
             EntityPropertyFlags desiredProperties;
             desiredProperties += PROP_VISIBLE;
+            desiredProperties += PROP_LOCALLY_VISIBLE; // TIVOLI new
             desiredProperties += PROP_SHOW_KEYBOARD_FOCUS_HIGHLIGHT;
             auto properties = entityScriptingInterface->getEntityProperties(id);
             if (properties.getVisible()) {
@@ -6964,8 +6966,15 @@ void Application::queryOctree(
     }
     _octreeQuery.setReportInitialCompletion(isModifiedQuery);
 
-    _octreeQuery.clearConicalViews(); 
-    _octreeQuery.setJSONParameters(queryJSONParameters);
+    // TIVOLI new feature to load entire tree at once in headless mode.
+    auto menu = Menu::getInstance(); 
+    if (menu) {
+        if (menu->isOptionChecked(
+                MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+                    _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
+                    _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
+         }       
+    }
 
     auto nodeList = DependencyManager::get<NodeList>();
 

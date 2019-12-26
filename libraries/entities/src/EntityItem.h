@@ -292,6 +292,9 @@ public:
     bool getVisible() const;
     void setVisible(bool value);
 
+    bool getLocallyVisible() const;
+    void setLocallyVisible(bool value);
+
     bool isVisibleInSecondaryCamera() const;
     void setIsVisibleInSecondaryCamera(bool value);
 
@@ -510,10 +513,10 @@ public:
     void setScriptHasFinishedPreload(bool value);
     bool isScriptPreloadFinished();
     virtual bool isWearable() const;
-    bool isDomainEntity() const { return _hostType == entity::HostType::DOMAIN; }
-    bool isAvatarEntity() const { return _hostType == entity::HostType::AVATAR; }
-    bool isMyAvatarEntity() const;
-    bool isLocalEntity() const { return _hostType == entity::HostType::LOCAL; }
+    bool isDomainEntity() const { return _hostType == entity::HostType::DOMAIN; } // CPM look
+    bool isAvatarEntity() const { return _hostType == entity::HostType::AVATAR; }  // CPM look
+    bool isMyAvatarEntity() const;  // CPM look
+    bool isLocalEntity() const { return _hostType == entity::HostType::LOCAL; }  // CPM look
     entity::HostType getEntityHostType() const { return _hostType; }
     virtual void setEntityHostType(entity::HostType hostType) { _hostType = hostType; }
 
@@ -647,7 +650,8 @@ protected:
     QString _collisionSoundURL { ENTITY_ITEM_DEFAULT_COLLISION_SOUND_URL };
     glm::vec3 _registrationPoint { ENTITY_ITEM_DEFAULT_REGISTRATION_POINT };
     float _angularDamping { ENTITY_ITEM_DEFAULT_ANGULAR_DAMPING };
-    bool _visible { ENTITY_ITEM_DEFAULT_VISIBLE };
+    bool _visible{ ENTITY_ITEM_DEFAULT_VISIBLE };
+    bool _locallyVisible{ ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE };
     bool _isVisibleInSecondaryCamera { ENTITY_ITEM_DEFAULT_VISIBLE_IN_SECONDARY_CAMERA };
     RenderLayer _renderLayer { RenderLayer::WORLD };
     PrimitiveMode _primitiveMode { PrimitiveMode::SOLID };

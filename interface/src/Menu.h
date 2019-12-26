@@ -228,7 +228,11 @@ namespace MenuOption {
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
     const QString MaterialProceduralShaders = "Enable Procedural Materials";
-}
+
+    // TIVOLI SPECIFIC
+    const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
+
+    }
 
 #endif // hifi_Menu_h
 

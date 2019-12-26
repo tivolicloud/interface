@@ -99,6 +99,7 @@ namespace render {
         void dirty();
     };
 
+    // CPM investigate
     class CullSpatialSelection {
     public:
         using Config = CullSpatialSelectionConfig;

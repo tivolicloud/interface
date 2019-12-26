@@ -14,7 +14,8 @@
 
 #include <PropertyFlags.h>
 
-enum EntityPropertyList {
+enum EntityPropertyList
+{
     PROP_PAGED_PROPERTY,
     PROP_CUSTOM_PROPERTIES_INCLUDED,
 
@@ -35,11 +36,11 @@ enum EntityPropertyList {
     PROP_REGISTRATION_POINT,
     PROP_CREATED,
     PROP_LAST_EDITED_BY,
-    PROP_ENTITY_HOST_TYPE,            // not sent over the wire
-    PROP_OWNING_AVATAR_ID,            // not sent over the wire
+    PROP_ENTITY_HOST_TYPE,  // not sent over the wire
+    PROP_OWNING_AVATAR_ID,  // not sent over the wire
     PROP_QUERY_AA_CUBE,
     PROP_CAN_CAST_SHADOW,
-    PROP_VISIBLE_IN_SECONDARY_CAMERA, // not sent over the wire
+    PROP_VISIBLE_IN_SECONDARY_CAMERA,  // not sent over the wire
     PROP_RENDER_LAYER,
     PROP_PRIMITIVE_MODE,
     PROP_IGNORE_PICK_INTERSECTION,
@@ -100,7 +101,7 @@ enum EntityPropertyList {
     PROP_ENTITY_INSTANCE_NUMBER,
     PROP_CERTIFICATE_ID,
     PROP_CERTIFICATE_TYPE,
-    PROP_STATIC_CERTIFICATE_VERSION,
+    PROP_LOCALLY_VISIBLE,
 
     // Used to convert values to and from scripts
     PROP_LOCAL_POSITION,
@@ -121,6 +122,7 @@ enum EntityPropertyList {
     PROP_PULSE_ALPHA_MODE,
     PROP_TEXTURES,
     PROP_BILLBOARD_MODE,
+    //PROP_LOCALLY_VISIBLE, // TIVOLI for culling and edit
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // ATTENTION: add new shared EntityItem properties to the list ABOVE this line
@@ -162,6 +164,7 @@ enum EntityPropertyList {
     PROP_DERIVED_32,
     PROP_DERIVED_33,
     PROP_DERIVED_34,
+    PROP_DERIVED_35,
 
     PROP_AFTER_LAST_ITEM,
 
@@ -372,6 +375,12 @@ enum EntityPropertyList {
     PROP_MAJOR_TICK_MARKS_COLOR = PROP_DERIVED_17,
     PROP_MINOR_TICK_MARKS_COLOR = PROP_DERIVED_18,
 
+    // CPM TIVOLI - breaking the rule below here by adding this in the prop derived area
+    // because when it was added to the upper list without a prop derived value, interface
+    // was crashing on loading particles.
+    //  PROP_LOCALLY_VISIBLE = PROP_DERIVED_35,  // Not sent over the wire
+    PROP_STATIC_CERTIFICATE_VERSION = PROP_DERIVED_35,     // EXPERIMENT TO MAKE SPACE FOR PROP_LOCALLY_VISIBLE 
+
     // WARNING!!! DO NOT ADD PROPS_xxx here unless you really really meant to.... Add them UP above
 };
 
@@ -381,4 +390,4 @@ typedef PropertyFlags<EntityPropertyList> EntityPropertyFlags;
 // one greater than the last item property due to the enum's auto-incrementing.
 extern EntityPropertyList PROP_LAST_ITEM;
 
-#endif // hifi_EntityPropertyFlags_h
+#endif  // hifi_EntityPropertyFlags_h

@@ -196,7 +196,7 @@ void setupPreferences() {
     {
         auto getter = []()->int { return qApp->getPreferStylusOverLaser() ? 1 : 0; };
         auto setter = [](int value) { qApp->setPreferStylusOverLaser((bool)value); };
-        auto preference = new RadioButtonsPreference(UI_CATEGORY, "Tablet stylys / laser", getter, setter);
+        auto preference = new RadioButtonsPreference(UI_CATEGORY, "Tablet stylus / laser", getter, setter);
         QStringList items;
         items << "Lasers" << "Stylus";
         preference->setHeading("Tablet Input Mechanism");

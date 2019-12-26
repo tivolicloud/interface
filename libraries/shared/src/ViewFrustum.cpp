@@ -207,6 +207,7 @@ bool ViewFrustum::sphereIntersectsFrustum(const glm::vec3& center, float radius)
     return true;
 }
 
+// CPM
 bool ViewFrustum::boxIntersectsFrustum(const AABox& box) const {
     // only check against frustum
     for(int i = 0; i < NUM_FRUSTUM_PLANES; i++) {

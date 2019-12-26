@@ -94,6 +94,13 @@
                    propertyID: "visible",
                    replaceID: "placeholder-property-visible"
                },
+               //{ // TIVOLI Locally Visible icon on entity properties
+               //    label: "",
+               //    glyph: "&#xe007;",
+               //    type: "bool",
+               //    propertyID: "locallyVisible",
+               //    replaceID: "placeholder-property-locallyVisible"
+               //},
                {
                    label: "Render Layer",
                    type: "dropdown",

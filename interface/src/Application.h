@@ -87,9 +87,8 @@ class CompositorHelper;
 class AudioInjector;
 
 namespace controller {
-    class StateController;
+class StateController;
 }
-
 
 static const QString RUNNING_MARKER_FILENAME = "Interface.running";
 static const QString SCRIPTS_SWITCH = "scripts";
@@ -105,8 +104,7 @@ class Application : public QApplication,
                     public AbstractViewStateInterface,
                     public AbstractScriptingServicesInterface,
                     public AbstractUriHandler,
-                    public PluginContainer
-{
+                    public PluginContainer {
     Q_OBJECT
 
     // TODO? Get rid of those
@@ -151,7 +149,7 @@ public:
     void updateCamera(RenderArgs& renderArgs, float deltaTime);
     void resizeGL();
 
-    bool notify(QObject *, QEvent *) override;
+    bool notify(QObject*, QEvent*) override;
     bool event(QEvent* event) override;
     bool eventFilter(QObject* object, QEvent* event) override;
 
@@ -202,7 +200,7 @@ public:
     size_t getRenderFrameCount() const { return _graphicsEngine.getRenderFrameCount(); }
     float getRenderLoopRate() const { return _graphicsEngine.getRenderLoopRate(); }
     float getNumCollisionObjects() const;
-    float getTargetRenderFrameRate() const; // frames/second
+    float getTargetRenderFrameRate() const;  // frames/second
 
     static void setupQmlSurface(QQmlContext* surfaceContext, bool setAdditionalContextProperties);
 
@@ -223,6 +221,10 @@ public:
     bool getPreferStylusOverLaser() { return _preferStylusOverLaserSetting.get(); }
     void setPreferStylusOverLaser(bool value);
 
+    // TIVOLI new feature.  Activated from Developer > Tivoli >>>
+    bool getLoadCompleteEntityTreeSetting() { return _loadCompleteEntityTreeSetting.get(); }
+    void setLoadCompleteEntityTreeSetting(bool value);
+
     // FIXME: Remove setting completely or make available through JavaScript API?
     //bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
     bool getPreferAvatarFingerOverStylus() { return false; }
@@ -237,7 +239,9 @@ public:
     float getAwayStateWhenFocusLostInVREnabled() { return _awayStateWhenFocusLostInVREnabled.get(); }
     void setAwayStateWhenFocusLostInVREnabled(bool setting);
 
-    Q_INVOKABLE void setMinimumGPUTextureMemStabilityCount(int stabilityCount) { _minimumGPUTextureMemSizeStabilityCount = stabilityCount; }
+    Q_INVOKABLE void setMinimumGPUTextureMemStabilityCount(int stabilityCount) {
+        _minimumGPUTextureMemSizeStabilityCount = stabilityCount;
+    }
 
     NodeToOctreeSceneStats* getOcteeSceneStats() { return &_octreeServerSceneStats; }
 
@@ -281,7 +285,7 @@ public:
     int getMaxOctreePacketsPerSecond() const;
 
     render::ScenePointer getMain3DScene() override { return _graphicsEngine.getRenderScene(); }
-    render::EnginePointer getRenderEngine() override { return  _graphicsEngine.getRenderEngine(); }
+    render::EnginePointer getRenderEngine() override { return _graphicsEngine.getRenderEngine(); }
     gpu::ContextPointer getGPUContext() const { return _graphicsEngine.getGPUContext(); }
 
     const GameWorkload& getGameWorkload() const { return _gameWorkload; }
@@ -307,7 +311,10 @@ public:
     QVector<QUuid> getTabletIDs() const;
 
     void setAvatarOverrideUrl(const QUrl& url, bool save);
-    void clearAvatarOverrideUrl() { _avatarOverrideUrl = QUrl(); _saveAvatarOverrideUrl = false; }
+    void clearAvatarOverrideUrl() {
+        _avatarOverrideUrl = QUrl();
+        _saveAvatarOverrideUrl = false;
+    }
     QUrl getAvatarOverrideUrl() { return _avatarOverrideUrl; }
     bool getSaveAvatarOverrideUrl() { return _saveAvatarOverrideUrl; }
     void saveNextPhysicsStats(QString filename);
@@ -342,7 +349,7 @@ public:
     void enterBackground();
     void enterForeground();
     void toggleAwayMode();
-    #endif
+#endif
 
     using SnapshotOperator = std::tuple<std::function<void(const QImage&)>, float, bool>;
     void addSnapshotOperator(const SnapshotOperator& snapshotOperator);
@@ -397,7 +404,7 @@ public slots:
 
     void showDialog(const QUrl& widgetUrl, const QUrl& tabletUrl, const QString& name) const;
 
-    void showLoginScreen(); // TIVOLI making all login screens early out and commenting all calls
+    void showLoginScreen();  // TIVOLI making all login screens early out and commenting all calls
 
     // FIXME: Move addAssetToWorld* methods to own class?
     void addAssetToWorldFromURL(QString url);
@@ -442,7 +449,7 @@ public slots:
     void updateHeartbeat() const;
 
     static void deadlockApplication();
-    static void unresponsiveApplication(); // cause main thread to be unresponsive for 35 seconds
+    static void unresponsiveApplication();  // cause main thread to be unresponsive for 35 seconds
 
     void rotationModeChanged() const;
 
@@ -609,10 +616,10 @@ private:
     MainWindow* _window;
     QElapsedTimer& _sessionRunTimer;
 
-    bool _aboutToQuit { false };
+    bool _aboutToQuit{ false };
 
 #ifndef Q_OS_ANDROID
-    FileLogger* _logger { nullptr };
+    FileLogger* _logger{ nullptr };
 #endif
 
     bool _previousSessionCrashed;
@@ -622,7 +629,7 @@ private:
     mutable std::mutex _displayPluginLock;
     InputPluginList _activeInputPlugins;
 
-    bool _activatingDisplayPlugin { false };
+    bool _activatingDisplayPlugin{ false };
 
     // Frame Rate Measurement
     RateCounter<500> _gameLoopCounter;
@@ -631,7 +638,7 @@ private:
     QElapsedTimer _timerStart;
     QElapsedTimer _lastTimeUpdated;
 
-    int _minimumGPUTextureMemSizeStabilityCount { 30 };
+    int _minimumGPUTextureMemSizeStabilityCount{ 30 };
 
     ShapeManager _shapeManager;
     PhysicalEntitySimulationPointer _entitySimulation;
@@ -639,27 +646,29 @@ private:
 
     EntityTreePointer _entityClipboard;
 
-    mutable QMutex _viewMutex { QMutex::Recursive };
-    ViewFrustum _viewFrustum; // current state of view frustum, perspective, orientation, etc.
+    mutable QMutex _viewMutex{ QMutex::Recursive };
+    ViewFrustum _viewFrustum;  // current state of view frustum, perspective, orientation, etc.
     ViewFrustum _displayViewFrustum;
 
     ConicalViewFrustums _conicalViews;
-    ConicalViewFrustums _lastQueriedViews; // last views used to query servers
+    ConicalViewFrustums _lastQueriedViews;  // last views used to query servers
 
     using SteadyClock = std::chrono::steady_clock;
     using TimePoint = SteadyClock::time_point;
     TimePoint _queryExpiry;
 
-    OctreeQuery _octreeQuery { true }; // NodeData derived class for querying octee cells from octree servers
+    OctreeQuery _octreeQuery{ true };  // NodeData derived class for querying octee cells from octree servers
 
-    std::shared_ptr<controller::StateController> _applicationStateDevice; // Default ApplicationDevice reflecting the state of different properties of the session
-    std::shared_ptr<KeyboardMouseDevice> _keyboardMouseDevice;   // Default input device, the good old keyboard mouse and maybe touchpad
-    std::shared_ptr<TouchscreenDevice> _touchscreenDevice;   // the good old touchscreen
+    std::shared_ptr<controller::StateController>
+        _applicationStateDevice;  // Default ApplicationDevice reflecting the state of different properties of the session
+    std::shared_ptr<KeyboardMouseDevice>
+        _keyboardMouseDevice;  // Default input device, the good old keyboard mouse and maybe touchpad
+    std::shared_ptr<TouchscreenDevice> _touchscreenDevice;  // the good old touchscreen
     std::shared_ptr<TouchscreenVirtualPadDevice> _touchscreenVirtualPadDevice;
-    SimpleMovingAverage _avatarSimsPerSecond {10};
-    int _avatarSimsPerSecondReport {0};
-    quint64 _lastAvatarSimsPerSecondUpdate {0};
-    FancyCamera _myCamera;                            // My view onto the world
+    SimpleMovingAverage _avatarSimsPerSecond{ 10 };
+    int _avatarSimsPerSecondReport{ 0 };
+    quint64 _lastAvatarSimsPerSecondUpdate{ 0 };
+    FancyCamera _myCamera;  // My view onto the world
 
     Setting::Handle<QString> _previousScriptLocation;
     Setting::Handle<float> _fieldOfView;
@@ -674,7 +683,9 @@ private:
     Setting::Handle<bool> _awayStateWhenFocusLostInVREnabled;
     Setting::Handle<QString> _preferredCursor;
     Setting::Handle<bool> _miniTabletEnabledSetting;
-    Setting::Handle<bool> _keepLogWindowOnTop { "keepLogWindowOnTop", false };
+    Setting::Handle<bool> _keepLogWindowOnTop{ "keepLogWindowOnTop", false };
+    // TIVOLI SPECIFIC
+    Setting::Handle<bool> _loadCompleteEntityTreeSetting;  // TIVOLI new feature
 
     float _scaleMirror;
     float _mirrorYawOffset;
@@ -683,7 +694,7 @@ private:
     QHash<int, QKeyEvent> _keysPressed;
 
     bool _enableProcessOctreeThread;
-    bool _interstitialMode { false };
+    bool _interstitialMode{ false };
 
     OctreePacketProcessor _octreeProcessor;
     EntityEditPacketSender _entityEditSender;
@@ -708,7 +719,7 @@ private:
 
     GLCanvas* _glWidget{ nullptr };
 
-    typedef bool (Application::* AcceptURLMethod)(const QString &);
+    typedef bool (Application::*AcceptURLMethod)(const QString&);
     static const std::vector<std::pair<QString, Application::AcceptURLMethod>> _acceptedExtensions;
 
     glm::uvec2 _renderResolution;
@@ -734,7 +745,6 @@ private:
     GraphicsEngine _graphicsEngine;
     void updateRenderArgs(float deltaTime);
 
-
     Overlays _overlays;
     ApplicationOverlay _applicationOverlay;
     OverlayConductor _overlayConductor;
@@ -743,37 +753,37 @@ private:
 
     ThreadSafeValueCache<EntityItemID> _keyboardFocusedEntity;
     quint64 _lastAcceptedKeyPress = 0;
-    bool _isForeground = true; // starts out assumed to be in foreground
-    bool _isGLInitialized { false };
-    bool _physicsEnabled { false };
-    bool _failedToConnectToEntityServer { false };
+    bool _isForeground = true;  // starts out assumed to be in foreground
+    bool _isGLInitialized{ false };
+    bool _physicsEnabled{ false };
+    bool _failedToConnectToEntityServer{ false };
 
-    bool _reticleClickPressed { false };
-    bool _keyboardFocusWaitingOnRenderable { false };
+    bool _reticleClickPressed{ false };
+    bool _keyboardFocusWaitingOnRenderable{ false };
 
     int _avatarAttachmentRequest = 0;
 
-    bool _settingsLoaded { false };
+    bool _settingsLoaded{ false };
 
-    bool _fakedMouseEvent { false };
+    bool _fakedMouseEvent{ false };
 
-    bool _isMissingSequenceNumbers { false };
+    bool _isMissingSequenceNumbers{ false };
 
     void checkChangeCursor();
-    mutable QMutex _changeCursorLock { QMutex::Recursive };
+    mutable QMutex _changeCursorLock{ QMutex::Recursive };
     Qt::CursorShape _desiredCursor{ Qt::BlankCursor };
-    bool _cursorNeedsChanging { false };
+    bool _cursorNeedsChanging{ false };
 
     std::map<void*, std::function<void()>> _postUpdateLambdas;
     std::mutex _postUpdateLambdasLock;
 
-    std::atomic<uint32_t> _fullSceneReceivedCounter { 0 }; // how many times have we received a full-scene octree stats packet
-    uint32_t _fullSceneCounterAtLastPhysicsCheck { 0 }; // _fullSceneReceivedCounter last time we checked physics ready
+    std::atomic<uint32_t> _fullSceneReceivedCounter{ 0 };  // how many times have we received a full-scene octree stats packet
+    uint32_t _fullSceneCounterAtLastPhysicsCheck{ 0 };     // _fullSceneReceivedCounter last time we checked physics ready
 
-    qint64 _gpuTextureMemSizeStabilityCount { 0 };
-    qint64 _gpuTextureMemSizeAtLastCheck { 0 };
+    qint64 _gpuTextureMemSizeStabilityCount{ 0 };
+    qint64 _gpuTextureMemSizeAtLastCheck{ 0 };
 
-    bool _keyboardDeviceHasFocus { true };
+    bool _keyboardDeviceHasFocus{ true };
 
     ConnectionMonitor _connectionMonitor;
 
@@ -786,7 +796,7 @@ private:
     void addAssetToWorldError(QString modelName, QString errorText);
 
     QQuickItem* _addAssetToWorldMessageBox{ nullptr };
-    QStringList _addAssetToWorldInfoKeys;  // Model name
+    QStringList _addAssetToWorldInfoKeys;      // Model name
     QStringList _addAssetToWorldInfoMessages;  // Info message
     QTimer _addAssetToWorldInfoTimer;
     QTimer _addAssetToWorldErrorTimer;
@@ -798,34 +808,34 @@ private:
     SharedSoundPointer _sampleSound;
     std::mutex _snapshotMutex;
     std::queue<SnapshotOperator> _snapshotOperators;
-    bool _hasPrimarySnapshot { false };
+    bool _hasPrimarySnapshot{ false };
 
-    DisplayPluginPointer _autoSwitchDisplayModeSupportedHMDPlugin { nullptr };
+    DisplayPluginPointer _autoSwitchDisplayModeSupportedHMDPlugin{ nullptr };
     QString _autoSwitchDisplayModeSupportedHMDPluginName;
     bool _previousHMDWornStatus;
     void startHMDStandBySession();
     void endHMDSession();
 
-    glm::vec3 _thirdPersonHMDCameraBoom { 0.0f, 0.0f, -1.0f };
-    bool _thirdPersonHMDCameraBoomValid { true };
+    glm::vec3 _thirdPersonHMDCameraBoom{ 0.0f, 0.0f, -1.0f };
+    bool _thirdPersonHMDCameraBoomValid{ true };
 
     QUrl _avatarOverrideUrl;
-    bool _saveAvatarOverrideUrl { false };
+    bool _saveAvatarOverrideUrl{ false };
 
-    std::atomic<bool> _pendingIdleEvent { true };
+    std::atomic<bool> _pendingIdleEvent{ true };
 
-    bool quitWhenFinished { false };
+    bool quitWhenFinished{ false };
 
-    bool _showTrackedObjects { false };
-    bool _prevShowTrackedObjects { false };
+    bool _showTrackedObjects{ false };
+    bool _prevShowTrackedObjects{ false };
 
-    bool _resumeAfterLoginDialogActionTaken_WasPostponed { false };
-    bool _resumeAfterLoginDialogActionTaken_SafeToRun { false };
-    bool _startUpFinished { false };
-    bool _overrideEntry { false };
+    bool _resumeAfterLoginDialogActionTaken_WasPostponed{ false };
+    bool _resumeAfterLoginDialogActionTaken_SafeToRun{ false };
+    bool _startUpFinished{ false };
+    bool _overrideEntry{ false };
 
     VisionSqueeze _visionSqueeze;
 
-    bool _crashOnShutdown { false };
+    bool _crashOnShutdown{ false };
 };
-#endif // hifi_Application_h
+#endif  // hifi_Application_h

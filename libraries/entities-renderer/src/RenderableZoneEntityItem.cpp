@@ -249,6 +249,7 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
         _zoneCullingProperties = entity->getZoneCullingProperties();
         updateZoneCullingFromEntity(entity);
     }
+
     bool visuallyReady = true;
     uint32_t skyboxMode = entity->getSkyboxMode();
     if (skyboxMode == COMPONENT_MODE_ENABLED && !_skyboxTextureURL.isEmpty()) {
@@ -393,6 +394,7 @@ void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& e
     bloom->setBloomThreshold(_bloomProperties.getBloomThreshold());
     bloom->setBloomSize(_bloomProperties.getBloomSize());*/
 }
+
 void ZoneEntityRenderer::updateKeyBackgroundFromEntity(const TypedEntityPointer& entity) {
     setSkyboxMode((ComponentMode)entity->getSkyboxMode());
 

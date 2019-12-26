@@ -3,11 +3,11 @@
 //  interface/src
 //
 //  Created by Brad Hefta-Gaub on 12/6/13.
-//  Copyright 2013 High Fidelity, Inc.
 //
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
+//  Modified by Caitlyn Meeks on 12/25/19
+//  Copyright 2019 Tivoli Cloud VR
 //
+//  Renders Entity Tree contents.
 
 #include "EntityTreeRenderer.h"
 
@@ -82,7 +82,8 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts, AbstractViewStateInterf
     connect(pointerManager.data(), &PointerManager::triggerContinueEntity, entityScriptingInterface, &EntityScriptingInterface::mouseMoveOnEntity);
     connect(pointerManager.data(), &PointerManager::triggerEndEntity, entityScriptingInterface, &EntityScriptingInterface::mouseReleaseOnEntity);
 
-    // Forward mouse events to web entities
+    //  CPM investigate
+    //  Forward mouse events to web entities
     auto handlePointerEvent = [&](const QUuid& entityID, const PointerEvent& event) {
         std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
         auto entity = getEntity(entityID);
@@ -140,13 +141,16 @@ EntityTreeRenderer::~EntityTreeRenderer() {
 }
 
 EntityRendererPointer EntityTreeRenderer::renderableForEntityId(const EntityItemID& id) const {
-    auto itr = _entitiesInScene.find(id);
+    auto itr = _entitiesInScene.find(id); // ? how is this list built to asssure its only renderable
     if (itr == _entitiesInScene.end()) {
-        return EntityRendererPointer();
+        return EntityRendererPointer(); // cpm if nothing is found return an emtpy entityrendererpointer?
     }
-    return itr->second;
+    // cpm itr->first would return the key.  itr->second returns the value associated with the key in the unordered_map!
+   //  return the value found in the find operation!
+    return itr->second;  // CPM https://stackoverflow.com/questions/15451287/what-does-iterator-second-mean
 }
 
+// CPM investigate
 render::ItemID EntityTreeRenderer::renderableIdForEntityId(const EntityItemID& id) const {
     auto renderable = renderableForEntityId(id);
     if (renderable) {
@@ -264,7 +268,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         applyLayeredZones();
     }
 
-    OctreeProcessor::clearDomainAndNonOwnedEntities();
+    OctreeProcessor::clearDomainAndNonOwnedEntities(); // CPM
 }
 
 void EntityTreeRenderer::clear() {
@@ -283,7 +287,7 @@ void EntityTreeRenderer::clear() {
             render::Transaction transaction;
             for (const auto& entry :  _entitiesInScene) {
                 const auto& renderer = entry.second;
-                renderer->removeFromScene(scene, transaction);
+                renderer->removeFromScene(scene, transaction);  // CPM 
             }
             scene->enqueueTransaction(transaction);
         }
@@ -390,7 +394,7 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
 
             auto entityID = entity->getEntityItemID();
             auto renderable = EntityRenderer::addToScene(*this, entity, scene, transaction);
-            if (renderable) {
+            if (renderable) { // CPM How is renderable calculated?
                 _entitiesInScene.insert({ entityID, renderable });
                 processedIds.insert(entityID);
             }
@@ -571,6 +575,7 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
     _spaceUpdates.emplace_back(proxyUpdate.first, proxyUpdate.second);
 }
 
+// CPM Investigate.
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
     float radius = 0.01f; // for now, assume 0.01 meter radius, because we actually check the point inside later
     QVector<QUuid> entityIDs;
@@ -580,12 +585,14 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     _tree->withReadLock([&] {
         auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
 
+        // CPM Investigate
         // FIXME - if EntityTree had a findEntitiesContainingPoint() this could theoretically be a little faster
         entityTree->evalEntitiesInSphere(_avatarPosition, radius, PickFilter(), entityIDs);
 
         LayeredZones oldLayeredZones(_layeredZones);
         _layeredZones.clear();
 
+        // CPM investigate
         // create a list of entities that actually contain the avatar's position
         for (auto& entityID : entityIDs) {
             auto entity = entityTree->findEntityByID(entityID);
@@ -609,7 +616,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
                 contains = entity->contains(_avatarPosition);
             }
 
-            if (contains) {
+            if (contains) { // CPM investigate
                 // if this entity is a zone and visible, add it to our layered zones
                 if (isZone && entity->getVisible() && renderableIdForEntity(entity) != render::Item::INVALID_ITEM_ID) {
                     _layeredZones.emplace_back(std::dynamic_pointer_cast<ZoneEntityItem>(entity));
@@ -621,14 +628,15 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
             }
         }
 
-        _layeredZones.sort();
+        _layeredZones.sort(); // CPM sort?
         if (!_layeredZones.equals(oldLayeredZones)) {
             applyLayeredZones();
         }
     });
 }
 
-void EntityTreeRenderer::checkEnterLeaveEntities() {
+// CPM Investigate.  Here we determine if we enter a zone?
+void EntityTreeRenderer::checkEnterLeaveEntities() { 
     PROFILE_RANGE(simulation_physics, "EnterLeave");
     PerformanceTimer perfTimer("enterLeave");
     auto now = usecTimestampNow();
@@ -716,6 +724,11 @@ void EntityTreeRenderer::forceRecheckEntities() {
     _forceRecheckEntities = true;
 }
 
+// CPM investigate
+// This adds the zone effects to the existing scene.
+// Zone culling actually shouldn't happen here since it preempts this point stage.
+// We should probably put this the zone culling check in this class but call it way ahead of this.
+//
 bool EntityTreeRenderer::applyLayeredZones() {
     // from the list of zones we are going to build a selection list the Render Item corresponding to the zones
     // in the expected layered order and update the scene with it
@@ -1085,6 +1098,8 @@ void EntityTreeRenderer::fadeOutRenderable(const EntityRendererPointer& renderab
     scene->enqueueTransaction(transaction);
 }
 
+// TIVOLI improve entity collision sounds
+// This could be done a million times better.  At least on the sound side.
 void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entity, const Collision& collision) {
     assert((bool)entity);
     auto renderable = renderableForEntity(entity);
@@ -1092,7 +1107,7 @@ void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entit
         return;
     }
 
-    SharedSoundPointer collisionSound = renderable->getCollisionSound();
+    SharedSoundPointer collisionSound = renderable->getCollisionSound(); // TIVOLI improve
     if (!collisionSound) {
         return;
     }
@@ -1295,6 +1310,7 @@ bool EntityTreeRenderer::LayeredZones::equals(const LayeredZones& other) const {
     return true;
 }
 
+// CPM investigate.  Looks like this maintains a list of items to render.
 void EntityTreeRenderer::LayeredZones::appendRenderIDs(render::ItemIDs& list, EntityTreeRenderer* entityTreeRenderer) const {
     for (auto it = cbegin(); it != cend(); it++) {
         if (it->zone.lock()) {

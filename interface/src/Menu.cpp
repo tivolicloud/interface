@@ -299,6 +299,15 @@ Menu::Menu() {
     // Developer menu ----------------------------------
     MenuWrapper* developerMenu = addMenu("Developer", "Developer");
     
+    // TIVOLI new feature
+    // Developer > Tivoli Options >>>
+    MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
+    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
+                                                    qApp->getLoadCompleteEntityTreeSetting());
+    
+    //// Developer > Tivoli Options > Test Zone Culling (test)
+    //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);
+
     // Developer > Scripting >>>
     MenuWrapper* scriptingOptionsMenu = developerMenu->addMenu("Scripting");
     
@@ -348,6 +357,7 @@ Menu::Menu() {
         UNSPECIFIED_POSITION);
     connect(speechRecognizer.data(), SIGNAL(enabledUpdated(bool)), speechRecognizerAction, SLOT(setChecked(bool)));
 #endif
+
     
     // Developer > UI >>>
     MenuWrapper* uiOptionsMenu = developerMenu->addMenu("UI");

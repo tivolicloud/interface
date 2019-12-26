@@ -97,6 +97,7 @@ const ShapeKey Item::getShapeKey() const {
     return shapeKey;
 }
 
+// CPM investigate - used in MetaCullGroup
 uint32_t Item::fetchMetaSubItemBounds(ItemBounds& subItemBounds, Scene& scene) const {
     ItemIDs subItems;
     auto numSubs = fetchMetaSubItems(subItems);

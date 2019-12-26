@@ -216,7 +216,7 @@ void EntityRenderer::render(RenderArgs* args) {
 //
 // Methods called by the EntityTreeRenderer
 //
-
+// CPM investigate Entity Renderer
 EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer, const EntityItemPointer& entity, const ScenePointer& scene, Transaction& transaction) {
     EntityRenderer::Pointer result;
     if (!entity) {
@@ -292,14 +292,15 @@ EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
     }
 
     if (result) {
-        result->addToScene(scene, transaction);
+        result->addToScene(scene, transaction); // CPM investigate
     }
 
     return result;
 }
 
+// CPM investigate
 bool EntityRenderer::addToScene(const ScenePointer& scene, Transaction& transaction) {
-    _renderItemID = scene->allocateID();
+    _renderItemID = scene->allocateID();  // CPM investigate
     // Complicated series of trusses
     auto renderPayload = std::make_shared<PayloadProxyInterface::ProxyPayload>(shared_from_this());
     Item::Status::Getters statusGetters;
@@ -402,6 +403,7 @@ void EntityRenderer::updateModelTransformAndBound() {
     }
 }
 
+// CPM Investigate.  This appears to be very imporotant in rendering and simulating.
 void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transaction& transaction, const EntityItemPointer& entity) {
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
     withWriteLock([&] {
@@ -419,8 +421,8 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transa
         updateModelTransformAndBound();
 
         _moving = entity->isMovingRelativeToParent();
-        _visible = entity->getVisible();
-        setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
+        _visible = entity->getVisible(); // CPM investigate
+        setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera()); 
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());
         _canCastShadow = entity->getCanCastShadow();

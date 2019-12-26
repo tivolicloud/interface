@@ -88,16 +88,16 @@ public:
     };
 
     enum FlagBit : uint32_t {
-        TYPE_SHAPE = 0,   // Item is a Shape: Implements the Shape Interface that draw a Geometry rendered with a Material
+        TYPE_SHAPE = 0,   // Item is a Shape: Implements the Shape Interface that draws a Geometry rendered with a Material
         TYPE_LIGHT,       // Item is a Light: Implements the Light Interface that 
         TYPE_CAMERA,      // Item is a Camera: Implements the Camera Interface
-        TYPE_META,        // Item is a Meta: meanning it s used to represent a higher level object, potentially represented by other render items
+        TYPE_META,        // Item is a Meta: meaning its used to represent a higher level object, potentially represented by other render items
 
         TRANSLUCENT,      // Transparent and not opaque, for some odd reason TRANSPARENCY doesn't work...
         VIEW_SPACE,       // Transformed in view space, and not in world space
-        DYNAMIC,          // Dynamic and bound will change unlike static item
+        DYNAMIC,          // CPM Dynamic and bound will change unlike static item
         DEFORMED,         // Deformed within bound, not solid
-        INVISIBLE,        // Visible or not in the scene?
+        INVISIBLE,        // CPM Visible or not in the scene?
         SHADOW_CASTER,    // Item cast shadows
         META_CULL_GROUP,  // As a meta item, the culling of my sub items is based solely on my bounding box and my visibility in the view
         SUB_META_CULLED,  // As a sub item of a meta render item set as cull group, need to be set to my culling to the meta render it

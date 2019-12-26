@@ -83,6 +83,7 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_PARENT_ID;
     requestedProperties += PROP_PARENT_JOINT_INDEX;
     requestedProperties += PROP_VISIBLE;
+    requestedProperties += PROP_LOCALLY_VISIBLE;
     requestedProperties += PROP_NAME;
     requestedProperties += PROP_LOCKED;
     requestedProperties += PROP_USER_DATA;
@@ -189,10 +190,12 @@ OctreeElement::AppendState EntityItem::appendEntityData(OctreePacketData* packet
     EntityPropertyFlags propertyFlags(PROP_LAST_ITEM);
     EntityPropertyFlags requestedProperties = getEntityProperties(params);
 
+    // CPM Investigate
     // these properties are not sent over the wire
     requestedProperties -= PROP_ENTITY_HOST_TYPE;
     requestedProperties -= PROP_OWNING_AVATAR_ID;
     requestedProperties -= PROP_VISIBLE_IN_SECONDARY_CAMERA;
+    requestedProperties -= PROP_LOCALLY_VISIBLE;
 
     // If we are being called for a subsequent pass at appendEntityData() that failed to completely encode this item,
     // then our entityTreeElementExtraEncodeData should include data about which properties we need to append.
@@ -280,6 +283,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(OctreePacketData* packet
         APPEND_ENTITY_PROPERTY(PROP_PARENT_ID, actualParentID);
         APPEND_ENTITY_PROPERTY(PROP_PARENT_JOINT_INDEX, getParentJointIndex());
         APPEND_ENTITY_PROPERTY(PROP_VISIBLE, getVisible());
+       //  APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, getLocallyVisible()); // not sent over the wire
         APPEND_ENTITY_PROPERTY(PROP_NAME, getName());
         APPEND_ENTITY_PROPERTY(PROP_LOCKED, getLocked());
         APPEND_ENTITY_PROPERTY(PROP_USER_DATA, getUserData());
@@ -817,6 +821,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         overwriteLocalData = oldOverwrite;
     }
     READ_ENTITY_PROPERTY(PROP_VISIBLE, bool, setVisible);
+   //  READ_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);  // not sent over the wire
     READ_ENTITY_PROPERTY(PROP_NAME, QString, setName);
     READ_ENTITY_PROPERTY(PROP_LOCKED, bool, setLocked);
     READ_ENTITY_PROPERTY(PROP_USER_DATA, QString, setUserData);
@@ -855,7 +860,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         };
         READ_ENTITY_PROPERTY(PROP_ROTATION, glm::quat, customUpdateRotationFromNetwork);
     }
-    READ_ENTITY_PROPERTY(PROP_REGISTRATION_POINT, glm::vec3, setRegistrationPoint);
+    READ_ENTITY_PROPERTY(PROP_REGISTRATION_POINT, glm::vec3, setRegistrationPoint);  // CPM NEAT
     READ_ENTITY_PROPERTY(PROP_CREATED, quint64, setCreated);
     READ_ENTITY_PROPERTY(PROP_LAST_EDITED_BY, QUuid, setLastEditedBy);
     // READ_ENTITY_PROPERTY(PROP_ENTITY_HOST_TYPE, entity::HostType, setEntityHostType); // not sent over the wire
@@ -1334,6 +1339,7 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(parentID, getParentID);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(parentJointIndex, getParentJointIndex);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(visible, getVisible);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(locallyVisible, getLocallyVisible);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(name, getName);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(locked, getLocked);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(userData, getUserData);
@@ -1483,6 +1489,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(parentID, setParentID);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(parentJointIndex, setParentJointIndex);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(visible, setVisible);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(locallyVisible, setLocallyVisible);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(name, setName);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(locked, setLocked);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(userData, setUserData);
@@ -2933,6 +2940,7 @@ bool EntityItem::getVisible() const {
     return result;
 }
 
+
 void EntityItem::setVisible(bool value) {
     bool changed;
     withWriteLock([&] {
@@ -2945,6 +2953,28 @@ void EntityItem::setVisible(bool value) {
         bumpAncestorChainRenderableVersion();
     }
 }
+
+
+bool EntityItem::getLocallyVisible() const {
+    bool result;
+    withReadLock([&] { result = _locallyVisible; });
+    return result;
+}
+
+
+void EntityItem::setLocallyVisible(bool value) {
+    bool changed;
+    withWriteLock([&] {
+        changed = _locallyVisible != value;
+        _needsRenderUpdate |= changed;
+        _locallyVisible = value;
+    });
+
+    if (changed) {
+        bumpAncestorChainRenderableVersion();
+    }
+}
+
 
 bool EntityItem::isVisibleInSecondaryCamera() const {
     bool result;
