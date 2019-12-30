@@ -174,9 +174,7 @@ public:
     DEFINE_PROPERTY_REF(PROP_PARENT_ID, ParentID, parentID, QUuid, UNKNOWN_ENTITY_ID);
     DEFINE_PROPERTY_REF(PROP_PARENT_JOINT_INDEX, ParentJointIndex, parentJointIndex, quint16, -1);
     DEFINE_PROPERTY(PROP_VISIBLE, Visible, visible, bool, ENTITY_ITEM_DEFAULT_VISIBLE);
-    // TIVOLI new feature, Locally Visible.  Is like visible but does not transmit. For edit hide and zone culling.
-    // World builders can temporarily hide stuff in their viewer without designating them as not visible to others.
-    // Also will be used by Zone Culling
+    // TIVOLI new feature, Locally Visible, not to be sent on wire. For edit hide and zone culling etc
     DEFINE_PROPERTY(PROP_LOCALLY_VISIBLE, LocallyVisible, locallyVisible, bool, ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE);
     DEFINE_PROPERTY_REF(PROP_NAME, Name, name, QString, ENTITY_ITEM_DEFAULT_NAME);
     DEFINE_PROPERTY(PROP_LOCKED, Locked, locked, bool, ENTITY_ITEM_DEFAULT_LOCKED);
@@ -294,7 +292,7 @@ public:
     DEFINE_PROPERTY(PROP_PARTICLE_ROTATE_WITH_ENTITY, RotateWithEntity, rotateWithEntity, bool, particle::DEFAULT_ROTATE_WITH_ENTITY);
 
     // Model
-    DEFINE_PROPERTY_REF(PROP_MODEL_URL, ModelURL, modelURL, QString, "");
+    DEFINE_PROPERTY_REF(PROP_MODEL_URL, ModelURL, modelURL, QString, ""); // TIVOLI look into adding auto LOD checking
     DEFINE_PROPERTY_REF(PROP_MODEL_SCALE, ModelScale, modelScale, glm::vec3, glm::vec3(1.0f));
     DEFINE_PROPERTY_REF(PROP_JOINT_ROTATIONS_SET, JointRotationsSet, jointRotationsSet, QVector<bool>, QVector<bool>());
     DEFINE_PROPERTY_REF(PROP_JOINT_ROTATIONS, JointRotations, jointRotations, QVector<glm::quat>, QVector<glm::quat>());
@@ -335,9 +333,11 @@ public:
     DEFINE_PROPERTY_GROUP(Haze, haze, HazePropertyGroup);
     DEFINE_PROPERTY_GROUP(Bloom, bloom, BloomPropertyGroup);
     DEFINE_PROPERTY_GROUP(ZoneCulling, zoneCulling, ZoneCullingPropertyGroup); // TIVOLI
+
     DEFINE_PROPERTY(PROP_FLYING_ALLOWED, FlyingAllowed, flyingAllowed, bool, ZoneEntityItem::DEFAULT_FLYING_ALLOWED);
     DEFINE_PROPERTY(PROP_GHOSTING_ALLOWED, GhostingAllowed, ghostingAllowed, bool, ZoneEntityItem::DEFAULT_GHOSTING_ALLOWED);
     DEFINE_PROPERTY(PROP_FILTER_URL, FilterURL, filterURL, QString, ZoneEntityItem::DEFAULT_FILTER_URL);
+    
     DEFINE_PROPERTY_REF_ENUM(PROP_KEY_LIGHT_MODE, KeyLightMode, keyLightMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_SKYBOX_MODE, SkyboxMode, skyboxMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_AMBIENT_LIGHT_MODE, AmbientLightMode, ambientLightMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
@@ -666,6 +666,7 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, AmbientLightMode, ambientLightMode, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, SkyboxMode, skyboxMode, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, BloomMode, bloomMode, "");
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, ZoneCullingMode, zoneCullingMode, "");
 
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Cloneable, cloneable, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneLifetime, cloneLifetime, "");

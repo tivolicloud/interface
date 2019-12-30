@@ -181,7 +181,7 @@ ItemKey EntityRenderer::getKey() {
         builder.withSubMetaCulled();
     }
 
-    if (!_visible) {
+    if (!_visible) { // CPM
         builder.withInvisible();
     }
 

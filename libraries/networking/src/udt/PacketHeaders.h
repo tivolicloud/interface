@@ -277,6 +277,8 @@ enum class EntityVersion : PacketVersion {
     ShadowBiasAndDistance,
     TextEntityFonts,
     ScriptServerKinematicMotion,
+    ZoneCullingMode = 83,  // TIVOLI new
+    LocallyVisible = 84,   // TIVOLI new
 
     // Add new versions above here
     NUM_PACKET_TYPE,

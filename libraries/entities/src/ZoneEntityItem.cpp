@@ -188,7 +188,7 @@ int ZoneEntityItem::readEntitySubclassDataFromBuffer(const unsigned char* data, 
         dataAt += bytesFromBloom;
     }
 
-    { // TIVOLI - this may necessitate changing the order in which bytes are read
+    { // TIVOLI - does the order here matter? I imagine it does..
         int bytesFromZoneCulling =
             _zoneCullingProperties.readEntitySubclassDataFromBuffer(dataAt, (bytesLeftToRead - bytesRead), args, propertyFlags,
                                                               overwriteLocalData, _zoneCullingPropertiesChanged);

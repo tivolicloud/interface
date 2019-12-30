@@ -6,8 +6,8 @@
 //  Copyright 2019, Tivoli Cloud VR
 
 
-#ifndef tivoli_ZoneCullingPropertyGroup_h
-#define tivoli_ZoneCullingPropertyGroup_h
+#ifndef hifi_ZoneCullingPropertyGroup_h
+#define hifi_ZoneCullingPropertyGroup_h
 
 
 #include <stdint.h>
@@ -93,4 +93,4 @@ public:
     DEFINE_PROPERTY(PROP_BLOOM_SIZE, BloomSize, bloomSize, float, INITIAL_BLOOM_SIZE);*/
 };
 
-#endif  // tivoli_ZoneCullingPropertyGroup_h
+#endif  // hifi_ZoneCullingPropertyGroup_h

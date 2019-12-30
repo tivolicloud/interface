@@ -55,8 +55,8 @@ static const size_t DEFAULT_MAX_CONNECTION_RATE { std::numeric_limits<size_t>::m
 
 const char DEFAULT_ASSIGNMENT_SERVER_HOSTNAME[] = "localhost";
 
-const char STUN_SERVER_HOSTNAME[] = "stun.highfidelity.io";
-const unsigned short STUN_SERVER_PORT = 3478;
+const char STUN_SERVER_HOSTNAME[] = "stun.l.google.com"; // TIVOLI changed to Google's stun server
+const unsigned short STUN_SERVER_PORT = 19302; // TIVOLI changed to Google's stun server
 
 const QString DOMAIN_SERVER_LOCAL_PORT_SMEM_KEY = "domain-server.local-port";
 const QString DOMAIN_SERVER_LOCAL_HTTP_PORT_SMEM_KEY = "domain-server.local-http-port";

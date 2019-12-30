@@ -101,7 +101,7 @@ enum EntityPropertyList
     PROP_ENTITY_INSTANCE_NUMBER,
     PROP_CERTIFICATE_ID,
     PROP_CERTIFICATE_TYPE,
-    PROP_LOCALLY_VISIBLE,
+    PROP_STATIC_CERTIFICATE_VERSION,
 
     // Used to convert values to and from scripts
     PROP_LOCAL_POSITION,
@@ -122,7 +122,7 @@ enum EntityPropertyList
     PROP_PULSE_ALPHA_MODE,
     PROP_TEXTURES,
     PROP_BILLBOARD_MODE,
-    //PROP_LOCALLY_VISIBLE, // TIVOLI for culling and edit
+    PROP_LOCALLY_VISIBLE, // TIVOLI for hiding in edit mode and special culling cases
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // ATTENTION: add new shared EntityItem properties to the list ABOVE this line
@@ -171,8 +171,8 @@ enum EntityPropertyList
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // WARNING! Do not add props here unless you intentionally mean to reuse PROP_DERIVED_X indexes
     //
-    // These properties intentionally reuse the enum values for other properties which will never overlap with each other. We do this so that we don't have to expand
-    // the size of the properties bitflags mask
+    // These properties intentionally reuse the enum values for other properties which will never overlap with each other. 
+    // We do this so that we don't have to expand the size of the properties bitflags mask
     //
     // Only add properties here that are only used by one subclass.  Otherwise, they should go above to prevent collisions
 
@@ -292,9 +292,7 @@ enum EntityPropertyList
     PROP_SKYBOX_MODE = PROP_DERIVED_30,
     PROP_HAZE_MODE = PROP_DERIVED_31,
     PROP_BLOOM_MODE = PROP_DERIVED_32,
-    // Avatar priority
     PROP_AVATAR_PRIORITY = PROP_DERIVED_33,
-    // TIVOLI - Zone culling mode
     PROP_ZONE_CULLING_MODE = PROP_DERIVED_34,
     
     // Polyvox
@@ -378,10 +376,10 @@ enum EntityPropertyList
     // CPM TIVOLI - breaking the rule below here by adding this in the prop derived area
     // because when it was added to the upper list without a prop derived value, interface
     // was crashing on loading particles.
-    //  PROP_LOCALLY_VISIBLE = PROP_DERIVED_35,  // Not sent over the wire
-    PROP_STATIC_CERTIFICATE_VERSION = PROP_DERIVED_35,     // EXPERIMENT TO MAKE SPACE FOR PROP_LOCALLY_VISIBLE 
+  //  PROP_STATIC_CERTIFICATE_VERSION = PROP_DERIVED_35,     // EXPERIMENT TO MAKE SPACE FOR PROP_LOCALLY_VISIBLE 
 
     // WARNING!!! DO NOT ADD PROPS_xxx here unless you really really meant to.... Add them UP above
+
 };
 
 typedef PropertyFlags<EntityPropertyList> EntityPropertyFlags;

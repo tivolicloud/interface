@@ -110,7 +110,7 @@ private:
     bool _needBackgroundUpdate{ true };
     bool _needHazeUpdate{ true };
     bool _needBloomUpdate{ true };
-    bool _needZoneCullingUpdate{ true }; // TIVOLI This prob. isn't going to be used.
+    bool _needZoneCullingUpdate{ true };
 
     KeyLightPropertyGroup _keyLightProperties;
     AmbientLightPropertyGroup _ambientLightProperties;

@@ -3070,7 +3070,7 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_PARENT_ID, properties.getParentID());
             APPEND_ENTITY_PROPERTY(PROP_PARENT_JOINT_INDEX, properties.getParentJointIndex());
             APPEND_ENTITY_PROPERTY(PROP_VISIBLE, properties.getVisible());
-           //  APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, properties.getLocallyVisible()); // NOT SENT OVER THE WIRE
+            APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, properties.getLocallyVisible()); // NOT SENT OVER THE WIRE
             APPEND_ENTITY_PROPERTY(PROP_NAME, properties.getName());
             APPEND_ENTITY_PROPERTY(PROP_LOCKED, properties.getLocked());
             APPEND_ENTITY_PROPERTY(PROP_USER_DATA, properties.getUserData());
@@ -3567,7 +3567,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PARENT_ID, QUuid, setParentID);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PARENT_JOINT_INDEX, quint16, setParentJointIndex);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_VISIBLE, bool, setVisible);
-   //  READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);   // not sent over the wire
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);   // not sent over the wire
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_NAME, QString, setName);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCKED, bool, setLocked);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_USER_DATA, QString, setUserData);
@@ -3986,6 +3986,7 @@ void EntityItemProperties::markAllChanged() {
     _parentIDChanged = true;
     _parentJointIndexChanged = true;
     _visibleChanged = true;
+    _locallyVisibleChanged = true; // TIVOLI new
     _nameChanged = true;
     _lockedChanged = true;
     _userDataChanged = true;
@@ -4144,7 +4145,7 @@ void EntityItemProperties::markAllChanged() {
     _hazeModeChanged = true;
     _bloomModeChanged = true;
     _avatarPriorityChanged = true;
-    _zoneCullingModeChanged = true;
+    _zoneCullingModeChanged = true;  // TIVOLI new
 
     // Polyvox
     _voxelVolumeSizeChanged = true;
@@ -4348,6 +4349,9 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     }
     if (visibleChanged()) {
         out += "visible";
+    }
+    if (locallyVisibleChanged()) {
+        out += "locallyVisible";
     }
     if (nameChanged()) {
         out += "name";

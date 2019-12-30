@@ -182,7 +182,7 @@ void MarketplaceItemUploader::doUploadAvatar() {
         path += "/" + idWithoutBraces;
     }
     auto accountManager = DependencyManager::get<AccountManager>();
-    auto request = accountManager->createRequest(path, AccountManagerAuth::Required);
+    auto request = accountManager->createRequest(path, AccountManagerAuth::Required); // CPM upload
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader, "application/json");
 
     // TODO(huffman) add JSON escaping
