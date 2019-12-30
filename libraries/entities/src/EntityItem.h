@@ -20,6 +20,7 @@
 #include <QtGui/QWindow>
 #include <QSet>
 
+#include <qdebug.h>
 #include <Octree.h> // for EncodeBitstreamParams class
 #include <OctreeElement.h> // for OctreeElement::AppendState
 #include <OctreePacketData.h>

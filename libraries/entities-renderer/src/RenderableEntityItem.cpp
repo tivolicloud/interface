@@ -422,6 +422,8 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transa
 
         _moving = entity->isMovingRelativeToParent();
         _visible = entity->getVisible(); // CPM investigate
+        if (!entity->getLocallyVisible())
+            _visible = false;  // TIVOLI locallyVisible overrides visible
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera()); 
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());

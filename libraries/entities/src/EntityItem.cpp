@@ -2933,6 +2933,7 @@ QString EntityItem::getDebugName() {
 }
 
 bool EntityItem::getVisible() const {
+   // qDebug() << "CPM: Get (global) visible called";
     bool result;
     withReadLock([&] {
         result = _visible;
@@ -2942,6 +2943,7 @@ bool EntityItem::getVisible() const {
 
 
 void EntityItem::setVisible(bool value) {
+ //   qDebug() << "CPM: Set (global) visible called";
     bool changed;
     withWriteLock([&] {
         changed = _visible != value;
@@ -2958,6 +2960,7 @@ void EntityItem::setVisible(bool value) {
 bool EntityItem::getLocallyVisible() const {
     bool result;
     withReadLock([&] { result = _locallyVisible; });
+    //qDebug() << "CPM: Get locally visible called " << result;
     return result;
 }
 
@@ -2970,7 +2973,9 @@ void EntityItem::setLocallyVisible(bool value) {
         _locallyVisible = value;
     });
 
+    // qDebug() << "CPM: Set locally visible called " << value;
     if (changed) {
+        // qDebug() << "CPM: Set locally visible CHANGED";
         bumpAncestorChainRenderableVersion();
     }
 }

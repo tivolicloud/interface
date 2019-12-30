@@ -578,6 +578,7 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Velocity, velocity, "in meters");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Name, name, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Visible, visible, "");
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, LocallyVisible, locallyVisible, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CanCastShadow, canCastShadow, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Rotation, rotation, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Density, density, "");

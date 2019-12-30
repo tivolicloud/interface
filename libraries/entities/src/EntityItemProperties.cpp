@@ -1991,6 +1991,7 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE(parentID, QUuid, setParentID);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(parentJointIndex, quint16, setParentJointIndex);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(visible, bool, setVisible);
+    COPY_PROPERTY_FROM_QSCRIPTVALUE(locallyVisible, bool, setLocallyVisible);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(name, QString, setName);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(locked, bool, setLocked);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(userData, QString, setUserData);
@@ -2288,6 +2289,7 @@ void EntityItemProperties::merge(const EntityItemProperties& other) {
     COPY_PROPERTY_IF_CHANGED(parentID);
     COPY_PROPERTY_IF_CHANGED(parentJointIndex);
     COPY_PROPERTY_IF_CHANGED(visible);
+    COPY_PROPERTY_IF_CHANGED(locallyVisible);
     COPY_PROPERTY_IF_CHANGED(name);
     COPY_PROPERTY_IF_CHANGED(locked);
     COPY_PROPERTY_IF_CHANGED(userData);
@@ -3070,7 +3072,7 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_PARENT_ID, properties.getParentID());
             APPEND_ENTITY_PROPERTY(PROP_PARENT_JOINT_INDEX, properties.getParentJointIndex());
             APPEND_ENTITY_PROPERTY(PROP_VISIBLE, properties.getVisible());
-            APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, properties.getLocallyVisible()); // NOT SENT OVER THE WIRE
+            APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, properties.getLocallyVisible()); // NOT TO BE SENT OVER THE WIRE
             APPEND_ENTITY_PROPERTY(PROP_NAME, properties.getName());
             APPEND_ENTITY_PROPERTY(PROP_LOCKED, properties.getLocked());
             APPEND_ENTITY_PROPERTY(PROP_USER_DATA, properties.getUserData());
@@ -3567,7 +3569,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PARENT_ID, QUuid, setParentID);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PARENT_JOINT_INDEX, quint16, setParentJointIndex);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_VISIBLE, bool, setVisible);
-    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);   // not sent over the wire
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);   // not to be sent over the wire
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_NAME, QString, setName);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCKED, bool, setLocked);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_USER_DATA, QString, setUserData);

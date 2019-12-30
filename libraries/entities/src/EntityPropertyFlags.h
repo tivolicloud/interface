@@ -24,6 +24,7 @@ enum EntityPropertyList
     PROP_PARENT_ID,
     PROP_PARENT_JOINT_INDEX,
     PROP_VISIBLE,
+    PROP_LOCALLY_VISIBLE,  // TIVOLI for hiding in edit mode and special culling cases
     PROP_NAME,
     PROP_LOCKED,
     PROP_USER_DATA,
@@ -122,7 +123,6 @@ enum EntityPropertyList
     PROP_PULSE_ALPHA_MODE,
     PROP_TEXTURES,
     PROP_BILLBOARD_MODE,
-    PROP_LOCALLY_VISIBLE, // TIVOLI for hiding in edit mode and special culling cases
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // ATTENTION: add new shared EntityItem properties to the list ABOVE this line
