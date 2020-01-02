@@ -52,6 +52,31 @@ using CalculateEntityLoadingPriority = std::function<float(const EntityItem& ite
 class EntityTreeRenderer : public OctreeProcessor, public Dependency {
     Q_OBJECT
 public:
+
+    
+    /* Zone culling logic:
+        
+        MyAvatar enters a zone with Zone Culling on (in EntityTreeRenderer.cpp?)
+        activated via EntityTreeRenderer::checkEnterLeaveEntities() { 
+        Iterate through everything inside that zone
+        Add each entity ID to the _zoneCullSkiplist list
+        Logic in RenderableEntityItem checks if _zoneCullSkiplist list isn't empty 
+        // (while (!_zoneCullSkiplist.empty())
+        If it's not null, RenderableEntityItem only render the entities in the _zoneCullSkiplist
+
+        MyAvatar exits a zone with Zone Culling on
+        Clear _zoneCullSkiplist using _zoneCullSkiplist.clear();
+
+    */
+    void skipZoneCull(const EntityItemID& id);
+    void clearZoneCullSkiplist();
+    ReadWriteLockable _zoneCullSkiplistGuard;
+    std::unordered_set<EntityItemID> _zoneCullSkiplist;  
+
+    // _zoneCullSkiplist is an unordered set (a list) of entities that do not get culled
+    // if the avatar is standing inside a zone with Zone Culling Properties
+     
+
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }
 

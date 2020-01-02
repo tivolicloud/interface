@@ -76,6 +76,7 @@ private:
     glm::vec3 _lastDimensions;
     glm::quat _lastRotation;
     bool _lastVisible;
+    EntityItemID _thisEntityID;  ///////
 
     LightStagePointer _stage;
     const graphics::LightPointer _sunLight { std::make_shared<graphics::Light>() };

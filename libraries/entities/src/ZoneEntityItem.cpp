@@ -2,12 +2,7 @@
 //  ZoneEntityItem.cpp
 //  libraries/entities/src
 //
-//  Created by Brad Hefta-Gaub on 12/4/13.
-//  Copyright 2013 High Fidelity, Inc.
-//
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
-//
+
 
 #include "ZoneEntityItem.h"
 
@@ -38,13 +33,25 @@ EntityItemPointer ZoneEntityItem::factory(const EntityItemID& entityID, const En
     return entity;
 }
 
+
+
 ZoneEntityItem::ZoneEntityItem(const EntityItemID& entityItemID) : EntityItem(entityItemID) {
     _type = EntityTypes::Zone;
-
     _shapeType = DEFAULT_SHAPE_TYPE;
     _compoundShapeURL = DEFAULT_COMPOUND_SHAPE_URL;
     _visuallyReady = false;
 }
+
+// moving to EntityTreeRenderer.cpp
+//void ZoneEntityItem::clearZoneCullSkiplist() {  // TIVOLI
+//    qDebug() << "CLEARING ZONE CULL SKIPLIST ";
+//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.clear(); });
+//}
+//
+//void ZoneEntityItem::skipZoneCull(const EntityItemID& id) {  // TIVOLI
+//    qDebug() << "NON CULL ENTITY ADDED: " << id;
+//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.insert(id); });
+//}
 
 EntityItemProperties ZoneEntityItem::getProperties(const EntityPropertyFlags& desiredProperties, bool allowEmptyDesiredProperties) const {
     EntityItemProperties properties = EntityItem::getProperties(desiredProperties, allowEmptyDesiredProperties); // get the properties from our base class

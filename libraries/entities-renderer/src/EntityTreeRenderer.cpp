@@ -635,6 +635,23 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     });
 }
 
+    /*
+        Get the box info like corner of the zone
+        Do an evaluate entities in box operation
+        Set
+    */
+
+void EntityTreeRenderer::clearZoneCullSkiplist() {  // TIVOLI
+    qDebug() << "CLEARING ZONE CULL SKIPLIST ";
+    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.clear(); });
+}
+
+void EntityTreeRenderer::skipZoneCull(const EntityItemID& id) {  // TIVOLI
+    qDebug() << "NON CULL ENTITY ADDED: " << id;
+
+    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.insert(id); });
+}
+
 // CPM Investigate.  Here we determine if we enter a zone?
 void EntityTreeRenderer::checkEnterLeaveEntities() { 
     PROFILE_RANGE(simulation_physics, "EnterLeave");
@@ -657,26 +674,34 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             _forceRecheckEntities = false;
 
             QSet<EntityItemID> entitiesContainingAvatar;
-            findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);
+            findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
+
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
             // for entity IDs that no longer exist.
 
+            // TO DO: Clear the skiplist whenever a domain is exited.
+
             if (_entitiesScriptEngine) {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
                 foreach(const EntityItemID& entityID, _currentEntitiesInside) {
+
                     if (!entitiesContainingAvatar.contains(entityID)) {
+                        qDebug() << "CPM AVATAR - LEAVING ENTITY: " << entityID;
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
+                        // CPM - If this is a zone, clear the skiplist
                     }
                 }
 
                 // for all of our new containing entities, if they weren't previously containing then send them an enter event
                 foreach(const EntityItemID& entityID, entitiesContainingAvatar) {
                     if (!_currentEntitiesInside.contains(entityID)) {
+                        qDebug() << "CPM AVATAR - ENTER ENTITY: " << entityID;
                         emit enterEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
+                        // CPM If zone, find all entities in box and add to skiplist. We should time this for performance evaluation.
                     }
                 }
                 _currentEntitiesInside = entitiesContainingAvatar;
@@ -1310,7 +1335,7 @@ bool EntityTreeRenderer::LayeredZones::equals(const LayeredZones& other) const {
     return true;
 }
 
-// CPM investigate.  Looks like this maintains a list of items to render.
+
 void EntityTreeRenderer::LayeredZones::appendRenderIDs(render::ItemIDs& list, EntityTreeRenderer* entityTreeRenderer) const {
     for (auto it = cbegin(); it != cend(); it++) {
         if (it->zone.lock()) {

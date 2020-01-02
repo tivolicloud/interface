@@ -31,9 +31,10 @@ static const float SPHERE_ENTITY_SCALE = 0.5f;
 using namespace render;
 using namespace render::entities;
 
-ZoneEntityRenderer::ZoneEntityRenderer(const EntityItemPointer& entity)
-    : Parent(entity) {
+ZoneEntityRenderer::ZoneEntityRenderer(const EntityItemPointer& entity) : Parent(entity) {
     _background->setSkybox(std::make_shared<ProceduralSkybox>(entity->getCreated()));
+    _thisEntityID = entity->getID();
+    qDebug() << "CPM Zone Entity Renderer constructor called for " << _thisEntityID;
 }
 
 void ZoneEntityRenderer::onRemoveFromSceneTyped(const TypedEntityPointer& entity) {
@@ -91,7 +92,7 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         assert(_bloomStage);
     }
 
-    { // Sun 
+    {  // Sun
         if (_needSunUpdate) {
             if (LightStage::isIndexInvalid(_sunIndex)) {
                 _sunIndex = _stage->addLight(_sunLight);
@@ -102,7 +103,7 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         }
     }
 
-    { // Ambient
+    {  // Ambient
         updateAmbientMap();
 
         if (_needAmbientUpdate) {
@@ -115,7 +116,7 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         }
     }
 
-    { // Skybox
+    {  // Skybox
         updateSkyboxMap();
 
         if (_needBackgroundUpdate) {
@@ -141,6 +142,16 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
                 _bloomIndex = _bloomStage->addBloom(_bloom);
             }
             _needBloomUpdate = false;
+        }
+    }
+
+    {
+        if (_needZoneCullingUpdate) {
+            qDebug() << "CPM - NEED ZONE CULLING UPDATE CALLED";
+            //if (BloomStage::isIndexInvalid(_bloomIndex)) {
+            //    _bloomIndex = _bloomStage->addBloom(_bloom);
+            //}
+            _needZoneCullingUpdate = false;
         }
     }
 
@@ -179,10 +190,22 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         } else if (_bloomMode == COMPONENT_MODE_ENABLED) {
             _bloomStage->_currentFrame.pushBloom(_bloomIndex);
         }
+
+        if (_zoneCullingMode == COMPONENT_MODE_DISABLED) {
+            //_stage->_currentFrame.pushAmbientLight(_stage->getAmbientOffLight());
+            //qDebug() << "CPM ZCM DISABLED " << _zoneCullingMode;
+            // clear the zcSkiplist
+        } else if (_zoneCullingMode == COMPONENT_MODE_ENABLED) {  // ENABLED handles on and inherit?
+            qDebug() << "CPM ZCM ENABLED " << _zoneCullingMode;
+            // do a get entities in box and add to the zcSkipList
+            // _stage->_currentFrame.pushAmbientLight(_ambientIndex);
+        }
     }
 }
 
-void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene, Transaction& transaction, const TypedEntityPointer& entity) {
+void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene,
+                                                        Transaction& transaction,
+                                                        const TypedEntityPointer& entity) {
     auto position = entity->getWorldPosition();
     auto rotation = entity->getWorldOrientation();
     auto dimensions = entity->getScaledDimensions();
@@ -198,7 +221,7 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
     auto proceduralUserData = entity->getUserData();
     bool proceduralUserDataChanged = _proceduralUserData != proceduralUserData;
 
-    // FIXME one of the bools here could become true between being fetched and being reset, 
+    // FIXME one of the bools here could become true between being fetched and being reset,
     // resulting in a lost update
     bool keyLightChanged = entity->keyLightPropertiesChanged() || rotationChanged;
     bool ambientLightChanged = entity->ambientLightPropertiesChanged() || transformChanged;
@@ -247,6 +270,8 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
 
     if (zoneCullingChanged) {
         _zoneCullingProperties = entity->getZoneCullingProperties();
+        qDebug() << "CPM  doRenderUpdateSynchronousTyped " << entity->getID();  //
+                                                                                //        << ", " << _zoneCullingProperties;
         updateZoneCullingFromEntity(entity);
     }
 
@@ -268,7 +293,6 @@ void ZoneEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointe
     }
 }
 
-
 ItemKey ZoneEntityRenderer::getKey() {
     return ItemKey::Builder().withTypeMeta().withTagBits(getTagMask()).build();
 }
@@ -278,12 +302,8 @@ bool ZoneEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPoint
         return true;
     }
 
-    if (entity->keyLightPropertiesChanged() ||
-        entity->ambientLightPropertiesChanged() ||
-        entity->hazePropertiesChanged() ||
-        entity->bloomPropertiesChanged() ||
-        entity->skyboxPropertiesChanged()) {
-
+    if (entity->keyLightPropertiesChanged() || entity->ambientLightPropertiesChanged() || entity->hazePropertiesChanged() ||
+        entity->bloomPropertiesChanged() || entity->skyboxPropertiesChanged()) {
         return true;
     }
 
@@ -372,7 +392,8 @@ void ZoneEntityRenderer::updateHazeFromEntity(const TypedEntityPointer& entity) 
 
     haze->setHazeAttenuateKeyLight(_hazeProperties.getHazeAttenuateKeyLight());
     haze->setHazeKeyLightRangeFactor(graphics::Haze::convertHazeRangeToHazeRangeFactor(_hazeProperties.getHazeKeyLightRange()));
-    haze->setHazeKeyLightAltitudeFactor(graphics::Haze::convertHazeAltitudeToHazeAltitudeFactor(_hazeProperties.getHazeKeyLightAltitude()));
+    haze->setHazeKeyLightAltitudeFactor(
+        graphics::Haze::convertHazeAltitudeToHazeAltitudeFactor(_hazeProperties.getHazeKeyLightAltitude()));
 }
 
 void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity) {
@@ -388,9 +409,11 @@ void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity)
 void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& entity) {
     setZoneCullingMode((ComponentMode)entity->getZoneCullingMode());
 
+    qDebug() << "CPM UPDATE ZONE CULLING FROM ENTITY CALLED. " << ((ComponentMode)entity->getZoneCullingMode());
+
     //const auto& bloom = editBloom();
 
-  /*  bloom->setBloomIntensity(_bloomProperties.getBloomIntensity());
+    /*  bloom->setBloomIntensity(_bloomProperties.getBloomIntensity());
     bloom->setBloomThreshold(_bloomProperties.getBloomThreshold());
     bloom->setBloomSize(_bloomProperties.getBloomSize());*/
 }
@@ -527,4 +550,3 @@ void ZoneEntityRenderer::setSkyboxColor(const glm::vec3& color) {
 void ZoneEntityRenderer::setProceduralUserData(const QString& userData) {
     std::dynamic_pointer_cast<ProceduralSkybox>(editSkybox())->parse(userData);
 }
-

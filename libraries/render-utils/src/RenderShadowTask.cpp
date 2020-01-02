@@ -371,6 +371,7 @@ void RenderShadowSetup::run(const render::RenderContextPointer& renderContext, c
     output.edit3() = _shadowFrameCache;
 
     const auto currentKeyLight = lightStage->getCurrentKeyLight(lightFrame);
+    // CPM
     if (!lightingModel->isShadowEnabled() || !currentKeyLight || !currentKeyLight->getCastShadows()) {
         renderContext->taskFlow.abortTask();
         return;
