@@ -23,8 +23,9 @@
 #include <TextureCache.h>
 #include "RenderableEntityItem.h"
 #include <ComponentMode.h>
+//#include "EntityScriptingInterface.h"
 
-namespace render { namespace entities { 
+namespace render { namespace entities {
 
 class ZoneEntityRenderer : public TypedEntityRenderer<ZoneEntityItem> {
     using Parent = TypedEntityRenderer<ZoneEntityItem>;
@@ -38,7 +39,9 @@ protected:
     virtual ItemKey getKey() override;
     virtual void doRender(RenderArgs* args) override;
     virtual bool needsRenderUpdateFromTypedEntity(const TypedEntityPointer& entity) const override;
-    virtual void doRenderUpdateSynchronousTyped(const ScenePointer& scene, Transaction& transaction, const TypedEntityPointer& entity) override;
+    virtual void doRenderUpdateSynchronousTyped(const ScenePointer& scene,
+                                                Transaction& transaction,
+                                                const TypedEntityPointer& entity) override;
     virtual void doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) override;
 
 private:
@@ -59,51 +62,73 @@ private:
     void setAmbientLightMode(ComponentMode mode);
     void setSkyboxMode(ComponentMode mode);
     void setBloomMode(ComponentMode mode);
-    void setZoneCullingMode(ComponentMode mode);
+    void setZoneCullingMode(ZoneCullingMode mode);
 
     void setSkyboxColor(const glm::vec3& color);
     void setProceduralUserData(const QString& userData);
 
-    graphics::LightPointer editSunLight() { _needSunUpdate = true; return _sunLight; }
-    graphics::LightPointer editAmbientLight() { _needAmbientUpdate = true; return _ambientLight; }
-    graphics::SunSkyStagePointer editBackground() { _needBackgroundUpdate = true; return _background; }
+
+    graphics::LightPointer editSunLight() {
+        _needSunUpdate = true;
+        return _sunLight;
+    }
+    graphics::LightPointer editAmbientLight() {
+        _needAmbientUpdate = true;
+        return _ambientLight;
+    }
+    graphics::SunSkyStagePointer editBackground() {
+        _needBackgroundUpdate = true;
+        return _background;
+    }
     graphics::SkyboxPointer editSkybox() { return editBackground()->getSkybox(); }
-    graphics::HazePointer editHaze() { _needHazeUpdate = true; return _haze; }
-    graphics::BloomPointer editBloom() { _needBloomUpdate = true; return _bloom; }
-   // graphics::ZoneCullingPointer editZoneCulling() { _needZoneCullingUpdate = true; return _zoneCulling; }
+    graphics::HazePointer editHaze() {
+        _needHazeUpdate = true;
+        return _haze;
+    }
+    graphics::BloomPointer editBloom() {
+        _needBloomUpdate = true;
+        return _bloom;
+    }
+    // graphics::ZoneCullingPointer editZoneCulling() { _needZoneCullingUpdate = true; return _zoneCulling; }
 
     glm::vec3 _lastPosition;
     glm::vec3 _lastDimensions;
     glm::quat _lastRotation;
     bool _lastVisible;
-    EntityItemID _thisEntityID;  ///////
 
     LightStagePointer _stage;
-    const graphics::LightPointer _sunLight { std::make_shared<graphics::Light>() };
-    const graphics::LightPointer _ambientLight { std::make_shared<graphics::Light>() };
-    const graphics::SunSkyStagePointer _background { std::make_shared<graphics::SunSkyStage>() };
-    const graphics::HazePointer _haze { std::make_shared<graphics::Haze>() };
-    const graphics::BloomPointer _bloom { std::make_shared<graphics::Bloom>() }; //
- //   const graphics::ZoneCullingPointer _zoneCulling{ std::make_shared<graphics::ZoneCulling>() };  //
+    const graphics::LightPointer _sunLight{ std::make_shared<graphics::Light>() };
+    const graphics::LightPointer _ambientLight{ std::make_shared<graphics::Light>() };
+    const graphics::SunSkyStagePointer _background{ std::make_shared<graphics::SunSkyStage>() };
+    const graphics::HazePointer _haze{ std::make_shared<graphics::Haze>() };
+    const graphics::BloomPointer _bloom{ std::make_shared<graphics::Bloom>() };  //
 
-    ComponentMode _keyLightMode { COMPONENT_MODE_INHERIT };
-    ComponentMode _ambientLightMode { COMPONENT_MODE_INHERIT };
-    ComponentMode _skyboxMode { COMPONENT_MODE_INHERIT };
-    ComponentMode _hazeMode { COMPONENT_MODE_INHERIT };
+    ComponentMode _keyLightMode{ COMPONENT_MODE_INHERIT };
+    ComponentMode _ambientLightMode{ COMPONENT_MODE_INHERIT };
+    ComponentMode _skyboxMode{ COMPONENT_MODE_INHERIT };
+    ComponentMode _hazeMode{ COMPONENT_MODE_INHERIT };
     ComponentMode _bloomMode{ COMPONENT_MODE_INHERIT };
-    ComponentMode _zoneCullingMode{ COMPONENT_MODE_INHERIT };
 
-    indexed_container::Index _sunIndex { LightStage::INVALID_INDEX };
-    indexed_container::Index _ambientIndex { LightStage::INVALID_INDEX };
+    /*
+    ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
+    ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
+    ZONECULLING_MODE_ON_EXCLUSIVE,      // Overwrite skiplist with my entities.
+    ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
+    */
+
+    ZoneCullingMode _zoneCullingMode{ ZONECULLING_MODE_INHERIT };
+
+    indexed_container::Index _sunIndex{ LightStage::INVALID_INDEX };
+    indexed_container::Index _ambientIndex{ LightStage::INVALID_INDEX };
 
     BackgroundStagePointer _backgroundStage;
-    BackgroundStage::Index _backgroundIndex { BackgroundStage::INVALID_INDEX };
+    BackgroundStage::Index _backgroundIndex{ BackgroundStage::INVALID_INDEX };
 
     HazeStagePointer _hazeStage;
-    HazeStage::Index _hazeIndex { HazeStage::INVALID_INDEX };
+    HazeStage::Index _hazeIndex{ HazeStage::INVALID_INDEX };
 
     BloomStagePointer _bloomStage;
-    BloomStage::Index _bloomIndex { BloomStage::INVALID_INDEX };
+    BloomStage::Index _bloomIndex{ BloomStage::INVALID_INDEX };
 
     bool _needUpdate{ true };
     bool _needSunUpdate{ true };
@@ -132,6 +157,6 @@ private:
     QString _proceduralUserData;
 };
 
-} } // namespace 
+}}  // namespace render::entities
 
-#endif // hifi_RenderableZoneEntityItem_h
+#endif  // hifi_RenderableZoneEntityItem_h

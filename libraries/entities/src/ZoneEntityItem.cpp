@@ -42,16 +42,7 @@ ZoneEntityItem::ZoneEntityItem(const EntityItemID& entityItemID) : EntityItem(en
     _visuallyReady = false;
 }
 
-// moving to EntityTreeRenderer.cpp
-//void ZoneEntityItem::clearZoneCullSkiplist() {  // TIVOLI
-//    qDebug() << "CLEARING ZONE CULL SKIPLIST ";
-//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.clear(); });
-//}
-//
-//void ZoneEntityItem::skipZoneCull(const EntityItemID& id) {  // TIVOLI
-//    qDebug() << "NON CULL ENTITY ADDED: " << id;
-//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.insert(id); });
-//}
+
 
 EntityItemProperties ZoneEntityItem::getProperties(const EntityPropertyFlags& desiredProperties, bool allowEmptyDesiredProperties) const {
     EntityItemProperties properties = EntityItem::getProperties(desiredProperties, allowEmptyDesiredProperties); // get the properties from our base class
@@ -213,8 +204,8 @@ int ZoneEntityItem::readEntitySubclassDataFromBuffer(const unsigned char* data, 
     READ_ENTITY_PROPERTY(PROP_SKYBOX_MODE, uint32_t, setSkyboxMode);
     READ_ENTITY_PROPERTY(PROP_HAZE_MODE, uint32_t, setHazeMode);
     READ_ENTITY_PROPERTY(PROP_BLOOM_MODE, uint32_t, setBloomMode);
-    READ_ENTITY_PROPERTY(PROP_AVATAR_PRIORITY, uint32_t, setAvatarPriority);
     READ_ENTITY_PROPERTY(PROP_ZONE_CULLING_MODE, uint32_t, setZoneCullingMode);
+    READ_ENTITY_PROPERTY(PROP_AVATAR_PRIORITY, uint32_t, setAvatarPriority);
 
     return bytesRead;
 }
@@ -299,8 +290,8 @@ void ZoneEntityItem::debugDump() const {
     qCDebug(entities) << "   _ambientLightMode:" << EntityItemProperties::getComponentModeAsString(_ambientLightMode);
     qCDebug(entities) << "         _skyboxMode:" << EntityItemProperties::getComponentModeAsString(_skyboxMode);
     qCDebug(entities) << "          _bloomMode:" << EntityItemProperties::getComponentModeAsString(_bloomMode);
-    qCDebug(entities) << "     _avatarPriority:" << getAvatarPriority();
     qCDebug(entities) << "     _zoneCullingMode:" << getZoneCullingMode();
+    qCDebug(entities) << "     _avatarPriority:" << getAvatarPriority();
 
     _keyLightProperties.debugDump();
     _ambientLightProperties.debugDump();
@@ -453,9 +444,17 @@ uint32_t ZoneEntityItem::getBloomMode() const {
     return _bloomMode;
 }
 
+      
+/*
+    ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
+    ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
+    ZONECULLING_MODE_ON_EXCLUSIVE,      // Overwrite skiplist with my entities.
+    ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
+*/
+
 // TIVOLI Added zone culling mode
 void ZoneEntityItem::setZoneCullingMode(const uint32_t value) {
-    if (value < COMPONENT_MODE_ITEM_COUNT && value != _zoneCullingMode) {
+    if (value < ZONECULLING_MODE_ITEM_COUNT && value != _zoneCullingMode) {
         _zoneCullingMode = value;
         _zoneCullingPropertiesChanged = true;
     }
@@ -522,3 +521,29 @@ bool ZoneEntityItem::matchesJSONFilters(const QJsonObject& jsonFilters) const {
     // Chain to base:
     return EntityItem::matchesJSONFilters(jsonFilters);
 }
+
+
+
+// moving to EntityTreeRenderer.cpp
+//void ZoneEntityItem::clearZoneCullSkiplist() {  // TIVOLI
+//    qDebug() << "CLEARING ZONE CULL SKIPLIST ";
+//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.clear(); });
+//}
+//
+//void ZoneEntityItem::skipZoneCull(const EntityItemID& id) {  // TIVOLI
+//    qDebug() << "NON CULL ENTITY ADDED: " << id;
+//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.insert(id); });
+//}
+//if (_zoneCullingMode == ZONECULLING_MODE_OFF_EXCLUSIVE) {
+//    qDebug() << "CPM OFF" << _zoneCullingMode;
+//    _localZoneCullSkiplist.clear();
+//} else if (_zoneCullingMode == ZONECULLING_MODE_ON_INCLUSIVE ||
+//           _zoneCullingMode == ZONECULLING_MODE_ON_EXCLUSIVE) {  // ENABLED handles on and inherit?
+//    // POPULATE MY SKIPLIST AND SHARE WITH RENDERER
+//    // In which class would be the best place to actually hold that logic?
+//    //    1. Select all entities in box and touching box
+//    //    2. Add each Entity ID to _localZoneCullSkiplist.add my stuff
+//    // _localZoneCullSkiplist.insert()
+//} else if (_zoneCullingMode == ZONECULLING_MODE_INHERIT) {  // ENABLED handles on and inherit?
+//                                                            // do nothing
+//}

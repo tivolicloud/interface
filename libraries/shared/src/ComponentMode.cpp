@@ -38,6 +38,39 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
     return componentModeNames[(int)mode];
 }
 
+/*
+    ZONECULLING_MODE_INHERIT,            // Do not change the skiplist
+    ZONECULLING_MODE_ON_INCLUSIVE,   // Add my entities to existing skiplist.
+    ZONECULLING_MODE_ON_EXCLUSIVE,   // Overwrite skiplist with my entities.
+    ZONECULLING_MODE_OFF_EXCLUSIVE,  // Clear skiplist completely.
+    */
+
+/**jsdoc
+ * <p>How Zone Culling is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
+ * <table>
+ *   <thead>
+ *     <tr><th>Value</th><th>Description</th></tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr><td><code>"ZONECULLING_MODE_INHERIT"</code></td><td>Inherits whatever zone culling paroperties are outside this zone.</td></tr>
+ *     <tr><td><code>"ZONECULLING_MODE_ON_INCLUSIVE"</code></td><td>Culls everything outside of this + any outer zones.</td></tr>
+ *     <tr><td><code>"ZONECULLING_MODE_ON_EXCLUSIVE"</code></td><td>Culls everything outside of this zone.</td></tr>
+ *     <tr><td><code>"ZONECULLING_MODE_OFF_EXCLUSIVE"</code></td><td>Culls nothing, including overriding outer zone culling..</td></tr>
+ *   </tbody>
+ * </table>
+ * @typedef {string} Entities.ZoneCullingMode
+ */
+const char* zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
+
+QString ZoneCullingModeHelpers::getNameForZoneCullingMode(ZoneCullingMode mode) {
+    if (((int)mode <= 0) || ((int)mode >= (int)ZONECULLING_MODE_ITEM_COUNT)) {
+        mode = (ZoneCullingMode)0;
+    }
+
+    return zoneCullingModeNames[(int)mode];
+}
+
+
 /**jsdoc
  * <p>The priority of updates from avatars in a zone to other clients.</p>
  * <table>

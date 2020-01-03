@@ -55,26 +55,36 @@ public:
 
     
     /* Zone culling logic:
-        
-        MyAvatar enters a zone with Zone Culling on (in EntityTreeRenderer.cpp?)
-        activated via EntityTreeRenderer::checkEnterLeaveEntities() { 
-        Iterate through everything inside that zone
-        Add each entity ID to the _zoneCullSkiplist list
-        Logic in RenderableEntityItem checks if _zoneCullSkiplist list isn't empty 
-        // (while (!_zoneCullSkiplist.empty())
-        If it's not null, RenderableEntityItem only render the entities in the _zoneCullSkiplist
 
-        MyAvatar exits a zone with Zone Culling on
-        Clear _zoneCullSkiplist using _zoneCullSkiplist.clear();
+        Zone culling doesn't use conventional octree culling.  
+        Instead, the zones each have a property to hold a list of things inside it.
+        The Entity Tree Renderer manages reading and writing to that list.
+        Based on some rules, the Entity Tree Renderer builds up a final list of things in the zone(s) the avatar should see
+        All Renderable Entities watch that list.  If it's empty, everything is visible as normal.
+        If it isn't empty, the renderable entities will only be visible if they are in the list.
+        Because zones can be nested, we have to evaluate the properties into a final 
+
+       PART I. IN ENTITY TREE RENDERER:
+        1. A Zone Enter or Exit event is detected, and is added or removed from an ordered list called _zoneCullingStack.
+        2. ETR does a Find All in Box and writes what it finds into each zone's _zoneContentList
+        3. ETR evaluateZoneCullSkipList() is called when the _zoneCullingStack is changed
+        4. evaluateZoneCullSkipList iterates thru the stack and builds _zoneCullSkipList using these rules:
+            ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
+            ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
+            ZONECULLING_MODE_ON_EXCLUSIVE,      // Overwrite skiplist with my entities.
+            ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
+       
+       PART II. IN RENDERABLE ENTITY ITEM
+       The final _zoneCullSkipList is viewed by RenderableEntityItem
+       If the skipList is empty, render as usual.
+       If it's not empty, and the entity ID is not listed in the skiplist, handle as if _visible were false
 
     */
-    void skipZoneCull(const EntityItemID& id);
-    void clearZoneCullSkiplist();
-    ReadWriteLockable _zoneCullSkiplistGuard;
-    std::unordered_set<EntityItemID> _zoneCullSkiplist;  
-
-    // _zoneCullSkiplist is an unordered set (a list) of entities that do not get culled
-    // if the avatar is standing inside a zone with Zone Culling Properties
+    void evaluateZoneCullingStack();    // We'll look at all the culling masks for each zone
+    QSet<EntityItemID> _zoneCullSkipList;  // the final ZCL to be used
+    QList<EntityItemID> _zoneCullingStack;
+    //QSet<QUuid>::iterator itr;
+    // _zoneContentList is a list of entities that do not get culled
      
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
@@ -262,6 +272,7 @@ private:
 
         void appendRenderIDs(render::ItemIDs& list, EntityTreeRenderer* entityTreeRenderer) const;
         std::pair<bool, bool> getZoneInteractionProperties() const;
+        //ZoneCullingMode getZoneCullingProperties() const;
     };
 
     LayeredZones _layeredZones;

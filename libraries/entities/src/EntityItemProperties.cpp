@@ -242,12 +242,20 @@ const QHash<QString, ComponentMode> stringToComponentMode = [] {
     return toReturn;
 }();
 QString EntityItemProperties::getComponentModeAsString(uint32_t mode) { return ComponentModeHelpers::getNameForComponentMode((ComponentMode)mode); }
+QString EntityItemProperties::getZoneCullingComponentModeAsString(uint32_t mode) {
+    return ZoneCullingModeHelpers::getNameForZoneCullingMode((ZoneCullingMode)mode);
+}
+
 QString EntityItemProperties::getSkyboxModeAsString() const { return getComponentModeAsString(_skyboxMode); }
 QString EntityItemProperties::getKeyLightModeAsString() const { return getComponentModeAsString(_keyLightMode); }
 QString EntityItemProperties::getAmbientLightModeAsString() const { return getComponentModeAsString(_ambientLightMode); }
 QString EntityItemProperties::getHazeModeAsString() const { return getComponentModeAsString(_hazeMode); }
 QString EntityItemProperties::getBloomModeAsString() const { return getComponentModeAsString(_bloomMode); }
-QString EntityItemProperties::getZoneCullingModeAsString() const { return getComponentModeAsString(_zoneCullingMode); }
+QString EntityItemProperties::getZoneCullingModeAsString() const {
+    return getZoneCullingComponentModeAsString(_zoneCullingMode);
+}
+
+
 void EntityItemProperties::setSkyboxModeFromString(const QString& mode) {
     auto modeItr = stringToComponentMode.find(mode.toLower());
     if (modeItr != stringToComponentMode.end()) {

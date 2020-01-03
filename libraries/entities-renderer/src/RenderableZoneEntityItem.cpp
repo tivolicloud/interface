@@ -31,10 +31,11 @@ static const float SPHERE_ENTITY_SCALE = 0.5f;
 using namespace render;
 using namespace render::entities;
 
+
+
 ZoneEntityRenderer::ZoneEntityRenderer(const EntityItemPointer& entity) : Parent(entity) {
     _background->setSkybox(std::make_shared<ProceduralSkybox>(entity->getCreated()));
-    _thisEntityID = entity->getID();
-    qDebug() << "CPM Zone Entity Renderer constructor called for " << _thisEntityID;
+    auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
 }
 
 void ZoneEntityRenderer::onRemoveFromSceneTyped(const TypedEntityPointer& entity) {
@@ -147,13 +148,10 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
 
     {
         if (_needZoneCullingUpdate) {
-            qDebug() << "CPM - NEED ZONE CULLING UPDATE CALLED";
-            //if (BloomStage::isIndexInvalid(_bloomIndex)) {
-            //    _bloomIndex = _bloomStage->addBloom(_bloom);
-            //}
             _needZoneCullingUpdate = false;
         }
     }
+
 
     if (_visible) {
         // Finally, push the lights visible in the frame
@@ -190,16 +188,7 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         } else if (_bloomMode == COMPONENT_MODE_ENABLED) {
             _bloomStage->_currentFrame.pushBloom(_bloomIndex);
         }
-
-        if (_zoneCullingMode == COMPONENT_MODE_DISABLED) {
-            //_stage->_currentFrame.pushAmbientLight(_stage->getAmbientOffLight());
-            //qDebug() << "CPM ZCM DISABLED " << _zoneCullingMode;
-            // clear the zcSkiplist
-        } else if (_zoneCullingMode == COMPONENT_MODE_ENABLED) {  // ENABLED handles on and inherit?
-            qDebug() << "CPM ZCM ENABLED " << _zoneCullingMode;
-            // do a get entities in box and add to the zcSkipList
-            // _stage->_currentFrame.pushAmbientLight(_ambientIndex);
-        }
+        
     }
 }
 
@@ -270,8 +259,6 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
 
     if (zoneCullingChanged) {
         _zoneCullingProperties = entity->getZoneCullingProperties();
-        qDebug() << "CPM  doRenderUpdateSynchronousTyped " << entity->getID();  //
-                                                                                //        << ", " << _zoneCullingProperties;
         updateZoneCullingFromEntity(entity);
     }
 
@@ -407,15 +394,7 @@ void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity)
 }
 
 void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& entity) {
-    setZoneCullingMode((ComponentMode)entity->getZoneCullingMode());
-
-    qDebug() << "CPM UPDATE ZONE CULLING FROM ENTITY CALLED. " << ((ComponentMode)entity->getZoneCullingMode());
-
-    //const auto& bloom = editBloom();
-
-    /*  bloom->setBloomIntensity(_bloomProperties.getBloomIntensity());
-    bloom->setBloomThreshold(_bloomProperties.getBloomThreshold());
-    bloom->setBloomSize(_bloomProperties.getBloomSize());*/
+    setZoneCullingMode((ZoneCullingMode)entity->getZoneCullingMode());
 }
 
 void ZoneEntityRenderer::updateKeyBackgroundFromEntity(const TypedEntityPointer& entity) {
@@ -477,7 +456,7 @@ void ZoneEntityRenderer::updateAmbientMap() {
                 if (texture->getIrradiance()) {
                     _ambientLight->setAmbientSphere(*texture->getIrradiance());
                 } else {
-                    _ambientLight->setAmbientSpherePreset(gpu::SphericalHarmonics::BREEZEWAY);
+                    _ambientLight->setAmbientSpherePreset(gpu::SphericalHarmonics::BREEZEWAY); // CPM What's going on here?
                 }
                 editAmbientLight()->setAmbientMap(texture);
             } else {
@@ -540,9 +519,10 @@ void ZoneEntityRenderer::setBloomMode(ComponentMode mode) {
     _bloomMode = mode;
 }
 
-void ZoneEntityRenderer::setZoneCullingMode(ComponentMode mode) {
+void ZoneEntityRenderer::setZoneCullingMode(ZoneCullingMode mode) {
     _zoneCullingMode = mode;
 }
+
 void ZoneEntityRenderer::setSkyboxColor(const glm::vec3& color) {
     editSkybox()->setColor(color);
 }

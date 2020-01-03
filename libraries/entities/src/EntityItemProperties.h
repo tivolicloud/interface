@@ -407,6 +407,7 @@ public:
     DEFINE_PROPERTY_GROUP(Ring, ring, RingGizmoPropertyGroup);
 
     static QString getComponentModeAsString(uint32_t mode);
+    static QString getZoneCullingComponentModeAsString(uint32_t mode);
 
 public:
     float getMaxDimension() const { return glm::compMax(_dimensions); }

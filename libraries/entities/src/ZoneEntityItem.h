@@ -29,6 +29,8 @@ public:
     static EntityItemPointer factory(const EntityItemID& entityID, const EntityItemProperties& properties);
 
     ZoneEntityItem(const EntityItemID& entityItemID);
+    QVector<QUuid> _zoneContentsList; // Every zone has a zone contents list of all the entities inside it
+   // ZoneCullingMode _zoneCullingMode;
 
     ALLOW_INSTANTIATION  // This class can be instantiated
 
