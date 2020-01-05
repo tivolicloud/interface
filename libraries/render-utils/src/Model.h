@@ -71,17 +71,6 @@ struct SortedTriangleSet {
     int subMeshIndex;
 };
 
-struct BlendshapeOffsetPacked {
-    glm::uvec4 packedPosNorTan;
-};
-
-struct BlendshapeOffsetUnpacked {
-    glm::vec3 positionOffset;
-    glm::vec3 normalOffset;
-    glm::vec3 tangentOffset;
-};
-
-using BlendshapeOffset = BlendshapeOffsetPacked;
 using BlendShapeOperator = std::function<void(int, const QVector<BlendshapeOffset>&, const QVector<int>&, const render::ItemIDs&)>;
 
 /// A generic 3D model displaying geometry loaded from a URL.
@@ -173,6 +162,7 @@ public:
 
     virtual void simulate(float deltaTime, bool fullUpdate = true);
     virtual void updateClusterMatrices();
+    virtual void updateBlendshapes();
 
     /// Returns a reference to the shared geometry.
     const NetworkModel::Pointer& getNetworkModel() const { return _renderGeometry; }
@@ -371,6 +361,8 @@ public:
     void addMaterial(graphics::MaterialLayer material, const std::string& parentMaterialName);
     void removeMaterial(graphics::MaterialPointer material, const std::string& parentMaterialName);
 
+    void setBlendshapeCoefficients(const QVector<float>& coefficients) { _blendshapeCoefficients = coefficients; }
+
 public slots:
     void loadURLFinished(bool success);
 
@@ -388,7 +380,6 @@ protected:
     std::mutex _materialMappingMutex;
     void applyMaterialMapping();
 
-    void setBlendshapeCoefficients(const QVector<float>& coefficients) { _blendshapeCoefficients = coefficients; }
     const QVector<float>& getBlendshapeCoefficients() const { return _blendshapeCoefficients; }
 
     /// Clear the joint states

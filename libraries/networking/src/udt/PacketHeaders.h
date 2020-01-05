@@ -280,6 +280,7 @@ enum class EntityVersion : PacketVersion {
     ZoneCullingMode=84,  // TIVOLI new
     CustomTags=85, // TIVOLI tagging
     EntityPriority = 86, // TIVOLI tagging
+    ModelBlendshapes,
 
     // Add new versions above here
     NUM_PACKET_TYPE,
