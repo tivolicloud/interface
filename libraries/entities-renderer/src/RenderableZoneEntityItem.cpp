@@ -394,7 +394,7 @@ void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity)
 }
 
 void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& entity) {
-    setZoneCullingMode((ZoneCullingMode)entity->getZoneCullingMode());
+    setZoneCullingMode((ZoneCullingComponentMode)entity->getZoneCullingMode());
 }
 
 void ZoneEntityRenderer::updateKeyBackgroundFromEntity(const TypedEntityPointer& entity) {
@@ -519,7 +519,7 @@ void ZoneEntityRenderer::setBloomMode(ComponentMode mode) {
     _bloomMode = mode;
 }
 
-void ZoneEntityRenderer::setZoneCullingMode(ZoneCullingMode mode) {
+void ZoneEntityRenderer::setZoneCullingMode(ZoneCullingComponentMode mode) {
     _zoneCullingMode = mode;
 }
 

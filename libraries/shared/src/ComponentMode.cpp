@@ -62,9 +62,9 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
  */
 const char* zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
 
-QString ZoneCullingModeHelpers::getNameForZoneCullingMode(ZoneCullingMode mode) {
+QString ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(ZoneCullingComponentMode mode) {
     if (((int)mode <= 0) || ((int)mode >= (int)ZONECULLING_MODE_ITEM_COUNT)) {
-        mode = (ZoneCullingMode)0;
+        mode = (ZoneCullingComponentMode)0;
     }
 
     return zoneCullingModeNames[(int)mode];

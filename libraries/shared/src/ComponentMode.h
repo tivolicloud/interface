@@ -22,7 +22,7 @@ enum ComponentMode {
     COMPONENT_MODE_ITEM_COUNT
 };
 
-enum ZoneCullingMode  // TIVOLI
+enum ZoneCullingComponentMode  // TIVOLI
 {
     ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
     ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
@@ -47,7 +47,7 @@ public:
 
 class ZoneCullingModeHelpers {
 public:
-    static QString getNameForZoneCullingMode(ZoneCullingMode mode);
+    static QString getNameForZoneCullingComponentMode(ZoneCullingComponentMode mode);
 };
 
 class AvatarPriorityModeHelpers {

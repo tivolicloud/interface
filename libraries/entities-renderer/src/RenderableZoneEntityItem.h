@@ -62,7 +62,7 @@ private:
     void setAmbientLightMode(ComponentMode mode);
     void setSkyboxMode(ComponentMode mode);
     void setBloomMode(ComponentMode mode);
-    void setZoneCullingMode(ZoneCullingMode mode);
+    void setZoneCullingMode(ZoneCullingComponentMode mode);
 
     void setSkyboxColor(const glm::vec3& color);
     void setProceduralUserData(const QString& userData);
@@ -116,7 +116,7 @@ private:
     ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
     */
 
-    ZoneCullingMode _zoneCullingMode{ ZONECULLING_MODE_INHERIT };
+    ZoneCullingComponentMode _zoneCullingMode{ ZONECULLING_MODE_INHERIT };
 
     indexed_container::Index _sunIndex{ LightStage::INVALID_INDEX };
     indexed_container::Index _ambientIndex{ LightStage::INVALID_INDEX };
