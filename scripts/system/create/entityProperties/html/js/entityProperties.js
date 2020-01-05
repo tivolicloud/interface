@@ -522,7 +522,8 @@
                {
                    label: "Zone Culling",
                    type: "dropdown",
-                   options: { inherit: "Inherit", disabled: "Off", enabled: "On" },
+                   // const char * zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
+                   options: { inherit: "Inherit", on_inclusive: "On w/Inherit", on_exclusive: "On w/o inherit", off_exclusive: "All off" },
                    propertyID: "zoneCullingMode"
                },
                {

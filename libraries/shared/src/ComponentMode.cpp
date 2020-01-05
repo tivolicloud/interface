@@ -70,8 +70,12 @@ QString ZoneCullingModeHelpers::getNameForZoneCullingMode(ZoneCullingMode mode) 
     return zoneCullingModeNames[(int)mode];
 }
 
+    //ZONECULLING_MODE_INHERIT,            // Do not change the skiplist
+    //ZONECULLING_MODE_ON_INCLUSIVE,   // Add my entities to existing skiplist.
+    //ZONECULLING_MODE_ON_EXCLUSIVE,   // Overwrite skiplist with my entities.
+    //ZONECULLING_MODE_OFF_EXCLUSIVE,  // Clear skiplist completely.
 
-/**jsdoc
+    /**jsdoc
  * <p>The priority of updates from avatars in a zone to other clients.</p>
  * <table>
  *   <thead>
