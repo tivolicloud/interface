@@ -322,10 +322,16 @@ if (APPLE)
     COMMAND "${CMAKE_COMMAND}" -E copy_directory
       "${CMAKE_SOURCE_DIR}/scripts"
       "${RESOURCES_DEV_DIR}/scripts"
+
+    # # copy JSDoc files beside the executable
+    # COMMAND "${CMAKE_COMMAND}" -E copy_directory
+    #   "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"
+    #   "${RESOURCES_DEV_DIR}/jsdoc"
     # copy JSDoc files beside the executable
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory
-      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"
-      "${RESOURCES_DEV_DIR}/jsdoc"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/hifiJSDoc.json"
+      "${RESOURCES_DEV_DIR}/jsdoc/hifiJSDoc.json"
+
     # copy the resources files beside the executable
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
       "${RESOURCES_RCC}"
@@ -377,10 +383,14 @@ else()
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
       "${PROJECT_SOURCE_DIR}/resources/serverless/redirect.json"
       "${RESOURCES_DEV_DIR}/serverless/redirect.json"
+
     # copy JSDoc files beside the executable
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory
-      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"
-      "${INTERFACE_EXEC_DIR}/jsdoc"
+    # COMMAND "${CMAKE_COMMAND}" -E copy_directory
+    #   "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"
+    #   "${INTERFACE_EXEC_DIR}/jsdoc"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/hifiJSDoc.json"
+      "${INTERFACE_EXEC_DIR}/jsdoc/hifiJSDoc.json"
   )
 
   # link target to external libraries
