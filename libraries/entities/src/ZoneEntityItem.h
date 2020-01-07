@@ -29,12 +29,14 @@ public:
     static EntityItemPointer factory(const EntityItemID& entityID, const EntityItemProperties& properties);
 
     ZoneEntityItem(const EntityItemID& entityItemID);
-    QVector<QUuid> _zoneContentsList; // Every zone has a zone contents list of all the entities inside it
+    QSet<EntityItemID> _zoneContentsList;  // Every zone has a zone contents list of all the entities inside it
+    QSet<EntityItemID> getZoneContentList(); // Called by ETR
+    void updateZoneContentList(QSet<EntityItemID> entitiesInside);  // called periodically by ETR
 
     ALLOW_INSTANTIATION  // This class can be instantiated
 
         // methods for getting/setting all properties of an entity
-   virtual EntityItemProperties
+        virtual EntityItemProperties
         getProperties(const EntityPropertyFlags& desiredProperties, bool allowEmptyDesiredProperties) const override;
     virtual bool setProperties(const EntityItemProperties& properties) override;
     virtual bool setSubClassProperties(const EntityItemProperties& properties) override;
@@ -123,15 +125,14 @@ public:
     bool bloomPropertiesChanged() const { return _bloomPropertiesChanged; }
     bool zoneCullingPropertiesChanged() const { return _zoneCullingPropertiesChanged; }  // TIVOLI
 
-
     //  HEY I MOVED THIS TO ENTITYTREERENDERER.CPP
     ///* Zone culling logic:
-    //    
+    //
     //    MyAvatar enters a zone with Zone Culling on (in EntityTreeRenderer.cpp?)
-    //    activated via EntityTreeRenderer::checkEnterLeaveEntities() { 
+    //    activated via EntityTreeRenderer::checkEnterLeaveEntities() {
     //    Iterate through everything inside that zone
     //    Add each entity ID to the _zoneCullSkiplist list
-    //    Logic in RenderableEntityItem checks if _zoneCullSkiplist list isn't empty 
+    //    Logic in RenderableEntityItem checks if _zoneCullSkiplist list isn't empty
     //    // (while (!_zoneCullSkiplist.empty())
     //    If it's not null, RenderableEntityItem only render the entities in the _zoneCullSkiplist
 
@@ -139,12 +140,12 @@ public:
     //    Clear _zoneCullSkiplist using _zoneCullSkiplist.clear();
 
     //*/
-    //void skipZoneCull(const EntityItemID& id);  
+    //void skipZoneCull(const EntityItemID& id);
     //void clearZoneCullSkiplist();
-    //ReadWriteLockable _zoneCullSkiplistGuard;  
+    //ReadWriteLockable _zoneCullSkiplistGuard;
     //// _zoneCullSkiplist is an unordered set (a list) of entities that do not get culled
     //// if the avatar is standing inside a zone with Zone Culling Properties
-    //std::unordered_set<EntityItemID> _zoneCullSkiplist;  
+    //std::unordered_set<EntityItemID> _zoneCullSkiplist;
 
     void resetRenderingPropertiesChanged();
 
@@ -177,9 +178,7 @@ public:
     static const bool DEFAULT_GHOSTING_ALLOWED;
     static const QString DEFAULT_FILTER_URL;
 
- 
 protected:
-
     KeyLightPropertyGroup _keyLightProperties;
     AmbientLightPropertyGroup _ambientLightProperties;
 

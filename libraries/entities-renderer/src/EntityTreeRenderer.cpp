@@ -17,7 +17,7 @@
 #include <QEventLoop>
 #include <QScriptSyntaxCheckResult>
 #include <QThreadPool>
-
+#include <QSet>
 #include <shared/QtHelpers.h>
 #include <AbstractScriptingServicesInterface.h>
 #include <AbstractViewStateInterface.h>
@@ -86,7 +86,6 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts,
     connect(pointerManager.data(), &PointerManager::triggerEndEntity, entityScriptingInterface,
             &EntityScriptingInterface::mouseReleaseOnEntity);
 
-   
     //  Forward mouse events to web entities
     auto handlePointerEvent = [&](const QUuid& entityID, const PointerEvent& event) {
         std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
@@ -592,7 +591,31 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
     _spaceUpdates.emplace_back(proxyUpdate.first, proxyUpdate.second);
 }
 
-// CPM Investigate.
+// note how will zone culling handle zones, lights, and zones with compound shapes rather than boxes?
+
+// TO DO - this feels kinda sloppy passing entity ID and then finding a reference to the entity
+// again.. maybe replace entityid with a pointer to the entity itself? would it make it marginally faster?
+void EntityTreeRenderer::findEntitiesInZone(EntityItemID entityID, bool hasCompoundShape) {
+   // qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
+    auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID));
+    glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f);
+    glm::vec3 scaledDimensions = zoneItem->getScaledDimensions();
+    QVector<QUuid> result;
+    unsigned int searchFilter = PickFilter::getBitMask(PickFilter::FlagBit::DOMAIN_ENTITIES) |
+                                PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES);
+    _tree->withReadLock([&] {
+        auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
+        AABox box(boundingBoxCorner, scaledDimensions);
+        entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result);
+    });
+    QSet<EntityItemID> resultSet;
+    for (int i = 0; i < result.count(); i++) {
+        resultSet.insert(result[i]);
+    }
+    qDebug() << "Update result set contains " << resultSet.count() << "entities";
+    zoneItem->updateZoneContentList(resultSet);
+}
+
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
     float radius = 0.01f;  // for now, assume 0.01 meter radius, because we actually check the point inside later
     QVector<QUuid> entityIDs;
@@ -605,11 +628,9 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
         // CPM Investigate
         // FIXME - if EntityTree had a findEntitiesContainingPoint() this could theoretically be a little faster
         entityTree->evalEntitiesInSphere(_avatarPosition, radius, PickFilter(), entityIDs);
-
         LayeredZones oldLayeredZones(_layeredZones);
         _layeredZones.clear();
 
-        // CPM investigate
         // create a list of entities that actually contain the avatar's position
         for (auto& entityID : entityIDs) {
             auto entity = entityTree->findEntityByID(entityID);
@@ -652,51 +673,50 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     });
 }
 
-/*
-        Get the box info like corner of the zone
-        Do an evaluate entities in box operation
-        Set    QVector<QUuid> _localZoneCullSkiplist;
 
-    */
-/*  Iterates thru the stack and builds _zoneCullSkipList using these rules:
-        ZONECULLING_MODE_INHERIT,            // Do not change the skiplist
-        ZONECULLING_MODE_ON_INCLUSIVE,   // Add my entities to existing skiplist.
-        ZONECULLING_MODE_ON_EXCLUSIVE,   // Overwrite skiplist with my entities.
-        ZONECULLING_MODE_OFF_EXCLUSIVE,  // Clear skiplist completely.
-    */
 void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
-
     if (_zoneCullingStack.isEmpty()) return;
 
-    qDebug() << "CPM evaluateZoneCullingStack.  The stack contains: ";
-
-    // Declare a variable to hold the final skiplist after performing mask operations
-    // CPM Zonecull
-
-   //       EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
-   //         if (!(entityItem->isLocalEntity() ||
-
-
     for (int i = 0; i < _zoneCullingStack.size(); ++i) {
-        qDebug() << _zoneCullingStack[i];   
+        // Get a reference to each zone entity item
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i]));
+        findEntitiesInZone(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
             case ZONECULLING_MODE_INHERIT:
-                qDebug() << _zoneCullingStack[i] << " has zcm INHERIT";
+                // qDebug() << _zoneCullingStack[i] << " INHERIT";
+                // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
-                qDebug() << _zoneCullingStack[i] << " has zcm ON INCLUSIVE";
+                _zoneCullSkipList.unite(zoneItem->getZoneContentList());
+                // qDebug() << _zoneCullingStack[i] << " has zcm ON INCLUSIVE";
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
-                qDebug() << _zoneCullingStack[i] << " has zcm ON EXCLUSIVE";
+                _zoneCullSkipList.clear();
+                _zoneCullSkipList.unite(zoneItem->getZoneContentList());
+                // qDebug() << _zoneCullingStack[i] << " has zcm ON EXCLUSIVE";
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
-                qDebug() << _zoneCullingStack[i] << " has zcm OFF EXCLUSIVE";
+                _zoneCullSkipList.clear();
+                // qDebug() << _zoneCullingStack[i] << " has zcm OFF EXCLUSIVE";
                 break;
         }
     }
-    qDebug() << "Top zone is " << _zoneCullingStack.last();
+
+    qDebug() << "Dominant zone is " << _zoneCullingStack.last();
+    qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
+
+    foreach (const EntityItemID& value, _zoneCullSkipList) qDebug() << value;
+
+  // 
+  //QSet<EntityItemID>::iterator i;
+  //  for (i = _zoneCullSkipList.begin(); i != _zoneCullSkipList.end(); ++i) {
+  //      auto anEntityItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(*i));
+  //      qDebug() << anEntityItem->getName();
+  //  }
+    
+
+
 }
 
 // CPM Investigate.  Here we determine if we enter a zone?
@@ -721,7 +741,8 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             _forceRecheckEntities = false;
 
             QSet<EntityItemID> entitiesContainingAvatar;
-            findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
+            findBestZoneAndMaybeContainingEntities(
+                entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
             evaluateZoneCullingStack();
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
@@ -738,7 +759,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
                         // Remove this ID from the zoneCullingStack
-                        if (_zoneCullingStack.indexOf(entityID) != -1) { // if it exists, remove it
+                        if (_zoneCullingStack.indexOf(entityID) != -1) {  // if it exists, remove it
                             qDebug() << "CPM LEAVE ENTITY - this item was not listed" << entityID;
                             _zoneCullingStack.removeAt(_zoneCullingStack.indexOf(entityID));
                         }
@@ -749,12 +770,13 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                 foreach (const EntityItemID& entityID, entitiesContainingAvatar) {
                     if (!_currentEntitiesInside.contains(entityID)) {
                         qDebug() << "CPM AVATAR - ENTER ENTITY: " << entityID;
+
                         emit enterEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
                         // Add this ID to the zoneCullingStack
-                        if (_zoneCullingStack.indexOf(entityID) == -1) { // if it doesn't exist
+                        if (_zoneCullingStack.indexOf(entityID) == -1) {  // if it doesn't exist
                             qDebug() << "CPM ENTER ENTITY - this item was not listed" << entityID;
-                           _zoneCullingStack.append(entityID);
+                            _zoneCullingStack.append(entityID);
                         }
                     }
                 }
@@ -1246,7 +1268,7 @@ void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA,
         bool entityAIsDynamic = entityA->getDynamic();
         bool entityBIsDynamic = entityB->getDynamic();
 
-//#ifdef WANT_DEBUG
+        //#ifdef WANT_DEBUG
         bool bothEntitiesStatic = !entityAIsDynamic && !entityBIsDynamic;
         if (bothEntitiesStatic) {
             qCDebug(entities) << "A collision has occurred between two static entities!";
@@ -1254,7 +1276,7 @@ void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA,
             qCDebug(entities) << "Entity B ID:" << entityB->getID();
         }
         assert(!bothEntitiesStatic);
-//#endif
+        //#endif
 
         if ((myNodeID == entityASimulatorID && entityAIsDynamic) ||
             (myNodeID == entityBSimulatorID && (!entityAIsDynamic || entityASimulatorID.isNull()))) {

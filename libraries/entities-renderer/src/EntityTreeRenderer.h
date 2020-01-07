@@ -66,7 +66,7 @@ public:
 
        PART I. IN ENTITY TREE RENDERER:
         1. A Zone Enter or Exit event is detected, and is added or removed from an ordered list called _zoneCullingStack.
-        2. ETR does a Find All in Box and writes what it finds into each zone's _zoneContentList
+        2. ETR tells the zone periodically to do a Find All in Box into its _zoneContentList
         3. ETR evaluateZoneCullSkipList() is called when the _zoneCullingStack is changed
         4. evaluateZoneCullSkipList iterates thru the stack and builds _zoneCullSkipList using these rules:
             ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
@@ -83,9 +83,10 @@ public:
     void evaluateZoneCullingStack();    // We'll look at all the culling masks for each zone
     QSet<EntityItemID> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
+    QSet<EntityItemID> getZoneCullSkiplist() { return _zoneCullSkipList; }
     //QSet<QUuid>::iterator itr;
     // _zoneContentList is a list of entities that do not get culled
-     
+    void findEntitiesInZone(EntityItemID zoneItem, bool hasCompoundShape);
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }

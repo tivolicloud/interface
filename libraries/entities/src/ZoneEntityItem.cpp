@@ -16,6 +16,7 @@
 #include "EntityTree.h"
 #include "EntityTreeElement.h"
 #include "EntityEditFilters.h"
+#include "EntityScriptingInterface.h"
 
 bool ZoneEntityItem::_zonesArePickable = false;
 bool ZoneEntityItem::_drawZoneBoundaries = false;
@@ -33,7 +34,16 @@ EntityItemPointer ZoneEntityItem::factory(const EntityItemID& entityID, const En
     return entity;
 }
 
+void ZoneEntityItem::updateZoneContentList(QSet<EntityItemID> entitiesInside) { // cast 
+    _zoneContentsList.clear();
+    _zoneContentsList.unite(entitiesInside);
+    //qDebug() << "CPM Update Zone Content List";
+ }
 
+QSet<EntityItemID> ZoneEntityItem::getZoneContentList() {
+    qDebug() << "CPM Get zone contents list " << _zoneContentsList;
+    return _zoneContentsList;
+}
 
 ZoneEntityItem::ZoneEntityItem(const EntityItemID& entityItemID) : EntityItem(entityItemID) {
     _type = EntityTypes::Zone;

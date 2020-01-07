@@ -9,7 +9,6 @@
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
 
-
 #include "RenderableEntityItem.h"
 
 #include <ObjectMotionState.h>
@@ -169,7 +168,8 @@ render::hifi::Layer EntityRenderer::getHifiRenderLayer() const {
 }
 
 ItemKey EntityRenderer::getKey() {
-    ItemKey::Builder builder = ItemKey::Builder().withTypeShape().withTypeMeta().withTagBits(getTagMask()).withLayer(getHifiRenderLayer());
+    ItemKey::Builder builder =
+        ItemKey::Builder().withTypeShape().withTypeMeta().withTagBits(getTagMask()).withLayer(getHifiRenderLayer());
 
     if (isTransparent()) {
         builder.withTransparent();
@@ -181,7 +181,7 @@ ItemKey EntityRenderer::getKey() {
         builder.withSubMetaCulled();
     }
 
-    if (!_visible) { // CPM
+    if (!_visible) {  // CPM
         builder.withInvisible();
     }
 
@@ -202,7 +202,7 @@ void EntityRenderer::render(RenderArgs* args) {
     }
 
     if (!_renderUpdateQueued && needsRenderUpdate()) {
-        // FIXME find a way to spread out the calls to needsRenderUpdate so that only a given subset of the 
+        // FIXME find a way to spread out the calls to needsRenderUpdate so that only a given subset of the
         // items checks every frame, like 1/N of the tree ever N frames
         _renderUpdateQueued = true;
         emit requestRenderUpdate();
@@ -215,9 +215,11 @@ void EntityRenderer::render(RenderArgs* args) {
 
 //
 // Methods called by the EntityTreeRenderer
-//
 // CPM investigate Entity Renderer
-EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer, const EntityItemPointer& entity, const ScenePointer& scene, Transaction& transaction) {
+EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
+                                                   const EntityItemPointer& entity,
+                                                   const ScenePointer& scene,
+                                                   Transaction& transaction) {
     EntityRenderer::Pointer result;
     if (!entity) {
         return result;
@@ -226,7 +228,6 @@ EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
     using Type = EntityTypes::EntityType_t;
     auto type = entity->getType();
     switch (type) {
-
         case Type::Shape:
         case Type::Box:
         case Type::Sphere:
@@ -292,7 +293,7 @@ EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
     }
 
     if (result) {
-        result->addToScene(scene, transaction); // CPM investigate
+        result->addToScene(scene, transaction);  // CPM investigate
     }
 
     return result;
@@ -347,7 +348,7 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
 // Internal methods
 //
 
-// Returns true if the item needs to have updateInscene called because of internal rendering 
+// Returns true if the item needs to have updateInscene called because of internal rendering
 // changes (animation, fading, etc)
 bool EntityRenderer::needsRenderUpdate() const {
     if (isFading()) {
@@ -403,8 +404,10 @@ void EntityRenderer::updateModelTransformAndBound() {
     }
 }
 
-// CPM Investigate.  This appears to be very imporotant in rendering and simulating.
-void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transaction& transaction, const EntityItemPointer& entity) {
+// CPM rendering update; Tivoli zone culling and locally hidden happens here.
+void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
+                                               Transaction& transaction,
+                                               const EntityItemPointer& entity) {
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
     withWriteLock([&] {
         auto transparent = isTransparent();
@@ -421,10 +424,25 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transa
         updateModelTransformAndBound();
 
         _moving = entity->isMovingRelativeToParent();
-        _visible = entity->getVisible(); // CPM investigate
+        _visible = entity->getVisible();  // CPM investigate
+        // TIVOLI ZONE CULLING
+        // Evaluate the skiplist.
+
+        auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();  // CPM IS THIS SLOW?
+        QSet<EntityItemID> skiplist = treeRenderer->getZoneCullSkiplist();
+        if (skiplist.count() > 0) {
+            if (skiplist.contains(entity->getID())) {
+                entity->setLocallyVisible(true);
+            } else
+                entity->setLocallyVisible(false);
+            //_visible = _visible;
+            //else _visible = false;
+        }
+
         if (!entity->getLocallyVisible())
             _visible = false;  // TIVOLI locallyVisible overrides visible
-        setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera()); 
+
+        setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());
         _canCastShadow = entity->getCanCastShadow();
@@ -435,12 +453,14 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene, Transa
 }
 
 void EntityRenderer::onAddToScene(const EntityItemPointer& entity) {
-    QObject::connect(this, &EntityRenderer::requestRenderUpdate, this, [this] { 
-        auto renderer = DependencyManager::get<EntityTreeRenderer>();
-        if (renderer) {
-            renderer->onEntityChanged(_entity->getID());
-        }
-    }, Qt::QueuedConnection);
+    QObject::connect(this, &EntityRenderer::requestRenderUpdate, this,
+                     [this] {
+                         auto renderer = DependencyManager::get<EntityTreeRenderer>();
+                         if (renderer) {
+                             renderer->onEntityChanged(_entity->getID());
+                         }
+                     },
+                     Qt::QueuedConnection);
     _changeHandlerId = entity->registerChangeHandler([](const EntityItemID& changedEntity) {
         auto renderer = DependencyManager::get<EntityTreeRenderer>();
         if (renderer) {
@@ -449,7 +469,7 @@ void EntityRenderer::onAddToScene(const EntityItemPointer& entity) {
     });
 }
 
-void EntityRenderer::onRemoveFromScene(const EntityItemPointer& entity) { 
+void EntityRenderer::onRemoveFromScene(const EntityItemPointer& entity) {
     entity->deregisterChangeHandler(_changeHandlerId);
     QObject::disconnect(this, &EntityRenderer::requestRenderUpdate, this, nullptr);
 }
@@ -464,13 +484,18 @@ void EntityRenderer::removeMaterial(graphics::MaterialPointer material, const st
     _materials[parentMaterialName].remove(material);
 }
 
-glm::vec4 EntityRenderer::calculatePulseColor(const glm::vec4& color, const PulsePropertyGroup& pulseProperties, quint64 start) {
-    if (pulseProperties.getPeriod() == 0.0f || (pulseProperties.getColorMode() == PulseMode::NONE && pulseProperties.getAlphaMode() == PulseMode::NONE)) {
+glm::vec4 EntityRenderer::calculatePulseColor(const glm::vec4& color,
+                                              const PulsePropertyGroup& pulseProperties,
+                                              quint64 start) {
+    if (pulseProperties.getPeriod() == 0.0f ||
+        (pulseProperties.getColorMode() == PulseMode::NONE && pulseProperties.getAlphaMode() == PulseMode::NONE)) {
         return color;
     }
 
     float t = ((float)(usecTimestampNow() - start)) / ((float)USECS_PER_SECOND);
-    float pulse = 0.5f * (cosf(t * (2.0f * (float)M_PI) / pulseProperties.getPeriod()) + 1.0f) * (pulseProperties.getMax() - pulseProperties.getMin()) + pulseProperties.getMin();
+    float pulse = 0.5f * (cosf(t * (2.0f * (float)M_PI) / pulseProperties.getPeriod()) + 1.0f) *
+                      (pulseProperties.getMax() - pulseProperties.getMin()) +
+                  pulseProperties.getMin();
     float outPulse = (1.0f - pulse);
 
     glm::vec4 result = color;
@@ -493,13 +518,18 @@ glm::vec4 EntityRenderer::calculatePulseColor(const glm::vec4& color, const Puls
     return result;
 }
 
-glm::vec3 EntityRenderer::calculatePulseColor(const glm::vec3& color, const PulsePropertyGroup& pulseProperties, quint64 start) {
-    if (pulseProperties.getPeriod() == 0.0f || (pulseProperties.getColorMode() == PulseMode::NONE && pulseProperties.getAlphaMode() == PulseMode::NONE)) {
+glm::vec3 EntityRenderer::calculatePulseColor(const glm::vec3& color,
+                                              const PulsePropertyGroup& pulseProperties,
+                                              quint64 start) {
+    if (pulseProperties.getPeriod() == 0.0f ||
+        (pulseProperties.getColorMode() == PulseMode::NONE && pulseProperties.getAlphaMode() == PulseMode::NONE)) {
         return color;
     }
 
     float t = ((float)(usecTimestampNow() - start)) / ((float)USECS_PER_SECOND);
-    float pulse = 0.5f * (cosf(t * (2.0f * (float)M_PI) / pulseProperties.getPeriod()) + 1.0f) * (pulseProperties.getMax() - pulseProperties.getMin()) + pulseProperties.getMin();
+    float pulse = 0.5f * (cosf(t * (2.0f * (float)M_PI) / pulseProperties.getPeriod()) + 1.0f) *
+                      (pulseProperties.getMax() - pulseProperties.getMin()) +
+                  pulseProperties.getMin();
     float outPulse = (1.0f - pulse);
 
     glm::vec3 result = color;
