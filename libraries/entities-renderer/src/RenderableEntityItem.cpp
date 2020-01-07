@@ -429,18 +429,24 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         // Evaluate the skiplist.
 
         auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();  // CPM IS THIS SLOW?
-        QSet<EntityItemID> skiplist = treeRenderer->getZoneCullSkiplist();
+        QVector<QUuid> skiplist = treeRenderer->getZoneCullSkiplist();
+        qDebug() << "Renderable Entity Item has " << skiplist.count() << " on its skiplist";
+        QUuid checkID = entity->getID();
+        qDebug() << "My entity ID is " << checkID;
+        qDebug() << "My spot on the skiplist is " << skiplist.indexOf(checkID);
         if (skiplist.count() > 0) {
-            if (skiplist.contains(entity->getID())) {
-                entity->setLocallyVisible(true);
+            if (skiplist.indexOf(checkID)>-1) {
+                qDebug() << "I'm on the skiplist " << checkID;
+               // entity->setLocallyVisible(true);
+                _visible = _visible;
             } else
-                entity->setLocallyVisible(false);
-            //_visible = _visible;
-            //else _visible = false;
+                _visible = false;
+            qDebug() << "I'm not on the skiplist " << checkID;
+            //  entity->setLocallyVisible(false);
         }
 
-        if (!entity->getLocallyVisible())
-            _visible = false;  // TIVOLI locallyVisible overrides visible
+        //if (!entity->getLocallyVisible())
+        //    _visible = false;  // TIVOLI locallyVisible overrides visible
 
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());

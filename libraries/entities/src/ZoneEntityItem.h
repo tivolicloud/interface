@@ -29,9 +29,9 @@ public:
     static EntityItemPointer factory(const EntityItemID& entityID, const EntityItemProperties& properties);
 
     ZoneEntityItem(const EntityItemID& entityItemID);
-    QSet<EntityItemID> _zoneContentsList;  // Every zone has a zone contents list of all the entities inside it
-    QSet<EntityItemID> getZoneContentList(); // Called by ETR
-    void updateZoneContentList(QSet<EntityItemID> entitiesInside);  // called periodically by ETR
+    QVector<QUuid> _zoneContentsList;      // Every zone has a zone contents list of all the entities inside it
+    QVector<QUuid> getZoneContentList(); // Called by ETR
+    void updateZoneContentList(QVector<QUuid> entitiesInside);  // called periodically by ETR
 
     ALLOW_INSTANTIATION  // This class can be instantiated
 

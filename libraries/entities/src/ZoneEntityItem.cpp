@@ -34,13 +34,12 @@ EntityItemPointer ZoneEntityItem::factory(const EntityItemID& entityID, const En
     return entity;
 }
 
-void ZoneEntityItem::updateZoneContentList(QSet<EntityItemID> entitiesInside) { // cast 
+void ZoneEntityItem::updateZoneContentList(QVector<QUuid> entitiesInside) {
     _zoneContentsList.clear();
-    _zoneContentsList.unite(entitiesInside);
-    //qDebug() << "CPM Update Zone Content List";
+    _zoneContentsList += entitiesInside;
  }
 
-QSet<EntityItemID> ZoneEntityItem::getZoneContentList() {
+QVector<QUuid> ZoneEntityItem::getZoneContentList() {
     qDebug() << "CPM Get zone contents list " << _zoneContentsList;
     return _zoneContentsList;
 }

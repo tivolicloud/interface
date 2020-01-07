@@ -608,12 +608,12 @@ void EntityTreeRenderer::findEntitiesInZone(EntityItemID entityID, bool hasCompo
         AABox box(boundingBoxCorner, scaledDimensions);
         entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result);
     });
-    QSet<EntityItemID> resultSet;
+    /*QSet<EntityItemID> resultSet;
     for (int i = 0; i < result.count(); i++) {
         resultSet.insert(result[i]);
-    }
-    qDebug() << "Update result set contains " << resultSet.count() << "entities";
-    zoneItem->updateZoneContentList(resultSet);
+    }*/
+    qDebug() << "Update result set contains " << result.count() << "entities";
+    zoneItem->updateZoneContentList(result);
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
@@ -677,6 +677,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
 void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
     if (_zoneCullingStack.isEmpty()) return;
 
+    _zoneCullSkipList.clear();
     for (int i = 0; i < _zoneCullingStack.size(); ++i) {
         // Get a reference to each zone entity item
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i]));
@@ -688,12 +689,12 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id)
                 // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
-                _zoneCullSkipList.unite(zoneItem->getZoneContentList());
+                _zoneCullSkipList += zoneItem->getZoneContentList();
                 // qDebug() << _zoneCullingStack[i] << " has zcm ON INCLUSIVE";
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
                 _zoneCullSkipList.clear();
-                _zoneCullSkipList.unite(zoneItem->getZoneContentList());
+                _zoneCullSkipList += zoneItem->getZoneContentList();
                 // qDebug() << _zoneCullingStack[i] << " has zcm ON EXCLUSIVE";
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
@@ -706,16 +707,7 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id)
     qDebug() << "Dominant zone is " << _zoneCullingStack.last();
     qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
 
-    foreach (const EntityItemID& value, _zoneCullSkipList) qDebug() << value;
-
-  // 
-  //QSet<EntityItemID>::iterator i;
-  //  for (i = _zoneCullSkipList.begin(); i != _zoneCullSkipList.end(); ++i) {
-  //      auto anEntityItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(*i));
-  //      qDebug() << anEntityItem->getName();
-  //  }
-    
-
+    foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
 
 }
 

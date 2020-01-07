@@ -81,9 +81,9 @@ public:
 
     */
     void evaluateZoneCullingStack();    // We'll look at all the culling masks for each zone
-    QSet<EntityItemID> _zoneCullSkipList;  // the final ZCL to be used
+    QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
-    QSet<EntityItemID> getZoneCullSkiplist() { return _zoneCullSkipList; }
+    QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
     //QSet<QUuid>::iterator itr;
     // _zoneContentList is a list of entities that do not get culled
     void findEntitiesInZone(EntityItemID zoneItem, bool hasCompoundShape);
