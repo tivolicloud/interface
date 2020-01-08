@@ -599,7 +599,7 @@ LauncherUtils::ResponseError LauncherManager::getAccessTokenForCredentials(const
     CString response;
     LauncherUtils::ResponseError error = LauncherUtils::makeHTTPCall(getHttpUserAgent(),
                                                                      true,
-                                                                     L"metaverse.highfidelity.com", 
+                                                                     L"alpha.tivolicloud.com", 
                                                                      L"/oauth/token",
                                                                      contentTypeText, post, 
                                                                      response, true);
