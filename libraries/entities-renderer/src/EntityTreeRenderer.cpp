@@ -593,10 +593,9 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 
 // note how will zone culling handle zones, lights, and zones with compound shapes rather than boxes?
 
-// TO DO - this feels kinda sloppy passing entity ID and then finding a reference to the entity
-// again.. maybe replace entityid with a pointer to the entity itself? would it make it marginally faster?
-void EntityTreeRenderer::findEntitiesInZone(EntityItemID entityID, bool hasCompoundShape) {
-   // qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
+
+void EntityTreeRenderer::updateZoneContentsLists(EntityItemID entityID, bool hasCompoundShape) {
+    // qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
     auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID));
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f);
     glm::vec3 scaledDimensions = zoneItem->getScaledDimensions();
@@ -606,13 +605,9 @@ void EntityTreeRenderer::findEntitiesInZone(EntityItemID entityID, bool hasCompo
     _tree->withReadLock([&] {
         auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
         AABox box(boundingBoxCorner, scaledDimensions);
-        entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result);
+        entityTree->evalEntitiesInBox(box, PickFilter(), result);
     });
-    /*QSet<EntityItemID> resultSet;
-    for (int i = 0; i < result.count(); i++) {
-        resultSet.insert(result[i]);
-    }*/
-    qDebug() << "Update result set contains " << result.count() << "entities";
+    //qDebug() << "Update result set contains " << result.count() << "entities";
     zoneItem->updateZoneContentList(result);
 }
 
@@ -673,45 +668,57 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     });
 }
 
-
+// Tivoli Zone Culling
+// Take the zone stack (the domains that the avatar is nested within) and check each zone's Zone Culling Mode
+// Each zone entity keeps a _zoneContentsList and updated by updateZoneContentsLists
+// Using Zone Culling Mode rules, build _zoneCullSkipList
+// Instruct the entity's renderer to set _visible=false for each item on _zoneCullSkipList
 void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
-    if (_zoneCullingStack.isEmpty()) return;
-
+    if (_zoneCullingStack.isEmpty())
+        return;
     _zoneCullSkipList.clear();
     for (int i = 0; i < _zoneCullingStack.size(); ++i) {
-        // Get a reference to each zone entity item
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i]));
-        findEntitiesInZone(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+        updateZoneContentsLists(
+            _zoneCullingStack[i],
+            false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
-            case ZONECULLING_MODE_INHERIT:
-                // qDebug() << _zoneCullingStack[i] << " INHERIT";
-                // do nothing
+            case ZONECULLING_MODE_INHERIT:  // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
                 _zoneCullSkipList += zoneItem->getZoneContentList();
-                // qDebug() << _zoneCullingStack[i] << " has zcm ON INCLUSIVE";
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
                 _zoneCullSkipList.clear();
                 _zoneCullSkipList += zoneItem->getZoneContentList();
-                // qDebug() << _zoneCullingStack[i] << " has zcm ON EXCLUSIVE";
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
                 _zoneCullSkipList.clear();
-                // qDebug() << _zoneCullingStack[i] << " has zcm OFF EXCLUSIVE";
                 break;
         }
     }
 
     qDebug() << "Dominant zone is " << _zoneCullingStack.last();
     qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
-
-    foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
-
+    // foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
 }
 
-// CPM Investigate.  Here we determine if we enter a zone?
+//void EntityTreeRenderer::zoneCullEntities() {
+//    _zoneCullingActive = (_zoneCullSkipList.count() > 0); // only 
+//    // qDebug() << "ZONE CULL ENTITIES TIME AND ACTIVE IS " << _zoneCullSkipList.count();
+//    if (!_zoneCullingActive)
+//        return;
+//  //  return;
+//        //    foreach (const QUuid& value, _zoneCullSkipList) {
+//    for (int i = 0; i < _zoneCullSkipList.count(); i++) {
+//        // qDebug() << "ZONE CULL ENTITIES ITR NUMBER "<<i;
+//        auto noCullItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullSkipList[i]));
+//        if (noCullItem) noCullItem->setLocallyVisible(true);
+//    }
+//}
+
+
 void EntityTreeRenderer::checkEnterLeaveEntities() {
     PROFILE_RANGE(simulation_physics, "EnterLeave");
     PerformanceTimer perfTimer("enterLeave");

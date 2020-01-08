@@ -1334,6 +1334,7 @@ void ModelEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
     entity->updateModelBounds();
     entity->stopModelOverrideIfNoParent();
 
+
     if (model->isVisible() != _visible) {
         model->setVisibleInScene(_visible, scene);
     }

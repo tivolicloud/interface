@@ -195,7 +195,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(OctreePacketData* packet
     requestedProperties -= PROP_ENTITY_HOST_TYPE;
     requestedProperties -= PROP_OWNING_AVATAR_ID;
     requestedProperties -= PROP_VISIBLE_IN_SECONDARY_CAMERA;
-    // requestedProperties -= PROP_LOCALLY_VISIBLE;
+    requestedProperties -= PROP_LOCALLY_VISIBLE;
 
     // If we are being called for a subsequent pass at appendEntityData() that failed to completely encode this item,
     // then our entityTreeElementExtraEncodeData should include data about which properties we need to append.
@@ -283,7 +283,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(OctreePacketData* packet
         APPEND_ENTITY_PROPERTY(PROP_PARENT_ID, actualParentID);
         APPEND_ENTITY_PROPERTY(PROP_PARENT_JOINT_INDEX, getParentJointIndex());
         APPEND_ENTITY_PROPERTY(PROP_VISIBLE, getVisible());
-        APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, getLocallyVisible()); // not sent over the wire
+        // APPEND_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, getLocallyVisible()); // not sent over the wire
         APPEND_ENTITY_PROPERTY(PROP_NAME, getName());
         APPEND_ENTITY_PROPERTY(PROP_LOCKED, getLocked());
         APPEND_ENTITY_PROPERTY(PROP_USER_DATA, getUserData());
@@ -821,7 +821,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         overwriteLocalData = oldOverwrite;
     }
     READ_ENTITY_PROPERTY(PROP_VISIBLE, bool, setVisible);
-    READ_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);  // not sent over the wire
+    // READ_ENTITY_PROPERTY(PROP_LOCALLY_VISIBLE, bool, setLocallyVisible);  // not sent over the wire
     READ_ENTITY_PROPERTY(PROP_NAME, QString, setName);
     READ_ENTITY_PROPERTY(PROP_LOCKED, bool, setLocked);
     READ_ENTITY_PROPERTY(PROP_USER_DATA, QString, setUserData);

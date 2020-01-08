@@ -80,13 +80,14 @@ public:
        If it's not empty, and the entity ID is not listed in the skiplist, handle as if _visible were false
 
     */
-    void evaluateZoneCullingStack();    // We'll look at all the culling masks for each zone
     QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
+    bool _zoneCullingActive = false;
+    void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
     QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
-    //QSet<QUuid>::iterator itr;
-    // _zoneContentList is a list of entities that do not get culled
-    void findEntitiesInZone(EntityItemID zoneItem, bool hasCompoundShape);
+    bool getZoneCullStatus() { return _zoneCullingActive; }
+    void updateZoneContentsLists(EntityItemID zoneItem, bool hasCompoundShape);
+    void zoneCullEntities();
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }
