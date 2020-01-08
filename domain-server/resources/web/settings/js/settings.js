@@ -306,7 +306,7 @@ $(document).ready(function(){
 
     if (hasAccessToken) {
       el = "<p>";
-      el += "<span class='account-connected-header'>High Fidelity Account Connected</span>";
+      el += "<span class='account-connected-header'>Tivoli Cloud world connected</span>";
       el += "<button id='" + Settings.DISCONNECT_ACCOUNT_BTN_ID + "' class='btn'>Disconnect</button>";
       el += "</p>";
       el = $(el);
@@ -319,10 +319,11 @@ $(document).ready(function(){
       }
       buttonSetting.help = "";
       buttonSetting.classes = "btn-primary";
-      buttonSetting.button_label = "Connect High Fidelity Account";
+      buttonSetting.button_label = "Connect Tivoli Cloud world";
       buttonSetting.html_id = Settings.CONNECT_ACCOUNT_BTN_ID;
 
-      buttonSetting.href = METAVERSE_URL + "/user/tokens/new?for_domain_server=true";
+      //buttonSetting.href = METAVERSE_URL + "/user/tokens/new?for_domain_server=true";
+      buttonSetting.href = METAVERSE_URL + "/user/worlds";
 
       // since we do not have an access token we change hide domain ID and auto networking settings
       // without an access token niether of them can do anything

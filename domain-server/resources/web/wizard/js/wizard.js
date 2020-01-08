@@ -8,7 +8,8 @@ $(document).ready(function(){
   Strings.ADD_PLACE_NOT_CONNECTED_MESSAGE = "You must have an access token to query your High Fidelity places.<br><br>" +
     "Please go back and connect your account.";
 
-  $('#connect-account-btn').attr('href', URLs.METAVERSE_URL + "/user/tokens/new?for_domain_server=true");
+  //$('#connect-account-btn').attr('href', URLs.METAVERSE_URL + "/user/tokens/new?for_domain_server=true");
+  $('#connect-account-btn').attr('href', URLs.METAVERSE_URL + "/user/worlds");
 
   $('[data-toggle="tooltip"]').tooltip();
 

@@ -3,12 +3,12 @@
   <h4 class="step-title"></h4>
   <dl class="row">
     <dd class="col-md-12">
-      <span class='step-description'>By connecting your High Fidelity Account you will be granting access to your account information.</span>
+      <span class='step-description'>By connecting your Tivoli Cloud world you will be linking this server to it!</span>
     </dd>
   </dl>
   <dl class="row">
     <dd class="col-md-12">
-      <a id="connect-account-btn" role="button" class="btn btn-primary btn-md btn-block" target="_blank">Connect your High Fidelity account</a>
+      <a id="connect-account-btn" role="button" class="btn btn-primary btn-md btn-block" target="_blank">Connect your Tivoli Cloud world</a>
     </dd>
   </dl>
 
