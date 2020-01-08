@@ -201,6 +201,10 @@ public:
     QString getDescription() const;
     void setDescription(const QString& value);
 
+    // TIVOLI tagging getters and setters
+    QString getCustomTags() const;  // TIVOLI tagging
+    void setCustomTags(QString value);  // TIVOLI tagging
+
     /// Dimensions in meters (0.0 - TREE_SCALE)
     virtual glm::vec3 getScaledDimensions() const;
     virtual void setScaledDimensions(const glm::vec3& value);
@@ -668,7 +672,8 @@ protected:
     bool _shouldHighlight { false };
     QString _name { ENTITY_ITEM_DEFAULT_NAME };
     QString _href; //Hyperlink href
-    QString _description; //Hyperlink description
+    QString _description; //Hyperlink description  
+    QString _customTags;       // TIVOLI tagging
 
     // Certifiable Properties
     QString _itemName { ENTITY_ITEM_DEFAULT_ITEM_NAME };

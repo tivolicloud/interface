@@ -90,6 +90,7 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_PRIVATE_USER_DATA;
     requestedProperties += PROP_HREF;
     requestedProperties += PROP_DESCRIPTION;
+    requestedProperties += PROP_CUSTOMTAGS;  // TIVOLI tagging
     requestedProperties += PROP_POSITION;
     requestedProperties += PROP_DIMENSIONS;
     requestedProperties += PROP_ROTATION;
@@ -290,6 +291,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(OctreePacketData* packet
         APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, privateUserData);
         APPEND_ENTITY_PROPERTY(PROP_HREF, getHref());
         APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, getDescription());
+        APPEND_ENTITY_PROPERTY(PROP_CUSTOMTAGS, getCustomTags());  // TIVOLI tagging
         APPEND_ENTITY_PROPERTY(PROP_POSITION, getLocalPosition());
         APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, getScaledDimensions());
         APPEND_ENTITY_PROPERTY(PROP_ROTATION, getLocalOrientation());
@@ -828,6 +830,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
     READ_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
     READ_ENTITY_PROPERTY(PROP_HREF, QString, setHref);
     READ_ENTITY_PROPERTY(PROP_DESCRIPTION, QString, setDescription);
+    READ_ENTITY_PROPERTY(PROP_CUSTOMTAGS, QString, setCustomTags);  // TIVOLI tagging
     {   // When we own the simulation we don't accept updates to the entity's transform/velocities
         // we also want to ignore any duplicate packets that have the same "recently updated" values
         // as a packet we've already recieved. This is because we want multiple edits of the same
@@ -1092,6 +1095,17 @@ void EntityItem::setHref(QString value) {
     });
 }
 
+void EntityItem::setCustomTags(QString value) { // TIVOLI tagging
+    auto customTags = value.toUpper();
+    withWriteLock([&] { _customTags = customTags; });
+}
+
+QString EntityItem::getCustomTags() const {  // TIVOLI tagging
+    QString result;
+    withReadLock([&] { result = _customTags; });
+    return result;
+}
+
 void EntityItem::setCollisionSoundURL(const QString& value) {
     bool modified = false;
     withWriteLock([&] {
@@ -1346,6 +1360,7 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(privateUserData, getPrivateUserData);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(href, getHref);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(description, getDescription);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(customTags, getCustomTags);  // TIVOLI tagging
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(position, getLocalPosition);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(dimensions, getScaledDimensions);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(rotation, getLocalOrientation);
@@ -1496,6 +1511,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(privateUserData, setPrivateUserData);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(href, setHref);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(description, setDescription);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(customTags, setCustomTags);  // TIVOLI tagging
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(position, setPosition);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(dimensions, setScaledDimensions);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(rotation, setRotation);

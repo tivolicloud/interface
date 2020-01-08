@@ -445,6 +445,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_PRIVATE_USER_DATA, privateUserData);
     CHECK_PROPERTY_CHANGE(PROP_HREF, href);
     CHECK_PROPERTY_CHANGE(PROP_DESCRIPTION, description);
+    CHECK_PROPERTY_CHANGE(PROP_CUSTOMTAGS, customTags);  // TIVOLI tagging
     CHECK_PROPERTY_CHANGE(PROP_POSITION, position);
     CHECK_PROPERTY_CHANGE(PROP_DIMENSIONS, dimensions);
     CHECK_PROPERTY_CHANGE(PROP_ROTATION, rotation);
@@ -1607,8 +1608,9 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_LOCKED, locked);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_USER_DATA, userData);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_PRIVATE_USER_DATA, privateUserData);
-    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_HREF, href);
+    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_HREF, href); 
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DESCRIPTION, description);
+    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CUSTOMTAGS, customTags);  // TIVOLI tagging
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_POSITION, position);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DIMENSIONS, dimensions);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_ROTATION, rotation);
@@ -2024,8 +2026,9 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE(locked, bool, setLocked);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(userData, QString, setUserData);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(privateUserData, QString, setPrivateUserData);
-    COPY_PROPERTY_FROM_QSCRIPTVALUE(href, QString, setHref);
+    COPY_PROPERTY_FROM_QSCRIPTVALUE(href, QString, setHref);  
     COPY_PROPERTY_FROM_QSCRIPTVALUE(description, QString, setDescription);
+    COPY_PROPERTY_FROM_QSCRIPTVALUE(customTags, QString, setCustomTags);  // TIVOLI tagging
     COPY_PROPERTY_FROM_QSCRIPTVALUE(position, vec3, setPosition);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(dimensions, vec3, setDimensions);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(rotation, quat, setRotation);
@@ -2322,8 +2325,9 @@ void EntityItemProperties::merge(const EntityItemProperties& other) {
     COPY_PROPERTY_IF_CHANGED(locked);
     COPY_PROPERTY_IF_CHANGED(userData);
     COPY_PROPERTY_IF_CHANGED(privateUserData);
-    COPY_PROPERTY_IF_CHANGED(href);
+    COPY_PROPERTY_IF_CHANGED(href);    
     COPY_PROPERTY_IF_CHANGED(description);
+    COPY_PROPERTY_IF_CHANGED(customTags);  // TIVOLI tagging
     COPY_PROPERTY_IF_CHANGED(position);
     COPY_PROPERTY_IF_CHANGED(dimensions);
     COPY_PROPERTY_IF_CHANGED(rotation);
@@ -2614,8 +2618,9 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_LOCKED, Locked, locked, bool);
         ADD_PROPERTY_TO_MAP(PROP_USER_DATA, UserData, userData, QString);
         ADD_PROPERTY_TO_MAP(PROP_PRIVATE_USER_DATA, PrivateUserData, privateUserData, QString);
-        ADD_PROPERTY_TO_MAP(PROP_HREF, Href, href, QString);
+        ADD_PROPERTY_TO_MAP(PROP_HREF, Href, href, QString);        
         ADD_PROPERTY_TO_MAP(PROP_DESCRIPTION, Description, description, QString);
+        ADD_PROPERTY_TO_MAP(PROP_CUSTOMTAGS, CustomTags, customTags, QString);  // TIVOLI tagging
         ADD_PROPERTY_TO_MAP(PROP_POSITION, Position, position, vec3);
         ADD_PROPERTY_TO_MAP_WITH_RANGE(PROP_DIMENSIONS, Dimensions, dimensions, vec3, ENTITY_ITEM_MIN_DIMENSION, FLT_MAX);
         ADD_PROPERTY_TO_MAP(PROP_ROTATION, Rotation, rotation, quat);
@@ -3105,8 +3110,9 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_LOCKED, properties.getLocked());
             APPEND_ENTITY_PROPERTY(PROP_USER_DATA, properties.getUserData());
             APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, properties.getPrivateUserData());
-            APPEND_ENTITY_PROPERTY(PROP_HREF, properties.getHref());
+            APPEND_ENTITY_PROPERTY(PROP_HREF, properties.getHref());            
             APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, properties.getDescription());
+            APPEND_ENTITY_PROPERTY(PROP_CUSTOMTAGS, properties.getCustomTags());  // TIVOLI tagging
             APPEND_ENTITY_PROPERTY(PROP_POSITION, properties.getPosition());
             APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, properties.getDimensions());
             APPEND_ENTITY_PROPERTY(PROP_ROTATION, properties.getRotation());
@@ -3602,8 +3608,9 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_LOCKED, bool, setLocked);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_USER_DATA, QString, setUserData);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
-    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_HREF, QString, setHref);
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_HREF, QString, setHref);    
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DESCRIPTION, QString, setDescription);
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CUSTOMTAGS, QString, setCustomTags);  // TIVOLI tagging
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_POSITION, vec3, setPosition);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DIMENSIONS, vec3, setDimensions);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ROTATION, quat, setRotation);
@@ -4022,7 +4029,8 @@ void EntityItemProperties::markAllChanged() {
     _userDataChanged = true;
     _privateUserDataChanged = true;
     _hrefChanged = true;
-    _descriptionChanged = true;
+    _descriptionChanged = true;    
+    _customTagsChanged = true;// TIVOLI tagging
     _positionChanged = true;
     _dimensionsChanged = true;
     _rotationChanged = true;
@@ -4397,9 +4405,12 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     }
     if (hrefChanged()) {
         out += "href";
-    }
+    }  
     if (descriptionChanged()) {
         out += "description";
+    }
+    if (customTagsChanged()) {  // TIVOLI tagging
+        out += "customTags";    // TIVOLI tagging
     }
     if (containsPositionChange()) {
         out += "position";

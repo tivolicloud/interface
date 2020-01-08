@@ -112,5 +112,6 @@ const int ENTITY_ITEM_DEFAULT_CLONE_LIMIT = 0;
 const bool ENTITY_ITEM_DEFAULT_CLONE_DYNAMIC = false;
 const bool ENTITY_ITEM_DEFAULT_CLONE_AVATAR_ENTITY = false;
 const QUuid ENTITY_ITEM_DEFAULT_CLONE_ORIGIN_ID = QUuid();
+const QString ENTITY_ITEM_DEFAULT_CUSTOMTAGS = QString("");  // TIVOLI tagging system
 
 #endif // hifi_EntityItemPropertiesDefaults_h

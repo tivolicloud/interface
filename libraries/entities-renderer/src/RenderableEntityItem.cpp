@@ -215,7 +215,6 @@ void EntityRenderer::render(RenderArgs* args) {
 
 //
 // Methods called by the EntityTreeRenderer
-// CPM investigate Entity Renderer
 EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
                                                    const EntityItemPointer& entity,
                                                    const ScenePointer& scene,

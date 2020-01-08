@@ -182,6 +182,7 @@ public:
     DEFINE_PROPERTY_REF(PROP_PRIVATE_USER_DATA, PrivateUserData, privateUserData, QString, ENTITY_ITEM_DEFAULT_PRIVATE_USER_DATA);
     DEFINE_PROPERTY_REF(PROP_HREF, Href, href, QString, "");
     DEFINE_PROPERTY_REF(PROP_DESCRIPTION, Description, description, QString, "");
+    DEFINE_PROPERTY_REF(PROP_CUSTOMTAGS, CustomTags, customTags, QString, "");  // TIVOLI TAGGING
     DEFINE_PROPERTY_REF_WITH_SETTER(PROP_POSITION, Position, position, glm::vec3, ENTITY_ITEM_ZERO_VEC3);
     DEFINE_PROPERTY_REF(PROP_DIMENSIONS, Dimensions, dimensions, glm::vec3, ENTITY_ITEM_DEFAULT_DIMENSIONS);
     DEFINE_PROPERTY_REF(PROP_ROTATION, Rotation, rotation, glm::quat, ENTITY_ITEM_DEFAULT_ROTATION);
@@ -197,6 +198,7 @@ public:
     DEFINE_PROPERTY_REF_ENUM(PROP_PRIMITIVE_MODE, PrimitiveMode, primitiveMode, PrimitiveMode, PrimitiveMode::SOLID);
     DEFINE_PROPERTY(PROP_IGNORE_PICK_INTERSECTION, IgnorePickIntersection, ignorePickIntersection, bool, false);
     DEFINE_PROPERTY_GROUP(Grab, grab, GrabPropertyGroup);
+
 
     // Physics
     DEFINE_PROPERTY(PROP_DENSITY, Density, density, float, ENTITY_ITEM_DEFAULT_DENSITY);
@@ -685,7 +687,9 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, VoxelData, voxelData, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, VoxelSurfaceStyle, voxelSurfaceStyle, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Href, href, "");
-    DEBUG_PROPERTY_IF_CHANGED(debug, properties, Description, description, "");
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, Description, description, "");    
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, CustomTags, customTags, "");// TIVOLI tagging
+
     if (properties.actionDataChanged()) {
         debug << " " << "actionData" << ":" << properties.getActionData().toHex() << "" << "\n";
     }

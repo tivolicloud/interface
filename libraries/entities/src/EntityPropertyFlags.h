@@ -122,7 +122,8 @@ enum EntityPropertyList
     PROP_PULSE_COLOR_MODE,
     PROP_PULSE_ALPHA_MODE,
     PROP_TEXTURES,
-    PROP_BILLBOARD_MODE,
+    PROP_BILLBOARD_MODE,    
+    PROP_CUSTOMTAGS,// TIVOLI tagging
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // ATTENTION: add new shared EntityItem properties to the list ABOVE this line

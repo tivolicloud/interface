@@ -222,6 +222,8 @@ public:
     void setPreferStylusOverLaser(bool value);
 
     // TIVOLI new feature.  Activated from Developer > Tivoli >>>
+    // TODO: Add this as an option to domain settings and switch on when you visit a domain
+    // TODO: Make sure loading screen works
     bool getLoadCompleteEntityTreeSetting() { return _loadCompleteEntityTreeSetting.get(); }
     void setLoadCompleteEntityTreeSetting(bool value);
 
