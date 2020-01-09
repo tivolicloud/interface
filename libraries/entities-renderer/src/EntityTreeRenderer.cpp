@@ -699,8 +699,8 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id)
         }
     }
 
-    qDebug() << "Dominant zone is " << _zoneCullingStack.last();
-    qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
+    //  qDebug() << "Dominant zone is " << _zoneCullingStack.last();
+   //   qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
     // foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
 }
 
@@ -754,29 +754,38 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
                 foreach (const EntityItemID& entityID, _currentEntitiesInside) {
                     if (!entitiesContainingAvatar.contains(entityID)) {
-                        qDebug() << "CPM AVATAR - LEAVING ENTITY: " << entityID;
+                        //qDebug() << "CPM AVATAR - LEAVING ENTITY: " << entityID;
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
-                        // Remove this ID from the zoneCullingStack
-                        if (_zoneCullingStack.indexOf(entityID) != -1) {  // if it exists, remove it
-                            qDebug() << "CPM LEAVE ENTITY - this item was not listed" << entityID;
-                            _zoneCullingStack.removeAt(_zoneCullingStack.indexOf(entityID));
+
+                        auto entity = getEntity(entityID);
+                        if (entity && entity->getType() == EntityTypes::Zone) { // Remove this zone ID from the zoneCullingStack
+                            if (_zoneCullingStack.indexOf(entityID) != -1) {  // if it exists, remove it
+                               // qDebug() << "CPM LEAVE ENTITY - this item was not listed" << entityID;
+                                _zoneCullingStack.removeAt(_zoneCullingStack.indexOf(entityID));
+                            }
                         }
+
                     }
                 }
 
                 // for all of our new containing entities, if they weren't previously containing then send them an enter event
                 foreach (const EntityItemID& entityID, entitiesContainingAvatar) {
                     if (!_currentEntitiesInside.contains(entityID)) {
-                        qDebug() << "CPM AVATAR - ENTER ENTITY: " << entityID;
+                        //qDebug() << "CPM AVATAR - ENTER ENTITY: " << entityID;
 
                         emit enterEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
+
                         // Add this ID to the zoneCullingStack
-                        if (_zoneCullingStack.indexOf(entityID) == -1) {  // if it doesn't exist
-                            qDebug() << "CPM ENTER ENTITY - this item was not listed" << entityID;
-                            _zoneCullingStack.append(entityID);
+                        auto entity = getEntity(entityID);
+                        if (entity &&
+                            entity->getType() == EntityTypes::Zone) {     
+                            if (_zoneCullingStack.indexOf(entityID) != -1) {  
+                                _zoneCullingStack.append(entityID);
+                            }
                         }
+
                     }
                 }
                 _currentEntitiesInside = entitiesContainingAvatar;

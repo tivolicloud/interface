@@ -278,8 +278,7 @@ enum class EntityVersion : PacketVersion {
     TextEntityFonts,
     ScriptServerKinematicMotion,
     ZoneCullingMode=84,  // TIVOLI new
-    LocallyVisible=85,   // TIVOLI new
-    CustomTags=86, // TIVOLI tagging
+    CustomTags=85, // TIVOLI tagging
 
     // Add new versions above here
     NUM_PACKET_TYPE,

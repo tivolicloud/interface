@@ -429,17 +429,17 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
         bool zoneCullingEnabled = true;
         //treeRenderer->getZoneCullStatus();
-        qDebug() << "REI detects ZCE as " << zoneCullingEnabled;
+       // qDebug() << "REI detects ZCE as " << zoneCullingEnabled;
         if (zoneCullingEnabled) {
             QVector<QUuid> skiplist = treeRenderer->getZoneCullSkiplist();
             QUuid checkID = entity->getID();
-            qDebug() << "REI Skiplist count " << skiplist.count();
+            //  qDebug() << "REI Skiplist count " << skiplist.count();
 
             if (skiplist.count() > 0) {
                 if (skiplist.indexOf(checkID) > -1) {
-                    qDebug() << "REI Im on the skiplist " << entity->getName();
+                    //   qDebug() << "REI Im on the skiplist " << entity->getName();
                 } else {
-                    qDebug() << "REI CULL ME. I'm not on the skiplist " << entity->getName();
+                   //    qDebug() << "REI CULL ME. I'm not on the skiplist " << entity->getName();
                     _visible = false;
                 }
             }
@@ -457,25 +457,6 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         entity->setNeedsRenderUpdate(false);
     });
 }
-// This will be set by the ETR
-// TIVOLI ZONE CULLING - Evaluate the skiplist.
-// auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();  // CPM IS THIS SLOW? CAN I SPEED IT UP?
-// QVector<QUuid> skiplist = treeRenderer->getZoneCullSkiplist();
-//// qDebug() << "Renderable Entity Item has " << skiplist.count() << " on its skiplist";
-// QUuid checkID = entity->getID();
-// //qDebug() << "My entity ID is " << checkID << " my spot on the skiplist is " << skiplist.indexOf(checkID);
-// if (skiplist.count() > 0) {
-//     if (skiplist.indexOf(checkID)>-1) {
-//         qDebug() << "ON skiplist " << entity->getName();
-//         entity->setLocallyVisible(true); // !!!!!!! HARD CODED AS A TEST!!!!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        // _visible = _visible;
-//     } else {
-//         qDebug() << "OFF skiplist " << entity->getName();
-//         entity->setLocallyVisible(false);  // !!!!!!! HARD CODED AS A TEST!!!!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//     //  qDebug() << "I'm not on the skiplist " << checkID;
-//     }
-// }
-
 // TODO: HANDLE LOCALLY VISIBLE FOR HIDING STUFF LOCALLY IN EDIT TOOLS
 // RESTORE ONCE CONFIDENT THAT CULLING WORKS
 //if (!zoneCull)
