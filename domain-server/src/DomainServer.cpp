@@ -70,9 +70,9 @@ const QString DomainServer::REPLACEMENT_FILE_EXTENSION = ".replace";
 int const DomainServer::EXIT_CODE_REBOOT = 234923;
 
 #if USE_STABLE_GLOBAL_SERVICES
-const QString ICE_SERVER_DEFAULT_HOSTNAME = "ice.highfidelity.com";
+const QString ICE_SERVER_DEFAULT_HOSTNAME = "ice.tivolicloud.com";
 #else
-const QString ICE_SERVER_DEFAULT_HOSTNAME = "dev-ice.highfidelity.com";
+const QString ICE_SERVER_DEFAULT_HOSTNAME = "ice.tivolicloud.com";
 #endif
 
 QString DomainServer::_iceServerAddr { ICE_SERVER_DEFAULT_HOSTNAME };
