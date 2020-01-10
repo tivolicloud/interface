@@ -595,7 +595,7 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 
 
 void EntityTreeRenderer::updateZoneContentsLists(EntityItemID entityID, bool hasCompoundShape) {
-    // qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
+    //qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
     auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID));
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f);
     glm::vec3 scaledDimensions = zoneItem->getScaledDimensions();
@@ -740,8 +740,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             _forceRecheckEntities = false;
 
             QSet<EntityItemID> entitiesContainingAvatar;
-            findBestZoneAndMaybeContainingEntities(
-                entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
+            findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
             evaluateZoneCullingStack();
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
@@ -778,13 +777,12 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
 
                         // Add this ID to the zoneCullingStack
-                        auto entity = getEntity(entityID);
-                        if (entity &&
-                            entity->getType() == EntityTypes::Zone) {     
-                            if (_zoneCullingStack.indexOf(entityID) != -1) {  
+                       auto entity = getEntity(entityID);
+                       if (entity && entity->getType() == EntityTypes::Zone) {     
+                            if (_zoneCullingStack.indexOf(entityID) == -1) {  
                                 _zoneCullingStack.append(entityID);
                             }
-                        }
+                       }
 
                     }
                 }

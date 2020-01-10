@@ -327,11 +327,11 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
     _updateTime = usecTimestampNow();
 
-    // CPM COMMENTED THIS OUT.
+    // CPM changed this to always RenderUpdate zones, since zone culling needs it.
     //// FIXME is this excessive?
-    //if (!needsRenderUpdate()) {
-    //    return;
-    //}
+  /*  if (_entity->getType()!=EntityTypes::Zone && !needsRenderUpdate()) {
+        return;
+    }*/
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
@@ -429,18 +429,18 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
         bool zoneCullingEnabled = true;
         //treeRenderer->getZoneCullStatus();
-       // qDebug() << "REI detects ZCE as " << zoneCullingEnabled;
+        //qDebug() << "REI detects ZCE as " << zoneCullingEnabled;
         if (zoneCullingEnabled) {
             QVector<QUuid> skiplist = treeRenderer->getZoneCullSkiplist();
             QUuid checkID = entity->getID();
-            //  qDebug() << "REI Skiplist count " << skiplist.count();
+            //qDebug() << "REI Skiplist count " << skiplist.count();
 
             if (skiplist.count() > 0) {
                 if (skiplist.indexOf(checkID) > -1) {
                     //   qDebug() << "REI Im on the skiplist " << entity->getName();
                 } else {
                    //    qDebug() << "REI CULL ME. I'm not on the skiplist " << entity->getName();
-                    _visible = false;
+                    _visible = false; // Do the actual cull
                 }
             }
         }
