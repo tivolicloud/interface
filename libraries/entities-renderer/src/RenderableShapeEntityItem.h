@@ -35,6 +35,7 @@ private:
     virtual void doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) override;
     virtual void doRender(RenderArgs* args) override;
     virtual bool isTransparent() const override;
+    bool _doZoneCull{ false };  // TIVOLI Zone Culling
 
     enum Pipeline { SIMPLE, MATERIAL, PROCEDURAL };
     Pipeline getPipelineType(const graphics::MultiMaterial& materials) const;

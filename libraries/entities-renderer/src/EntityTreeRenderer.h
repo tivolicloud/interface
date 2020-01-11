@@ -86,8 +86,8 @@ public:
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
     QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
     bool getZoneCullStatus() { return _zoneCullingActive; }
-    void updateZoneContentsLists(EntityItemID zoneItem, bool hasCompoundShape);
-    void zoneCullEntities();
+    void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
+    //void zoneCullEntities();
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }

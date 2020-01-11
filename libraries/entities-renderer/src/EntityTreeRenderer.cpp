@@ -594,7 +594,7 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 // note how will zone culling handle zones, lights, and zones with compound shapes rather than boxes?
 
 
-void EntityTreeRenderer::updateZoneContentsLists(EntityItemID entityID, bool hasCompoundShape) {
+void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool hasCompoundShape) {
     //qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
     auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID));
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f);
@@ -674,14 +674,12 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
 // Using Zone Culling Mode rules, build _zoneCullSkipList
 // Instruct the entity's renderer to set _visible=false for each item on _zoneCullSkipList
 void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
-    if (_zoneCullingStack.isEmpty())
-        return;
+    if (_zoneCullingStack.isEmpty()) return;
     _zoneCullSkipList.clear();
     for (int i = 0; i < _zoneCullingStack.size(); ++i) {
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i]));
-        updateZoneContentsLists(
-            _zoneCullingStack[i],
-            false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+        if (!zoneItem) continue;
+        updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
             case ZONECULLING_MODE_INHERIT:  // do nothing

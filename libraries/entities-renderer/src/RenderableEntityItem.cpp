@@ -2,12 +2,7 @@
 //  RenderableEntityItem.cpp
 //  interface/src
 //
-//  Created by Brad Hefta-Gaub on 12/6/13.
-//  Copyright 2013 High Fidelity, Inc.
-//
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
-//
+
 
 #include "RenderableEntityItem.h"
 
@@ -327,11 +322,10 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
     _updateTime = usecTimestampNow();
 
-    // CPM changed this to always RenderUpdate zones, since zone culling needs it.
-    //// FIXME is this excessive?
-  /*  if (_entity->getType()!=EntityTypes::Zone && !needsRenderUpdate()) {
-        return;
-    }*/
+    if (!needsRenderUpdate()) { // TIVOLI Zone Culling
+        if (!_doZoneCull) return;
+        _doZoneCull = false;
+    }
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
@@ -411,7 +405,7 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
     withWriteLock([&] {
         auto transparent = isTransparent();
-        auto fading = isFading();
+        auto fading = isFading(); // CPM
         if (fading || _prevIsTransparent != transparent || !entity->isVisuallyReady()) {
             emit requestRenderUpdate();
         }
@@ -426,28 +420,24 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         _moving = entity->isMovingRelativeToParent();
         _visible = entity->getVisible();
 
-        auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
-        bool zoneCullingEnabled = true;
-        //treeRenderer->getZoneCullStatus();
-        //qDebug() << "REI detects ZCE as " << zoneCullingEnabled;
-        if (zoneCullingEnabled) {
-            QVector<QUuid> skiplist = treeRenderer->getZoneCullSkiplist();
-            QUuid checkID = entity->getID();
-            //qDebug() << "REI Skiplist count " << skiplist.count();
-
+        if (_visible) {  // TIVOLI Zone Culling logic. Goes in doRenderUpdateSynchronous     
+            EntityTypes::EntityType checkType = entity->getType();
+            if (checkType == EntityTypes::Zone) return;
+            if (checkType == EntityTypes::Gizmo) return;
+            if (checkType == EntityTypes::Grid) return;
+            if (checkType == EntityTypes::Material) return;
+            auto _treeRenderer = DependencyManager::get<EntityTreeRenderer>();
+            QVector<QUuid> skiplist = _treeRenderer->getZoneCullSkiplist();
             if (skiplist.count() > 0) {
-                if (skiplist.indexOf(checkID) > -1) {
-                    //   qDebug() << "REI Im on the skiplist " << entity->getName();
+                if (skiplist.indexOf(entity->getID()) > -1) {
+                    _doZoneCull = true;
                 } else {
-                   //    qDebug() << "REI CULL ME. I'm not on the skiplist " << entity->getName();
-                    _visible = false; // Do the actual cull
+                    _visible = false; 
+                    _doZoneCull = false;
                 }
             }
         }
-        // lets call setlocallyvisible markForCull
-        /*     if (entity->getLocallyVisible() == false) {
-            _visible = false; 
-        } */
+
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());
@@ -457,11 +447,8 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         entity->setNeedsRenderUpdate(false);
     });
 }
-// TODO: HANDLE LOCALLY VISIBLE FOR HIDING STUFF LOCALLY IN EDIT TOOLS
-// RESTORE ONCE CONFIDENT THAT CULLING WORKS
-//if (!zoneCull)
-//    entity->setLocallyVisible(true); // don't hide stuff unless
-// If zone culling mode is switched on, and the entity is set to "not locally visible", hide it
+
+
 void EntityRenderer::onAddToScene(const EntityItemPointer& entity) {
     QObject::connect(this, &EntityRenderer::requestRenderUpdate, this,
                      [this] {
