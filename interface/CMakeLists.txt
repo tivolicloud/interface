@@ -185,10 +185,6 @@ if (BUILD_TOOLS AND NPM_EXECUTABLE)
   add_dependencies(resources jsdoc)
 endif()
 
-if (WIN32 OR APPLE)
-    add_dependencies(${TARGET_NAME} resources screenshare)
-endif()
-
 
 if (WIN32)
   # These are external plugins, but we need to do the 'add dependency' here so that their
@@ -326,10 +322,6 @@ if (APPLE)
     COMMAND "${CMAKE_COMMAND}" -E copy_directory
       "${CMAKE_SOURCE_DIR}/scripts"
       "${RESOURCES_DEV_DIR}/scripts"
-    # copy screenshare app to the resource folder
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory
-      "${CMAKE_CURRENT_BINARY_DIR}/../screenshare/hifi-screenshare-darwin-x64/hifi-screenshare.app"
-      "${RESOURCES_DEV_DIR}/hifi-screenshare.app"
     # copy JSDoc files beside the executable
     COMMAND "${CMAKE_COMMAND}" -E copy_directory
       "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"

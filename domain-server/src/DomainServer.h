@@ -78,8 +78,6 @@ public:
 
     bool isAssetServerEnabled();
 
-    void screensharePresence(QString roomname, QUuid avatarID, int expiration_seconds = 0);
-
 public slots:
     /// Called by NodeList to inform us a node has been added
     void nodeAdded(SharedNodePointer node);
@@ -131,9 +129,6 @@ private slots:
     void sendICEServerAddressToMetaverseAPI();
     void handleSuccessfulICEServerAddressUpdate(QNetworkReply* requestReply);
     void handleFailedICEServerAddressUpdate(QNetworkReply* requestReply);
-
-    void handleSuccessfulScreensharePresence(QNetworkReply* requestReply, QJsonObject callbackData);
-    void handleFailedScreensharePresence(QNetworkReply* requestReply);
 
     void updateReplicatedNodes();
     void updateDownstreamNodes();
