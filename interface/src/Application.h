@@ -559,7 +559,7 @@ private:
     void updateThreads(float deltaTime);
     void updateDialogs(float deltaTime) const;
 
-    void queryOctree(NodeType_t serverType, PacketType packetType);
+    void queryOctree(NodeType_t serverType, PacketType packetType, QJsonObject jsonParameters);
     void queryAvatars();
 
     int sendNackPackets();

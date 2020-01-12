@@ -29,7 +29,8 @@ const float DEFAULT_OCTREE_SIZE_SCALE = TREE_SCALE * DEFAULT_VISIBILITY_DISTANCE
 // we want to have some constant that controls have big a mesh part must be to render even if the octree cell itself
 // would be visible. This constanct controls that. It basically means you must be this many times closer to a mesh 
 // than an octree cell to see the mesh.
-const float OCTREE_TO_MESH_RATIO = 4.0f;
+//const float OCTREE_TO_MESH_RATIO = 4.0f;
+// THIS APPEARS TO BE UNUSED, REMOVE IT? INSTEAD SEEMS TO BE REPLACED BY DEFAULT_VISIBILITY_DISTANCE_FOR_UNIT_ELEMENT
 
 // This is used in the LOD Tools to translate between the size scale slider and the values used to set the OctreeSizeScale
 const float MAX_LOD_SIZE_MULTIPLIER = 4000.0f;

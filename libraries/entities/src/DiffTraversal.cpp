@@ -122,6 +122,8 @@ bool DiffTraversal::View::isVerySimilar(const View& view) const {
 }
 
 float DiffTraversal::View::computePriority(const EntityItemPointer& entity) const {
+    return 1000.0f;
+
     if (!entity) {
         return PrioritizedEntity::DO_NOT_SEND;
     }

@@ -5938,7 +5938,16 @@ void Application::reloadResourceCaches() {
     _queryExpiry = SteadyClock::now();
     _octreeQuery.incrementConnectionID();
 
-    queryOctree(NodeType::EntityServer, PacketType::EntityQuery);
+    QJsonObject queryJSONParameters;
+    QJsonObject queryFlags;
+    queryFlags["includeDescendants"] = true;
+    queryFlags["includeAncestors"] = true;
+    queryJSONParameters["flags"] = queryFlags;
+    queryOctree(
+        NodeType::EntityServer,
+        PacketType::EntityQuery,
+        queryJSONParameters
+    );
 
     getMyAvatar()->prepareAvatarEntityDataForReload();
     // Clear the entities and their renderables
@@ -6624,8 +6633,20 @@ void Application::update(float deltaTime) {
         static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
         auto now = SteadyClock::now();
         if (now > _queryExpiry || viewIsDifferentEnough) {
-            if (DependencyManager::get<SceneScriptingInterface>()->shouldRenderEntities()) {
-                queryOctree(NodeType::EntityServer, PacketType::EntityQuery);
+            if (
+                DependencyManager::get<SceneScriptingInterface>()
+                ->shouldRenderEntities()
+            ) {
+                QJsonObject queryJSONParameters;
+                QJsonObject queryFlags;
+                queryFlags["includeDescendants"] = true;
+                queryFlags["includeAncestors"] = true;
+                queryJSONParameters["flags"] = queryFlags;
+                queryOctree(
+                    NodeType::EntityServer,
+                    PacketType::EntityQuery,
+                    queryJSONParameters
+                );
             }
             queryAvatars();
 
@@ -6898,7 +6919,12 @@ int Application::sendNackPackets() {
     return packetsSent;
 }
 
-void Application::queryOctree(NodeType_t serverType, PacketType packetType) {
+void Application::queryOctree(
+    NodeType_t serverType,
+    PacketType packetType,
+    QJsonObject queryJSONParameters
+) {
+
     if (!_settingsLoaded) {
         return; // bail early if settings are not loaded
     }
@@ -6936,6 +6962,8 @@ void Application::queryOctree(NodeType_t serverType, PacketType packetType) {
     }
     _octreeQuery.setReportInitialCompletion(isModifiedQuery);
 
+    _octreeQuery.clearConicalViews(); 
+    _octreeQuery.setJSONParameters(queryJSONParameters);
 
     auto nodeList = DependencyManager::get<NodeList>();
 
