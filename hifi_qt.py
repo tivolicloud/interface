@@ -49,14 +49,14 @@ endif()
         system = platform.system()
 
         if 'Windows' == system:
-            self.qtUrl = 'https://hifi-public.s3.amazonaws.com/dependencies/vcpkg/qt5-install-5.12.3-windows3.tar.gz?versionId=5ADqP0M0j5ZfimUHrx4zJld6vYceHEsI'
+            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-windows3.tar.gz'
         elif 'Darwin' == system:
-            self.qtUrl = 'https://hifi-public.s3.amazonaws.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz?versionId=bLAgnoJ8IMKpqv8NFDcAu8hsyQy3Rwwz'
+            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
         elif 'Linux' == system:
             if platform.linux_distribution()[1][:3] == '16.':
-                self.qtUrl = 'https://hifi-public.s3.amazonaws.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
             elif platform.linux_distribution()[1][:3] == '18.':
-                self.qtUrl = 'https://hifi-public.s3.amazonaws.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
             else:
                 raise Exception('UNKNOWN LINUX VERSION!!!')
         else:
@@ -71,7 +71,7 @@ endif()
 
     def installQt(self):
         if not os.path.isdir(self.fullPath):
-            print ('Downloading Qt from AWS')
+            print ('Downloading Qt from CDN')
             print('Extracting ' + self.qtUrl + ' to ' + self.path)
             hifi_utils.downloadAndExtract(self.qtUrl, self.path)
         else:

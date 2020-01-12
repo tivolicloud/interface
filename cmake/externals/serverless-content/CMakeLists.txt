@@ -4,7 +4,7 @@ set(EXTERNAL_NAME serverless-content)
 
 ExternalProject_Add(
   ${EXTERNAL_NAME}
-  URL http://cdn.highfidelity.com/content-sets/serverless-tutorial-RC75.zip
+  URL https://cdn.tivolicloud.com/dependencies/serverless-tutorial-RC75.zip
   URL_MD5 b4225d058952e17976ac228330ce8d51
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""

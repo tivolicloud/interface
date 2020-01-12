@@ -17,7 +17,7 @@ if (WIN32)
 
   ExternalProject_Add(
     ${EXTERNAL_NAME}
-    URL https://hifi-public.s3.amazonaws.com/dependencies/ovr_sdk_win_1.35.0.zip
+    URL https://cdn.tivolicloud.com/dependencies/ovr_sdk_win_1.35.0.zip
     URL_MD5 1e3e8b2101387af07ff9c841d0ea285e
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/LibOVRCMakeLists.txt" <SOURCE_DIR>/CMakeLists.txt
@@ -38,7 +38,7 @@ elseif(APPLE)
   
   ExternalProject_Add(
     ${EXTERNAL_NAME}
-    URL https://public.highfidelity.com/dependencies/ovr_sdk_macos_0.5.0.1.tar.gz
+    URL https://cdn.tivolicloud.com/dependencies/ovr_sdk_macos_0.5.0.1.tar.gz
     URL_MD5 0a0785a04fb285f64f62267388344ad6
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
@@ -65,7 +65,7 @@ elseif(NOT ANDROID)
   ExternalProject_Add(
     ${EXTERNAL_NAME}
     PREFIX ${EXTERNAL_NAME}
-    GIT_REPOSITORY https://github.com/jherico/OculusSDK.git
+    GIT_REPOSITORY https://github.com/tivolicloud/OculusSDK.git
     GIT_TAG 0d6f0cf110ea7566fc6d64b8d4fe6bb881d9cff5
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     LOG_DOWNLOAD ON

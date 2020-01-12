@@ -2,7 +2,7 @@ include(vcpkg_common_functions)
 
 vcpkg_download_distfile(
     SOURCE_ARCHIVE
-    URLS https://public.highfidelity.com/dependencies/quazip-0.7.3.zip
+    URLS https://cdn.tivolicloud.com/dependencies/quazip-0.7.3.zip
     SHA512 b2d812b6346317fd6d8f4f1344ad48b721d697c429acc8b7e7cb776ce5cba15a59efd64b2c5ae1f31b5a3c928014f084aa1379fd55d8a452a6cf4fd510b3afcc
     FILENAME quazip.zip
 )
@@ -13,10 +13,12 @@ vcpkg_extract_source_archive_ex(
     NO_REMOVE_ONE_LEVEL
 )
 
+file(READ "${VCPKG_ROOT_DIR}/_env/QT_CMAKE_PREFIX_PATH.txt" QT_CMAKE_PREFIX_PATH)
+
 vcpkg_configure_cmake(
   SOURCE_PATH ${SOURCE_PATH}
   PREFER_NINJA
-  OPTIONS -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_PREFIX_PATH=$ENV{QT_CMAKE_PREFIX_PATH} -DBUILD_WITH_QT4=OFF
+  OPTIONS -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_PREFIX_PATH=${QT_CMAKE_PREFIX_PATH} -DBUILD_WITH_QT4=OFF
 )
 
 vcpkg_install_cmake()

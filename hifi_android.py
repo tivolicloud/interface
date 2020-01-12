@@ -10,7 +10,7 @@ import zipfile
 
 print = functools.partial(print, flush=True)
 
-ANDROID_PACKAGE_URL = 'https://hifi-public.s3.amazonaws.com/dependencies/android/'
+ANDROID_PACKAGE_URL = 'https://cdn.tivolicloud.com/dependencies/android/'
 
 ANDROID_PACKAGES = {
     'qt' : {
@@ -79,7 +79,7 @@ ANDROID_PACKAGES = {
         'includeLibs': ['libtbb.so', 'libtbbmalloc.so'],
     },
     'hifiAC': {
-        'baseUrl': 'http://s3.amazonaws.com/hifi-public/dependencies/',
+        'baseUrl': 'https://cdn.tivolicloud.com/dependencies/',
         'file': 'codecSDK-android_armv8-2.0.zip',
         'checksum': '1cbef929675818fc64c4101b72f84a6a'
     },

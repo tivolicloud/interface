@@ -125,7 +125,7 @@ def main():
     if 'Windows' == system and 'CI_BUILD' in os.environ and os.environ["CI_BUILD"] == "Github":
         logger.info("Downloading NSIS")
         with timer('NSIS'):
-            hifi_utils.downloadAndExtract('https://hifi-public.s3.amazonaws.com/dependencies/NSIS-hifi-plugins-1.0.tgz', "C:/Program Files (x86)")
+            hifi_utils.downloadAndExtract('https://cdn.tivolicloud.com/dependencies/NSIS-hifi-plugins-1.0.tgz', "C:/Program Files (x86)")
 
     qtInstallPath = ''
     # If not android, install our Qt build
@@ -142,8 +142,9 @@ def main():
     with hifi_singleton.Singleton(pm.lockFile) as lock:
 
         with timer('Bootstraping'):
-            if not pm.upToDate():
-                pm.bootstrap()
+            #if not pm.upToDate():
+            # pm.bootstrap will check if its up to date
+            pm.bootstrap()
 
         # Always write the tag, even if we changed nothing.  This 
         # allows vcpkg to reclaim disk space by identifying directories with

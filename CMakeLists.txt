@@ -7,6 +7,37 @@ else()
   cmake_minimum_required(VERSION 3.2)
 endif()
 
+# Passing of variables to vcpkg
+#
+# vcpkg runs cmake scripts in an isolated environment, see this for details:
+# https://github.com/Microsoft/vcpkg/issues/3712
+#
+# Here's how this works and how we work around this issue:
+#
+# 1. This file (CMakeLists.txt) runs first and is authoritative. It is the one
+#    that reads the environment, sets variables and sets a default value.
+#
+# 2. It writes the contents of the variables to
+#    $CMAKE_CURRENT_BINARY_DIR/_env/$VARNAME
+#
+# 3. hifi_vcpkg.py takes the _env directory, and copies it to the vcpkg dir.
+#    This solves the issue of CMakeLists.txt not knowing where the vcpkg dir is.
+#
+# 4. cmake/ports/*/portfile.cmake does know where the vcpkg dir is, and can
+#    read the _env that was copied there to obtain the variable's name.
+#
+# To ensure no old data could be accidentally read, the _env directories are
+# deleted on each execution and fully recreated.
+
+# Ensure nothing is kept from any previous run
+file(REMOVE_RECURSE "${CMAKE_CURRENT_BINARY_DIR}/_env")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_env")
+
+# file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/_env/QT_CMAKE_PREFIX_PATH.txt" "${QT_CMAKE_PREFIX_PATH}")
+# ^ is instead written from hifi_vcpkg.py
+
+# end of passing variable
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros/TargetPython.cmake")
 target_python()
 
