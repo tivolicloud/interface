@@ -176,7 +176,7 @@ ItemKey EntityRenderer::getKey() {
         builder.withSubMetaCulled();
     }
 
-    if (!_visible) {  // CPM
+    if (!_visible) {  
         builder.withInvisible();
     }
 
@@ -287,13 +287,13 @@ EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
     }
 
     if (result) {
-        result->addToScene(scene, transaction);  // CPM investigate
+        result->addToScene(scene, transaction);  
     }
 
     return result;
 }
 
-// CPM investigate
+
 bool EntityRenderer::addToScene(const ScenePointer& scene, Transaction& transaction) {
     _renderItemID = scene->allocateID();  // CPM investigate
     // Complicated series of trusses
@@ -322,10 +322,10 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
     _updateTime = usecTimestampNow();
 
-    if (!needsRenderUpdate()) { // TIVOLI Zone Culling
-        if (!_doZoneCull) return;
-        _doZoneCull = false;
-    }
+    //if (!needsRenderUpdate()) { // TIVOLI Zone Culling
+    //    if (!_doZoneCull) return;
+    //    _doZoneCull = false;
+    //}
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
@@ -398,7 +398,7 @@ void EntityRenderer::updateModelTransformAndBound() {
     }
 }
 
-// CPM rendering update; Tivoli zone culling and locally hidden happens here.
+// Tivoli zone culling and locally hidden happens here.
 void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
                                                Transaction& transaction,
                                                const EntityItemPointer& entity) {
@@ -437,7 +437,6 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
                 }
             }
         }
-
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());

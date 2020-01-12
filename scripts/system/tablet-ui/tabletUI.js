@@ -20,7 +20,7 @@
     var activeHand = null;
     var DEFAULT_WIDTH = 0.4375;
     var DEFAULT_DESKTOP_TABLET_SCALE = 75;
-    var DEFAULT_HMD_TABLET_SCALE = 60;
+    var DEFAULT_HMD_TABLET_SCALE = 150;
     var preMakeTime = Date.now();
     var validCheckTime = Date.now();
     var debugTablet = false;

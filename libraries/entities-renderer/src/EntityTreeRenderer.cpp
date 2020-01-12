@@ -443,10 +443,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         }
     }
 
-    float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
-    if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) {
+    //float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
+   // if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) {
         // we expect to update all renderables within available time budget
-        PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
+      //  PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
         uint64_t updateStart = usecTimestampNow();
         for (const auto& renderable : _renderablesToUpdate) {
             assert(renderable);  // only valid renderables are added to _renderablesToUpdate
@@ -459,67 +459,67 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables);
         const float BLEND = 0.1f;
         _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-    } else {
-        // we expect the cost to updating all renderables to exceed available time budget
-        // so we first sort by priority and update in order until out of time
+    //} else {
+    //    // we expect the cost to updating all renderables to exceed available time budget
+    //    // so we first sort by priority and update in order until out of time
 
-        class SortableRenderer : public PrioritySortUtil::Sortable {
-        public:
-            SortableRenderer(const EntityRendererPointer& renderer) : _renderer(renderer) {}
+    //    class SortableRenderer : public PrioritySortUtil::Sortable {
+    //    public:
+    //        SortableRenderer(const EntityRendererPointer& renderer) : _renderer(renderer) {}
 
-            glm::vec3 getPosition() const override { return _renderer->getEntity()->getWorldPosition(); }
-            float getRadius() const override { return 0.5f * _renderer->getEntity()->getQueryAACube().getScale(); }
-            uint64_t getTimestamp() const override { return _renderer->getUpdateTime(); }
+    //        glm::vec3 getPosition() const override { return _renderer->getEntity()->getWorldPosition(); }
+    //        float getRadius() const override { return 0.5f * _renderer->getEntity()->getQueryAACube().getScale(); }
+    //        uint64_t getTimestamp() const override { return _renderer->getUpdateTime(); }
 
-            EntityRendererPointer getRenderer() const { return _renderer; }
+    //        EntityRendererPointer getRenderer() const { return _renderer; }
 
-        private:
-            EntityRendererPointer _renderer;
-        };
+    //    private:
+    //        EntityRendererPointer _renderer;
+    //    };
 
-        // prioritize and sort the renderables
-        uint64_t sortStart = usecTimestampNow();
+    //    // prioritize and sort the renderables
+    //    uint64_t sortStart = usecTimestampNow();
 
-        const auto& views = _viewState->getConicalViews();
-        PrioritySortUtil::PriorityQueue<SortableRenderer> sortedRenderables(views);
-        sortedRenderables.reserve(_renderablesToUpdate.size());
-        {
-            PROFILE_RANGE_EX(simulation_physics, "BuildSortedRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
-            for (const auto& renderable : _renderablesToUpdate) {
-                assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                sortedRenderables.push(SortableRenderer(renderable));
-            }
-        }
-        {
-            PROFILE_RANGE_EX(simulation_physics, "SortAndUpdateRenderables", 0xffff00ff, sortedRenderables.size());
+    //    const auto& views = _viewState->getConicalViews();
+    //    PrioritySortUtil::PriorityQueue<SortableRenderer> sortedRenderables(views);
+    //    sortedRenderables.reserve(_renderablesToUpdate.size());
+    //    {
+    //        PROFILE_RANGE_EX(simulation_physics, "BuildSortedRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
+    //        for (const auto& renderable : _renderablesToUpdate) {
+    //            assert(renderable);  // only valid renderables are added to _renderablesToUpdate
+    //            sortedRenderables.push(SortableRenderer(renderable));
+    //        }
+    //    }
+    //    {
+    //        PROFILE_RANGE_EX(simulation_physics, "SortAndUpdateRenderables", 0xffff00ff, sortedRenderables.size());
 
-            // compute remaining time budget
-            const auto& sortedRenderablesVector = sortedRenderables.getSortedVector();
-            uint64_t updateStart = usecTimestampNow();
-            uint64_t sortCost = updateStart - sortStart;
-            uint64_t timeBudget = MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET;
-            if (sortCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET - MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET) {
-                timeBudget = MAX_UPDATE_RENDERABLES_TIME_BUDGET - sortCost;
-            }
-            uint64_t expiry = updateStart + timeBudget;
+    //        // compute remaining time budget
+    //        const auto& sortedRenderablesVector = sortedRenderables.getSortedVector();
+    //        uint64_t updateStart = usecTimestampNow();
+    //        uint64_t sortCost = updateStart - sortStart;
+    //        uint64_t timeBudget = MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET;
+    //        if (sortCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET - MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET) {
+    //            timeBudget = MAX_UPDATE_RENDERABLES_TIME_BUDGET - sortCost;
+    //        }
+    //        uint64_t expiry = updateStart + timeBudget;
 
-            // process the sorted renderables
-            for (const auto& sortedRenderable : sortedRenderablesVector) {
-                if (usecTimestampNow() > expiry) {
-                    break;
-                }
-                const auto& renderable = sortedRenderable.getRenderer();
-                renderable->updateInScene(scene, transaction);
-                _renderablesToUpdate.erase(renderable);
-            }
+    //        // process the sorted renderables
+    //        for (const auto& sortedRenderable : sortedRenderablesVector) {
+    //            if (usecTimestampNow() > expiry) {
+    //                break;
+    //            }
+    //            const auto& renderable = sortedRenderable.getRenderer();
+    //            renderable->updateInScene(scene, transaction);
+    //            _renderablesToUpdate.erase(renderable);
+    //        }
 
-            // compute average per-renderable update cost
-            size_t numUpdated = sortedRenderables.size() - _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
-            float cost = (float)(usecTimestampNow() - updateStart) / (float)(numUpdated);
-            const float BLEND = 0.1f;
-            _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-        }
-    }
+    //        // compute average per-renderable update cost
+    //        size_t numUpdated = sortedRenderables.size() - _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
+    //        float cost = (float)(usecTimestampNow() - updateStart) / (float)(numUpdated);
+    //        const float BLEND = 0.1f;
+    //        _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
+    //    }
+    //}
 }
 
 void EntityTreeRenderer::preUpdate() {
@@ -701,20 +701,6 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id)
    //   qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
     // foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
 }
-
-//void EntityTreeRenderer::zoneCullEntities() {
-//    _zoneCullingActive = (_zoneCullSkipList.count() > 0); // only 
-//    // qDebug() << "ZONE CULL ENTITIES TIME AND ACTIVE IS " << _zoneCullSkipList.count();
-//    if (!_zoneCullingActive)
-//        return;
-//  //  return;
-//        //    foreach (const QUuid& value, _zoneCullSkipList) {
-//    for (int i = 0; i < _zoneCullSkipList.count(); i++) {
-//        // qDebug() << "ZONE CULL ENTITIES ITR NUMBER "<<i;
-//        auto noCullItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullSkipList[i]));
-//        if (noCullItem) noCullItem->setLocallyVisible(true);
-//    }
-//}
 
 
 void EntityTreeRenderer::checkEnterLeaveEntities() {
@@ -1362,15 +1348,7 @@ std::pair<bool, bool> EntityTreeRenderer::LayeredZones::getZoneInteractionProper
     return { true, true };
 }
 
-//ZoneCullingMode EntityTreeRenderer::LayeredZones::getZoneCullingProperties() const {
-//    //for (auto it = cbegin(); it != cend(); it++) {
-//    //    auto zone = it->zone.lock();
-//    //    if (zone && zone->isDomainEntity()) {
-//    //        return { zone->getZoneCullingMode() };
-//    //    }
-//    //}
-//    //return { true, true };
-//}
+
 
 bool EntityTreeRenderer::LayeredZones::update(std::shared_ptr<ZoneEntityItem> zone,
                                               const glm::vec3& position,

@@ -60,7 +60,7 @@ function calcSpawnInfo(hand, landscape) {
     var forward = Quat.getForward(headRot);
     var up = Quat.getUp(headRot);
 
-    var FORWARD_OFFSET = 0.5 * sensorToWorldScale;
+    var FORWARD_OFFSET = 1.5 * sensorToWorldScale;
     var UP_OFFSET = -0.16 * sensorToWorldScale;
     var RIGHT_OFFSET = ((hand === LEFT_HAND) ? -0.18 : 0.18) * sensorToWorldScale;
 
@@ -148,8 +148,8 @@ WebTablet = function (url, width, dpi, hand, location, visible) {
         Overlays.deleteOverlay(this.webOverlayID);
     }
 
-    var WEB_ENTITY_Z_OFFSET = (tabletDepth / 2.5) * sensorScaleFactor;
-    var WEB_ENTITY_Y_OFFSET = 1.25 * tabletScaleFactor;
+    var WEB_ENTITY_Z_OFFSET = (tabletDepth / 2.75) * sensorScaleFactor;
+    var WEB_ENTITY_Y_OFFSET = 1.05 * tabletScaleFactor;
     var screenWidth = 0.9367 * tabletWidth;
     var screenHeight = 0.9000 * tabletHeight;
     this.webOverlayID = Overlays.addOverlay("web3d", {
