@@ -327,6 +327,10 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     //    _doZoneCull = false;
     //}
 
+    if (_doZoneCull) { // If I shouldn't be culled
+        if (!needsRenderUpdate()) return; // then check if I need an update
+    }
+
     doRenderUpdateSynchronous(scene, transaction, _entity);
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
         if (!isValidRenderItem()) {
