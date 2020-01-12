@@ -230,7 +230,8 @@ namespace MenuOption {
     const QString MaterialProceduralShaders = "Enable Procedural Materials";
 
     // TIVOLI SPECIFIC
-    const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
+    const QString LoadCompleteEntityTree = "Load Complete Entity Tree (slower load time)";
+    const QString BypassPrioritySorting = "Bypass Priority Sorting (faster rendering)";
 
     }
 

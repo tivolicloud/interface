@@ -227,6 +227,11 @@ public:
     bool getLoadCompleteEntityTreeSetting() { return _loadCompleteEntityTreeSetting.get(); }
     void setLoadCompleteEntityTreeSetting(bool value);
 
+    // Shortcircuits the code that does priority sorting in EntityTreeRenderer for faster
+    // load and rendering times
+    bool getBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
+    void setBypassPrioritySorting(bool value);
+
     // FIXME: Remove setting completely or make available through JavaScript API?
     //bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
     bool getPreferAvatarFingerOverStylus() { return false; }
@@ -688,6 +693,7 @@ private:
     Setting::Handle<bool> _keepLogWindowOnTop{ "keepLogWindowOnTop", false };
     // TIVOLI SPECIFIC
     Setting::Handle<bool> _loadCompleteEntityTreeSetting;  // TIVOLI new feature
+    Setting::Handle<bool> _bypassPrioritySortingSetting; // TIVOLI new feature
 
     float _scaleMirror;
     float _mirrorYawOffset;

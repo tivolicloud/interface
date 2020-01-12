@@ -83,11 +83,16 @@ public:
     QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
     bool _zoneCullingActive = false;
+    bool _bypassPrioritySorting = false;
+
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
     QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
-    //void zoneCullEntities();
+
+    // TIVOLI
+    void setBypassPrioritySorting(bool usePrioritySorting) { _bypassPrioritySorting = usePrioritySorting; }
+    bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }

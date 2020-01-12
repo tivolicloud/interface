@@ -1024,6 +1024,7 @@ const QString DEFAULT_CURSOR_NAME = "DEFAULT";
 const bool DEFAULT_MINI_TABLET_ENABLED = false; // TIVOLI changed to false
 const bool DEFAULT_AWAY_STATE_WHEN_FOCUS_LOST_IN_VR_ENABLED = true;
 const bool DEFAULT_LOAD_COMPLETE_ENTITY_TREE = false; // TIVOLI new feature
+const bool DEFAULT_BYPASS_PRIORITY_SORTING = false; // TIVOLI new feature
 
 QSharedPointer<OffscreenUi> getOffscreenUI() {
 #if !defined(DISABLE_QML)
@@ -1065,6 +1066,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _lastSendDownstreamAudioStats(usecTimestampNow()),
     _notifiedPacketVersionMismatchThisDomain(false),
     _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE), // TIVOLI  new feature 
+    _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), // TIVOLI  new feature 
     _maxOctreePPS(maxOctreePacketsPerSecond.get()),
     _snapshotSound(nullptr),
     _sampleSound(nullptr)
@@ -6969,11 +6971,15 @@ void Application::queryOctree(
     // TIVOLI new feature to load entire tree at once in headless mode.
     auto menu = Menu::getInstance(); 
     if (menu) {
-        if (menu->isOptionChecked(
-                MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-                    _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
-                    _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-         }       
+        if (menu->isOptionChecked(MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+            _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
+            _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
+         }
+        if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+            DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(true); // TIVOLI bypass priority sorting
+        } else {
+            DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(false); // TIVOLI bypass priority sorting
+        }
     }
 
     auto nodeList = DependencyManager::get<NodeList>();
