@@ -1,24 +1,32 @@
 {
-    "opts": {
-        "template": "hifi-jsdoc-template"
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc"]
     },
-    "docdash": {
-        "meta": {                       
-            "title": "",                
-            "description": "",          
-            "keyword": ""               
-        },
-        "search": [true],  
-        "collapse": [true],       
-        "typedefs": [false]    
-    },    
+    "source": {
+        "include": ["root.js"]
+    },
+    "plugins": ["plugins/tivoli", "plugins/tivoli-json-export.js"],
     "templates": {
         "default": {
             "outputSourceFiles": false
         }
     },
-    "plugins": [
-        "plugins/hifi",
-        "plugins/hifiJSONExport"
-    ]
+    "docdash": {
+        "meta": {
+            "title": "",
+            "description": "",
+            "keyword": ""
+        },
+        "search": [true],
+        "collapse": [true],
+        "typedefs": [false]
+    },
+    "opts": {
+        "destination": "out",
+        "encoding": "utf8",
+        "private": true,
+        "recurse": true,
+        "template": "template"
+    }
 }

@@ -1,6 +1,3 @@
-out/*
-!out/README.md
-
-
-
-
+out
+node_modules
+package-lock.json
