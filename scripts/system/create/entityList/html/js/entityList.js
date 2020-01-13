@@ -246,6 +246,7 @@ function loaded() {
         elFilterTypeMultiselectBox = document.getElementById("filter-type-multiselect-box");
         elFilterTypeText = document.getElementById("filter-type-text");
         elFilterTypeOptions = document.getElementById("filter-type-options");
+        elFilterOptionsEnd = document.getElementById('filter-options-end');
         elFilterTypeOptionsButtons = document.getElementById("filter-type-options-buttons");
         elFilterTypeSelectAll = document.getElementById('filter-type-select-all');
         elFilterTypeClearAll = document.getElementById('filter-type-clear-all');
@@ -294,7 +295,7 @@ function loaded() {
             
             let elDiv = document.createElement('div');
             elDiv.onclick = onToggleTypeFilter;
-            elFilterTypeOptions.insertBefore(elDiv, elFilterTypeOptionsButtons);
+            elFilterTypeOptions.insertBefore(elDiv, elFilterOptionsEnd);
             
             let elInput = document.createElement('input');
             elInput.setAttribute("type", "checkbox");
@@ -620,8 +621,8 @@ function loaded() {
                         id: entity.id,
                         name: entity.name,
                         type: type,
-                        url: entity.certificateID === "" ? filename : "<i>" + CERTIFIED_PLACEHOLDER + "</i>",
-                        fullUrl: entity.certificateID === "" ? filename : CERTIFIED_PLACEHOLDER,
+                        url: filename,
+                        fullUrl: filename,
                         locked: entity.locked,
                         visible: entity.visible,
                         certificateID: entity.certificateID,

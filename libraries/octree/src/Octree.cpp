@@ -711,25 +711,6 @@ bool Octree::readJSONFromGzippedFile(QString qFileName) {
     return readJSONFromStream(-1, jsonStream);
 }
 
-// hack to get the marketplace id into the entities.  We will create a way to get this from a hash of
-// the entity later, but this helps us move things along for now
-QString getMarketplaceID(const QString& urlString) {
-    // the url should be http://mpassets.highfidelity.com/<uuid>-v1/<item name>.extension
-    // a regex for the this is a PITA as there are several valid versions of uuids, and so
-    // lets strip out the uuid (if any) and try to create a UUID from the string, relying on
-    // QT to parse it
-    static const QRegularExpression re("^http:\\/\\/mpassets.highfidelity.com\\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})-v[\\d]+\\/.*");
-    QRegularExpressionMatch match = re.match(urlString);
-    if (match.hasMatch()) {
-        QString matched = match.captured(1);
-        if (QUuid(matched).isNull()) {
-            qDebug() << "invalid uuid for marketplaceID";
-        } else {
-            return matched;
-        }
-    }
-    return QString();
-}
 
 bool Octree::readFromURL(
     const QString& urlString,
@@ -737,7 +718,6 @@ bool Octree::readFromURL(
     const qint64 callerId
 ) {
     QString trimmedUrl = urlString.trimmed();
-    QString marketplaceID = getMarketplaceID(trimmedUrl);
     qDebug() << "!!!!! going to createResourceRequest " << callerId;
     auto request = std::unique_ptr<ResourceRequest>(
         DependencyManager::get<ResourceManager>()->createResourceRequest(
@@ -763,18 +743,17 @@ bool Octree::readFromURL(
 
     if (wasCompressed) {
         QDataStream inputStream(uncompressedJsonData);
-        return readFromStream(uncompressedJsonData.size(), inputStream, marketplaceID);
+        return readFromStream(uncompressedJsonData.size(), inputStream);
     }
 
     QDataStream inputStream(data);
-    return readFromStream(data.size(), inputStream, marketplaceID);
+    return readFromStream(data.size(), inputStream);
 }
 
 
 bool Octree::readFromStream(
     uint64_t streamLength,
-    QDataStream& inputStream,
-    const QString& marketplaceID
+    QDataStream& inputStream
 ) {
     // decide if this is binary SVO or JSON-formatted SVO
     QIODevice *device = inputStream.device();
@@ -787,37 +766,16 @@ bool Octree::readFromStream(
         return false;
     } else {
         qCDebug(octree) << "Reading from JSON SVO Stream length:" << streamLength;
-        return readJSONFromStream(streamLength, inputStream, marketplaceID);
+        return readJSONFromStream(streamLength, inputStream);
     }
 }
 
 
-namespace {
-// hack to get the marketplace id into the entities.  We will create a way to get this from a hash of
-// the entity later, but this helps us move things along for now
-QVariantMap addMarketplaceIDToDocumentEntities(QVariantMap& doc, const QString& marketplaceID) {
-    if (!marketplaceID.isEmpty()) {
-        QVariantList newEntitiesArray;
-
-        // build a new entities array
-        auto entitiesArray = doc["Entities"].toList();
-        for (auto it = entitiesArray.begin(); it != entitiesArray.end(); it++) {
-            auto entity = (*it).toMap();
-            entity["marketplaceID"] = marketplaceID;
-            newEntitiesArray.append(entity);
-        }
-        doc["Entities"] = newEntitiesArray;
-    }
-    return doc;
-}
-
-}  // Unnamed namepsace
 const int READ_JSON_BUFFER_SIZE = 2048;
 
 bool Octree::readJSONFromStream(
     uint64_t streamLength,
-    QDataStream& inputStream,
-    const QString& marketplaceID /*=""*/
+    QDataStream& inputStream
 ) {
     // if the data is gzipped we may not have a useful bytesAvailable() result, so just keep reading until
     // we get an eof.  Leave streamLength parameter for consistency.
@@ -843,10 +801,6 @@ bool Octree::readJSONFromStream(
     if (!octreeParser.parseEntities(asMap)) {
         qCritical() << "Couldn't parse Entities JSON:" << octreeParser.getErrorString().c_str();
         return false;
-    }
-
-    if (!marketplaceID.isEmpty()) {
-        addMarketplaceIDToDocumentEntities(asMap, marketplaceID);
     }
 
     bool success = readFromMap(asMap);

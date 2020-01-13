@@ -217,9 +217,9 @@ public:
     // Octree importers
     bool readFromFile(const char* filename);
     bool readFromURL(const QString& url, const bool isObservable = true, const qint64 callerId = -1); // will support file urls as well...
-    bool readFromStream(uint64_t streamLength, QDataStream& inputStream, const QString& marketplaceID="");
+    bool readFromStream(uint64_t streamLength, QDataStream& inputStream);
     bool readSVOFromStream(uint64_t streamLength, QDataStream& inputStream);
-    bool readJSONFromStream(uint64_t streamLength, QDataStream& inputStream, const QString& marketplaceID="");
+    bool readJSONFromStream(uint64_t streamLength, QDataStream& inputStream);
     bool readJSONFromGzippedFile(QString qFileName);
     virtual bool readFromMap(QVariantMap& entityDescription) = 0;
 
