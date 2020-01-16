@@ -43,7 +43,7 @@ const float DEFAULT_INERTIA = 0.8f;
 const float DEFAULT_DELTA = 0.55f;
 const float DEFAULT_RADIUS = 0.01f;
 
-const uint64_t MAX_UPDATE_FLOW_TIME_BUDGET = 5000; // TIVOLI experiment - was 2000.
+const uint64_t MAX_UPDATE_FLOW_TIME_BUDGET = 2000; // TIVOLI experiment - was 2000.
 
 struct FlowPhysicsSettings {
     FlowPhysicsSettings() {};
