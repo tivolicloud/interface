@@ -149,10 +149,8 @@ EntityTreeRenderer::~EntityTreeRenderer() {
 EntityRendererPointer EntityTreeRenderer::renderableForEntityId(const EntityItemID& id) const {
     auto itr = _entitiesInScene.find(id);  // ? how is this list built to asssure its only renderable
     if (itr == _entitiesInScene.end()) {
-        return EntityRendererPointer();  // cpm if nothing is found return an emtpy entityrendererpointer?
+        return EntityRendererPointer();  
     }
-    // cpm itr->first would return the key.  itr->second returns the value associated with the key in the unordered_map!
-    //  return the value found in the find operation!
     return itr->second;  // CPM https://stackoverflow.com/questions/15451287/what-does-iterator-second-mean
 }
 
