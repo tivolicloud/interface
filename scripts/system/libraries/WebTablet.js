@@ -60,7 +60,7 @@ function calcSpawnInfo(hand, landscape) {
     var forward = Quat.getForward(headRot);
     var up = Quat.getUp(headRot);
 
-    var FORWARD_OFFSET = 1.5 * sensorToWorldScale;
+    var FORWARD_OFFSET = 0.5 * sensorToWorldScale;
     var UP_OFFSET = -0.16 * sensorToWorldScale;
     var RIGHT_OFFSET = ((hand === LEFT_HAND) ? -0.18 : 0.18) * sensorToWorldScale;
 
