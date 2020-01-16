@@ -44,22 +44,4 @@ QString AboutUtil::getQtVersion() const {
     return qVersion();
 }
 
-void AboutUtil::openUrl(const QString& url) const {
-    auto tablet = DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
-    auto hmd = DependencyManager::get<HMDScriptingInterface>();
-    auto offscreenUi = DependencyManager::get<OffscreenUi>();
 
-    if (tablet->getToolbarMode()) {
-        offscreenUi->load("Browser.qml", [=](QQmlContext* context, QObject* newObject) {
-            newObject->setProperty("url", url);
-        });
-    } else {
-        if (!hmd->getShouldShowTablet() && !qApp->isHMDMode()) {
-            offscreenUi->load("Browser.qml", [=](QQmlContext* context, QObject* newObject) {
-                newObject->setProperty("url", url);
-            });
-        } else {
-            tablet->gotoWebScreen(url);
-        }
-    }
-}

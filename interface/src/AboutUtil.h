@@ -51,12 +51,8 @@ public:
 
 public slots:
 
-    /**jsdoc
-     * Display a web page in an Interface browser window.
-     * @function TivoliAbout.openUrl
-     * @param {string} url - The URL of the web page you want to view in Interface.
-     */
-    void openUrl(const QString &url) const;
+    // THIS WAS CRASHING
+    // void openUrl(const QString &url) const;
 private:
     AboutUtil(QObject* parent = nullptr);
     QString _dateConverted;
