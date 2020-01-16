@@ -369,7 +369,7 @@
         }
     }
 
-    var THE_PLACE = (HifiAbout.buildVersion === "dev") ? "hifi://TheSpot-dev" : "hifi://TheSpot";
+    var THE_PLACE = (TivoliAbout.buildVersion === "dev") ? "hifi://plaza-dev" : "hifi://plaza";
     function clickedOnOverlay(overlayID, event) {
         if (loadingToTheSpotHoverID === overlayID) {
             location.handleLookupString(THE_PLACE);

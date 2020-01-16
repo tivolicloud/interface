@@ -29,12 +29,12 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 70
             RalewayRegular {
-                text: "Build " + HiFiAbout.buildVersion
+                text: "Build " + TivoliAbout.buildVersion
                 size: 16
                 color: "white"
             }
             RalewayRegular {
-                text: "Released " + HiFiAbout.buildDate
+                text: "Released " + TivoliAbout.buildDate
                 size: 16
                 color: "white"
             }
@@ -52,7 +52,7 @@ Rectangle {
             text: "<a href=\"https:/www.tivolicloud.com\">www.tivolicloud.com</a>."
             size: 20
             onLinkActivated: {
-                HiFiAbout.openUrl("https:/www.tivolicloud.com");
+                TivoliAbout.openUrl("https:/www.tivolicloud.com");
             }
         }
         Item { height: 40; width: 1 }
@@ -65,13 +65,13 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        HiFiAbout.openUrl("https://www.qt.io/");
+                        TivoliAbout.openUrl("https://www.qt.io/");
                     }
                 }
             }
             RalewayRegular {
                 color: "white"
-                text: "Built the High Fidelity architecture & Qt " + HiFiAbout.qtVersion
+                text: "Built with HiFi core, OpenGL & Qt " + TivoliAbout.qtVersion
                 size: 12
                 anchors.verticalCenter: parent.verticalCenter
             }
