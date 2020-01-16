@@ -250,10 +250,8 @@ void setupPreferences() {
     {
         auto getter = []()->bool { return !Menu::getInstance()->isOptionChecked(MenuOption::DisableActivityLogger); };
         auto setter = [](bool value) { Menu::getInstance()->setIsOptionChecked(MenuOption::DisableActivityLogger, !value); };
-        preferences->addPreference(new CheckPreference("Privacy", "Send data - High Fidelity uses information provided by your "
-                                "client to improve the product through the logging of errors, tracking of usage patterns, "
-                                "installation and system details, and crash events. By allowing High Fidelity to collect "
-                                "this information you are helping to improve the product. ", getter, setter));
+        preferences->addPreference(new CheckPreference("Privacy", "Send data - Allow Tivoli to collect "
+                                "information to improve the product. ", getter, setter));
     }
 
     static const QString AVATAR_TUNING { "Avatar Tuning" };
