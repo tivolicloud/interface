@@ -82,6 +82,8 @@ public:
     */
     QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
+    QList<EntityItemID> _prevZoneCullingStack;
+    
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
 

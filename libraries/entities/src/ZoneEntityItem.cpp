@@ -35,7 +35,7 @@ EntityItemPointer ZoneEntityItem::factory(const EntityItemID& entityID, const En
 }
 
 // Tivoli Zone Culling - keep a list of items within the zone
-void ZoneEntityItem::updateZoneContentList(QVector<QUuid> entitiesInside) {
+void ZoneEntityItem::updateZoneEntityItemContentList(QVector<QUuid> entitiesInside) {
     _zoneContentsList.clear();
     _zoneContentsList += entitiesInside;
  }

@@ -622,21 +622,22 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 // note how will zone culling handle zones, lights, and zones with compound shapes rather than boxes?
 
 
+// Make a list of all the entities inside entity. 
 void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool hasCompoundShape) {
     //qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
-    auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID));
-    glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f);
-    glm::vec3 scaledDimensions = zoneItem->getScaledDimensions();
+    auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID)); // get a pointer to the zone entity item
+    glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
+    glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
     QVector<QUuid> result;
     unsigned int searchFilter = PickFilter::getBitMask(PickFilter::FlagBit::DOMAIN_ENTITIES) |
                                 PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES);
     _tree->withReadLock([&] {
-        auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
+        auto entityTree = std::static_pointer_cast<EntityTree>(_tree);  // get pointer to tree
         AABox box(boundingBoxCorner, scaledDimensions);
-        entityTree->evalEntitiesInBox(box, PickFilter(), result);
+        entityTree->evalEntitiesInBox(box, PickFilter(), result); // find all the stuff in the bounding box and put in uuid vector
     });
     //qDebug() << "Update result set contains " << result.count() << "entities";
-    zoneItem->updateZoneContentList(result);
+    zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
@@ -702,10 +703,15 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
 // Using Zone Culling Mode rules, build _zoneCullSkipList
 // Instruct the entity's renderer to set _visible=false for each item on _zoneCullSkipList
 void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
-    if (_zoneCullingStack.isEmpty()) return;
+    if (_zoneCullingStack.isEmpty()) return; // stack 
+    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
+
+    qDebug() << "EVALUATE ZCS";
+
     _zoneCullSkipList.clear();
-    for (int i = 0; i < _zoneCullingStack.size(); ++i) {
-        auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i]));
+
+    for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
+        auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
         if (!zoneItem) continue;
         updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
@@ -754,6 +760,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             QSet<EntityItemID> entitiesContainingAvatar;
             findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
             evaluateZoneCullingStack();
+            _prevZoneCullingStack = _zoneCullingStack;
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
@@ -791,7 +798,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                         // Add this ID to the zoneCullingStack
                        auto entity = getEntity(entityID);
                        if (entity && entity->getType() == EntityTypes::Zone) {     
-                            if (_zoneCullingStack.indexOf(entityID) == -1) {  
+                            if (_zoneCullingStack.indexOf(entityID) == -1) {
                                 _zoneCullingStack.append(entityID);
                             }
                        }
