@@ -523,7 +523,7 @@
                    label: "Zone Culling",
                    type: "dropdown",
                    // const char * zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
-                   options: { inherit: "Inherit", on_inclusive: "On w/Inherit", on_exclusive: "On w/o inherit", off_exclusive: "All off" },
+                   options: { inherit: "Ignore", on_exclusive: "Cull Everything Outside", on_inclusive: "Cull and Inherit Outside", off_exclusive: "Disable all zone culling" },
                    propertyID: "zoneCullingMode"
                },
                {
@@ -555,7 +555,7 @@
                        compound: "Compound",
                        "simple-hull": "Basic - Whole model",
                        "simple-compound": "Good - Sub-meshes",
-                       "static-mesh": "Exact - All polygons (non-dynamic only)"
+                       "static-mesh": "Exact - Not dynamic, expensive!"
                    },
                    propertyID: "shapeType"
                },

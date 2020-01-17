@@ -38,12 +38,6 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
     return componentModeNames[(int)mode];
 }
 
-/*
-    ZONECULLING_MODE_INHERIT,            // Do not change the skiplist
-    ZONECULLING_MODE_ON_INCLUSIVE,   // Add my entities to existing skiplist.
-    ZONECULLING_MODE_ON_EXCLUSIVE,   // Overwrite skiplist with my entities.
-    ZONECULLING_MODE_OFF_EXCLUSIVE,  // Clear skiplist completely.
-    */
 
 /**jsdoc
  * <p>How Zone Culling is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
@@ -61,6 +55,7 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
  * @typedef {string} Entities.ZoneCullingMode
  */
 const char* zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
+
 
 QString ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(ZoneCullingComponentMode mode) {
     if (((int)mode <= 0) || ((int)mode >= (int)ZONECULLING_MODE_ITEM_COUNT)) {
