@@ -151,7 +151,7 @@ EntityRendererPointer EntityTreeRenderer::renderableForEntityId(const EntityItem
     if (itr == _entitiesInScene.end()) {
         return EntityRendererPointer();  
     }
-    return itr->second;  // CPM https://stackoverflow.com/questions/15451287/what-does-iterator-second-mean
+    return itr->second;  
 }
 
 // CPM investigate
@@ -443,11 +443,9 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         }
     }
 
-    //float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
-   // if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) {
-        // we expect to update all renderables within available time budget
-      //  PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
-
+  
+    // TO DO
+    // Add a priority property for individual entities, so if an entity is zone culled, it is also not updated here.
     
     if (_bypassPrioritySorting) {
        // qDebug() << "CPM BYPASS PRIORITY SORTING";
@@ -624,7 +622,6 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 
 // Make a list of all the entities inside entity. 
 void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool hasCompoundShape) {
-    //qDebug() << "CPM FIND ENTITIES IN ZONE " << entityID;
     auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID)); // get a pointer to the zone entity item
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
     glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
@@ -697,16 +694,19 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     });
 }
 
-// Tivoli Zone Culling
-// Take the zone stack (the domains that the avatar is nested within) and check each zone's Zone Culling Mode
-// Each zone entity keeps a _zoneContentsList and updated by updateZoneContentsLists
-// Using Zone Culling Mode rules, build _zoneCullSkipList
-// Instruct the entity's renderer to set _visible=false for each item on _zoneCullSkipList
-void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id) {  // TIVOLI
-    if (_zoneCullingStack.isEmpty()) return; // stack 
-    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
 
-    qDebug() << "EVALUATE ZCS";
+QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() { 
+  QVector<QUuid> result;
+  _getZoneCullSkiplistGuard.withReadLock([&] { result = _zoneCullSkipList; });
+  return result;
+}
+
+
+void EntityTreeRenderer::evaluateZoneCullingStack() {  
+    if (_zoneCullingStack.isEmpty()) return; // stack 
+
+    // TEST
+    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
 
     _zoneCullSkipList.clear();
 
@@ -719,21 +719,17 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {  //const EntityItemID& id)
             case ZONECULLING_MODE_INHERIT:  // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
-                _zoneCullSkipList += zoneItem->getZoneContentList();
+                _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
                 _zoneCullSkipList.clear();
-                _zoneCullSkipList += zoneItem->getZoneContentList();
+                _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
-                _zoneCullSkipList.clear();
+                _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;
         }
     }
-
-    //  qDebug() << "Dominant zone is " << _zoneCullingStack.last();
-   //   qDebug() << "Zone Culling Skiplist contains " << _zoneCullSkipList.count() << " entities";
-    // foreach (const QUuid& value, _zoneCullSkipList) qDebug() << value;
 }
 
 
@@ -759,27 +755,26 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
 
             QSet<EntityItemID> entitiesContainingAvatar;
             findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
-            evaluateZoneCullingStack();
-            _prevZoneCullingStack = _zoneCullingStack;
+
+           if (_zoneCullingStack != _prevZoneCullingStack) evaluateZoneCullingStack(); // stack hasn't changed
+           _prevZoneCullingStack = _zoneCullingStack;
+          
+          //  evaluateZoneCullingStack(); // TEST
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
             // for entity IDs that no longer exist.
 
-            // TO DO: Clear the skiplist whenever a domain is exited.
-
             if (_entitiesScriptEngine) {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
                 foreach (const EntityItemID& entityID, _currentEntitiesInside) {
                     if (!entitiesContainingAvatar.contains(entityID)) {
-                        //qDebug() << "CPM AVATAR - LEAVING ENTITY: " << entityID;
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
 
                         auto entity = getEntity(entityID);
                         if (entity && entity->getType() == EntityTypes::Zone) { // Remove this zone ID from the zoneCullingStack
                             if (_zoneCullingStack.indexOf(entityID) != -1) {  // if it exists, remove it
-                               // qDebug() << "CPM LEAVE ENTITY - this item was not listed" << entityID;
                                 _zoneCullingStack.removeAt(_zoneCullingStack.indexOf(entityID));
                             }
                         }
@@ -790,7 +785,6 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                 // for all of our new containing entities, if they weren't previously containing then send them an enter event
                 foreach (const EntityItemID& entityID, entitiesContainingAvatar) {
                     if (!_currentEntitiesInside.contains(entityID)) {
-                        //qDebug() << "CPM AVATAR - ENTER ENTITY: " << entityID;
 
                         emit enterEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
@@ -802,7 +796,6 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                                 _zoneCullingStack.append(entityID);
                             }
                        }
-
                     }
                 }
                 _currentEntitiesInside = entitiesContainingAvatar;
@@ -851,11 +844,6 @@ void EntityTreeRenderer::forceRecheckEntities() {
     _forceRecheckEntities = true;
 }
 
-// CPM investigate
-// This adds the zone effects to the existing scene.
-// Zone culling actually shouldn't happen here since it preempts this point stage.
-// We should probably put this the zone culling check in this class but call it way ahead of this.
-//
 bool EntityTreeRenderer::applyLayeredZones() {
     // from the list of zones we are going to build a selection list the Render Item corresponding to the zones
     // in the expected layered order and update the scene with it

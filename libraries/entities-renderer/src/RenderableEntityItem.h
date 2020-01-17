@@ -121,13 +121,24 @@ protected:
     ItemID _renderItemID{ Item::INVALID_ITEM_ID };
     uint64_t _fadeStartTime{ usecTimestampNow() };
     uint64_t _updateTime{ usecTimestampNow() }; // used when sorting/throttling render updates
+
     bool _isFading { EntityTreeRenderer::getEntitiesShouldFadeFunction()() };
     bool _prevIsTransparent { false };
     bool _visible{ false };
     bool _locallyVisible{ false };
     bool _isVisibleInSecondaryCamera { false };
     bool _canCastShadow { false };
-    bool _doZoneCull{ false };  // TIVOLI Zone Culling
+    bool _dontCullMe{ false };  // TIVOLI Zone Culling
+    
+    enum ZoneCullingState {
+        ZoneCull_Inactive,
+        ZoneCull_Culled,
+        ZoneCull_Skipped
+    };
+
+    ZoneCullingState _zoneCullState {ZoneCullingState::ZoneCull_Inactive };
+    ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
+
     bool _cullWithParent { false };
     RenderLayer _renderLayer { RenderLayer::WORLD };
     PrimitiveMode _primitiveMode { PrimitiveMode::SOLID };

@@ -87,8 +87,14 @@ public:
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
 
+    ReadWriteLockable _getZoneCullSkiplistGuard;
+    QVector<QUuid> getZoneCullSkiplist();
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
-    QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
+
+
+
+
+    //QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
 
@@ -289,6 +295,7 @@ private:
     const float ZONE_CHECK_DISTANCE = 0.001f;
 
     float _avgRenderableUpdateCost { 0.0f };
+
 
     ReadWriteLockable _changedEntitiesGuard;
     std::unordered_set<EntityItemID> _changedEntities;

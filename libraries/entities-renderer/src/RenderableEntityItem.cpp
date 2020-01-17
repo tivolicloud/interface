@@ -321,14 +321,23 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
     _updateTime = usecTimestampNow();
 
-    //if (!needsRenderUpdate()) { // TIVOLI Zone Culling
-    //    if (!_doZoneCull) return;
-    //    _doZoneCull = false;
+    // If this entity is culled, and zone culling state has not changed, I do not neet an update
+    //if (_zoneCullState == ZoneCullingState::ZoneCull_Culled && _zoneCullState == _prevZoneCullState && !_renderUpdateQueued) {
+    //  // return; // I'm zone culled and don't need updates anymore
+    //  //  qDebug() << "IM being culled and don't need updates?";
+    //   // return;
     //}
 
-    if (_doZoneCull) { // If I shouldn't be culled
+    //// If I am on the zone cull list and I need an update
+    if (_zoneCullState == ZoneCullingState::ZoneCull_Skipped) {
+        qDebug() << "IM not being culled";
         if (!needsRenderUpdate()) return; // then check if I need an update
     }
+
+    //if (!needsRenderUpdate()) return;
+    //e::ZoneCull_inactive)
+    // TO DO
+    // Find out if Zone Culling is active and if I am being culled on purpose
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
@@ -429,15 +438,28 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
             if (checkType == EntityTypes::Gizmo) return;
             if (checkType == EntityTypes::Grid) return;
             if (checkType == EntityTypes::Material) return;
-            auto _treeRenderer = DependencyManager::get<EntityTreeRenderer>();
-            QVector<QUuid> skiplist = _treeRenderer->getZoneCullSkiplist();
+
+
+            QVector<QUuid> skiplist;
+
+            auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
+            if (entityTreeRenderer) {
+                    skiplist = entityTreeRenderer->getZoneCullSkiplist();
+            }
+
+
+            _prevZoneCullState = _zoneCullState;
             if (skiplist.count() > 0) {
-                if (skiplist.indexOf(entity->getID()) > -1) {
-                    _doZoneCull = true;
+                if (skiplist.indexOf(entity->getID()) > -1) {  // Zone Culling is active and I'm on the skip list, dontCullMe
+                    //_dontCullMe = true;
+                    _zoneCullState = ZoneCullingState::ZoneCull_Skipped;
                 } else {
                     _visible = false; 
-                    _doZoneCull = false;
+                   // _dontCullMe = false;
+                    _zoneCullState = ZoneCullingState::ZoneCull_Culled;
                 }
+            } else { // Nothing on my skiplist so zone culling is not switched on
+                _zoneCullState = ZoneCullingState::ZoneCull_Inactive;
             }
         }
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());

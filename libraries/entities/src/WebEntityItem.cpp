@@ -285,8 +285,11 @@ void WebEntityItem::setSourceUrl(const QString& value) {
 }
 
 QString WebEntityItem::getSourceUrl() const { 
+    QString empty = "";
+    if (this == NULL) return empty;
     return resultWithReadLock<QString>([&] {
-        return _sourceUrl;
+        if (!_sourceUrl.isNull()) return _sourceUrl;
+        else return empty;
     });
 }
 
@@ -306,10 +309,12 @@ uint16_t WebEntityItem::getDPI() const {
 void WebEntityItem::setScriptURL(const QString& value) {
     auto newURL = QUrl::fromUserInput(value);
 
+    //qCDebug(entities) << "NEW URL FOR WEB ENTITY IS " << newURL;
     if (!newURL.isValid()) {
-                qCDebug(entities) << "Not setting web entity script URL since" << value << "cannot be parsed to a valid URL.";
-        return;
+                //qCDebug(entities) << "Not setting web entity script URL since" << value << "cannot be parsed to a valid URL.";
+        newURL = "";
     }
+    //qCDebug(entities) << "NEW URL FOR WEB ENTITY MADE IT THROUGH " << newURL;
 
     auto urlString = newURL.toDisplayString();
 
