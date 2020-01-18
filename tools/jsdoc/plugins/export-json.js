@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 
-const JSON_FILENAME = "hifiJSDoc.json";
+const JSON_FILENAME = "doclets.json";
 
 exports.handlers = {
 	processingComplete: function(e) {
