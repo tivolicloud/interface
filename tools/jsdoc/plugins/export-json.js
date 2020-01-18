@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 
+const JSON_FILENAME = "hifiJSDoc.json";
+
 exports.handlers = {
 	processingComplete: function(e) {
 		const outputFolder = path.join(__dirname, "../out");
@@ -14,11 +16,11 @@ exports.handlers = {
 		if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder);
 
 		fs.writeFile(
-			path.join(outputFolder, "hifiJSDoc.json"),
-			JSON.stringify(doclets),
+			path.join(outputFolder, JSON_FILENAME),
+			JSON.stringify(doclets, null, 4),
 			err => {
 				if (err) return console.log(err);
-				console.log("The Hifi JSDoc JSON was saved!");
+				console.log(JSON_FILENAME + " was written!");
 			},
 		);
 	},

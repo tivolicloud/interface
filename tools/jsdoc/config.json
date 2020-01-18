@@ -1,32 +1,32 @@
 {
-    "tags": {
-        "allowUnknownTags": true,
-        "dictionaries": ["jsdoc"]
-    },
-    "source": {
-        "include": ["root.js"]
-    },
-    "plugins": ["plugins/tivoli", "plugins/tivoli-json-export.js"],
-    "templates": {
-        "default": {
-            "outputSourceFiles": false
-        }
-    },
-    "docdash": {
-        "meta": {
-            "title": "",
-            "description": "",
-            "keyword": ""
-        },
-        "search": [true],
-        "collapse": [true],
-        "typedefs": [false]
-    },
-    "opts": {
-        "destination": "out",
-        "encoding": "utf8",
-        "private": true,
-        "recurse": true,
-        "template": "template"
-    }
+	"tags": {
+		"allowUnknownTags": true,
+		"dictionaries": ["jsdoc"]
+	},
+	"source": {
+		"include": ["root.js"]
+	},
+	"plugins": ["plugins/find-doclets", "plugins/export-json"],
+	"templates": {
+		"default": {
+			"outputSourceFiles": false
+		}
+	},
+	"docdash": {
+		"meta": {
+			"title": "",
+			"description": "",
+			"keyword": ""
+		},
+		"search": [true],
+		"collapse": [true],
+		"typedefs": [false]
+	},
+	"opts": {
+		"destination": "out",
+		"encoding": "utf8",
+		"private": true,
+		"recurse": true,
+		"template": "template"
+	}
 }
