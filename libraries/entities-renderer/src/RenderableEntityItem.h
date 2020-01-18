@@ -61,6 +61,16 @@ public:
     virtual uint32_t metaFetchMetaSubItems(ItemIDs& subItems) const override;
     virtual Item::Bound getBound() override;
 
+    enum ZoneCullingState {
+        ZoneCull_Inactive,
+        ZoneCull_Culled,
+        ZoneCull_Skipped
+    };
+    ZoneCullingState _zoneCullState{ ZoneCullingState::ZoneCull_Inactive };
+    ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
+    virtual void evaluateZoneCullState(const EntityItemPointer& entity);
+
+
 protected:
     virtual bool needsRenderUpdateFromEntity() const final { return needsRenderUpdateFromEntity(_entity); }
     virtual void onAddToScene(const EntityItemPointer& entity);
@@ -128,16 +138,7 @@ protected:
     bool _locallyVisible{ false };
     bool _isVisibleInSecondaryCamera { false };
     bool _canCastShadow { false };
-    bool _dontCullMe{ false };  // TIVOLI Zone Culling
     
-    enum ZoneCullingState {
-        ZoneCull_Inactive,
-        ZoneCull_Culled,
-        ZoneCull_Skipped
-    };
-
-    ZoneCullingState _zoneCullState {ZoneCullingState::ZoneCull_Inactive };
-    ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
 
     bool _cullWithParent { false };
     RenderLayer _renderLayer { RenderLayer::WORLD };
