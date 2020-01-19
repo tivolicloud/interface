@@ -18,7 +18,7 @@
 
 // State Machine for transitioning between children AnimNodes
 //
-// This is mechinisim for playing animations and smoothly interpolating/fading
+// This is mechanisim for playing animations and smoothly interpolating/fading
 // between them.  A StateMachine has a set of States, which typically reference
 // child AnimNodes.  Each State has a list of Transitions, which are evaluated
 // to determine when we should switch to a new State.  Parameters for the smooth

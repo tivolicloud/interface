@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget* parent) :
     setAcceptDrops(true);
     setStyleSheet("QMainWindow::separator {width: 1px; border: none;} ");
     setStyleSheet("background-color: #252525;  color : white;");
+
 }
 
 MainWindow::~MainWindow() {
