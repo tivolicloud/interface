@@ -371,6 +371,8 @@ void EntityTreeRenderer::shutdown() {
 void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
     PROFILE_RANGE_EX(simulation_physics, "AddToScene", 0xffff00ff, (uint64_t)_entitiesToAdd.size());
     PerformanceTimer pt("add");
+
+    setBypassPrioritySorting(true);
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
     // weird compilation error related to EntityItemID assignment operators
@@ -423,6 +425,8 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
             forceRecheckEntities();
         }
     }
+
+    setBypassPrioritySorting(false);
 }
 
 
@@ -447,7 +451,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     // TO DO
     // Add a priority property for individual entities, so if an entity is zone culled, it is also not updated here.
     
-    if (_bypassPrioritySorting) {
+    if (getBypassPrioritySorting()) {
        // qDebug() << "CPM BYPASS PRIORITY SORTING";
         // BEGIN PHASE ONE
         uint64_t updateStart = usecTimestampNow();
@@ -599,7 +603,11 @@ void EntityTreeRenderer::update(bool simulate) {
 
         if (simulate) {
             // Handle enter/leave entity logic
-            checkEnterLeaveEntities();
+            checkEnterLeaveEntities();   
+            
+            if (getPriorityClutchTime() < usecTimestampNow()) {
+                setBypassPrioritySorting(false);
+            }
 
             // Even if we're not moving the mouse, if we started clicking on an entity and we have
             // not yet released the hold then this is still considered a holdingClickOnEntity event
@@ -705,10 +713,14 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() {
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
 
+
     if (_zoneCullingStack.isEmpty()) return; 
     if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
 
     _zoneCullSkipList.clear();
+
+    setPriorityClutchTime(ZONECULLING_SORT_BYPASS_WAIT);
+    setBypassPrioritySorting(true);
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity

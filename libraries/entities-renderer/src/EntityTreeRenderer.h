@@ -86,15 +86,16 @@ public:
     
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
+    quint64 _clutchEndTime = 0.0f;
+    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 10000.0f; // one second
+
+    void setPriorityClutchTime(quint64 bypassTime) { _clutchEndTime = usecTimestampNow() + bypassTime; }
+    quint64 getPriorityClutchTime() { return _clutchEndTime; }
 
     ReadWriteLockable _getZoneCullSkiplistGuard;
     QVector<QUuid> getZoneCullSkiplist();
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
 
-
-
-
-    //QVector<QUuid> getZoneCullSkiplist() { return _zoneCullSkipList; }
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
 
