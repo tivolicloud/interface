@@ -83,7 +83,7 @@ QString _jsdocTypeToString(QJsonValue jsdocType) {
 }
 
 void JSConsole::readAPI() {
-    QFile file(PathUtils::resourcesPath() + "auto-complete/hifiJSDoc.json");
+    QFile file(PathUtils::resourcesPath() + "auto-complete/doclets.json");
     file.open(QFile::ReadOnly);
     auto json = QTextStream(&file).readAll().toUtf8();
     _apiDocs = QJsonDocument::fromJson(json).array();

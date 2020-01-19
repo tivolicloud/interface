@@ -16,7 +16,7 @@ set(CUSTOM_INTERFACE_QRC_PATHS "")
 find_npm()
 
 if (BUILD_TOOLS AND NPM_EXECUTABLE)
-  add_custom_qrc_path(CUSTOM_INTERFACE_QRC_PATHS "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/hifiJSDoc.json" "auto-complete/hifiJSDoc.json")
+  add_custom_qrc_path(CUSTOM_INTERFACE_QRC_PATHS "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json" "auto-complete/doclets.json")
 endif ()
 
 set(RESOURCES_QRC ${CMAKE_CURRENT_BINARY_DIR}/resources.qrc)
@@ -330,8 +330,8 @@ if (APPLE)
     #   "${RESOURCES_DEV_DIR}/jsdoc"
     # copy JSDoc files beside the executable
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/hifiJSDoc.json"
-      "${RESOURCES_DEV_DIR}/jsdoc/hifiJSDoc.json"
+      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json"
+      "${RESOURCES_DEV_DIR}/jsdoc/doclets.json"
 
     # copy the resources files beside the executable
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
@@ -390,8 +390,8 @@ else()
     #   "${CMAKE_SOURCE_DIR}/tools/jsdoc/out"
     #   "${INTERFACE_EXEC_DIR}/jsdoc"
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/hifiJSDoc.json"
-      "${INTERFACE_EXEC_DIR}/jsdoc/hifiJSDoc.json"
+      "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json"
+      "${INTERFACE_EXEC_DIR}/jsdoc/doclets.json"
   )
 
   # link target to external libraries
