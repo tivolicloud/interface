@@ -49,6 +49,7 @@ struct GpuParticle {
 using GpuParticles = std::vector<GpuParticle>;
 
 ParticleEffectEntityRenderer::ParticleEffectEntityRenderer(const EntityItemPointer& entity) : Parent(entity) {
+       
     ParticleUniforms uniforms;
     _uniformBuffer = std::make_shared<Buffer>(sizeof(ParticleUniforms), (const gpu::Byte*) &uniforms);
 
@@ -65,6 +66,9 @@ ParticleEffectEntityRenderer::ParticleEffectEntityRenderer(const EntityItemPoint
 }
 
 void ParticleEffectEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene, Transaction& transaction, const TypedEntityPointer& entity) {
+
+
+
     auto newParticleProperties = entity->getParticleProperties();
     if (!newParticleProperties.valid()) {
         qCWarning(entitiesrenderer) << "Bad particle properties";
@@ -131,6 +135,11 @@ void ParticleEffectEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePoi
 }
 
 void ParticleEffectEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) {
+
+
+
+
+
     // Fill in Uniforms structure
     ParticleUniforms particleUniforms;
     withReadLock([&] {
@@ -150,6 +159,9 @@ void ParticleEffectEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEn
 }
 
 ItemKey ParticleEffectEntityRenderer::getKey() {
+
+
+
     // FIXME: implement isTransparent() for particles and an opaque pipeline
     auto builder = ItemKey::Builder::transparentShape().withTagBits(getTagMask()).withLayer(getHifiRenderLayer());
 
@@ -374,10 +386,8 @@ ParticleEffectEntityRenderer::CpuParticle ParticleEffectEntityRenderer::createPa
 }
 
 void ParticleEffectEntityRenderer::stepSimulation() {
-    if (_lastSimulated == 0) {
-        _lastSimulated = usecTimestampNow();
-        return;
-    }
+
+  
 
     const auto now = usecTimestampNow();
     const auto interval = std::min<uint64_t>(USECS_PER_SECOND / 60, now - _lastSimulated);
@@ -451,6 +461,14 @@ void ParticleEffectEntityRenderer::stepSimulation() {
 }
 
 void ParticleEffectEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
+
+    if (_lastSimulated == 0) {
+        _lastSimulated = usecTimestampNow();
+        return;
+    }
+
     if (!_visible || !(_networkTexture && _networkTexture->isLoaded())) {
         return;
     }

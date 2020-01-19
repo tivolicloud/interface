@@ -18,8 +18,9 @@ using namespace render;
 using namespace render::entities;
 
 void LightEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) {
-    auto& lightPayload = *_lightPayload;
 
+    auto& lightPayload = *_lightPayload;
+   
     lightPayload.setVisible(_visible);
 
     auto light = lightPayload.editLight();
@@ -65,6 +66,7 @@ Item::Bound LightEntityRenderer::getBound() {
 }
 
 void LightEntityRenderer::doRender(RenderArgs* args) {
+    evaluateZoneCullState(_entity);
     _lightPayload->render(args);
 }
 

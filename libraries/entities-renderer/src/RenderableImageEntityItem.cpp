@@ -109,6 +109,7 @@ ShapeKey ImageEntityRenderer::getShapeKey() {
 }
 
 void ImageEntityRenderer::doRender(RenderArgs* args) {
+    evaluateZoneCullState(_entity);
     NetworkTexturePointer texture;
     QRect subImage;
     glm::vec4 color;

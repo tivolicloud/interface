@@ -322,8 +322,6 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     _updateTime = usecTimestampNow();
 
 
-
-    //// If I am on the zone cull list and I need an update
     if (_zoneCullState == ZoneCullingState::ZoneCull_Skipped) {
         if (!needsRenderUpdate()) return; // then check if I need an update
     }
@@ -453,7 +451,10 @@ void EntityRenderer::evaluateZoneCullState(const EntityItemPointer& entity){
             _zoneCullState = ZoneCullingState::ZoneCull_Skipped;
         }
         else {
-            _visible = false;
+            if (_visible) {
+                _visible = false;
+                requestRenderUpdate();
+            }
             _zoneCullState = ZoneCullingState::ZoneCull_Culled;
         }
     }

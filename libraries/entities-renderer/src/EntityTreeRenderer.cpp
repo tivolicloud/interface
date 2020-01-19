@@ -626,12 +626,14 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
     glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
     QVector<QUuid> result;
+    // _flags[AVATARS] looks like we can also pick and perhaps derender outside avatars.  have a look 
     unsigned int searchFilter = PickFilter::getBitMask(PickFilter::FlagBit::DOMAIN_ENTITIES) |
-                                PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES);
+                                PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES) |
+                                PickFilter::getBitMask(PickFilter::FlagBit::LOCAL_ENTITIES);
     _tree->withReadLock([&] {
         auto entityTree = std::static_pointer_cast<EntityTree>(_tree);  // get pointer to tree
         AABox box(boundingBoxCorner, scaledDimensions);
-        entityTree->evalEntitiesInBox(box, PickFilter(), result); // find all the stuff in the bounding box and put in uuid vector
+        entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result); // find all the stuff in the bounding box and put in uuid vector
     });
     //qDebug() << "Update result set contains " << result.count() << "entities";
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
@@ -645,8 +647,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     // don't let someone else change our tree while we search
     _tree->withReadLock([&] {
         auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
-
-        // CPM Investigate
+        
         // FIXME - if EntityTree had a findEntitiesContainingPoint() this could theoretically be a little faster
         entityTree->evalEntitiesInSphere(_avatarPosition, radius, PickFilter(), entityIDs);
         LayeredZones oldLayeredZones(_layeredZones);
@@ -687,7 +688,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
             }
         }
 
-        _layeredZones.sort();  // CPM sort?
+        _layeredZones.sort(); 
         if (!_layeredZones.equals(oldLayeredZones)) {
             applyLayeredZones();
         }
@@ -703,9 +704,8 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() {
 
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
-    if (_zoneCullingStack.isEmpty()) return; // stack 
 
-    // TEST
+    if (_zoneCullingStack.isEmpty()) return; 
     if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
 
     _zoneCullSkipList.clear();

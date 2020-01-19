@@ -115,6 +115,9 @@ protected:
     virtual void setPrimitiveMode(PrimitiveMode value) { _primitiveMode = value; }
     virtual void setCullWithParent(bool value) { _cullWithParent = value; }
 
+    virtual bool wasPreviouslyVisible() const { return _previouslyVisible; }
+    virtual void setPreviouslyVisible(bool value) { _previouslyVisible = value; }
+
 signals:
     void requestRenderUpdate();
 
@@ -136,6 +139,7 @@ protected:
     bool _prevIsTransparent { false };
     bool _visible{ false };
     bool _locallyVisible{ false };
+    bool _previouslyVisible{ false };
     bool _isVisibleInSecondaryCamera { false };
     bool _canCastShadow { false };
     

@@ -136,6 +136,8 @@ void TextEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointe
 }
 
 void TextEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
     PerformanceTimer perfTimer("RenderableTextEntityItem::render");
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;

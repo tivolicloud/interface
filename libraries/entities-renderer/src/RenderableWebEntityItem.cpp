@@ -261,6 +261,9 @@ Item::Bound WebEntityRenderer::getBound() {
 }
 
 void WebEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
+
     PerformanceTimer perfTimer("WebEntityRenderer::render");
     withWriteLock([&] {
         _lastRenderTime = usecTimestampNow();

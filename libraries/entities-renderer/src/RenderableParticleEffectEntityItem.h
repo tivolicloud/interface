@@ -112,6 +112,9 @@ private:
 
     NetworkTexturePointer _networkTexture;
     ScenePointer _scene;
+
+   // EntityItemPointer _entity;
+
 };
 
 } } // namespace 

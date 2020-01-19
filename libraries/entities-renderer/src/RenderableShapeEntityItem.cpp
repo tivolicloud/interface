@@ -219,6 +219,9 @@ Item::Bound ShapeEntityRenderer::getBound() {
 }
 
 void ShapeEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
+
     PerformanceTimer perfTimer("RenderableShapeEntityItem::render");
     Q_ASSERT(args->_batch);
 

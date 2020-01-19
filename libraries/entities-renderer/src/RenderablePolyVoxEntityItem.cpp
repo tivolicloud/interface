@@ -1846,6 +1846,8 @@ void PolyVoxEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoi
 }
 
 void PolyVoxEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
     if (!_mesh || !_mesh->getIndexBuffer()._buffer) {
         return;
     }

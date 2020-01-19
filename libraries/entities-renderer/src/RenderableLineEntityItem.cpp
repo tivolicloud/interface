@@ -37,6 +37,8 @@ void LineEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointe
 }
 
 void LineEntityRenderer::doRender(RenderArgs* args) {
+
+    evaluateZoneCullState(_entity);
     if (_lineVerticesID == GeometryCache::UNKNOWN_ID) {
         return;
     }
