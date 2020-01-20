@@ -44,7 +44,10 @@ bool ContextAwareProfile::isRestrictedInternal() {
 
     // BUGZ-1365 - we MUST defalut to restricted mode in the absence of a flag, or it's too easy for someone to make 
     // a new mechanism for loading web content that fails to restrict access to local files
-    return true;
+    //return true;
+
+    // Tivoli: local files are necessary
+    return false; 
 }
 
 bool ContextAwareProfile::isRestricted() {
