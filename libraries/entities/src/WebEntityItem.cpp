@@ -23,7 +23,7 @@
 #include "EntityTreeElement.h"
 
 const QString WebEntityItem::DEFAULT_SOURCE_URL = "http://www.google.com";
-const uint8_t WebEntityItem::DEFAULT_MAX_FPS = 10;
+const uint8_t WebEntityItem::DEFAULT_MAX_FPS = 120;
 
 EntityItemPointer WebEntityItem::factory(const EntityItemID& entityID, const EntityItemProperties& properties) {
     EntityItemPointer entity(new WebEntityItem(entityID), [](EntityItem* ptr) { ptr->deleteLater(); });

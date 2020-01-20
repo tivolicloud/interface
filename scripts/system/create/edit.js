@@ -494,7 +494,8 @@
                 z: 0.01
             },
             sourceUrl: "https://highfidelity.com/",
-            dpi: 30
+            dpi: 30,
+            maxFPS: 120
         },
         ParticleEffect: {
             name: "Particle System",

@@ -1398,7 +1398,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  *     (multiply by 1 / 0.0254 = 39.3701) then multiply <code>dimensions.x</code> and <code>dimensions.y</code> by that value 
  *     you get the resolution in pixels.
  * @property {string} scriptURL="" - The URL of a JavaScript file to inject into the web page.
- * @property {number} maxFPS=10 - The maximum update rate for the web content, in frames/second.
+ * @property {number} maxFPS=120 - The maximum update rate for the web content, in frames/second.
  * @property {WebInputMode} inputMode="touch" - The user input mode to use.
  * @property {boolean} showKeyboardFocusHighlight=true - <code>true</code> if the entity is highlighted when it has keyboard 
  *     focus, <code>false</code> if it isn't.

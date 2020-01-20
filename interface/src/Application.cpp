@@ -2528,8 +2528,10 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
             webSurface->load(url);
             cachedWebSurface = false;
         }
-        const uint8_t DEFAULT_MAX_FPS = 10;
-        const uint8_t TABLET_FPS = 90;
+        
+        // average target framerate for a 60 hz monitor 
+        const uint8_t DEFAULT_MAX_FPS = 120;
+        const uint8_t TABLET_FPS = 120;
         webSurface->setMaxFps(isTablet ? TABLET_FPS : DEFAULT_MAX_FPS);
     });
     render::entities::WebEntityRenderer::setReleaseWebSurfaceOperator([=](QSharedPointer<OffscreenQmlSurface>& webSurface, bool& cachedWebSurface, std::vector<QMetaObject::Connection>& connections) {
