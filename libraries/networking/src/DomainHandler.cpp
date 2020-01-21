@@ -62,6 +62,8 @@ DomainHandler::DomainHandler(QObject* parent) :
 
     // stop the refresh timer if redirected to the error domain
     connect(this, &DomainHandler::redirectToErrorDomainURL, &_apiRefreshTimer, &QTimer::stop);
+
+
 }
 
 void DomainHandler::disconnect(QString reason) {

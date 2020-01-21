@@ -255,7 +255,7 @@ void FBXSerializer::consolidateHFMMaterials() {
                 }
             }
         }
-        qCDebug(modelformat) << " fbx material Name:" << material.name;
+       // qCDebug(modelformat) << " fbx material Name:" << material.name;
 
         if (material.opacity <= 0.0f) {
             material._material->setOpacity(1.0f);
