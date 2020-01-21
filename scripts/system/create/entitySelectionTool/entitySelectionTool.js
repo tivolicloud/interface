@@ -245,12 +245,12 @@
    
        that.setSelections = function(entityIDs, caller) {
            that.selections = [];
-           console.log("TIVOLI - SET SELECTIONS 1");
+           //console.log("TIVOLI - SET SELECTIONS 1");
    
            Selection.clearSelectedItemsList(HIGHLIGHT_LIST_NAME);
            // CLEAR OUT OLD HIGHLIGHTS HERE?
            for (var i = 0; i < entityIDs.length; i++) {
-               console.log("TIVOLI - SET SELECTIONS 1 ITERATION");
+               //console.log("TIVOLI - SET SELECTIONS 1 ITERATION");
                var entityID = entityIDs[i];
                that.selections.push(entityID);
                Selection.addToSelectedItemsList(
@@ -260,17 +260,17 @@
                );
            }
    
-           console.log("END TIVOLI - SET SELECTIONS 1");
+           //console.log("END TIVOLI - SET SELECTIONS 1");
            that._update(true, caller);
        };
    
        that.addEntity = function(entityID, toggleSelection, caller) {
-           console.log("TIVOLI - ADD ENTITY 1");
+           //console.log("TIVOLI - ADD ENTITY 1");
            if (entityID) {
                ///console.log("TIVOLI - SELECTION TOOL CLICK 1");
                var idx = -1;
                for (var i = 0; i < that.selections.length; i++) {
-                   console.log("TIVOLI - SELECTION TOOL CLICK 1 iteration");
+                   //console.log("TIVOLI - SELECTION TOOL CLICK 1 iteration");
                    if (entityID === that.selections[i]) {
                        idx = i;
                        break;
@@ -713,7 +713,7 @@
        that._update = function(selectionUpdated, caller) {
            var properties = null;
            if (that.selections.length === 0) {
-               console.log("TIVOLI - THIS WAS A ZERO LENGTH SELECTION");
+               //console.log("TIVOLI - THIS WAS A ZERO LENGTH SELECTION");
                that.localDimensions = null;
                that.localPosition = null;
                that.worldDimensions = null;
@@ -1567,27 +1567,27 @@
    
            var results = testRayIntersect(pickRay, interactiveOverlays);
    
-           console.log("TIVOLI - SELECTION TOOL CLICK 1");
+           //console.log("TIVOLI - SELECTION TOOL CLICK 1");
            if (results.intersects) {
                var hitOverlayID = results.overlayID;
-               console.log("TIVOLI - SELECTION TOOL CLICK 2");
+               //console.log("TIVOLI - SELECTION TOOL CLICK 2");
                if (
                    (HMD.tabletID && hitOverlayID === HMD.tabletID) ||
                    (HMD.tabletScreenID && hitOverlayID === HMD.tabletScreenID) ||
                    (HMD.homeButtonID && hitOverlayID === HMD.homeButtonID)
                ) {
-                   console.log("TIVOLI - SELECTION TOOL CLICK 3");
+                   //console.log("TIVOLI - SELECTION TOOL CLICK 3");
                    // EARLY EXIT-(mouse clicks on the tablet should override the edit affordances)
                    return false;
                }
    
                var hitTool = handleTools[hitOverlayID];
                if (hitTool) {
-                   console.log("TIVOLI - SELECTION TOOL CLICK 4");
+                   //console.log("TIVOLI - SELECTION TOOL CLICK 4");
                    activeTool = hitTool;
                    that.clearDebugPickPlane();
                    if (activeTool.onBegin) {
-                       console.log("TIVOLI - SELECTION TOOL CLICK 5");
+                       //console.log("TIVOLI - SELECTION TOOL CLICK 5");
                        that.editingHand = that.triggeredHand;
                        Messages.sendLocalMessage(
                            INEDIT_STATUS_CHANNEL,
@@ -1603,7 +1603,7 @@
                        );
                        activeTool.onBegin(event, pickRay, results);
                    } else {
-                       console.log("TIVOLI - SELECTION TOOL CLICK 6");
+                       //console.log("TIVOLI - SELECTION TOOL CLICK 6");
                        print(
                            "ERROR: entitySelectionTool.mousePressEvent - ActiveTool(" +
                                activeTool.mode +
@@ -1611,7 +1611,7 @@
                        );
                    }
                } else {
-                   console.log("TIVOLI - SELECTION TOOL CLICK 7");
+                   //console.log("TIVOLI - SELECTION TOOL CLICK 7");
                    print(
                        "ERROR: entitySelectionTool.mousePressEvent - Hit unexpected object, check interactiveOverlays"
                    );
