@@ -184,7 +184,7 @@ namespace scriptable {
          * Updates attribute values of a vertex.
          * @function GraphicsMesh.setVertexAttributes
          * @param {number} index - The vertex to set the attributes for.
-         * @param {Object<Graphics.BufferTypeNAme,Graphics.BufferType>} values - The attribute names and values. Need not 
+         * @param {Object<Graphics.BufferTypeName,Graphics.BufferType>} values - The attribute names and values. Need not 
          *     specify unchanged values.
          * @returns {boolean} <code>true</code> if the index and the attribute names and values were valid and the vertex was 
          *     updated, <code>false</code> otherwise.
