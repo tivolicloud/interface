@@ -441,6 +441,12 @@ void WebEntityRenderer::handlePointerEventAsMouse(const PointerEvent& event) {
             break;
         case PointerEvent::Release:
             type = QEvent::MouseButtonRelease;
+
+            // you cant release "no button" or it will never click
+            // this happens in vr and needs to be fixed elsewhere i think
+            if (button == Qt::NoButton)
+                button = Qt::LeftButton;
+
             break;
         case PointerEvent::Move:
             type = QEvent::MouseMove;
