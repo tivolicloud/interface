@@ -6,7 +6,7 @@
 
 using TextureAndFence = hifi::qml::OffscreenSurface::TextureAndFence;
 
-static const int DEFAULT_MAX_FPS = 10;
+static const int DEFAULT_MAX_FPS = 120;
 static const QString CONTROL_URL{ "/qml/controls/WebEntityView.qml" };
 static const char* URL_PROPERTY{ "url" };
 

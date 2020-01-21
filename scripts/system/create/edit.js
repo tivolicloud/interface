@@ -493,8 +493,9 @@
                 y: 0.9,
                 z: 0.01
             },
-            sourceUrl: "https://highfidelity.com/",
-            dpi: 30
+            sourceUrl: "https://google.com",
+            dpi: 30,
+            maxFPS: 120
         },
         ParticleEffect: {
             name: "Particle System",

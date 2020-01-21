@@ -45,8 +45,6 @@ static float OPAQUE_ALPHA_THRESHOLD = 0.99f;
 // If a web-view hasn't been rendered for 30 seconds, de-allocate the framebuffer
 static uint64_t MAX_NO_RENDER_INTERVAL = 30 * USECS_PER_SECOND;
 
-static uint8_t YOUTUBE_MAX_FPS = 30;
-
 // Don't allow more than 20 concurrent web views
 static std::atomic<uint32_t> _currentWebCount(0);
 static const uint32_t MAX_CONCURRENT_WEB_VIEWS = 20;
@@ -59,12 +57,20 @@ WebEntityRenderer::ContentType WebEntityRenderer::getContentType(const QString& 
     }
 
     const QUrl url(urlString);
+    auto path = url.path().toLower();
     auto scheme = url.scheme();
-    if (scheme == HIFI_URL_SCHEME_ABOUT || scheme == HIFI_URL_SCHEME_HTTP || scheme == HIFI_URL_SCHEME_HTTPS ||
+
+    if (
+        scheme == HIFI_URL_SCHEME_ABOUT ||
+        scheme == HIFI_URL_SCHEME_HTTP ||
+        scheme == HIFI_URL_SCHEME_HTTPS ||
         scheme == URL_SCHEME_DATA ||
-        urlString.toLower().endsWith(".htm") || urlString.toLower().endsWith(".html")) {
+        path.endsWith(".html") ||
+        path.endsWith(".htm")
+    ) {
         return ContentType::HtmlContent;
     }
+
     return ContentType::QmlContent;
 }
 
@@ -214,13 +220,7 @@ void WebEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene
                 {
                     auto maxFPS = entity->getMaxFPS();
                     if (_maxFPS != maxFPS) {
-                        // We special case YouTube URLs since we know they are videos that we should play with at least 30 FPS.
-                        // FIXME this doesn't handle redirects or shortened URLs, consider using a signaling method from the web entity
-                        if (QUrl(_sourceURL).host().endsWith("youtube.com", Qt::CaseInsensitive)) {
-                            _webSurface->setMaxFps(YOUTUBE_MAX_FPS);
-                        } else {
-                            _webSurface->setMaxFps(maxFPS);
-                        }
+                        _webSurface->setMaxFps(maxFPS);
                         _maxFPS = maxFPS;
                     }
                 }
@@ -441,6 +441,12 @@ void WebEntityRenderer::handlePointerEventAsMouse(const PointerEvent& event) {
             break;
         case PointerEvent::Release:
             type = QEvent::MouseButtonRelease;
+
+            // you cant release "no button" or it will never click
+            // this happens in vr and needs to be fixed elsewhere i think
+            if (button == Qt::NoButton)
+                button = Qt::LeftButton;
+
             break;
         case PointerEvent::Move:
             type = QEvent::MouseMove;
