@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget* parent) :
     setAttribute(Qt::WA_NoSystemBackground);
     setAcceptDrops(true);
     setStyleSheet("QMainWindow::separator {width: 1px; border: none;} ");
-    setStyleSheet("background-color: #252525;  color : white;");
+    // setStyleSheet("background-color: #252525;  color : white;");
 
 }
 
