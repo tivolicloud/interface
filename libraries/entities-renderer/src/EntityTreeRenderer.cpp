@@ -62,6 +62,7 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts,
                                        AbstractScriptingServicesInterface* scriptingServices) :
     _wantScripts(wantScripts),
     _lastPointerEventValid(false), _viewState(viewState), _scriptingServices(scriptingServices), _displayModelBounds(false) {
+    
     setMouseRayPickResultOperator([](unsigned int rayPickID) {
         RayToEntityIntersectionResult entityResult;
         return entityResult;
@@ -346,6 +347,12 @@ void EntityTreeRenderer::init() {
     OctreeProcessor::init();
     EntityTreePointer entityTree = std::static_pointer_cast<EntityTree>(_tree);
 
+
+    DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
+    connect(&domainHandler, &DomainHandler::settingsReceived, this, &EntityTreeRenderer::connectedToDomain);
+
+
+
     if (_wantScripts) {
         resetEntitiesScriptEngine();
     }
@@ -356,6 +363,17 @@ void EntityTreeRenderer::init() {
     connect(entityTree.get(), &EntityTree::addingEntity, this, &EntityTreeRenderer::addingEntity, Qt::QueuedConnection);
     connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging,
             Qt::QueuedConnection);
+
+    
+}
+
+void EntityTreeRenderer::connectedToDomain(){
+    // Clutch priority sorting for 8 seconds while a domain is loading, for faster load time
+    qDebug() << "CPM CONNECTED @ " << secTimestampNow();
+    setPriorityClutchTime(secTimestampNow() + 5.0f);
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
+    evaluateZoneCullingStack();
+
 }
 
 void EntityTreeRenderer::shutdown() {
@@ -368,11 +386,13 @@ void EntityTreeRenderer::shutdown() {
     clear();  // always clear() on shutdown
 }
 
+
 void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
     PROFILE_RANGE_EX(simulation_physics, "AddToScene", 0xffff00ff, (uint64_t)_entitiesToAdd.size());
     PerformanceTimer pt("add");
 
-    setBypassPrioritySorting(true);
+
+
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
     // weird compilation error related to EntityItemID assignment operators
@@ -426,7 +446,6 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
         }
     }
 
-    setBypassPrioritySorting(false);
 }
 
 
@@ -555,6 +574,13 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
 
 void EntityTreeRenderer::preUpdate() {
     if (_tree && !_shuttingDown) {
+        if (getPriorityClutchTime() < secTimestampNow())
+        {
+            setBypassPrioritySorting(false);
+        } 
+        else {
+            qDebug() << "ON - DIFFERENCE " << (getPriorityClutchTime() - secTimestampNow()) << " from " << secTimestampNow() << " / " << getPriorityClutchTime() ;
+        }
         _tree->preUpdate();
     }
 }
@@ -576,6 +602,7 @@ void EntityTreeRenderer::update(bool simulate) {
             PerformanceTimer sceneTimer("scene");
             auto scene = _viewState->getMain3DScene();
             if (scene) {
+                //qDebug() << "CPM - RENDER - SCENE";
                 render::Transaction transaction;
                 addPendingEntities(scene, transaction);
                 updateChangedEntities(scene, transaction);
@@ -605,9 +632,7 @@ void EntityTreeRenderer::update(bool simulate) {
             // Handle enter/leave entity logic
             checkEnterLeaveEntities();   
             
-            if (getPriorityClutchTime() < usecTimestampNow()) {
-                setBypassPrioritySorting(false);
-            }
+     
 
             // Even if we're not moving the mouse, if we started clicking on an entity and we have
             // not yet released the hold then this is still considered a holdingClickOnEntity event
@@ -645,6 +670,7 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
     });
     //qDebug() << "Update result set contains " << result.count() << "entities";
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
+    setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
@@ -719,8 +745,6 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
 
     _zoneCullSkipList.clear();
 
-    setPriorityClutchTime(ZONECULLING_SORT_BYPASS_WAIT);
-    setBypassPrioritySorting(true);
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
@@ -887,6 +911,9 @@ void EntityTreeRenderer::processEraseMessage(ReceivedMessage& message, const Sha
     message.seek(0);
     std::static_pointer_cast<EntityTree>(_tree)->processEraseMessage(message, sourceNode);
 }
+
+//const DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
+//connect(&domainHandler, &DomainHandler::connectedToDomain, this, &WindowScriptingInterface::domainChanged);
 
 void EntityTreeRenderer::connectSignalsToSlots(EntityScriptingInterface* entityScriptingInterface) {
     connect(this, &EntityTreeRenderer::enterEntity, entityScriptingInterface, &EntityScriptingInterface::enterEntity);
@@ -1178,6 +1205,8 @@ void EntityTreeRenderer::entityScriptChanging(const EntityItemID& entityID, bool
 
 void EntityTreeRenderer::checkAndCallPreload(const EntityItemID& entityID, bool reload, bool unloadFirst) {
     if (_tree && !_shuttingDown) {
+
+
         EntityItemPointer entity = getTree()->findEntityByEntityItemID(entityID);
         if (!entity) {
             return;
@@ -1185,6 +1214,7 @@ void EntityTreeRenderer::checkAndCallPreload(const EntityItemID& entityID, bool 
         bool shouldLoad = entity->shouldPreloadScript() && _entitiesScriptEngine;
         QString scriptUrl = entity->getScript();
         if ((shouldLoad && unloadFirst) || scriptUrl.isEmpty()) {
+           // qDebug() << "CPM Check and call preload 2";
             if (_entitiesScriptEngine) {
                 if (_currentEntitiesInside.contains(entityID)) {
                     _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
@@ -1355,7 +1385,6 @@ void EntityTreeRenderer::updateZone(const EntityItemID& id) {
 
 bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones(const QUuid& sessionUUID) {
     bool zonesChanged = false;
-
     auto it = begin();
     while (it != end()) {
         auto zone = it->zone.lock();

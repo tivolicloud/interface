@@ -304,8 +304,8 @@ Menu::Menu() {
     MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
                                                     qApp->getLoadCompleteEntityTreeSetting());
-    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
-        qApp->getBypassPrioritySorting());
+ /*   action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
+        qApp->getBypassPrioritySorting());*/
     
     //// Developer > Tivoli Options > Test Zone Culling (test)
     //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);

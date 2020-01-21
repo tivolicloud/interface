@@ -229,8 +229,8 @@ public:
 
     // Shortcircuits the code that does priority sorting in EntityTreeRenderer for faster
     // load and rendering times
-    bool getBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
-    void setBypassPrioritySorting(bool value);
+ /*   bool getBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
+    void setBypassPrioritySorting(bool value);*/
 
     bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
     void setPreferAvatarFingerOverStylus(bool value);

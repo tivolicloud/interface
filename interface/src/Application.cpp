@@ -1681,9 +1681,6 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     auto campaignIt = installerKeyValues.find(INSTALLER_KEY_CAMPAIGN);
     QString installerCampaign = campaignIt != installerKeyValues.end() ? campaignIt->second : "";
 
-    qDebug() << "Detected installer type:" << installerType;
-    qDebug() << "Detected installer campaign:" << installerCampaign;
-
     auto& userActivityLogger = UserActivityLogger::getInstance();
     if (userActivityLogger.isEnabled()) {
         // sessionRunTime will be reset soon by loadSettings. Grab it now to get previous session value.
@@ -6984,11 +6981,11 @@ void Application::queryOctree(
             _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
             _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
          }
-        if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-            DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(true); // TIVOLI bypass priority sorting
-        } else {
-            DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(false); // TIVOLI bypass priority sorting
-        }
+        //if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+        //    DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(true); // TIVOLI bypass priority sorting
+        //} else {
+        //    DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(false); // TIVOLI bypass priority sorting
+        //}
     }
 
     auto nodeList = DependencyManager::get<NodeList>();
@@ -7145,6 +7142,8 @@ void Application::updateWindowTitle() const {
     // updateTitleWindow gets called whenever there's a change regarding the domain, so rather
     // than placing this within domainURLChanged, it's placed here to cover the other potential cases.
     DependencyManager::get< MessagesClient >()->sendLocalMessage("Toolbar-DomainChanged", "");
+
+
 }
 
 void Application::clearDomainOctreeDetails(bool clearAll) {

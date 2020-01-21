@@ -87,9 +87,16 @@ public:
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
     quint64 _clutchEndTime = 0.0f;
-    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 10000.0f; // one second
+    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 2.0f; 
+    const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5.0f; 
 
-    void setPriorityClutchTime(quint64 bypassTime) { _clutchEndTime = usecTimestampNow() + bypassTime; }
+    // if time is 2 and previous was 1, set it to 2.
+    void setPriorityClutchTime(quint64 time) { 
+        if (time > _clutchEndTime) _clutchEndTime = time; // update the time
+       // qDebug() << "CPM SET PRIORITY CLUTCH TIME TO " << _clutchEndTime << " BUT WAS GIVEN " << time;
+        setBypassPrioritySorting(true);  // turn off Priority Sorting
+    }
+
     quint64 getPriorityClutchTime() { return _clutchEndTime; }
 
     ReadWriteLockable _getZoneCullSkiplistGuard;
@@ -100,7 +107,11 @@ public:
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
 
     // TIVOLI
-    void setBypassPrioritySorting(bool usePrioritySorting) { _bypassPrioritySorting = usePrioritySorting; }
+    void setBypassPrioritySorting(bool usePrioritySorting) {
+       // qDebug() << "SET BYPASS " << usePrioritySorting << " @ " << usecTimestampNow();
+        _bypassPrioritySorting = usePrioritySorting;
+    }
+
     bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
@@ -197,6 +208,7 @@ public slots:
     void entityCollisionWithEntity(const EntityItemID& idA, const EntityItemID& idB, const Collision& collision);
     void updateEntityRenderStatus(bool shouldRenderEntities);
     void updateZone(const EntityItemID& id);
+    void connectedToDomain();
 
     // optional slots that can be wired to menu items
     void setDisplayModelBounds(bool value) { _displayModelBounds = value; }
