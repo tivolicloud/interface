@@ -69,7 +69,8 @@ private: \
  *     <em>Read-only.</em>
  * @property {number} presentdroprate - The rate at which the display plugin is dropping GPU frames, in Hz.
  *     <em>Read-only.</em>
-
+  * @property {boolean} bypassPrioritySorting - Whether or not the game loop spends CPU prioritizing what to draw, boolean.
+ *     <em>Read-only.</em>
  * @property {number} gameLoopRate - The rate at which the game loop is running, in Hz.
  *     <em>Read-only.</em>
  * @property {number} refreshRateTarget - The current target refresh rate, in Hz, per the current <code>refreshRateMode</code> 
@@ -473,6 +474,7 @@ class Stats : public QQuickItem {
 
     STATS_PROPERTY(float, presentnewrate, 0)
     STATS_PROPERTY(float, presentdroprate, 0)
+    STATS_PROPERTY(bool, bypassPrioritySorting, false)
     STATS_PROPERTY(int, gameLoopRate, 0)
     STATS_PROPERTY(int, avatarCount, 0)
     STATS_PROPERTY(int, refreshRateTarget, 0)
@@ -732,6 +734,13 @@ signals:
      * @returns {Signal}
      */
     void presentdroprateChanged();
+
+    /**jsdoc
+     * Triggered when the value of the <code>bypassPrioritySorting</code> property changes.
+     * @function Stats.bypassPrioritySortingChanged
+     * @returns {Signal}
+     */
+    void bypassPrioritySortingChanged();
 
     /**jsdoc
      * Triggered when the value of the <code>gameLoopRate</code> property changes.

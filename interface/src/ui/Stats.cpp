@@ -123,6 +123,7 @@ void Stats::updateStats(bool force) {
 
     auto nodeList = DependencyManager::get<NodeList>();
     auto avatarManager = DependencyManager::get<AvatarManager>();
+    auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
     // we need to take one avatar out so we don't include ourselves
     STAT_UPDATE(avatarCount, avatarManager->size() - 1);
     STAT_UPDATE(heroAvatarCount, avatarManager->getNumHeroAvatars());
@@ -159,6 +160,8 @@ void Stats::updateStats(bool force) {
         STAT_UPDATE(presentnewrate, -1);
         STAT_UPDATE(presentdroprate, -1);
     }
+
+    STAT_UPDATE(bypassPrioritySorting, (bool)treeRenderer->getBypassPrioritySorting());
     STAT_UPDATE(gameLoopRate, (int)qApp->getGameLoopRate());
 
     auto pickManager = DependencyManager::get<PickManager>();

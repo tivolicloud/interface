@@ -65,21 +65,21 @@ Item {
                         visible: root.expanded
                         text:"    " + root.refreshRateMode + " - " + root.uxMode;
                     }
-                    StatText {
-                        text: "Game Rate: " + root.gameLoopRate
+                    StatText {                        
+                        text: "Bypass Priority Sorting: " + root.bypassPrioritySorting;
                     }
                     StatText {
-                        text: "Physics Object Count: " + root.physicsObjectCount
+                        text: "Game Loop Rate (CPU): " + root.gameLoopRate
                     }
                     StatText {
                         visible: root.expanded
                         text: root.gameUpdateStats
                     }
                     StatText {
-                        text: "Render Rate: " + root.renderrate.toFixed(2);
+                        text: "Render Rate (FPS): " + root.renderrate.toFixed(2);
                     }
                     StatText {
-                        text: "Present Rate: " + root.presentrate.toFixed(2);
+                        text: "Present Rate (FPS): " + root.presentrate.toFixed(2);
                     }
                     StatText {
                         visible: root.expanded
