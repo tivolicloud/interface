@@ -87,7 +87,7 @@ public:
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
     quint64 _clutchEndTime = 0.0f;
-    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 2.0f; 
+    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1.0f; 
     const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5.0f; 
 
     // if time is 2 and previous was 1, set it to 2.
