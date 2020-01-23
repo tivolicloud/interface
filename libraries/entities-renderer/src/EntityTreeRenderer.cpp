@@ -470,27 +470,17 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     // TO DO
     // Add a priority property for individual entities, so if an entity is zone culled, it is also not updated here.
     
-    if (getBypassPrioritySorting()) {
-       // qDebug() << "CPM BYPASS PRIORITY SORTING";
-        // BEGIN PHASE ONE
-        uint64_t updateStart = usecTimestampNow();
-        for (const auto& renderable : _renderablesToUpdate) {
-            assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-            renderable->updateInScene(scene, transaction);
-        }
-        size_t numRenderables = _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
-        _renderablesToUpdate.clear();        
-        float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
-        const float BLEND = 0.1f;
-        _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-        // -------------- END PHASE ONE -------------- 
-    } else {
-       // qDebug() << "CPM DO NOT BYPASS PRIORITY SORTING - PHASE ONE";
+    {
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
+        if (_bypassPrioritySorting) expectedUpdateCost = 0.0f;
+        
+        // To do - set entityHasPriority as an entity property. We can use it for animated meshes etc.
+        // or we could just check if it has an animation playing
+
+        // if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET || entityHasPriority) {
+
         if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) {
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
-            //  -------------- INSERT PHASE ONE HERE -------------- 
-            //  -------------- BEGIN PHASE ONE -------------- 
             uint64_t updateStart = usecTimestampNow();
             for (const auto& renderable : _renderablesToUpdate) {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
@@ -501,7 +491,6 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
             const float BLEND = 0.1f;
             _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-            //  -------------- END PHASE ONE -------------- 
         } else {
             //qDebug() << "CPM DO NOT BYPASS PRIORITY SORTING - PHASE TWO";
             //  -------------- INSERT PHASE TWO HERE -------------- 
