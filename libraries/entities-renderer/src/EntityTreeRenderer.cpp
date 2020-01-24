@@ -455,32 +455,39 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     std::unordered_set<EntityItemID> changedEntities;
     _changedEntitiesGuard.withWriteLock([&] { changedEntities.swap(_changedEntities); });
 
-    {
+    {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const auto& entityId : changedEntities) {
             auto renderable = renderableForEntityId(entityId);
-            if (renderable) {
-                // only add valid renderables _renderablesToUpdate
-                _renderablesToUpdate.insert(renderable);
+            if (renderable) { // only add valid renderables _renderablesToUpdate
+                if (getEntity(entityId)->getLocallyVisible())  _priorityRenderablesToUpdate.insert(renderable);
+                else _renderablesToUpdate.insert(renderable);   
             }
         }
     }
+    //qDebug() << "PRIORITY RENDERABLE LIST IS SIZE " << _priorityRenderablesToUpdate.size();
 
-  
-    // TO DO
-    // Add a priority property for individual entities, so if an entity is zone culled, it is also not updated here.
-    
     {
-        float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
-        if (_bypassPrioritySorting) expectedUpdateCost = 0.0f;
-        
         // To do - set entityHasPriority as an entity property. We can use it for animated meshes etc.
         // or we could just check if it has an animation playing
+        float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
+       
+        // Update all the priority items first
+        if (_priorityRenderablesToUpdate.size()>0) {
+            for (const auto& renderable : _priorityRenderablesToUpdate) {
+                assert(renderable);  // only valid renderables are added to _renderablesToUpdate
+                renderable->updateInScene(scene, transaction);
+            }
+        }
 
-        // if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET || entityHasPriority) {
+        _priorityRenderablesToUpdate.clear();
 
-        if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) {
+        // Bypass? Then handle without sorting
+        if (_bypassPrioritySorting) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
+        if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) { // Enough resources exist or are forced via bypass
+
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
+
             uint64_t updateStart = usecTimestampNow();
             for (const auto& renderable : _renderablesToUpdate) {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
@@ -491,23 +498,17 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
             const float BLEND = 0.1f;
             _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-        } else {
-            //qDebug() << "CPM DO NOT BYPASS PRIORITY SORTING - PHASE TWO";
-            //  -------------- INSERT PHASE TWO HERE -------------- 
-            //  -------------- BEGIN PHASE TWO -------------- 
+
+        } else { // Else Sort normally if not bypassed
             // we expect the cost to updating all renderables to exceed available time budget
             // so we first sort by priority and update in order until out of time
-
             class SortableRenderer : public PrioritySortUtil::Sortable {
             public:
                 SortableRenderer(const EntityRendererPointer& renderer) : _renderer(renderer) {}
-
                 glm::vec3 getPosition() const override { return _renderer->getEntity()->getWorldPosition(); }
                 float getRadius() const override { return 0.5f * _renderer->getEntity()->getQueryAACube().getScale(); }
                 uint64_t getTimestamp() const override { return _renderer->getUpdateTime(); }
-
                 EntityRendererPointer getRenderer() const { return _renderer; }
-
             private:
                 EntityRendererPointer _renderer;
             };
@@ -568,7 +569,7 @@ void EntityTreeRenderer::preUpdate() {
             setBypassPrioritySorting(false);
         } 
         else {
-            qDebug() << "ON - DIFFERENCE " << (getPriorityClutchTime() - secTimestampNow()) << " from " << secTimestampNow() << " / " << getPriorityClutchTime() ;
+            //qDebug() << "ON - DIFFERENCE " << (getPriorityClutchTime() - secTimestampNow()) << " from " << secTimestampNow() << " / " << getPriorityClutchTime() ;
         }
         _tree->preUpdate();
     }

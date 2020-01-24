@@ -314,6 +314,7 @@ private:
     std::unordered_set<EntityItemID> _changedEntities;
 
     std::unordered_set<EntityRendererPointer> _renderablesToUpdate;
+    std::unordered_set<EntityRendererPointer> _priorityRenderablesToUpdate;
     std::unordered_map<EntityItemID, EntityRendererPointer> _entitiesInScene;
     std::unordered_map<EntityItemID, EntityItemWeakPointer> _entitiesToAdd;
 

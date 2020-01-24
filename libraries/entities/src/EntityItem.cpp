@@ -2912,12 +2912,7 @@ void EntityItem::setLocallyVisible(bool value) {
         _needsRenderUpdate |= changed;
         _locallyVisible = value;
     });
-
-    // qDebug() << "CPM: Set locally visible called " << value;
-    if (changed) {
-        // qDebug() << "CPM: Set locally visible CHANGED";
-        bumpAncestorChainRenderableVersion();
-    }
+    if (changed) bumpAncestorChainRenderableVersion();
 }
 
 bool EntityItem::isVisibleInSecondaryCamera() const {
