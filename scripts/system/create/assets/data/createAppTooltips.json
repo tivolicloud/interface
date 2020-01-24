@@ -147,6 +147,9 @@
     "avatarPriority": {
         "tooltip": "Alter Avatars' update priorities."
     },
+    "zoneCullingMode": {
+        "tooltip": "Culls (hides) entities outside of a designated zone for faster rendering."
+    },
     "modelURL": {
         "tooltip": "A mesh model from an FBX or OBJ file."
     },
@@ -451,6 +454,9 @@
     },
     "dynamic": {
         "tooltip": "If enabled, this entity has collisions associated with it that can affect its movement."
+    },
+    "priorityUpdate": {
+        "tooltip": "If enabled, this entity will take priority in update speeds. Useful for smooth animated models and moving entities. "
     },
     "collidesWithStatic": {
         "tooltip": "If enabled, this entity will collide with other non-moving, static entities.",
