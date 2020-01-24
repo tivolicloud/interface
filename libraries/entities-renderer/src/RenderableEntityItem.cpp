@@ -327,6 +327,7 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
+
     transaction.updateItem<PayloadProxyInterface>(_renderItemID, [this](PayloadProxyInterface& self) {
         if (!isValidRenderItem()) {
             return;
@@ -453,7 +454,6 @@ void EntityRenderer::evaluateZoneCullState(const EntityItemPointer& entity){
         else {
             if (_visible) {
                 _visible = false;
-                requestRenderUpdate();
             }
             _zoneCullState = ZoneCullingState::ZoneCull_Culled;
         }
