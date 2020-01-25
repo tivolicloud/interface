@@ -36,6 +36,7 @@
 #include "MaterialMappingMode.h"
 #include "BillboardMode.h"
 #include "RenderLayer.h"
+#include "EntityPriority.h"
 #include "PrimitiveMode.h"
 #include "WebInputMode.h"
 #include "PulseMode.h"
@@ -270,6 +271,7 @@ public:
     static int unpackDataFromBytes(const unsigned char* dataBytes, MaterialMappingMode& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
     static int unpackDataFromBytes(const unsigned char* dataBytes, BillboardMode& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
     static int unpackDataFromBytes(const unsigned char* dataBytes, RenderLayer& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
+    static int unpackDataFromBytes(const unsigned char* dataBytes, EntityPriority& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
     static int unpackDataFromBytes(const unsigned char* dataBytes, PrimitiveMode& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
     static int unpackDataFromBytes(const unsigned char* dataBytes, WebInputMode& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }
     static int unpackDataFromBytes(const unsigned char* dataBytes, PulseMode& result) { memcpy(&result, dataBytes, sizeof(result)); return sizeof(result); }

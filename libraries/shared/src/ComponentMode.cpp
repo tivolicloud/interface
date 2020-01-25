@@ -97,3 +97,13 @@ QString AvatarPriorityModeHelpers::getNameForAvatarPriorityMode(AvatarPriorityMo
 
     return avatarPriorityModeNames[(int)mode];
 }
+
+//const char* entityPriorityModeNames[] = { "static", "automatic", "prioritized" };
+//
+//QString EntityPriorityModeHelpers::getNameForEntityPriorityComponentMode(EntityPriorityComponentMode mode) {
+//    if (((int)mode <= 0) || ((int)mode >= (int)ENTITY_PRIORITY_ITEM_COUNT)) {
+//        mode = (EntityPriorityComponentMode)0;
+//    }
+//
+//    return entityPriorityModeNames[(int)mode];
+//}

@@ -112,6 +112,8 @@ const int ENTITY_ITEM_DEFAULT_CLONE_LIMIT = 0;
 const bool ENTITY_ITEM_DEFAULT_CLONE_DYNAMIC = false;
 const bool ENTITY_ITEM_DEFAULT_CLONE_AVATAR_ENTITY = false;
 const QUuid ENTITY_ITEM_DEFAULT_CLONE_ORIGIN_ID = QUuid();
-const QString ENTITY_ITEM_DEFAULT_CUSTOMTAGS = QString("");  // TIVOLI tagging system
+
+const QString ENTITY_ITEM_DEFAULT_CUSTOM_TAGS = QString("");  // TIVOLI tagging system
+const uint8_t ENTITY_ITEM_DEFAULT_ENTITY_PRIORITY = 1; //  1 = normal ("automatic") priority
 
 #endif // hifi_EntityItemPropertiesDefaults_h

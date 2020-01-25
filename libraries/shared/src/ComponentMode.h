@@ -40,6 +40,14 @@ enum AvatarPriorityMode {
     AVATAR_PRIORITY_ITEM_COUNT
 };
 
+enum EntityPriorityComponentMode {
+    ENTITY_PRIORITY_STATIC,
+    ENTITY_PRIORITY_AUTOMATIC,
+    ENTITY_PRIORITY_PRIORITIZED,
+
+    ENTITY_PRIORITY_ITEM_COUNT
+};
+
 class ComponentModeHelpers {
 public:
     static QString getNameForComponentMode(ComponentMode mode);
@@ -54,6 +62,11 @@ class AvatarPriorityModeHelpers {
 public:
     static QString getNameForAvatarPriorityMode(AvatarPriorityMode mode);
 };
+
+//class EntityPriorityModeHelpers {
+//public:
+//    static QString getNameForEntityPriorityComponentMode(EntityPriorityComponentMode mode);
+//};
 
 #endif // hifi_ComponentMode_h
 

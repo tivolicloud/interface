@@ -63,6 +63,7 @@
 #include "MaterialMappingMode.h"
 #include "BillboardMode.h"
 #include "RenderLayer.h"
+#include "EntityPriority.h"
 #include "PrimitiveMode.h"
 #include "WebInputMode.h"
 #include "GizmoType.h"
@@ -174,7 +175,6 @@ public:
     DEFINE_PROPERTY_REF(PROP_PARENT_ID, ParentID, parentID, QUuid, UNKNOWN_ENTITY_ID);
     DEFINE_PROPERTY_REF(PROP_PARENT_JOINT_INDEX, ParentJointIndex, parentJointIndex, quint16, -1);
     DEFINE_PROPERTY(PROP_VISIBLE, Visible, visible, bool, ENTITY_ITEM_DEFAULT_VISIBLE);
-    // TIVOLI new feature, Locally Visible, not to be sent on wire. For edit hide and zone culling etc
     DEFINE_PROPERTY(PROP_LOCALLY_VISIBLE, LocallyVisible, locallyVisible, bool, ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE);
     DEFINE_PROPERTY_REF(PROP_NAME, Name, name, QString, ENTITY_ITEM_DEFAULT_NAME);
     DEFINE_PROPERTY(PROP_LOCKED, Locked, locked, bool, ENTITY_ITEM_DEFAULT_LOCKED);
@@ -182,7 +182,8 @@ public:
     DEFINE_PROPERTY_REF(PROP_PRIVATE_USER_DATA, PrivateUserData, privateUserData, QString, ENTITY_ITEM_DEFAULT_PRIVATE_USER_DATA);
     DEFINE_PROPERTY_REF(PROP_HREF, Href, href, QString, "");
     DEFINE_PROPERTY_REF(PROP_DESCRIPTION, Description, description, QString, "");
-    DEFINE_PROPERTY_REF(PROP_CUSTOMTAGS, CustomTags, customTags, QString, "");  // TIVOLI TAGGING
+    DEFINE_PROPERTY_REF(PROP_CUSTOM_TAGS, CustomTags, customTags, QString, "");  // TIVOLI TAGGING
+    //DEFINE_PROPERTY_REF_ENUM(PROP_ENTITY_PRIORITY, EntityPriority, entityPriority, EntityPriority, EntityPriority::AUTOMATIC);
     DEFINE_PROPERTY_REF_WITH_SETTER(PROP_POSITION, Position, position, glm::vec3, ENTITY_ITEM_ZERO_VEC3);
     DEFINE_PROPERTY_REF(PROP_DIMENSIONS, Dimensions, dimensions, glm::vec3, ENTITY_ITEM_DEFAULT_DIMENSIONS);
     DEFINE_PROPERTY_REF(PROP_ROTATION, Rotation, rotation, glm::quat, ENTITY_ITEM_DEFAULT_ROTATION);
@@ -194,10 +195,12 @@ public:
     DEFINE_PROPERTY_REF(PROP_QUERY_AA_CUBE, QueryAACube, queryAACube, AACube, AACube());
     DEFINE_PROPERTY(PROP_CAN_CAST_SHADOW, CanCastShadow, canCastShadow, bool, ENTITY_ITEM_DEFAULT_CAN_CAST_SHADOW);
     DEFINE_PROPERTY(PROP_VISIBLE_IN_SECONDARY_CAMERA, IsVisibleInSecondaryCamera, isVisibleInSecondaryCamera, bool, ENTITY_ITEM_DEFAULT_VISIBLE_IN_SECONDARY_CAMERA);
+    DEFINE_PROPERTY_REF_ENUM(PROP_ENTITY_PRIORITY, EntityPriority, entityPriority, EntityPriority, EntityPriority::AUTOMATIC);
     DEFINE_PROPERTY_REF_ENUM(PROP_RENDER_LAYER, RenderLayer, renderLayer, RenderLayer, RenderLayer::WORLD);
     DEFINE_PROPERTY_REF_ENUM(PROP_PRIMITIVE_MODE, PrimitiveMode, primitiveMode, PrimitiveMode, PrimitiveMode::SOLID);
     DEFINE_PROPERTY(PROP_IGNORE_PICK_INTERSECTION, IgnorePickIntersection, ignorePickIntersection, bool, false);
     DEFINE_PROPERTY_GROUP(Grab, grab, GrabPropertyGroup);
+
 
 
     // Physics
@@ -345,11 +348,7 @@ public:
     DEFINE_PROPERTY_REF_ENUM(PROP_AMBIENT_LIGHT_MODE, AmbientLightMode, ambientLightMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_HAZE_MODE, HazeMode, hazeMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_BLOOM_MODE, BloomMode, bloomMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
-    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE,
-                             ZoneCullingMode,
-                             zoneCullingMode,
-                             uint32_t,
-                             (uint32_t)ZONECULLING_MODE_INHERIT);  // TIVOLI
+    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t, (uint32_t)ZONECULLING_MODE_INHERIT);  // TIVOLI
     DEFINE_PROPERTY_REF_ENUM(PROP_AVATAR_PRIORITY, AvatarPriority, avatarPriority, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
 
     // Polyvox
@@ -414,6 +413,7 @@ public:
 
     static QString getComponentModeAsString(uint32_t mode);
     static QString getZoneCullingComponentModeAsString(uint32_t mode);
+    static QString getEntityPriorityComponentModeAsString(uint32_t mode);
 
 public:
     float getMaxDimension() const { return glm::compMax(_dimensions); }
@@ -689,6 +689,7 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Href, href, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Description, description, "");    
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CustomTags, customTags, "");// TIVOLI tagging
+    // DEBUG_PROPERTY_IF_CHANGED(debug, properties, EntityPriority, entityPriority, "");// TIVOLI tagging
 
     if (properties.actionDataChanged()) {
         debug << " " << "actionData" << ":" << properties.getActionData().toHex() << "" << "\n";

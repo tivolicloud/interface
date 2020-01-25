@@ -40,6 +40,7 @@
 #include "EntityTree.h"
 #include "EntitySimulation.h"
 #include "EntityDynamicFactoryInterface.h"
+#include "EntityPriority.h"
 
 //#define WANT_DEBUG
 
@@ -90,7 +91,7 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_PRIVATE_USER_DATA;
     requestedProperties += PROP_HREF;
     requestedProperties += PROP_DESCRIPTION;
-    requestedProperties += PROP_CUSTOMTAGS;  // TIVOLI tagging
+    requestedProperties += PROP_CUSTOM_TAGS;
     requestedProperties += PROP_POSITION;
     requestedProperties += PROP_DIMENSIONS;
     requestedProperties += PROP_ROTATION;
@@ -105,6 +106,7 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_CAN_CAST_SHADOW;
     requestedProperties += PROP_VISIBLE_IN_SECONDARY_CAMERA;
     requestedProperties += PROP_RENDER_LAYER;
+    requestedProperties += PROP_ENTITY_PRIORITY;
     requestedProperties += PROP_PRIMITIVE_MODE;
     requestedProperties += PROP_IGNORE_PICK_INTERSECTION;
     requestedProperties += _grabProperties.getEntityProperties(params);
@@ -291,7 +293,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(
         APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, privateUserData);
         APPEND_ENTITY_PROPERTY(PROP_HREF, getHref());
         APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, getDescription());
-        APPEND_ENTITY_PROPERTY(PROP_CUSTOMTAGS, getCustomTags());  // TIVOLI tagging
+        APPEND_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, getCustomTags());
         APPEND_ENTITY_PROPERTY(PROP_POSITION, getLocalPosition());
         APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, getScaledDimensions());
         APPEND_ENTITY_PROPERTY(PROP_ROTATION, getLocalOrientation());
@@ -304,6 +306,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(
         APPEND_ENTITY_PROPERTY(PROP_CAN_CAST_SHADOW, getCanCastShadow());
         // APPEND_ENTITY_PROPERTY(PROP_VISIBLE_IN_SECONDARY_CAMERA, getIsVisibleInSecondaryCamera()); // not sent over the wire
         APPEND_ENTITY_PROPERTY(PROP_RENDER_LAYER, (uint32_t)getRenderLayer());
+        APPEND_ENTITY_PROPERTY(PROP_ENTITY_PRIORITY, (uint32_t)getEntityPriority());
         APPEND_ENTITY_PROPERTY(PROP_PRIMITIVE_MODE, (uint32_t)getPrimitiveMode());
         APPEND_ENTITY_PROPERTY(PROP_IGNORE_PICK_INTERSECTION, getIgnorePickIntersection());
         withReadLock([&] {
@@ -828,7 +831,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
     READ_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
     READ_ENTITY_PROPERTY(PROP_HREF, QString, setHref);
     READ_ENTITY_PROPERTY(PROP_DESCRIPTION, QString, setDescription);
-    READ_ENTITY_PROPERTY(PROP_CUSTOMTAGS, QString, setCustomTags);  // TIVOLI tagging
+    READ_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, QString, setCustomTags);
     {  // When we own the simulation we don't accept updates to the entity's transform/velocities
         // we also want to ignore any duplicate packets that have the same "recently updated" values
         // as a packet we've already recieved. This is because we want multiple edits of the same
@@ -879,6 +882,21 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
     READ_ENTITY_PROPERTY(PROP_CAN_CAST_SHADOW, bool, setCanCastShadow);
     // READ_ENTITY_PROPERTY(PROP_VISIBLE_IN_SECONDARY_CAMERA, bool, setIsVisibleInSecondaryCamera);  // not sent over the wire
     READ_ENTITY_PROPERTY(PROP_RENDER_LAYER, RenderLayer, setRenderLayer);
+    READ_ENTITY_PROPERTY(PROP_ENTITY_PRIORITY, EntityPriority, setEntityPriority);
+
+    //-----------
+    //if (propertyFlags.getHasProperty(PROP_ENTITY_PRIORITY)) {
+    //        EntityPriority fromBuffer;
+    //        int bytes = OctreePacketData::unpackDataFromBytes(dataAt, fromBuffer); 
+    //        dataAt += bytes;                                                       
+    //        bytesRead += bytes;                                                    
+    //        if (overwriteLocalData) {
+    //            setEntityPriority(fromBuffer);
+    //        }                                                                      
+    //        somethingChanged = true;                                               
+    //}
+    //-----------
+
     READ_ENTITY_PROPERTY(PROP_PRIMITIVE_MODE, PrimitiveMode, setPrimitiveMode);
     READ_ENTITY_PROPERTY(PROP_IGNORE_PICK_INTERSECTION, bool, setIgnorePickIntersection);
     withWriteLock([&] {
@@ -1367,7 +1385,8 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(privateUserData, getPrivateUserData);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(href, getHref);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(description, getDescription);
-    COPY_ENTITY_PROPERTY_TO_PROPERTIES(customTags, getCustomTags);  // TIVOLI tagging
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(customTags, getCustomTags);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(entityPriority, getEntityPriority);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(position, getLocalPosition);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(dimensions, getScaledDimensions);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(rotation, getLocalOrientation);
@@ -1514,7 +1533,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(privateUserData, setPrivateUserData);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(href, setHref);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(description, setDescription);
-    SET_ENTITY_PROPERTY_FROM_PROPERTIES(customTags, setCustomTags);  // TIVOLI tagging
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(customTags, setCustomTags);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(position, setPosition);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(dimensions, setScaledDimensions);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(rotation, setRotation);
@@ -1526,6 +1545,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(queryAACube, setQueryAACube);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(canCastShadow, setCanCastShadow);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(isVisibleInSecondaryCamera, setIsVisibleInSecondaryCamera);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(entityPriority, setEntityPriority);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(renderLayer, setRenderLayer);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(primitiveMode, setPrimitiveMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(ignorePickIntersection, setIgnorePickIntersection);
@@ -2925,6 +2945,17 @@ void EntityItem::setIsVisibleInSecondaryCamera(bool value) {
     withWriteLock([&] {
         _needsRenderUpdate |= _isVisibleInSecondaryCamera != value;
         _isVisibleInSecondaryCamera = value;
+    });
+}
+
+EntityPriority EntityItem::getEntityPriority() const {
+    return resultWithReadLock<EntityPriority>([&] { return _entityPriority; });
+}
+
+void EntityItem::setEntityPriority(EntityPriority value) {
+    withWriteLock([&] {
+        _needsRenderUpdate |= _entityPriority != value;
+        _entityPriority = value;
     });
 }
 

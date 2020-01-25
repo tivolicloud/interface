@@ -37,6 +37,7 @@
 #include "SimulationOwner.h"
 #include "EntityDynamicInterface.h"
 #include "GrabPropertyGroup.h"
+#include "EntityPriority.h"
 
 class EntitySimulation;
 using EntitySimulationPointer = std::shared_ptr<EntitySimulation>;
@@ -301,6 +302,9 @@ public:
 
     bool isVisibleInSecondaryCamera() const;
     void setIsVisibleInSecondaryCamera(bool value);
+    
+    EntityPriority getEntityPriority() const;
+    void setEntityPriority(EntityPriority value);
 
     RenderLayer getRenderLayer() const;
     void setRenderLayer(RenderLayer value);
@@ -654,6 +658,7 @@ protected:
     bool _visible{ ENTITY_ITEM_DEFAULT_VISIBLE };
     bool _locallyVisible{ ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE };
     bool _isVisibleInSecondaryCamera { ENTITY_ITEM_DEFAULT_VISIBLE_IN_SECONDARY_CAMERA };
+    EntityPriority _entityPriority { EntityPriority::AUTOMATIC }; // 1 is automatic 
     RenderLayer _renderLayer { RenderLayer::WORLD };
     PrimitiveMode _primitiveMode { PrimitiveMode::SOLID };
     bool _canCastShadow{ ENTITY_ITEM_DEFAULT_CAN_CAST_SHADOW };

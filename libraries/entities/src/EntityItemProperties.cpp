@@ -34,6 +34,7 @@
 #include "EntityItem.h"
 #include "ModelEntityItem.h"
 #include "PolyLineEntityItem.h"
+#include "EntityPriority.h"
 
 AnimationPropertyGroup EntityItemProperties::_staticAnimation;
 SkyboxPropertyGroup EntityItemProperties::_staticSkybox;
@@ -169,6 +170,24 @@ void EntityItemProperties::setBillboardModeFromString(const QString& billboardMo
     }
 }
 
+inline void addEntityPriority(QHash<QString, EntityPriority>& lookup, EntityPriority mode) { lookup[EntityPriorityHelpers::getNameForEntityPriority(mode)] = mode; }
+const QHash<QString, EntityPriority> stringToEntityPriorityLookup = [] {
+    QHash<QString, EntityPriority> toReturn;
+    addEntityPriority(toReturn, EntityPriority::STATIC);
+    addEntityPriority(toReturn, EntityPriority::AUTOMATIC);
+    addEntityPriority(toReturn, EntityPriority::PRIORITIZED);
+    return toReturn;
+}();
+
+QString EntityItemProperties::getEntityPriorityAsString() const { return EntityPriorityHelpers::getNameForEntityPriority(_entityPriority); }
+void EntityItemProperties::setEntityPriorityFromString(const QString& entityPriority) {
+    auto entityPriorityItr = stringToEntityPriorityLookup.find(entityPriority.toLower());
+    if (entityPriorityItr != stringToEntityPriorityLookup.end()) {
+        _entityPriority = entityPriorityItr.value();
+        _entityPriorityChanged = true;
+    }
+}
+
 inline void addRenderLayer(QHash<QString, RenderLayer>& lookup, RenderLayer mode) { lookup[RenderLayerHelpers::getNameForRenderLayer(mode)] = mode; }
 const QHash<QString, RenderLayer> stringToRenderLayerLookup = [] {
     QHash<QString, RenderLayer> toReturn;
@@ -177,6 +196,7 @@ const QHash<QString, RenderLayer> stringToRenderLayerLookup = [] {
     addRenderLayer(toReturn, RenderLayer::HUD);
     return toReturn;
 }();
+
 QString EntityItemProperties::getRenderLayerAsString() const { return RenderLayerHelpers::getNameForRenderLayer(_renderLayer); }
 void EntityItemProperties::setRenderLayerFromString(const QString& renderLayer) {
     auto renderLayerItr = stringToRenderLayerLookup.find(renderLayer.toLower());
@@ -445,7 +465,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_PRIVATE_USER_DATA, privateUserData);
     CHECK_PROPERTY_CHANGE(PROP_HREF, href);
     CHECK_PROPERTY_CHANGE(PROP_DESCRIPTION, description);
-    CHECK_PROPERTY_CHANGE(PROP_CUSTOMTAGS, customTags);  // TIVOLI tagging
+    CHECK_PROPERTY_CHANGE(PROP_CUSTOM_TAGS, customTags);
     CHECK_PROPERTY_CHANGE(PROP_POSITION, position);
     CHECK_PROPERTY_CHANGE(PROP_DIMENSIONS, dimensions);
     CHECK_PROPERTY_CHANGE(PROP_ROTATION, rotation);
@@ -458,6 +478,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_CAN_CAST_SHADOW, canCastShadow);
     CHECK_PROPERTY_CHANGE(PROP_VISIBLE_IN_SECONDARY_CAMERA, isVisibleInSecondaryCamera);
     CHECK_PROPERTY_CHANGE(PROP_RENDER_LAYER, renderLayer);
+    CHECK_PROPERTY_CHANGE(PROP_ENTITY_PRIORITY, entityPriority);
     CHECK_PROPERTY_CHANGE(PROP_PRIMITIVE_MODE, primitiveMode);
     CHECK_PROPERTY_CHANGE(PROP_IGNORE_PICK_INTERSECTION, ignorePickIntersection);
     changedProperties += _grab.getChangedProperties();
@@ -1610,7 +1631,7 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_PRIVATE_USER_DATA, privateUserData);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_HREF, href); 
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DESCRIPTION, description);
-    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CUSTOMTAGS, customTags);  // TIVOLI tagging
+    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CUSTOM_TAGS, customTags);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_POSITION, position);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DIMENSIONS, dimensions);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_ROTATION, rotation);
@@ -1623,6 +1644,7 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CAN_CAST_SHADOW, canCastShadow);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_VISIBLE_IN_SECONDARY_CAMERA, isVisibleInSecondaryCamera);
     COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_RENDER_LAYER, renderLayer, getRenderLayerAsString());
+    COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_ENTITY_PRIORITY, entityPriority, getEntityPriorityAsString());
     COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_PRIMITIVE_MODE, primitiveMode, getPrimitiveModeAsString());
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_IGNORE_PICK_INTERSECTION, ignorePickIntersection);
     _grab.copyToScriptValue(_desiredProperties, properties, engine, skipDefaults, defaultEntityProperties);
@@ -2029,6 +2051,7 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE(href, QString, setHref);  
     COPY_PROPERTY_FROM_QSCRIPTVALUE(description, QString, setDescription);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(customTags, QString, setCustomTags);  // TIVOLI tagging
+    COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(entityPriority, EntityPriority);  
     COPY_PROPERTY_FROM_QSCRIPTVALUE(position, vec3, setPosition);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(dimensions, vec3, setDimensions);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(rotation, quat, setRotation);
@@ -2327,7 +2350,8 @@ void EntityItemProperties::merge(const EntityItemProperties& other) {
     COPY_PROPERTY_IF_CHANGED(privateUserData);
     COPY_PROPERTY_IF_CHANGED(href);    
     COPY_PROPERTY_IF_CHANGED(description);
-    COPY_PROPERTY_IF_CHANGED(customTags);  // TIVOLI tagging
+    COPY_PROPERTY_IF_CHANGED(customTags);
+    COPY_PROPERTY_IF_CHANGED(entityPriority);
     COPY_PROPERTY_IF_CHANGED(position);
     COPY_PROPERTY_IF_CHANGED(dimensions);
     COPY_PROPERTY_IF_CHANGED(rotation);
@@ -2620,7 +2644,7 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_PRIVATE_USER_DATA, PrivateUserData, privateUserData, QString);
         ADD_PROPERTY_TO_MAP(PROP_HREF, Href, href, QString);        
         ADD_PROPERTY_TO_MAP(PROP_DESCRIPTION, Description, description, QString);
-        ADD_PROPERTY_TO_MAP(PROP_CUSTOMTAGS, CustomTags, customTags, QString);  // TIVOLI tagging
+        ADD_PROPERTY_TO_MAP(PROP_CUSTOM_TAGS, CustomTags, customTags, QString);
         ADD_PROPERTY_TO_MAP(PROP_POSITION, Position, position, vec3);
         ADD_PROPERTY_TO_MAP_WITH_RANGE(PROP_DIMENSIONS, Dimensions, dimensions, vec3, ENTITY_ITEM_MIN_DIMENSION, FLT_MAX);
         ADD_PROPERTY_TO_MAP(PROP_ROTATION, Rotation, rotation, quat);
@@ -2634,6 +2658,7 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_CAN_CAST_SHADOW, CanCastShadow, canCastShadow, bool);
         ADD_PROPERTY_TO_MAP(PROP_VISIBLE_IN_SECONDARY_CAMERA, IsVisibleInSecondaryCamera, isVisibleInSecondaryCamera, bool);
         ADD_PROPERTY_TO_MAP(PROP_RENDER_LAYER, RenderLayer, renderLayer, RenderLayer);
+        ADD_PROPERTY_TO_MAP(PROP_ENTITY_PRIORITY, EntityPriority, entityPriority, EntityPriority);
         ADD_PROPERTY_TO_MAP(PROP_PRIMITIVE_MODE, PrimitiveMode, primitiveMode, PrimitiveMode);
         ADD_PROPERTY_TO_MAP(PROP_IGNORE_PICK_INTERSECTION, IgnorePickIntersection, ignorePickIntersection, bool);
         { // Grab
@@ -3112,7 +3137,7 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, properties.getPrivateUserData());
             APPEND_ENTITY_PROPERTY(PROP_HREF, properties.getHref());            
             APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, properties.getDescription());
-            APPEND_ENTITY_PROPERTY(PROP_CUSTOMTAGS, properties.getCustomTags());  // TIVOLI tagging
+            APPEND_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, properties.getCustomTags());
             APPEND_ENTITY_PROPERTY(PROP_POSITION, properties.getPosition());
             APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, properties.getDimensions());
             APPEND_ENTITY_PROPERTY(PROP_ROTATION, properties.getRotation());
@@ -3125,6 +3150,7 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_CAN_CAST_SHADOW, properties.getCanCastShadow());
             // APPEND_ENTITY_PROPERTY(PROP_VISIBLE_IN_SECONDARY_CAMERA, properties.getIsVisibleInSecondaryCamera()); // not sent over the wire
             APPEND_ENTITY_PROPERTY(PROP_RENDER_LAYER, (uint32_t)properties.getRenderLayer());
+            APPEND_ENTITY_PROPERTY(PROP_ENTITY_PRIORITY, (uint32_t)properties.getEntityPriority());
             APPEND_ENTITY_PROPERTY(PROP_PRIMITIVE_MODE, (uint32_t)properties.getPrimitiveMode());
             APPEND_ENTITY_PROPERTY(PROP_IGNORE_PICK_INTERSECTION, properties.getIgnorePickIntersection());
             _staticGrab.setProperties(properties);
@@ -3610,7 +3636,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_HREF, QString, setHref);    
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DESCRIPTION, QString, setDescription);
-    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CUSTOMTAGS, QString, setCustomTags);  // TIVOLI tagging
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CUSTOM_TAGS, QString, setCustomTags);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_POSITION, vec3, setPosition);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DIMENSIONS, vec3, setDimensions);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ROTATION, quat, setRotation);
@@ -3623,6 +3649,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CAN_CAST_SHADOW, bool, setCanCastShadow);
     // READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_VISIBLE_IN_SECONDARY_CAMERA, bool, setIsVisibleInSecondaryCamera); // not sent over the wire
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_RENDER_LAYER, RenderLayer, setRenderLayer);
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ENTITY_PRIORITY, EntityPriority, setEntityPriority);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PRIMITIVE_MODE, PrimitiveMode, setPrimitiveMode);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_IGNORE_PICK_INTERSECTION, bool, setIgnorePickIntersection);
     properties.getGrab().decodeFromEditPacket(propertyFlags, dataAt, processedBytes);
@@ -4030,7 +4057,8 @@ void EntityItemProperties::markAllChanged() {
     _privateUserDataChanged = true;
     _hrefChanged = true;
     _descriptionChanged = true;    
-    _customTagsChanged = true;// TIVOLI tagging
+    _customTagsChanged = true; 
+    _entityPriorityChanged = true; 
     _positionChanged = true;
     _dimensionsChanged = true;
     _rotationChanged = true;
@@ -4409,8 +4437,11 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     if (descriptionChanged()) {
         out += "description";
     }
-    if (customTagsChanged()) {  // TIVOLI tagging
-        out += "customTags";    // TIVOLI tagging
+    if (customTagsChanged()) {
+        out += "customTags";
+    }
+    if (entityPriorityChanged()) { 
+        out += "entityPriority";
     }
     if (containsPositionChange()) {
         out += "position";

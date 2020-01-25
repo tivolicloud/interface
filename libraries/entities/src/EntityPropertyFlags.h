@@ -43,8 +43,12 @@ enum EntityPropertyList
     PROP_CAN_CAST_SHADOW,
     PROP_VISIBLE_IN_SECONDARY_CAMERA,  // not sent over the wire
     PROP_RENDER_LAYER,
+    PROP_ENTITY_PRIORITY,
     PROP_PRIMITIVE_MODE,
     PROP_IGNORE_PICK_INTERSECTION,
+    PROP_CUSTOM_TAGS,// TIVOLI tagging
+
+
     // Grab
     PROP_GRAB_GRABBABLE,
     PROP_GRAB_KINEMATIC,
@@ -123,7 +127,6 @@ enum EntityPropertyList
     PROP_PULSE_ALPHA_MODE,
     PROP_TEXTURES,
     PROP_BILLBOARD_MODE,    
-    PROP_CUSTOMTAGS,// TIVOLI tagging
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // ATTENTION: add new shared EntityItem properties to the list ABOVE this line
