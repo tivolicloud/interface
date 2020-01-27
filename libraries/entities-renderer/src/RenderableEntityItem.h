@@ -70,6 +70,9 @@ public:
     ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     virtual void evaluateZoneCullState(const EntityItemPointer& entity);
 
+    virtual void setStaticUpdateTime(quint64 time) {_staticUpdateTime = time;}
+    virtual quint64 getStaticUpdateTime() { return _staticUpdateTime; }
+
 
 protected:
     virtual bool needsRenderUpdateFromEntity() const final { return needsRenderUpdateFromEntity(_entity); }
@@ -133,7 +136,9 @@ protected:
     QUuid _changeHandlerId;
     ItemID _renderItemID{ Item::INVALID_ITEM_ID };
     uint64_t _fadeStartTime{ usecTimestampNow() };
-    uint64_t _updateTime{ usecTimestampNow() }; // used when sorting/throttling render updates
+    uint64_t _updateTime{ 0 }; // used when sorting/throttling render updates
+    uint64_t _staticUpdateTime{ 0 }; 
+
 
     bool _isFading { EntityTreeRenderer::getEntitiesShouldFadeFunction()() };
     bool _prevIsTransparent { false };

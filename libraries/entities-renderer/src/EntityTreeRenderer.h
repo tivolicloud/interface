@@ -86,9 +86,23 @@ public:
     
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
+    bool _updateStaticEntities = false;
+
     quint64 _clutchEndTime = 0.0f;
-    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1.0f; 
-    const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5.0f; 
+    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1; 
+    const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5; 
+    const quint64 STATIC_ENTITY_UPDATE_WAIT = 2;
+    quint64 _updateStaticEntitiesTime;// = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
+     
+    void updateStaticEntities(bool value) { _updateStaticEntities = value; }
+
+    quint64 getStaticUpdateTime() {
+        return _updateStaticEntitiesTime;
+    }
+
+    void setStaticUpdateTime(quint64 time) {
+        if (time > _updateStaticEntitiesTime) _updateStaticEntitiesTime = time; 
+    }
 
     // if time is 2 and previous was 1, set it to 2.
     void setPriorityClutchTime(quint64 time) { 

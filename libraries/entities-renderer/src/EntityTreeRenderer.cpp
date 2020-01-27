@@ -364,15 +364,16 @@ void EntityTreeRenderer::init() {
     connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging,
             Qt::QueuedConnection);
 
-    
 }
 
 void EntityTreeRenderer::connectedToDomain(){
     // Clutch priority sorting for 8 seconds while a domain is loading, for faster load time
     qDebug() << "CPM CONNECTED @ " << secTimestampNow();
-    setPriorityClutchTime(secTimestampNow() + 5.0f);
+    //setPriorityClutchTime(secTimestampNow() + 7.0f);
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     evaluateZoneCullingStack();
+   // _staticRenderablesToProcess.clear();
+   // setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
 
 }
 
@@ -390,8 +391,6 @@ void EntityTreeRenderer::shutdown() {
 void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
     PROFILE_RANGE_EX(simulation_physics, "AddToScene", 0xffff00ff, (uint64_t)_entitiesToAdd.size());
     PerformanceTimer pt("add");
-
-
 
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
@@ -460,16 +459,44 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         for (const auto& entityId : changedEntities) {
             auto renderable = renderableForEntityId(entityId);
             if (renderable) { // only add valid renderables _renderablesToUpdate
-                if (getEntity(entityId)->getLocallyVisible())  _priorityRenderablesToUpdate.insert(renderable);
-                else _renderablesToUpdate.insert(renderable);   
+                // STATIC priority items aren't even added since they don't receive updates
+                if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED) _priorityRenderablesToUpdate.insert(renderable);
+                else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
+                else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC)  {
+                    // _renderablesToUpdate.insert(renderable); // queue it for rendering
+                    //// queue static entity for rendering
+                    //if (secTimestampNow() > renderable->getStaticUpdateTime() + 5) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
+                    //    renderable->setStaticUpdateTime(secTimestampNow());    // yes - it is time to update. continue and mark the time i was updated
+                    //    _renderablesToUpdate.insert(renderable); // queue it for rendering
+                    //}
+                    //else {
+                    //}
+                    //// check the last time it was updated
+                   // if (renderable->getStaticUpdateTime() + 5 > secTimestampNow()) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
+
+                    //// record the time it was queued
+                    //renderable->setStaticUpdateTime(secTimestampNow());
+
+                    //// In the entity, check if it's been 1
+                    //if (renderable->getStaticUpdateTime() + 5 > secTimestampNow()) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
+                    //    _renderablesToUpdate.insert(renderable); 
+                    //    setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
+                    //   // _priorityRenderablesToUpdate.insert(renderable);
+                    //   // setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
+                    //}
+                }
+                // TO DO
+                // In statics, handle them individually at the RenderableEntityLevel
+                // Did I break the labels on the entity properties dropdown?
+                
+                // ALSO - in zone culling, add a mode where you can set external items to static temporarily?
+                // but dont force you into this, so you can have things coming into the zone 
+            
             }
         }
     }
-    //qDebug() << "PRIORITY RENDERABLE LIST IS SIZE " << _priorityRenderablesToUpdate.size();
 
     {
-        // To do - set entityHasPriority as an entity property. We can use it for animated meshes etc.
-        // or we could just check if it has an animation playing
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
        
         // Update all the priority items first
@@ -660,7 +687,8 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
     });
     //qDebug() << "Update result set contains " << result.count() << "entities";
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
-    setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
+    // setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
+    _updateStaticEntitiesTime = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
@@ -731,7 +759,9 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
 
 
     if (_zoneCullingStack.isEmpty()) return; 
-    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
+    if (_zoneCullingStack == _prevZoneCullingStack) {
+        return; // stack hasn't changed
+    }
 
     _zoneCullSkipList.clear();
 
@@ -739,23 +769,28 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
         if (!zoneItem) continue;
-        updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+        //updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
             case ZONECULLING_MODE_INHERIT:  // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
+                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
+                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
                 _zoneCullSkipList.clear();
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
+                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
                 _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;
         }
     }
+
+    setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
 }
 
 
