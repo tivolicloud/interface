@@ -367,13 +367,9 @@ void EntityTreeRenderer::init() {
 }
 
 void EntityTreeRenderer::connectedToDomain(){
-    // Clutch priority sorting for 8 seconds while a domain is loading, for faster load time
-    qDebug() << "CPM CONNECTED @ " << secTimestampNow();
-    //setPriorityClutchTime(secTimestampNow() + 7.0f);
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
+    _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
-   // _staticRenderablesToProcess.clear();
-   // setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
 
 }
 
@@ -395,7 +391,7 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
     // weird compilation error related to EntityItemID assignment operators
-    for (auto itr = _entitiesToAdd.begin(); _entitiesToAdd.end() != itr;) {
+    for (auto itr = _entitiesToAdd.begin(); _entitiesToAdd.end() != itr;) {        
         if (itr->second.expired()) {
             _entitiesToAdd.erase(itr++);
         } else {
@@ -407,8 +403,18 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
         std::unordered_set<EntityItemID> processedIds;
         for (const auto& entry : _entitiesToAdd) {
             auto entity = entry.second.lock();
+
+
             if (!entity) {
                 continue;
+            }
+
+            if (entity->getEntityPriority() == EntityPriority::STATIC) {  // populate a list of renderable static items
+                auto renderable =  renderableForEntity(entity);
+                if (renderable) { // only add valid renderables _renderablesToUpdate
+                    if (renderable->getUpdateTime() == 0) _renderablesToUpdate.insert(renderable);
+                    _staticRenderablesToUpdate.insert(renderable);  
+                }
             }
 
             // Path to the parent transforms is not valid,
@@ -463,35 +469,12 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED) _priorityRenderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC)  {
-                    // _renderablesToUpdate.insert(renderable); // queue it for rendering
-                    //// queue static entity for rendering
-                    //if (secTimestampNow() > renderable->getStaticUpdateTime() + 5) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
-                    //    renderable->setStaticUpdateTime(secTimestampNow());    // yes - it is time to update. continue and mark the time i was updated
-                    //    _renderablesToUpdate.insert(renderable); // queue it for rendering
-                    //}
-                    //else {
-                    //}
-                    //// check the last time it was updated
-                   // if (renderable->getStaticUpdateTime() + 5 > secTimestampNow()) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
-
-                    //// record the time it was queued
-                    //renderable->setStaticUpdateTime(secTimestampNow());
-
-                    //// In the entity, check if it's been 1
-                    //if (renderable->getStaticUpdateTime() + 5 > secTimestampNow()) { // || _bypassPrioritySorting) { // statics do receive updates but infrequent
-                    //    _renderablesToUpdate.insert(renderable); 
-                    //    setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
-                    //   // _priorityRenderablesToUpdate.insert(renderable);
-                    //   // setStaticUpdateTime(secTimestampNow() + STATIC_ENTITY_UPDATE_WAIT);
-                    //}
+                    if (renderable->getStaticUpdateTime() == 0) {
+                        renderable->setStaticUpdateTime(usecTimestampNow());
+                        _renderablesToUpdate.insert(renderable);
+                    }
+                    _staticRenderablesToUpdate.insert(renderable); 
                 }
-                // TO DO
-                // In statics, handle them individually at the RenderableEntityLevel
-                // Did I break the labels on the entity properties dropdown?
-                
-                // ALSO - in zone culling, add a mode where you can set external items to static temporarily?
-                // but dont force you into this, so you can have things coming into the zone 
-            
             }
         }
     }
@@ -648,9 +631,6 @@ void EntityTreeRenderer::update(bool simulate) {
         if (simulate) {
             // Handle enter/leave entity logic
             checkEnterLeaveEntities();   
-            
-     
-
             // Even if we're not moving the mouse, if we started clicking on an entity and we have
             // not yet released the hold then this is still considered a holdingClickOnEntity event
             // and we want to simulate this message here as well as in mouse move
@@ -728,7 +708,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
                 contains = entity->contains(_avatarPosition);
             }
 
-            if (contains) {  // CPM investigate
+            if (contains) { 
                 // if this entity is a zone and visible, add it to our layered zones
                 if (isZone && entity->getVisible() && renderableIdForEntity(entity) != render::Item::INVALID_ITEM_ID) {
                     _layeredZones.emplace_back(std::dynamic_pointer_cast<ZoneEntityItem>(entity));
@@ -758,13 +738,10 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() {
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
 
 
-    if (_zoneCullingStack.isEmpty()) return; 
-    if (_zoneCullingStack == _prevZoneCullingStack) {
-        return; // stack hasn't changed
-    }
+    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
+//    if (_zoneCullingStack.isEmpty() || _zoneCullingStack == _prevZoneCullingStack) return; // stack empty or hasn't changed
 
-    _zoneCullSkipList.clear();
-
+    _zoneCullSkipList.clear();    
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
@@ -791,6 +768,16 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     }
 
     setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
+
+    auto scene = _viewState->getMain3DScene();
+    render::Transaction transaction;
+    
+    /// to do - call and update on static entities
+    for (const auto& renderable : _staticRenderablesToUpdate) {
+        renderable->updateInScene(scene, transaction);
+        scene->enqueueTransaction(transaction);
+    }
+
 }
 
 

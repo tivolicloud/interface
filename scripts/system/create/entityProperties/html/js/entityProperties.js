@@ -95,6 +95,16 @@ const GROUPS = [
                 replaceID: "placeholder-property-visible"
             },
             {
+                label: "Entity Priority",
+                type: "dropdown",
+                options: {
+                    automatic: "Automatic",
+                    prioritized: "Prioritized",
+                    static: "Static/Scenery"
+                },
+                propertyID: "entityPriority"
+            },
+            {
                 label: "Render Layer",
                 type: "dropdown",
                 options: {
