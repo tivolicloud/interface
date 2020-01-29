@@ -1028,10 +1028,10 @@ const bool DEFAULT_HMD_TABLET_BECOMES_TOOLBAR = false;
 const bool DEFAULT_PREFER_STYLUS_OVER_LASER = false;
 const bool DEFAULT_PREFER_AVATAR_FINGER_OVER_STYLUS = false;
 const QString DEFAULT_CURSOR_NAME = "DEFAULT";
-const bool DEFAULT_MINI_TABLET_ENABLED = false; // TIVOLI changed to false
+const bool DEFAULT_MINI_TABLET_ENABLED = false; 
 const bool DEFAULT_AWAY_STATE_WHEN_FOCUS_LOST_IN_VR_ENABLED = true;
-const bool DEFAULT_LOAD_COMPLETE_ENTITY_TREE = false; // TIVOLI new feature
-const bool DEFAULT_BYPASS_PRIORITY_SORTING = false; // TIVOLI new feature
+const bool DEFAULT_LOAD_COMPLETE_ENTITY_TREE = true; 
+const bool DEFAULT_BYPASS_PRIORITY_SORTING = false; 
 
 QSharedPointer<OffscreenUi> getOffscreenUI() {
 #if !defined(DISABLE_QML)

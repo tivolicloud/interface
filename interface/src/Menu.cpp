@@ -299,7 +299,7 @@ Menu::Menu() {
     // Developer menu ----------------------------------
     MenuWrapper* developerMenu = addMenu("Developer", "Developer");
     
-    // TIVOLI new feature
+
     // Developer > Tivoli Options >>>
     MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
