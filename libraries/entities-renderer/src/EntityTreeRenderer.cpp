@@ -367,6 +367,8 @@ void EntityTreeRenderer::init() {
 }
 
 void EntityTreeRenderer::connectedToDomain(){
+    qDebug() << "CONNECTED TO DOMAIN IN ETR";
+    _freshlyConnected = true;
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
@@ -409,13 +411,13 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
                 continue;
             }
 
-            if (entity->getEntityPriority() == EntityPriority::STATIC) {  // populate a list of renderable static items
-                auto renderable =  renderableForEntity(entity);
-                if (renderable) { // only add valid renderables _renderablesToUpdate
-                    if (renderable->getUpdateTime() == 0) _renderablesToUpdate.insert(renderable);
-                    _staticRenderablesToUpdate.insert(renderable);  
-                }
-            }
+            //if (entity->getEntityPriority() == EntityPriority::STATIC) {  // populate a list of renderable static items
+            //    auto renderable =  renderableForEntity(entity);
+            //    if (renderable) { // only add valid renderables _renderablesToUpdate
+            //        if (renderable->getUpdateTime() == 0) _renderablesToUpdate.insert(renderable);
+            //        _staticRenderablesToUpdate.insert(renderable);  
+            //    }
+            //}
 
             // Path to the parent transforms is not valid,
             // don't add to the scene graph yet
@@ -469,7 +471,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED) _priorityRenderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC)  {
-                    if (renderable->getStaticUpdateTime() == 0) {
+                    if (renderable->getStaticUpdateTime() == 0 || _freshlyConnected) {
                         renderable->setStaticUpdateTime(usecTimestampNow());
                         _renderablesToUpdate.insert(renderable);
                     }
@@ -477,6 +479,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 }
             }
         }
+        _freshlyConnected = false;
     }
 
     {
@@ -493,7 +496,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         _priorityRenderablesToUpdate.clear();
 
         // Bypass? Then handle without sorting
-        if (_bypassPrioritySorting) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
+        if (_bypassPrioritySorting || _forcedBypassPrioritySorting) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
         if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) { // Enough resources exist or are forced via bypass
 
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
@@ -665,9 +668,7 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
         AABox box(boundingBoxCorner, scaledDimensions);
         entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result); // find all the stuff in the bounding box and put in uuid vector
     });
-    //qDebug() << "Update result set contains " << result.count() << "entities";
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
-    // setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
     _updateStaticEntitiesTime = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
 }
 
@@ -752,30 +753,32 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
             case ZONECULLING_MODE_INHERIT:  // do nothing
                 break;
             case ZONECULLING_MODE_ON_INCLUSIVE:
-                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+                updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
             case ZONECULLING_MODE_ON_EXCLUSIVE:
-                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+                updateZoneContentsLists(_zoneCullingStack[i], false); 
                 _zoneCullSkipList.clear();
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
                 break;
             case ZONECULLING_MODE_OFF_EXCLUSIVE:
-                updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+                updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;
         }
     }
 
-    setPriorityClutchTime(secTimestampNow() + ZONECULLING_SORT_BYPASS_WAIT);  // step on the clutch
 
     auto scene = _viewState->getMain3DScene();
     render::Transaction transaction;
-    
-    /// to do - call and update on static entities
+    for (const auto& renderable : _priorityRenderablesToUpdate) {
+        renderable->updateInScene(scene, transaction);
+    }
+    for (const auto& renderable : _renderablesToUpdate) {
+        renderable->updateInScene(scene, transaction);
+    }
     for (const auto& renderable : _staticRenderablesToUpdate) {
         renderable->updateInScene(scene, transaction);
-        scene->enqueueTransaction(transaction);
     }
 
 }

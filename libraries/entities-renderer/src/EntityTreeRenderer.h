@@ -86,6 +86,7 @@ public:
     
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
+    bool _forcedBypassPrioritySorting = false;
     bool _updateStaticEntities = false;
 
     quint64 _clutchEndTime = 0.0f;
@@ -126,7 +127,14 @@ public:
         _bypassPrioritySorting = usePrioritySorting;
     }
 
+    // For overriding bypass in order to have it as a test feature in the developer menu
+    void setForcedBypassPrioritySorting(bool usePrioritySorting) {
+        // qDebug() << "SET BYPASS " << usePrioritySorting << " @ " << usecTimestampNow();
+        _forcedBypassPrioritySorting = usePrioritySorting;
+    }
+
     bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
+    bool getForcedBypassPrioritySorting() { return _forcedBypassPrioritySorting; }
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }
@@ -265,6 +273,7 @@ private:
 
     glm::vec3 _avatarPosition { 0.0f };
     bool _forceRecheckEntities { true };
+    bool _freshlyConnected = false;
     QSet<EntityItemID> _currentEntitiesInside;
 
     bool _wantScripts;

@@ -558,10 +558,7 @@ public:
 
     float getBoundingRadius() const { return _boundingRadius; }
     void setSpaceIndex(int32_t index);
-    int32_t getSpaceIndex() const { 
-        if (getEntityPriority() == EntityPriority::STATIC) return 3;// workload::Region::R4;
-        return _spaceIndex; 
-    }
+    int32_t getSpaceIndex() const {  return _spaceIndex; }
 
     virtual void preDelete();
     virtual void postParentFixup() {}
