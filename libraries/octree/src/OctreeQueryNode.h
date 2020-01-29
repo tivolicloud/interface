@@ -117,7 +117,7 @@ private:
 
     QJsonObject _lastCheckJSONParameters;
 
-    bool _shouldForceFullScene { false };
+    bool _shouldForceFullScene { true }; // hifi had default to false but we load entire scene
 };
 
 #endif // hifi_OctreeQueryNode_h

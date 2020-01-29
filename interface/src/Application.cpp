@@ -1072,8 +1072,8 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _lastNackTime(usecTimestampNow()),
     _lastSendDownstreamAudioStats(usecTimestampNow()),
     _notifiedPacketVersionMismatchThisDomain(false),
-    _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE), // TIVOLI  new feature 
-    _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), // TIVOLI  new feature 
+    _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE),
+    _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), 
     _maxOctreePPS(maxOctreePacketsPerSecond.get()),
     _snapshotSound(nullptr),
     _sampleSound(nullptr)
@@ -6657,6 +6657,7 @@ void Application::update(float deltaTime) {
                 QJsonObject queryFlags;
                 queryFlags["includeDescendants"] = true;
                 queryFlags["includeAncestors"] = true;
+                queryFlags["serverScripts"] = true; 
                 queryJSONParameters["flags"] = queryFlags;
                 queryOctree(
                     NodeType::EntityServer,
@@ -6956,7 +6957,7 @@ void Application::queryOctree(
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
-        float radius = glm::max(INITIAL_QUERY_RADIUS, 25.0f * glm::length(box.getDimensions()));
+        float radius = glm::max(INITIAL_QUERY_RADIUS, 5000.0f);// was 0.5 * glm::length(box.getDimensions()));
         sphericalView.setPositionAndSimpleRadius(box.calcCenter(), radius);
 
         //if (interstitialModeEnabled) {
@@ -6970,11 +6971,13 @@ void Application::queryOctree(
                 QJsonObject queryFlags;
                 queryFlags["includeDescendants"] = true;
                 queryFlags["includeAncestors"] = true;
+                queryFlags["serverScripts"] = true;
+
                 queryJSONParameters["flags"] = queryFlags;
                // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
                 _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
                 _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-                _octreeQuery.setConicalViews({ sphericalView, farView });
+                //_octreeQuery.setConicalViews({ sphericalView, farView });
             }
         } else {
             _octreeQuery.setConicalViews({ sphericalView });
