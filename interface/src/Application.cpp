@@ -6981,11 +6981,11 @@ void Application::queryOctree(
             _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
             _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
          }
-        //if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-        //    DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(true); // TIVOLI bypass priority sorting
-        //} else {
-        //    DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(false); // TIVOLI bypass priority sorting
-        //}
+        if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+            DependencyManager::get<EntityTreeRenderer>()->setForcedBypassPrioritySorting(true); // TIVOLI bypass priority sorting
+        } else {
+            DependencyManager::get<EntityTreeRenderer>()->setForcedBypassPrioritySorting(false); // TIVOLI bypass priority sorting
+        }
     }
 
     auto nodeList = DependencyManager::get<NodeList>();

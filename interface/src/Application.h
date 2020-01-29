@@ -228,9 +228,9 @@ public:
     void setLoadCompleteEntityTreeSetting(bool value);
 
     // Shortcircuits the code that does priority sorting in EntityTreeRenderer for faster
-    // load and rendering times
- /*   bool getBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
-    void setBypassPrioritySorting(bool value);*/
+    // load and batch operations like zone culling all at once
+    bool getForcedBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
+    void setForcedBypassPrioritySorting(bool value);
 
     bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
     void setPreferAvatarFingerOverStylus(bool value);
