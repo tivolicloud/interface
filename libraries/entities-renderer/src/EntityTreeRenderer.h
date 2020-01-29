@@ -92,10 +92,12 @@ public:
     quint64 _clutchEndTime = 0.0f;
     const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1; 
     const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5; 
-    const quint64 STATIC_ENTITY_UPDATE_WAIT = 2;
+    const quint64 STATIC_ENTITY_UPDATE_WAIT = 5;
     quint64 _updateStaticEntitiesTime;// = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
      
     void updateStaticEntities(bool value) { _updateStaticEntities = value; }
+    void setSafeLandingCompleted(bool value) {  _safeLandingCompleted = value; }
+    bool getSafeLandingCompleted() { return _safeLandingCompleted; }
 
     quint64 getStaticUpdateTime() {
         return _updateStaticEntitiesTime;
@@ -273,7 +275,7 @@ private:
 
     glm::vec3 _avatarPosition { 0.0f };
     bool _forceRecheckEntities { true };
-    bool _freshlyConnected = false;
+    bool _safeLandingCompleted = false;
     QSet<EntityItemID> _currentEntitiesInside;
 
     bool _wantScripts;

@@ -1592,11 +1592,6 @@ const GROUPS = [
                 label: "Dynamic",
                 type: "bool",
                 propertyID: "dynamic"
-            },
-            {
-                label: "Priority Update",
-                type: "bool",
-                propertyID: "locallyVisible",
             }
         ]
     },

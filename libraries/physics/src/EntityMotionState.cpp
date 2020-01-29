@@ -771,6 +771,10 @@ bool EntityMotionState::isLocallyOwned() const {
     return _entity->getSimulatorID() == Physics::getSessionUUID();
 }
 
+bool EntityMotionState::isStaticPriority() const {
+    return (_entity->getEntityPriority() == EntityPriority::STATIC);
+}
+
 bool EntityMotionState::isLocallyOwnedOrShouldBe() const {
     // this method could also be called "shouldGenerateCollisionEventForLocalScripts()"
     // because that is the only reason it's used

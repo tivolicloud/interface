@@ -321,6 +321,8 @@ void EntityTreeRenderer::clear() {
     }
     _entitiesInScene.clear();
     _renderablesToUpdate.clear();
+    _priorityRenderablesToUpdate.clear();
+    _staticRenderablesToUpdate.clear();
 
     // reset the zone to the default (while we load the next scene)
     _layeredZones.clear();
@@ -368,7 +370,7 @@ void EntityTreeRenderer::init() {
 
 void EntityTreeRenderer::connectedToDomain(){
     qDebug() << "CONNECTED TO DOMAIN IN ETR";
-    _freshlyConnected = true;
+    setSafeLandingCompleted(false);
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
@@ -405,20 +407,11 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
         std::unordered_set<EntityItemID> processedIds;
         for (const auto& entry : _entitiesToAdd) {
             auto entity = entry.second.lock();
-
-
+            
             if (!entity) {
                 continue;
             }
-
-            //if (entity->getEntityPriority() == EntityPriority::STATIC) {  // populate a list of renderable static items
-            //    auto renderable =  renderableForEntity(entity);
-            //    if (renderable) { // only add valid renderables _renderablesToUpdate
-            //        if (renderable->getUpdateTime() == 0) _renderablesToUpdate.insert(renderable);
-            //        _staticRenderablesToUpdate.insert(renderable);  
-            //    }
-            //}
-
+            
             // Path to the parent transforms is not valid,
             // don't add to the scene graph yet
             if (!entity->isParentPathComplete()) {
@@ -471,16 +464,18 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED) _priorityRenderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
                 else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC)  {
-                    if (renderable->getStaticUpdateTime() == 0 || _freshlyConnected) {
-                        renderable->setStaticUpdateTime(usecTimestampNow());
-                        _renderablesToUpdate.insert(renderable);
-                    }
+                    if (!getSafeLandingCompleted() || static_cast<int>(fmod(secTimestampNow(), 2))  == 1  ) { // force a render pass on statics every 2s
+                        //renderable->setStaticUpdateTime(usecTimestampNow());
+                        qDebug() << "TOK";
+                       // _priorityRenderablesToUpdate.insert(renderable);
+                       _renderablesToUpdate.insert(renderable);
+                    } //else { qDebug() << "SAFE LANDING COMPLETED";}
                     _staticRenderablesToUpdate.insert(renderable); 
                 }
             }
         }
-        _freshlyConnected = false;
     }
+
 
     {
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
@@ -771,13 +766,15 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
 
     auto scene = _viewState->getMain3DScene();
     render::Transaction transaction;
+
+    for (const auto& renderable : _staticRenderablesToUpdate) {
+        renderable->updateInScene(scene, transaction);
+    }
+
     for (const auto& renderable : _priorityRenderablesToUpdate) {
         renderable->updateInScene(scene, transaction);
     }
     for (const auto& renderable : _renderablesToUpdate) {
-        renderable->updateInScene(scene, transaction);
-    }
-    for (const auto& renderable : _staticRenderablesToUpdate) {
         renderable->updateInScene(scene, transaction);
     }
 

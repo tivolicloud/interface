@@ -92,6 +92,7 @@ public:
 
     bool isLocallyOwned() const override;
     bool isLocallyOwnedOrShouldBe() const override; // aka shouldEmitCollisionEvents()
+    bool isStaticPriority() const;
 
     friend class PhysicalEntitySimulation;
     OwnershipState getOwnershipState() const { return _ownershipState; }

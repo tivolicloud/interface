@@ -170,6 +170,7 @@ bool OctreePacketProcessor::safeLandingIsActive() const {
 
 bool OctreePacketProcessor::safeLandingIsComplete() const {
     if (_safeLanding) {
+        DependencyManager::get<EntityTreeRenderer>()->setSafeLandingCompleted(true);
         return _safeLanding->trackingIsComplete();
     }
     return false;

@@ -36,6 +36,19 @@
 
 Q_DECLARE_METATYPE(size_t)
 
+//Version	Limit on X86	Limit on X64
+//Windows 10 Enterprise	4 GB
+//6 TB
+//Windows 10 Education	4 GB
+//2 TB
+//Windows 10 Pro for Workstations	4 GB
+//6 TB
+//Windows 10 Pro	4 GB
+//2 TB
+//Windows 10 Home	4 GB
+//128 GB
+
+
 class QNetworkReply;
 class QTimer;
 
@@ -43,12 +56,12 @@ class Resource;
 
 static const qint64 BYTES_PER_MEGABYTES = 1024 * 1024;
 static const qint64 BYTES_PER_GIGABYTES = 1024 * BYTES_PER_MEGABYTES;
-static const qint64 MAXIMUM_CACHE_SIZE = 10 * BYTES_PER_GIGABYTES;  // 10GB
+static const qint64 MAXIMUM_CACHE_SIZE = 10 * BYTES_PER_GIGABYTES;  // WAS 10GB
 
 // Windows can have troubles allocating that much memory in ram sometimes
 // so default cache size at 100 MB on windows (1GB otherwise)
 #ifdef Q_OS_WIN32
-static const qint64 DEFAULT_UNUSED_MAX_SIZE = 100 * BYTES_PER_MEGABYTES;
+static const qint64 DEFAULT_UNUSED_MAX_SIZE = 1024 * BYTES_PER_MEGABYTES; //WIN 10 HOME 64 CAN GO UP TO 4096. testing for loading performance.  https://docs.microsoft.com/en-us/windows/win32/memory/memory-limits-for-windows-releases#physical-memory-limits-windows-10
 #else
 static const qint64 DEFAULT_UNUSED_MAX_SIZE = 1024 * BYTES_PER_MEGABYTES;
 #endif

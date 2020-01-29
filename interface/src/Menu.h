@@ -231,7 +231,7 @@ namespace MenuOption {
 
     // TIVOLI SPECIFIC
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree (slower load time)";
-    const QString BypassPrioritySorting = Force Bypass Priority Sorting";
+    const QString BypassPrioritySorting = "Force Bypass Priority Sorting";
 
     }
 

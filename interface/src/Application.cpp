@@ -1476,7 +1476,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 
         connect(scriptEngines, &ScriptEngines::scriptLoadError,
             this, [](const QString& filename, const QString& error) {
-            OffscreenUi::asyncWarning(nullptr, "Error Loading Script", filename + " failed to load.");
+           // OffscreenUi::asyncWarning(nullptr, "Error Loading Script", filename + " failed to load.");
         }, Qt::QueuedConnection);
     }
 
@@ -6243,6 +6243,10 @@ void Application::update(float deltaTime) {
         } else {
             _octreeProcessor.updateSafeLanding();
             if (_octreeProcessor.safeLandingIsComplete()) {
+                // weird this is just constantly called over and over rather than once... what?
+                // also look into interstitail mode, how its frustum works, its jsonqueryparameters, and 
+                // where it's designated in domain settings, and see if we can get it working again
+                DependencyManager::get<EntityTreeRenderer>()->setSafeLandingCompleted(true);
                 tryToEnablePhysics();
             }
         }
@@ -6952,13 +6956,26 @@ void Application::queryOctree(
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
-        float radius = glm::max(INITIAL_QUERY_RADIUS, 0.5f * glm::length(box.getDimensions()));
+        float radius = glm::max(INITIAL_QUERY_RADIUS, 25.0f * glm::length(box.getDimensions()));
         sphericalView.setPositionAndSimpleRadius(box.calcCenter(), radius);
 
-        if (interstitialModeEnabled) {
-            ConicalViewFrustum farView;
-            farView.set(_viewFrustum);
-            _octreeQuery.setConicalViews({ sphericalView, farView });
+        //if (interstitialModeEnabled) {
+        auto menu = Menu::getInstance(); 
+        if (menu) {
+            if (menu->isOptionChecked(MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+
+                ConicalViewFrustum farView;
+                farView.set(_viewFrustum);
+
+                QJsonObject queryFlags;
+                queryFlags["includeDescendants"] = true;
+                queryFlags["includeAncestors"] = true;
+                queryJSONParameters["flags"] = queryFlags;
+               // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
+                _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
+                _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
+                _octreeQuery.setConicalViews({ sphericalView, farView });
+            }
         } else {
             _octreeQuery.setConicalViews({ sphericalView });
         }
@@ -6977,10 +6994,12 @@ void Application::queryOctree(
     // TIVOLI new feature to load entire tree at once in headless mode.
     auto menu = Menu::getInstance(); 
     if (menu) {
-        if (menu->isOptionChecked(MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-            _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
-            _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-         }
+        //if (menu->isOptionChecked(MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree true
+        //    _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
+        //    _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
+        // }
+
+        // is this really where this should be?
         if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
             DependencyManager::get<EntityTreeRenderer>()->setForcedBypassPrioritySorting(true); // TIVOLI bypass priority sorting
         } else {
@@ -8048,9 +8067,9 @@ void Application::addAssetToWorldUpload(QString filePath, QString mapping, bool 
     auto upload = DependencyManager::get<AssetClient>()->createUpload(filePath);
     QObject::connect(upload, &AssetUpload::finished, this, [=](AssetUpload* upload, const QString& hash) mutable {
         if (upload->getError() != AssetUpload::NoError) {
-            QString errorInfo = "Could not upload model to the Asset Server.";
-            qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
-            addAssetToWorldError(filenameFromPath(filePath), errorInfo);
+            QString errorInfo = "Unspecified error downloading from the Asset Server.";
+            qDebug(interfaceapp) << "Error downloading model: " + errorInfo;
+            //addAssetToWorldError(filenameFromPath(filePath), errorInfo);
         } else {
             addAssetToWorldSetMapping(filePath, mapping, hash, isZip, isBlocks);
         }
@@ -8230,6 +8249,7 @@ void Application::addAssetToWorldInfo(QString modelName, QString infoText) {
     _addAssetToWorldInfoKeys.append(modelName);
     _addAssetToWorldInfoMessages.append(infoText);
 
+    return; // this message is annoying and disruptive
     if (!_addAssetToWorldErrorTimer.isActive()) {
         if (!_addAssetToWorldMessageBox) {
             _addAssetToWorldMessageBox = getOffscreenUI()->createMessageBox(OffscreenUi::ICON_INFORMATION,

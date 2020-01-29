@@ -255,6 +255,7 @@ void PhysicalEntitySimulation::buildMotionStatesForEntitiesThatNeedThem() {
         ShapeRequests::iterator requestItr = _shapeRequests.begin();
         while (requestItr != _shapeRequests.end()) {
             EntityItemPointer entity = requestItr->entity;
+
             EntityMotionState* motionState = static_cast<EntityMotionState*>(entity->getPhysicsInfo());
             if (!motionState) {
                 // this is an ADD because motionState doesn't exist yet
@@ -310,6 +311,7 @@ void PhysicalEntitySimulation::buildMotionStatesForEntitiesThatNeedThem() {
     SetOfEntities::iterator entityItr = _entitiesToAddToPhysics.begin();
     while (entityItr != _entitiesToAddToPhysics.end()) {
         EntityItemPointer entity = (*entityItr);
+       // if (entity->getEntityPriority() == EntityPriority::STATIC) continue;
         if (entity->isDead()) {
             prepareEntityForDelete(entity);
             entityItr = _entitiesToAddToPhysics.erase(entityItr);
@@ -610,6 +612,7 @@ void PhysicalEntitySimulation::sendOwnedUpdates(uint32_t numSubsteps) {
     PROFILE_RANGE_EX(simulation_physics, "Update", 0x00000000, (uint64_t)_owned.size());
     uint32_t i = 0;
     while (i < _owned.size()) {
+        // if (_owned[i]->isStaticPriority()) continue;
         if (!_owned[i]->isLocallyOwned()) {
             if (_owned[i]->shouldSendBid()) {
                 addOwnershipBid(_owned[i]);

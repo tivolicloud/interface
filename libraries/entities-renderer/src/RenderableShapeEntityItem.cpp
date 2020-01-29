@@ -67,6 +67,8 @@ void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
         _pulseProperties = entity->getPulseProperties();
     });
 
+    evaluateZoneCullState(entity);
+
     void* key = (void*)this;
     AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this] () {
         withWriteLock([&] {
