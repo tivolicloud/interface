@@ -79,6 +79,10 @@ bool SelectionScriptingInterface::clearSelectedItemsList(const QString& listName
         _selectedItemsListMap.insert(listName, GameplayObjects());
     }
     onSelectedItemsListChanged(listName);
+
+    auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
+    entityTreeRenderer->clearEntitySelections();
+
     return true;
 }
 
@@ -273,7 +277,7 @@ QVariantMap SelectionScriptingInterface::getSelectedItemsList(const QString& lis
         }
         list["avatars"] = (avatarIDs);
         list["entities"] = (entityIDs);
-
+        qDebug() << "SELECTION LISTS CONSTAIN " << list;
         return list;
     }
     else {
@@ -321,8 +325,18 @@ void SelectionScriptingInterface::onSelectedItemsListChanged(const QString& list
         if (handler != _handlerMap.end()) {
             (*handler)->updateSceneFromSelectedList();
         }
-    }
 
+        
+       //// QReadLocker lock(&_selectionListsLock);
+       // auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>(); 
+       // auto currentList = _selectedItemsListMap.find(listName);
+
+
+       // for (auto j : (*currentList).getEntityIDs()) {
+       //     entityTreeRenderer->setCurrentlySelectedItems(currentEntityID);
+       //     qDebug() << j << ';';
+       // }
+    }
     emit selectedItemsListChanged(listName);
 }
 
@@ -347,6 +361,7 @@ void SelectionToSceneHandler::updateSceneFromSelectedList() {
         GameplayObjects thisList = DependencyManager::get<SelectionScriptingInterface>()->getList(_listName);
         render::Transaction transaction;
         render::ItemIDs finalList;
+        QList<EntityItemID> _currentlySelectedEntities;  // entities selected by edit/selectionScriptinInterface
         render::ItemID currentID;
         auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
 
@@ -364,13 +379,16 @@ void SelectionToSceneHandler::updateSceneFromSelectedList() {
             currentID = entityTreeRenderer->renderableIdForEntityId(currentEntityID);
             if (currentID != render::Item::INVALID_ITEM_ID) {
                 finalList.push_back(currentID);
+                _currentlySelectedEntities.append(currentEntityID);
             }
         }
 
         render::Selection selection(_listName.toStdString(), finalList);
         transaction.resetSelection(selection);
-
         mainScene->enqueueTransaction(transaction);
+
+        entityTreeRenderer->setCurrentlySelectedItems(_currentlySelectedEntities);
+
     } else {
         qWarning() << "SelectionToSceneHandler::updateRendererSelectedList(), Unexpected null scene, possibly during application shutdown";
     }

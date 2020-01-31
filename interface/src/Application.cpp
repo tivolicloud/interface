@@ -3411,13 +3411,11 @@ void Application::initializeUi() {
     }
 #endif
 
-
     // The display plugins are created before the menu now, so we need to do this here to hide the menu bar
     // now that it exists
     if (_window && _window->isFullScreen()) {
         setFullscreen(nullptr, true);
     }
-
 
     setIsInterstitialMode(true);
 
@@ -6215,6 +6213,7 @@ void Application::tryToEnablePhysics() {
             _physicsEnabled = true;
             setIsInterstitialMode(false);
             myAvatar->updateMotionBehaviorFromMenu();
+            DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
         }
     }
 }
@@ -6246,7 +6245,6 @@ void Application::update(float deltaTime) {
                 // weird this is just constantly called over and over rather than once... what?
                 // also look into interstitail mode, how its frustum works, its jsonqueryparameters, and 
                 // where it's designated in domain settings, and see if we can get it working again
-                DependencyManager::get<EntityTreeRenderer>()->setSafeLandingCompleted(true);
                 tryToEnablePhysics();
             }
         }

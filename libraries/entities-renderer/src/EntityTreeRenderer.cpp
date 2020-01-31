@@ -155,7 +155,7 @@ EntityRendererPointer EntityTreeRenderer::renderableForEntityId(const EntityItem
     return itr->second;  
 }
 
-// CPM investigate
+
 render::ItemID EntityTreeRenderer::renderableIdForEntityId(const EntityItemID& id) const {
     auto renderable = renderableForEntityId(id);
     if (renderable) {
@@ -283,7 +283,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         applyLayeredZones();
     }
 
-    OctreeProcessor::clearDomainAndNonOwnedEntities();  // CPM
+    OctreeProcessor::clearDomainAndNonOwnedEntities();  
 }
 
 void EntityTreeRenderer::clear() {
@@ -302,7 +302,7 @@ void EntityTreeRenderer::clear() {
             render::Transaction transaction;
             for (const auto& entry : _entitiesInScene) {
                 const auto& renderer = entry.second;
-                renderer->removeFromScene(scene, transaction);  // CPM
+                renderer->removeFromScene(scene, transaction);
             }
             scene->enqueueTransaction(transaction);
         }
@@ -370,7 +370,7 @@ void EntityTreeRenderer::init() {
 
 void EntityTreeRenderer::connectedToDomain(){
     qDebug() << "CONNECTED TO DOMAIN IN ETR";
-    setSafeLandingCompleted(false);
+    setSceneIsReady(false);
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
@@ -432,7 +432,7 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
 
             auto entityID = entity->getEntityItemID();
             auto renderable = EntityRenderer::addToScene(*this, entity, scene, transaction);
-            if (renderable) {  // CPM How is renderable calculated?
+            if (renderable) { 
                 _entitiesInScene.insert({ entityID, renderable });
                 processedIds.insert(entityID);
             }
@@ -454,28 +454,52 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     PerformanceTimer pt("change");
     std::unordered_set<EntityItemID> changedEntities;
     _changedEntitiesGuard.withWriteLock([&] { changedEntities.swap(_changedEntities); });
+    bool selectionPriority = false;
 
     {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
-        for (const auto& entityId : changedEntities) {
-            auto renderable = renderableForEntityId(entityId);
-            if (renderable) { // only add valid renderables _renderablesToUpdate
-                // STATIC priority items aren't even added since they don't receive updates
-                if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED) _priorityRenderablesToUpdate.insert(renderable);
-                else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
-                else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC)  {
-                    if (!getSafeLandingCompleted() || static_cast<int>(fmod(secTimestampNow(), 2))  == 1  ) { // force a render pass on statics every 2s
-                        //renderable->setStaticUpdateTime(usecTimestampNow());
-                        qDebug() << "TOK";
-                       // _priorityRenderablesToUpdate.insert(renderable);
-                       _renderablesToUpdate.insert(renderable);
-                    } //else { qDebug() << "SAFE LANDING COMPLETED";}
-                    _staticRenderablesToUpdate.insert(renderable); 
+        for (const EntityItemID& entityId : changedEntities) {
+            quint16 t = static_cast<int>(fmod(secTimestampNow(), STATIC_ENTITY_UPDATE_INTERVAL)); // force a render update on statics every 7s in case the file loads in late
+            EntityRendererPointer renderable = renderableForEntityId(entityId);
+
+            // If anything is currently selected by the edit tools, we want to deprioritize everything else in order to minimize hitching
+            
+            if (false) { // This experimental test code will stop all updates except on selected entities in the edit tools.
+                if (isAnythingSelected()) {  // scene will appear to pause if something is selected
+                    if (checkIfEntityIsSelected(entityId)) {
+                        if (renderable) {
+                            _priorityRenderablesToUpdate.insert(renderable);
+                            selectionPriority = true;
+                        }
+                    }
                 }
             }
+
+           if (getSceneIsReady()) {  // no priority optimization until everything's loaded
+                if (!selectionPriority && renderable) 
+                { // only add valid renderables _renderablesToUpdate
+                    if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED 
+                        //  || getEntity(entityId)->isAvatarEntity()    // prioritize avatar entities
+                        //  || !getEntity(entityId)->getParentID().isNull() // if it has a parent
+                        || getEntity(entityId)->isLocalEntity()         // or prioritize local entities  
+                    ) 
+                    {
+                        _priorityRenderablesToUpdate.insert(renderable);
+                    }
+                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
+                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC) 
+                    {
+                        if (!getSceneIsReady() || t  == 1  )  _renderablesToUpdate.insert(renderable);
+                        _staticRenderablesToUpdate.insert(renderable); 
+                    }
+                } 
+           }
+           else 
+           {
+                _renderablesToUpdate.insert(renderable);
+           }
         }
     }
-
 
     {
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
@@ -491,13 +515,13 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         _priorityRenderablesToUpdate.clear();
 
         // Bypass? Then handle without sorting
-        if (_bypassPrioritySorting || _forcedBypassPrioritySorting) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
+        if (_bypassPrioritySorting || _forcedBypassPrioritySorting || !getSceneIsReady()) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
         if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) { // Enough resources exist or are forced via bypass
 
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
 
             uint64_t updateStart = usecTimestampNow();
-            for (const auto& renderable : _renderablesToUpdate) {
+            for (const EntityRendererPointer& renderable : _renderablesToUpdate) {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
                 renderable->updateInScene(scene, transaction);
             }
@@ -600,7 +624,6 @@ void EntityTreeRenderer::update(bool simulate) {
             PerformanceTimer sceneTimer("scene");
             auto scene = _viewState->getMain3DScene();
             if (scene) {
-                //qDebug() << "CPM - RENDER - SCENE";
                 render::Transaction transaction;
                 addPendingEntities(scene, transaction);
                 updateChangedEntities(scene, transaction);
@@ -645,7 +668,7 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
     _spaceUpdates.emplace_back(proxyUpdate.first, proxyUpdate.second);
 }
 
-// note how will zone culling handle zones, lights, and zones with compound shapes rather than boxes?
+// TO DO - zones with compound shapes rather than boxes
 
 
 // Make a list of all the entities inside entity. 
@@ -664,7 +687,7 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
         entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result); // find all the stuff in the bounding box and put in uuid vector
     });
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
-    _updateStaticEntitiesTime = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
+    _updateStaticEntitiesTime = secTimestampNow();
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
@@ -1226,7 +1249,6 @@ void EntityTreeRenderer::checkAndCallPreload(const EntityItemID& entityID, bool 
         bool shouldLoad = entity->shouldPreloadScript() && _entitiesScriptEngine;
         QString scriptUrl = entity->getScript();
         if ((shouldLoad && unloadFirst) || scriptUrl.isEmpty()) {
-           // qDebug() << "CPM Check and call preload 2";
             if (_entitiesScriptEngine) {
                 if (_currentEntitiesInside.contains(entityID)) {
                     _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");

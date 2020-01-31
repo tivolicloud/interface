@@ -53,87 +53,47 @@ class EntityTreeRenderer : public OctreeProcessor, public Dependency {
     Q_OBJECT
 public:
 
-    
-    /* Zone culling logic:
-
-        Zone culling doesn't use conventional octree culling.  
-        Instead, the zones each have a property to hold a list of things inside it.
-        The Entity Tree Renderer manages reading and writing to that list.
-        Based on some rules, the Entity Tree Renderer builds up a final list of things in the zone(s) the avatar should see
-        All Renderable Entities watch that list.  If it's empty, everything is visible as normal.
-        If it isn't empty, the renderable entities will only be visible if they are in the list.
-        Because zones can be nested, we have to evaluate the properties into a final 
-
-       PART I. IN ENTITY TREE RENDERER:
-        1. A Zone Enter or Exit event is detected, and is added or removed from an ordered list called _zoneCullingStack.
-        2. ETR tells the zone periodically to do a Find All in Box into its _zoneContentList
-        3. ETR evaluateZoneCullSkipList() is called when the _zoneCullingStack is changed
-        4. evaluateZoneCullSkipList iterates thru the stack and builds _zoneCullSkipList using these rules:
-            ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
-            ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
-            ZONECULLING_MODE_ON_EXCLUSIVE,      // Overwrite skiplist with my entities.
-            ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
-       
-       PART II. IN RENDERABLE ENTITY ITEM
-       The final _zoneCullSkipList is viewed by RenderableEntityItem
-       If the skipList is empty, render as usual.
-       If it's not empty, and the entity ID is not listed in the skiplist, handle as if _visible were false
-
-    */
     QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
     QList<EntityItemID> _prevZoneCullingStack;
+    QList<EntityItemID> _currentlySelectedEntities;  // selected by edit
     
     bool _zoneCullingActive = false;
     bool _bypassPrioritySorting = false;
     bool _forcedBypassPrioritySorting = false;
     bool _updateStaticEntities = false;
 
-    quint64 _clutchEndTime = 0.0f;
     const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1; 
     const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5; 
-    const quint64 STATIC_ENTITY_UPDATE_WAIT = 5;
-    quint64 _updateStaticEntitiesTime;// = secTimestampNow();// + STATIC_ENTITY_UPDATE_WAIT; // force all the statics to update so they can hide
+    const quint64 STATIC_ENTITY_UPDATE_INTERVAL = 10;
+    quint64 _updateStaticEntitiesTime;
+    quint64 _clutchEndTime = 0.0f;
      
+    void setCurrentlySelectedItems(QList<EntityItemID>& value) { _currentlySelectedEntities = value;}
+    bool checkIfEntityIsSelected(const EntityItemID& value) { return _currentlySelectedEntities.contains(value); }
+    bool isAnythingSelected() { return !_currentlySelectedEntities.isEmpty(); }
+    void clearEntitySelections() { _currentlySelectedEntities.clear(); }
+
     void updateStaticEntities(bool value) { _updateStaticEntities = value; }
-    void setSafeLandingCompleted(bool value) {  _safeLandingCompleted = value; }
-    bool getSafeLandingCompleted() { return _safeLandingCompleted; }
+    void setSceneIsReady(bool value) { _sceneIsReady = value; }
+    bool getSceneIsReady() { return _sceneIsReady; }
 
-    quint64 getStaticUpdateTime() {
-        return _updateStaticEntitiesTime;
-    }
+    quint64 getStaticUpdateTime() { return _updateStaticEntitiesTime; }
+    void setStaticUpdateTime(quint64& time) { if (time > _updateStaticEntitiesTime) _updateStaticEntitiesTime = time; }
 
-    void setStaticUpdateTime(quint64 time) {
-        if (time > _updateStaticEntitiesTime) _updateStaticEntitiesTime = time; 
-    }
-
-    // if time is 2 and previous was 1, set it to 2.
-    void setPriorityClutchTime(quint64 time) { 
-        if (time > _clutchEndTime) _clutchEndTime = time; // update the time
-       // qDebug() << "CPM SET PRIORITY CLUTCH TIME TO " << _clutchEndTime << " BUT WAS GIVEN " << time;
-        setBypassPrioritySorting(true);  // turn off Priority Sorting
-    }
+    void setPriorityClutchTime(quint64& time) {  if (time > _clutchEndTime) _clutchEndTime = time;  setBypassPrioritySorting(true); }
 
     quint64 getPriorityClutchTime() { return _clutchEndTime; }
 
     ReadWriteLockable _getZoneCullSkiplistGuard;
     QVector<QUuid> getZoneCullSkiplist();
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
-
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
-
-    // TIVOLI
-    void setBypassPrioritySorting(bool usePrioritySorting) {
-       // qDebug() << "SET BYPASS " << usePrioritySorting << " @ " << usecTimestampNow();
-        _bypassPrioritySorting = usePrioritySorting;
-    }
+    void setBypassPrioritySorting(bool usePrioritySorting) { _bypassPrioritySorting = usePrioritySorting; }
 
     // For overriding bypass in order to have it as a test feature in the developer menu
-    void setForcedBypassPrioritySorting(bool usePrioritySorting) {
-        // qDebug() << "SET BYPASS " << usePrioritySorting << " @ " << usecTimestampNow();
-        _forcedBypassPrioritySorting = usePrioritySorting;
-    }
+    void setForcedBypassPrioritySorting(bool usePrioritySorting) { _forcedBypassPrioritySorting = usePrioritySorting; }
 
     bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
     bool getForcedBypassPrioritySorting() { return _forcedBypassPrioritySorting; }
@@ -145,9 +105,7 @@ public:
                                 AbstractScriptingServicesInterface* scriptingServices);
     virtual ~EntityTreeRenderer();
 
-    QSharedPointer<EntityTreeRenderer> getSharedFromThis() {
-        return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis());
-    }
+    QSharedPointer<EntityTreeRenderer> getSharedFromThis() { return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis()); }
 
     virtual char getMyNodeType() const override { return NodeType::EntityServer; }
     virtual PacketType getMyQueryMessageType() const override { return PacketType::EntityQuery; }
@@ -275,7 +233,7 @@ private:
 
     glm::vec3 _avatarPosition { 0.0f };
     bool _forceRecheckEntities { true };
-    bool _safeLandingCompleted = false;
+    bool _sceneIsReady = false;
     QSet<EntityItemID> _currentEntitiesInside;
 
     bool _wantScripts;
