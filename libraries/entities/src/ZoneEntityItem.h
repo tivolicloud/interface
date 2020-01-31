@@ -170,7 +170,7 @@ protected:
 
     uint32_t _hazeMode{ COMPONENT_MODE_INHERIT };
     uint32_t _bloomMode{ COMPONENT_MODE_INHERIT };
-    uint32_t _zoneCullingMode{ ZONECULLING_MODE_INHERIT };  // TIVOLI
+    uint32_t _zoneCullingMode{ inherit };  // TIVOLI
 
     SkyboxPropertyGroup _skyboxProperties;
     HazePropertyGroup _hazeProperties;

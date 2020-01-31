@@ -768,18 +768,18 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         //updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
-            case ZONECULLING_MODE_INHERIT:  // do nothing
+            case inherit:  // do nothing
                 break;
-            case ZONECULLING_MODE_ON_INCLUSIVE:
+            case onInclusive:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
-            case ZONECULLING_MODE_ON_EXCLUSIVE:
+            case onExclusive:
                 updateZoneContentsLists(_zoneCullingStack[i], false); 
                 _zoneCullSkipList.clear();
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
                 break;
-            case ZONECULLING_MODE_OFF_EXCLUSIVE:
+            case offExclusive:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;

@@ -24,10 +24,10 @@ enum ComponentMode {
 
 enum ZoneCullingComponentMode  // TIVOLI
 {
-    ZONECULLING_MODE_INHERIT,           // Do not change the skiplist
-    ZONECULLING_MODE_ON_INCLUSIVE,      // Add my entities to existing skiplist.
-    ZONECULLING_MODE_ON_EXCLUSIVE,      // Overwrite skiplist with my entities.
-    ZONECULLING_MODE_OFF_EXCLUSIVE,     // Clear skiplist completely.
+    inherit,           // Do not change the skiplist
+    onInclusive,      // Add my entities to existing skiplist.
+    onExclusive,      // Overwrite skiplist with my entities.
+    offExclusive,     // Clear skiplist completely.
 
     ZONECULLING_MODE_ITEM_COUNT
 };

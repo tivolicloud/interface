@@ -268,16 +268,16 @@ inline void addZoneCullingComponentMode(QHash<QString, ZoneCullingComponentMode>
     lookup[ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(mode)] = mode;
 }
 
-    //ZONECULLING_MODE_INHERIT,        // Do not change the skiplist
-    //ZONECULLING_MODE_ON_INCLUSIVE,   // Add my entities to existing skiplist.
-    //ZONECULLING_MODE_ON_EXCLUSIVE,   // Overwrite skiplist with my entities.
-    //ZONECULLING_MODE_OFF_EXCLUSIVE,  // Clear skiplist completely.
+    //inherit,        // Do not change the skiplist
+    //onInclusive,   // Add my entities to existing skiplist.
+    //onExclusive,   // Overwrite skiplist with my entities.
+    //offExclusive,  // Clear skiplist completely.
 const QHash<QString, ZoneCullingComponentMode> stringToZoneCullingComponentMode = [] {
     QHash<QString, ZoneCullingComponentMode> toReturn;
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONECULLING_MODE_INHERIT);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONECULLING_MODE_ON_INCLUSIVE);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONECULLING_MODE_ON_EXCLUSIVE);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONECULLING_MODE_OFF_EXCLUSIVE);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::inherit);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onInclusive);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onExclusive);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::offExclusive);
     return toReturn;
 }();
 
