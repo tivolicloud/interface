@@ -987,15 +987,6 @@ QString EntityScriptingInterface::getEntityType(const QUuid& entityID) {
     return toReturn;
 }
 
-// TIVOLI tagging
-QVector<QString> EntityScriptingInterface::getEntityTags(const QUuid& entityID) {
-    QString tagsString;
-    _entityTree->withReadLock([&] {
-        EntityItemPointer entity = _entityTree->findEntityByEntityItemID(entityID);
-        if (entity) tagsString = entity->getCustomTags();
-    });
-    return tagsString.split(',').toVector();
-}
 
 QObject* EntityScriptingInterface::getEntityObject(const QUuid& id) {
     return EntityTree::getEntityObject(id);

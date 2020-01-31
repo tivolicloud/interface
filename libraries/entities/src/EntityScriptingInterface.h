@@ -789,26 +789,6 @@ public slots:
                                                   const glm::vec3& center,
                                                   float radius) const;
 
-    
-    // TIVOLI tagging
-    /**jsdoc
-     * Gets an entity's tags as an array
-     * @function Entities.getEntityTags
-     * @param {Uuid} id - The ID of the entity to get tags from.
-     * @returns {Entities.EntityTags} The tags of the entity.
-     */
-    Q_INVOKABLE QVector<QString> getEntityTags(const QUuid& entityID);
-
-    
-    // TIVOLI tagging
-    /**jsdoc
-     * Add a tag to an entity
-     * @function Entities.addEntityTags
-     * @param {Uuid} id - The ID of the entity to assign the tag.
-     * @returns {Entities.EntityType} The tag value.
-     */
-    //Q_INVOKABLE bool addEntityTag(const QUuid& entityID, QString tagName);
-
     /**jsdoc
      * Finds the first avatar or domain entity intersected by a {@link PickRay}. <code>Light</code> and <code>Zone</code> 
      * entities are not intersected unless they've been configured as pickable using 
