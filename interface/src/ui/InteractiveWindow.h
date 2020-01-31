@@ -132,7 +132,7 @@ namespace InteractiveWindowEnums {
      *     <tr><td><code>2</code></td><td>TOP_RIGHT</td><td>Position is offset from the top right of the Interface window.</td></tr>
      *     <tr><td><code>3</code></td><td>BOTTOM_RIGHT</td><td>Position offset from the bottom right of the Interface
      *     window.</td></tr>
-     *     <tr><td><code>4</code></td><td>BOTTOM_LEFFT</td><td>Position is offset from the bottom left of the Interface
+     *     <tr><td><code>4</code></td><td>BOTTOM_LEFT</td><td>Position is offset from the bottom left of the Interface
      *         window.</td></tr>
      *   <tbody>
      * </table>
