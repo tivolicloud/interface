@@ -550,6 +550,20 @@ void AudioDevices::chooseInputDevice(const HifiAudioDeviceInfo& device, bool isH
     }
 }
 
+
+
+//currentAudioDevice = device;
+//if (!readyToChangeAudioDevice) return;
+//readyToChangeAudioDevice = false;
+//withWriteLock([&] {
+//    _devices.chooseOutputDevice(currentAudioDevice, isHMD);
+//});
+//readyToChangeAudioDevice = true;
+//if (currentAudioDevice != device) {
+//    Audio::setOutputDevice(device, isHMD);
+//}
+
+
 void AudioDevices::chooseOutputDevice(const HifiAudioDeviceInfo& device, bool isHMD) {
     //check if current context equals device to change
     if (_contextIsHMD == isHMD) {

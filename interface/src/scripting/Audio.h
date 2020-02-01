@@ -549,6 +549,12 @@ private:
     bool _pttDesktop{ false };
     bool _pttHMD{ false };
     bool _pushingToTalk{ false };
+    //  float _outputLastChanged { 0.0f };
+    //  const float MIN_WAIT_BETWEEN_CHANGES { 1.5f };  // Minimum time between audio device changes
+
+    HifiAudioDeviceInfo currentAudioDevice;
+    bool readyToChangeAudioDevice{ true };
+
 };
 
 };
