@@ -2069,7 +2069,13 @@ bool AudioClient::switchOutputToAudioDevice(const HifiAudioDeviceInfo outputDevi
 
     //wait on local injectors prep to finish running
     if ( !_localPrepInjectorFuture.isFinished()) {
-        _localPrepInjectorFuture.waitForFinished();
+        try { 
+            _localPrepInjectorFuture.waitForFinished();
+        }
+        catch (const std::exception&) {
+            qDebug(audioclient) << Q_FUNC_INFO << ": Error";
+            return true;
+        }
     }
 
     // cleanup any previously initialized device
