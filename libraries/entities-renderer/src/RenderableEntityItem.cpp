@@ -316,7 +316,7 @@ void EntityRenderer::removeFromScene(const ScenePointer& scene, Transaction& tra
 
 void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& transaction) {
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
-    if (!isValidRenderItem()) {
+    if (this == nullptr || !isValidRenderItem()) {
         return;
     }
     _updateTime = usecTimestampNow();
