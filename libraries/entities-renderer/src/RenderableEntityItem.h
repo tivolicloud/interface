@@ -70,7 +70,7 @@ public:
     ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     virtual void evaluateZoneCullState(const EntityItemPointer& entity);
 
-    virtual void setStaticUpdateTime(quint64 time) {_staticUpdateTime = time;}
+    virtual void setStaticUpdateTime(quint64 time) { _staticUpdateTime = time; }
     virtual quint64 getStaticUpdateTime() { return _staticUpdateTime; }
 
 
@@ -111,7 +111,7 @@ protected:
     virtual bool isFading() const { return _isFading; }
     virtual void updateModelTransformAndBound();
     virtual bool isTransparent() const { return _isFading ? Interpolate::calculateFadeRatio(_fadeStartTime) < 1.0f : false; }
-    inline bool isValidRenderItem() const { return _renderItemID != Item::INVALID_ITEM_ID; }
+    inline bool isValidRenderItem() const { return _renderItemID ? !Item::INVALID_ITEM_ID : false; }
 
     virtual void setIsVisibleInSecondaryCamera(bool value) { _isVisibleInSecondaryCamera = value; }
     virtual void setRenderLayer(RenderLayer value) { _renderLayer = value; }
