@@ -1,0 +1,83 @@
+image: ubuntu:18.04
+
+stages:
+    - build
+    - deploy
+
+variables:
+    BUILD_TYPE: Release
+    RELEASE_TYPE: PRODUCTION
+    STABLE_BUILD: 1
+
+    HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
+
+build server:
+    stage: build
+
+    # only:
+    #     - tags
+    #     - /^v[0-9]+?\.[0-9]+?\.[0-9]+?$/i
+
+    variables:
+        #RELEASE_NUMBER: $CI_COMMIT_TAG
+        HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
+        HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
+
+    cache:
+        paths:
+            - build/HIFI_QT
+            - build/HIFI_VCPKG
+
+    script:
+        # system dependencies
+        - apt-get update -y
+        - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+
+        # build
+        - mkdir -p build
+        - cd build
+        - cmake .. -DCMAKE_BUILD_TYPE=Release
+        - make domain-server assignment-client oven -j$(nproc)
+
+        # save shared libraries
+        - cd domain-server
+        - ldd domain-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' lib
+        - cd ../assignment-client
+        - ldd assignment-client | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' lib
+        - cd ../tools/oven
+        - ldd oven | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' lib
+
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/domain-server
+            - build/assignment-client
+            - build/tools/oven
+
+deploy server:
+    stage: deploy
+
+    script:
+        - ls -lh build
+        - ls -lh build/domain-server
+        - ls -lh build/domain-server/lib
+        - ls -lh build/assignment-client
+        - ls -lh build/assignment-client/lib
+        - ls -lh build/tools/oven
+        - ls -lh build/tools/oven/lib
+    # script:
+    #     - ls -lh build/domain-server
+    #     - ls -lh build/assignment-client
+    #     - ls -lh build/tools/oven
+    #     # system dependencies
+    #     - apt-get update -y
+    #     - apt-get install -y curl software-properties-common
+    #     # install docker cli
+    #     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    #     - apt-key fingerprint 0EBFCD88
+    #     - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    #     - apt-get update -y
+    #     - apt-get instasll -y docker-ce-cli
+    #     - docker system info
+    #     # create docker image
+    #     # publish to docker hub
