@@ -369,7 +369,6 @@ void EntityTreeRenderer::init() {
 }
 
 void EntityTreeRenderer::connectedToDomain(){
-    qDebug() << "CONNECTED TO DOMAIN IN ETR";
     setSceneIsReady(false);
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
@@ -456,6 +455,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     _changedEntitiesGuard.withWriteLock([&] { changedEntities.swap(_changedEntities); });
     bool selectionPriority = false;
 
+    _renderablesToUpdate.clear();
+    _priorityRenderablesToUpdate.clear();
+    // _staticRenderablesToUpdate.clear();
+
     {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const EntityItemID& entityId : changedEntities) {
@@ -512,7 +515,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
         }
 
-        _priorityRenderablesToUpdate.clear();
+        // _priorityRenderablesToUpdate.clear();
 
         // Bypass? Then handle without sorting
         if (_bypassPrioritySorting || _forcedBypassPrioritySorting || !getSceneIsReady()) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
@@ -756,16 +759,14 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() {
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
 
-
     if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
-//    if (_zoneCullingStack.isEmpty() || _zoneCullingStack == _prevZoneCullingStack) return; // stack empty or hasn't changed
 
     _zoneCullSkipList.clear();    
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
         auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
         if (!zoneItem) continue;
-        //updateZoneContentsLists(_zoneCullingStack[i], false);  // to do -- make second parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
+        // to do -- make seond parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
         switch (_zoneMode) {
             case inherit:  // do nothing
@@ -791,14 +792,15 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     render::Transaction transaction;
 
     for (const auto& renderable : _staticRenderablesToUpdate) {
-        renderable->updateInScene(scene, transaction);
+        if (renderable) renderable->updateInScene(scene, transaction);
+    }
+  
+    for (const auto& renderable : _priorityRenderablesToUpdate) {
+        if (renderable) renderable->updateInScene(scene, transaction);
     }
 
-    for (const auto& renderable : _priorityRenderablesToUpdate) {
-        renderable->updateInScene(scene, transaction);
-    }
     for (const auto& renderable : _renderablesToUpdate) {
-        renderable->updateInScene(scene, transaction);
+        if (renderable) renderable->updateInScene(scene, transaction);
     }
 
 }

@@ -321,10 +321,23 @@ void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& trans
     }
     _updateTime = usecTimestampNow();
 
+    if (_zoneCullState == ZoneCullingState::ZoneCull_Culled)
+    {
+        if (_visible) 
+        {
+            _visible = false; 
+            setPreviouslyVisible(true);
+        }
+    } 
 
-    if (_zoneCullState == ZoneCullingState::ZoneCull_Skipped) {
+    if (_zoneCullState == ZoneCullingState::ZoneCull_Skipped)
+    {
+        if (!_visible && wasPreviouslyVisible()) 
+        {
+            _visible = true;
+        }
         if (!needsRenderUpdate()) return; // then check if I need an update
-    }
+    } 
 
     doRenderUpdateSynchronous(scene, transaction, _entity);
 
@@ -443,22 +456,28 @@ void EntityRenderer::evaluateZoneCullState(const EntityItemPointer& entity){
     // TODO: Add BypassRunderUpdate clutching for faster state change
     QVector<QUuid> skiplist;
     auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
-    if (entityTreeRenderer) {
-        skiplist = entityTreeRenderer->getZoneCullSkiplist();
-    }
+    if (entityTreeRenderer) skiplist = entityTreeRenderer->getZoneCullSkiplist();
     _prevZoneCullState = _zoneCullState;
-    if (skiplist.count() > 0) {
-        if (skiplist.indexOf(entity->getID()) > -1) {  // Zone Culling is active and I'm on the skip list, dont cull me
+    if (skiplist.count() > 0) 
+    {
+        if (skiplist.indexOf(entity->getID()) > -1)  // Zone Culling is active and I'm on the skip list, dont cull me
+        {
             _zoneCullState = ZoneCullingState::ZoneCull_Skipped;
+            if (!_visible && wasPreviouslyVisible()) _visible = true;  // show again if it was zone-culled previously
         }
-        else {
-            if (_visible) {
+        else 
+        {
+            if (_visible)
+            {
                 _visible = false;
+                setPreviouslyVisible(true); // remember it wasn't visible to ben if it was zone-culled previously
             }
+
             _zoneCullState = ZoneCullingState::ZoneCull_Culled;
         }
     }
-    else { // Nothing on my skiplist so zone culling is not switched on
+    else 
+    { // Nothing on my skiplist so zone culling is not switched on
         _zoneCullState = ZoneCullingState::ZoneCull_Inactive;
     }
 }
