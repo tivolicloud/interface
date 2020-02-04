@@ -38,6 +38,7 @@ public:
     virtual void emitScriptEvent(const QVariant& message) {}
     const EntityItemPointer& getEntity() const { return _entity; }
     const ItemID& getRenderItemID() const { return _renderItemID; }
+    const QUuid& getRenderItemEntityID() const { return _entity->getID() ; }
 
     const SharedSoundPointer& getCollisionSound() { return _collisionSound; }
     void setCollisionSound(const SharedSoundPointer& sound) { _collisionSound = sound; }
@@ -68,7 +69,7 @@ public:
     };
     ZoneCullingState _zoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
-    virtual void evaluateZoneCullState(const EntityItemPointer& entity);
+    virtual bool evaluateEntityZoneCullState(const EntityItemPointer& entity);
 
     virtual void setStaticUpdateTime(quint64 time) { _staticUpdateTime = time; }
     virtual quint64 getStaticUpdateTime() { return _staticUpdateTime; }

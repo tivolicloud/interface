@@ -66,7 +66,7 @@ Item::Bound LightEntityRenderer::getBound() {
 }
 
 void LightEntityRenderer::doRender(RenderArgs* args) {
-    evaluateZoneCullState(_entity);
+    const bool hasChanged = evaluateEntityZoneCullState(_entity);
     _lightPayload->render(args);
 }
 

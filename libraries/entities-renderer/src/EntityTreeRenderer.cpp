@@ -786,23 +786,36 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
                 break;
         }
     }
-
-
+    
     auto scene = _viewState->getMain3DScene();
     render::Transaction transaction;
 
+    // CAITLYN CHANGING THIS DOESN'T MAKE SHAPES WORK
+    // IT APPEARS SHAPES ARE NOT BEING REDRAWN UNLESS THEY HAVE A SIMULATION
+    // TYPE EVENT ASSOCIATED WITH THEM LIKE PHYSICS ROTATION ETC OR ANIMATION
+    // SO ITS SOMETHING TO DO THERE.  IT MAY HAVE TO DO WITH PRIORITY SORTING
+    // OR WORKLOAD OR SOMETHING ELSE.  ALTERNATELY WE COULD JUST NOT CULL SHAPES BUT 
+    // WE HAVE HAD THEM WORKING BEFORE SO THERE IS A SOLUTION SOMEWHERE TO BE FOUND
+
+    //for (const auto& entry : _entitiesInScene) {
+    //   const auto& renderer = entry.second;
+    //   renderer->evaluateEntityZoneCullState(renderer->getEntity());
+    //   renderer->updateInScene(scene, transaction);
+    //}
+
+    // failed getQueryAACube failed for "{2e003ba3-dd6d-4641-ad88-f0f23d9236af}")
+    // Since statics are generally not in the update loop, force an update pass for them here
+    // TO DO: Make it only run the update on statics that have changed rather than hit all of them
     for (const auto& renderable : _staticRenderablesToUpdate) {
-        if (renderable) renderable->updateInScene(scene, transaction);
+        if (renderable) {
+            const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());
+            if (hasChanged) {
+                renderable->updateInScene(scene, transaction);
+                renderable->getEntity()->setNeedsRenderUpdate(true);
+            }
+        }
     }
-  
-    for (const auto& renderable : _priorityRenderablesToUpdate) {
-        if (renderable) renderable->updateInScene(scene, transaction);
-    }
-
-    for (const auto& renderable : _renderablesToUpdate) {
-        if (renderable) renderable->updateInScene(scene, transaction);
-    }
-
+    scene->enqueueTransaction(transaction);
 }
 
 
@@ -829,10 +842,8 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             QSet<EntityItemID> entitiesContainingAvatar;
             findBestZoneAndMaybeContainingEntities(entitiesContainingAvatar);  // eCA now has a list of all the zones where the avatar is located
 
-           if (_zoneCullingStack != _prevZoneCullingStack) evaluateZoneCullingStack(); // stack hasn't changed
+           evaluateZoneCullingStack(); // stack hasn't changed
            _prevZoneCullingStack = _zoneCullingStack;
-          
-          //  evaluateZoneCullingStack(); // TEST
 
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts

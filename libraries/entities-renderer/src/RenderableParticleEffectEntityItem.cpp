@@ -462,7 +462,7 @@ void ParticleEffectEntityRenderer::stepSimulation() {
 
 void ParticleEffectEntityRenderer::doRender(RenderArgs* args) {
 
-    evaluateZoneCullState(_entity);
+    const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
     if (_lastSimulated == 0) {
         _lastSimulated = usecTimestampNow();

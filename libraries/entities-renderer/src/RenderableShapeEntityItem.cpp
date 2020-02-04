@@ -67,8 +67,6 @@ void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
         _pulseProperties = entity->getPulseProperties();
     });
 
-    evaluateZoneCullState(entity);
-
     void* key = (void*)this;
     AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this] () {
         withWriteLock([&] {
@@ -222,7 +220,9 @@ Item::Bound ShapeEntityRenderer::getBound() {
 
 void ShapeEntityRenderer::doRender(RenderArgs* args) {
 
-    evaluateZoneCullState(_entity);
+    // Shapes just aren't playing well with zone culling.  Since it's a marginal performance
+    // win anyway, being so low-poly, we'll not 
+    const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
     PerformanceTimer perfTimer("RenderableShapeEntityItem::render");
     Q_ASSERT(args->_batch);
