@@ -27,6 +27,7 @@ public:
 protected:
     ShapeKey getShapeKey() override;
     Item::Bound getBound() override;
+    virtual bool evaluateEntityZoneCullState(const EntityItemPointer& entity) override { return false; }
 
 private:
     virtual bool needsRenderUpdate() const override;
@@ -35,6 +36,7 @@ private:
     virtual void doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) override;
     virtual void doRender(RenderArgs* args) override;
     virtual bool isTransparent() const override;
+
     bool _doZoneCull{ false };  // TIVOLI Zone Culling
 
     enum Pipeline { SIMPLE, MATERIAL, PROCEDURAL };

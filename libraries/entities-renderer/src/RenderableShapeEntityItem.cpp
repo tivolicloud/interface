@@ -27,6 +27,9 @@ ShapeEntityRenderer::ShapeEntityRenderer(const EntityItemPointer& entity) : Pare
 }
 
 bool ShapeEntityRenderer::needsRenderUpdate() const {
+
+    if (_visible != wasPreviouslyVisible()) return true;
+
     if (resultWithReadLock<bool>([&] {
         auto mat = _materials.find("0");
         if (mat != _materials.end() && mat->second.top().material && mat->second.top().material->isProcedural() &&
@@ -50,6 +53,9 @@ bool ShapeEntityRenderer::needsRenderUpdate() const {
 }
 
 bool ShapeEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPointer& entity) const {
+
+    if (_visible != wasPreviouslyVisible()) return true;
+
     if (_dimensions != entity->getScaledDimensions()) {
         return true;
     }
