@@ -7,6 +7,7 @@ build server:
     image: ubuntu:18.04
 
     only:
+        - master
         - tags
         - /^v[0-9]+?\.[0-9]+?\.[0-9]+?$/i
 
@@ -57,6 +58,7 @@ deploy server:
     image: docker:latest
 
     only:
+        - master
         - tags
         - /^v[0-9]+?\.[0-9]+?\.[0-9]+?$/i
 
