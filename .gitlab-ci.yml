@@ -29,6 +29,9 @@ build server:
         # system dependencies
         - apt-get update -y
         - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        # for interface
+        #- apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
+        #- apt-get install -y npm
 
         # build
         - mkdir -p build
