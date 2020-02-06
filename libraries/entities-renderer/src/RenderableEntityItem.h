@@ -67,6 +67,7 @@ public:
         ZoneCull_Culled,
         ZoneCull_Skipped
     };
+
     ZoneCullingState _zoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     virtual bool evaluateEntityZoneCullState(const EntityItemPointer& entity);
