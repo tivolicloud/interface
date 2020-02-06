@@ -120,24 +120,32 @@
 				this.bumperPressed(controllerData) &&
 				otherModule.bumperPressed(controllerData)
 			) {
-				if (this.hand === dispatcherUtils.RIGHT_HAND) {
-					var scalingCurrentDistance = Vec3.length(
-						Vec3.subtract(
-							controllerData.controllerLocations[this.hand]
-								.position,
-							controllerData.controllerLocations[this.otherHand()]
-								.position
-						)
-					);
-					var currentRescale =
-						scalingCurrentDistance / this.scalingStartDistance;
-					var newDimensions = Vec3.multiply(
-						currentRescale,
-						this.scalingStartDimensions
-					);
-					Entities.editEntity(this.grabbedThingID, {
-						localDimensions: newDimensions
-					});
+                if (this.hand === dispatcherUtils.RIGHT_HAND) {
+                    var scalingCurrentDistance = Vec3.length(
+                        Vec3.subtract(
+                            controllerData.controllerLocations[this.hand]
+                                .position,
+                            controllerData.controllerLocations[this.otherHand()]
+                                .position
+                        )
+                    );
+                    var currentRescale =
+                        scalingCurrentDistance / this.scalingStartDistance;
+                    var newDimensions = Vec3.multiply(
+                        currentRescale,
+                        this.scalingStartDimensions
+                    );
+
+                    var legal = true;
+                    if (newDimensions.x > 1.0 || newDimensions.x < 0.05 ) legal = false;
+                    if (newDimensions.y > 1.0 || newDimensions.y < 0.05 ) legal = false;
+                    if (newDimensions.z > 1.0 || newDimensions.z < 0.05 ) legal = false;
+
+                    if (legal) { 
+                        Entities.editEntity(this.grabbedThingID, {
+                            localDimensions: newDimensions
+                        });
+                    }
 				}
 				return dispatcherUtils.makeRunningValues(true, [], []);
 			}
