@@ -1965,7 +1965,20 @@ int EntityTree::processEditPacketData(ReceivedMessage& message, const unsigned c
                 bool wasChanged = false;
                 // Having (un)lock rights bypasses the filter, unless it's a physics result.
                 FilterType filterType = isPhysics ? FilterType::Physics : (isAdd ? FilterType::Add : FilterType::Edit);
-                bool allowed = (!isPhysics && senderNode->isAllowedEditor()) || filterProperties(existingEntity, properties, properties, wasChanged, filterType);
+                //senderNode->getCanRez()
+
+                //bool allowed = (!isPhysics && senderNode->isAllowedEditor()) || filterProperties(existingEntity, properties, properties, wasChanged, filterType);
+
+                bool allowed = (
+                    !isPhysics &&
+                    senderNode->isAllowedEditor() &&
+                    (
+                        senderNode->getCanRez() ||
+                        senderNode->getCanRezTmp() ||
+                        senderNode->getCanRezCertified() ||
+                        senderNode->getCanRezTmpCertified()
+                    )
+                ) || filterProperties(existingEntity, properties, properties, wasChanged, filterType);
                 if (!allowed) {
                     // the update failed and we need to convey that fact to the sender
                     // our method is to re-assert the current properties and bump the lastEdited timestamp
