@@ -12,7 +12,11 @@
 (function() {
 	var dispatcherUtils = Script.require(
 		"/~/system/libraries/controllerDispatcherUtils.js"
-	);
+    );
+
+    var GRABSCALE_LEGAL_MAX = 1.0;
+    var GRABSCALE_LEGAL_MIN = 0.05;
+
 	function ScaleEntity(hand) {
 		this.hand = hand;
 		this.grabbedThingID = false;
@@ -136,10 +140,11 @@
                         this.scalingStartDimensions
                     );
 
-                    var legal = true;
-                    if (newDimensions.x > 1.0 || newDimensions.x < 0.05 ) legal = false;
-                    if (newDimensions.y > 1.0 || newDimensions.y < 0.05 ) legal = false;
-                    if (newDimensions.z > 1.0 || newDimensions.z < 0.05 ) legal = false;
+
+                    var legalScale = true;
+                    if (newDimensions.x > GRABSCALE_LEGAL_MAX || newDimensions.x < GRABSCALE_LEGAL_MIN ) legal = false;
+                    if (newDimensions.y > GRABSCALE_LEGAL_MAX || newDimensions.y < GRABSCALE_LEGAL_MIN ) legal = false;
+                    if (newDimensions.z > GRABSCALE_LEGAL_MAX || newDimensions.z < GRABSCALE_LEGAL_MIN ) legal = false;
 
                     if (legal) { 
                         Entities.editEntity(this.grabbedThingID, {
