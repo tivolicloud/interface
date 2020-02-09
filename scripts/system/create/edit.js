@@ -1375,7 +1375,7 @@
 
     var mouseCapturedByTool = false;
     var lastMousePosition = null;
-    var CLICK_TIME_THRESHOLD = 500 * 1000; // 500 ms
+    var CLICK_TIME_THRESHOLD = 10 * 1000; // 10 ms 500 * 1000; // 500 ms
     var CLICK_MOVE_DISTANCE_THRESHOLD = 20;
     var IDLE_MOUSE_TIMEOUT = 200;
 

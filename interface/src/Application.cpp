@@ -7929,9 +7929,9 @@ void Application::addAssetToWorldFromURL(QString url) {
     }
 
     if (!DependencyManager::get<NodeList>()->getThisNodeCanWriteAssets()) {
-        QString errorInfo = "You do not have permissions to write to the Asset Server.";
-        qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
-        addAssetToWorldError(filename, errorInfo);
+        // QString errorInfo = "You do not have permissions to write to the Asset Server.";
+        // qDebug(interfaceapp) << "Error downloading model: " + errorInfo;
+        // addAssetToWorldError(filename, errorInfo);
         return;
     }
 
@@ -8020,9 +8020,9 @@ void Application::addAssetToWorld(QString path, QString zipFile, bool isZip, boo
 
     // Test repeated because possibly different code paths.
     if (!DependencyManager::get<NodeList>()->getThisNodeCanWriteAssets()) {
-        QString errorInfo = "You do not have permissions to write to the Asset Server.";
-        qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
-        addAssetToWorldError(filename, errorInfo);
+        // QString errorInfo = "You do not have permissions to write to the Asset Server.";
+        // qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
+        // addAssetToWorldError(filename, errorInfo);
         return;
     }
 
