@@ -139,7 +139,12 @@ void IDsToBounds::run(const RenderContextPointer& renderContext, const ItemIDs& 
         for (auto id : inItems) {
             auto& item = scene->getItem(id);
             if (item.exist()) {
-                outItems.emplace_back(ItemBound{ id, item.getBound() });
+                try {
+                    outItems.emplace_back(ItemBound{ id, item.getBound() });
+                } 
+                catch (...) {
+                    qDebug() << "Handling exception outItems emplace in FilterTask.cpp, item ID is " << id;
+                }
             }
         }
     } else {
