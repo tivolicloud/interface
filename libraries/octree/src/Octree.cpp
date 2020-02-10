@@ -754,18 +754,17 @@ bool Octree::readFromByteArray(
     const QByteArray& data
 ) {
     QString trimmedUrl = urlString.trimmed();
-    QString marketplaceID = getMarketplaceID(trimmedUrl);
 
     QByteArray uncompressedJsonData;
     bool wasCompressed = gunzip(data, uncompressedJsonData);
 
     if (wasCompressed) {
         QDataStream inputStream(uncompressedJsonData);
-        return readFromStream(uncompressedJsonData.size(), inputStream, marketplaceID);
+        return readFromStream(uncompressedJsonData.size(), inputStream);
     }
 
     QDataStream inputStream(data);
-    return readFromStream(data.size(), inputStream, marketplaceID);
+    return readFromStream(data.size(), inputStream);
 }
 
 bool Octree::readFromStream(
