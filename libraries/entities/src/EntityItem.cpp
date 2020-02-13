@@ -1752,6 +1752,7 @@ AACube EntityItem::getQueryAACube(bool& success) const {
 }
 
 bool EntityItem::shouldPuffQueryAACube() const {
+    return (getEntityPriority() != EntityPriority::STATIC);
     return hasActions() || isChildOfMyAvatar() || isMovingRelativeToParent();
 }
 
