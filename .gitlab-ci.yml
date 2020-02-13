@@ -1,95 +1,29 @@
 stages:
+    - dependencies
     - build
     - deploy
 
-build server:
-    stage: build
-    image: ubuntu:18.04
-
+.production-trigger:
     only:
         - /^v[0-9]+?\.[0-9]+?\.[0-9]+?$/i
 
-    variables:
-        BUILD_TYPE: Release
-        RELEASE_TYPE: PRODUCTION
-        STABLE_BUILD: 1
+.production:
+    extends: .production-trigger
+    environment:
+        name: production
 
-        RELEASE_NUMBER: $CI_COMMIT_TAG
-
-        HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
-        HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
-        HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
-
-    cache:
-        paths:
-            - build/HIFI_QT
-            - build/HIFI_VCPKG
-
+tivoli scripts:
+    stage: dependencies
+    image: python:latest
+    extends: .production
     script:
-        # system dependencies
-        - apt-get update -y
-        - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
-        # for interface
-        #- apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
-        #- apt-get install -y npm
-
-        # build
-        - mkdir -p build
-        - cd build
-        - cmake .. -DCMAKE_BUILD_TYPE=Release
-        - make domain-server assignment-client oven -j$(nproc)
-
-        # save shared libraries
-        - mkdir -p _lib
-        - ldd domain-server/domain-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib
-        - ldd assignment-client/assignment-client | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib
-        - ldd tools/oven/oven | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib
-
+        - python .gitlab/tivoli-scripts.py
     artifacts:
-        expire_in: 1 day
+        expire_in: 1 days
         paths:
-            - build/domain-server/domain-server
-            - build/domain-server/resources
-            - build/assignment-client/assignment-client
-            - build/tools/oven/oven
-            - build/_lib
+            - scripts/tivoli/
+            - scripts/tivoli.js
 
-deploy server:
-    stage: deploy
-    image: docker:latest
-
-    only:
-        - /^v[0-9]+?\.[0-9]+?\.[0-9]+?$/i
-
-    dependencies:
-        - build server
-
-    variables:
-        DOCKER_TLS_CERTDIR: ""
-
-    services:
-        - docker:dind
-
-    script:
-        - docker system info
-        - docker image ls
-
-        # prepare docker image
-        - cd docker
-        - mkdir -p dist
-
-        - cp ../build/domain-server/domain-server dist/domain-server
-        - cp -r ../build/domain-server/resources dist/resources
-        - cp ../build/assignment-client/assignment-client dist/assignment-client
-        - cp ../build/tools/oven/oven dist/oven
-        - cp -r ../build/_lib dist/lib
-        - cp modify-domain-port.py dist
-
-        # build docker image
-        - docker build -t tivolicloud/server:latest -t tivolicloud/server:$CI_COMMIT_TAG .
-        - docker image ls
-
-        # publish docker image
-        - docker login --username makitsune --password $DOCKER_HUB_ACCESS_TOKEN
-        - docker push tivolicloud/server:$CI_COMMIT_TAG
-        - docker push tivolicloud/server:latest
+include:
+    - local: .gitlab/linux.gitlab-ci.yml
+    - local: .gitlab/windows.gitlab-ci.yml

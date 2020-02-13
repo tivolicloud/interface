@@ -33,9 +33,10 @@ if (WIN32)
 
   list(APPEND CMAKE_PREFIX_PATH "${WINDOW_SDK_PATH}")
 
-  # more cores mean faster builds! CMAKE_CXX_FLAGS /MP doesnt work well
+  # multi core parallel building
   include(ProcessorCount)
-	ProcessorCount(PROCESSOR_COUNT)
+  ProcessorCount(PROCESSOR_COUNT)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
   set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
 
   # /wd4351 disables warning C4351: new behavior: elements of array will be default initialized
