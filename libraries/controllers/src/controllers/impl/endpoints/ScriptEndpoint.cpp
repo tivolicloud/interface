@@ -114,8 +114,18 @@ void ScriptEndpoint::internalApply(const Pose& newPose, int sourceID) {
             Q_ARG(int, sourceID));
         return;
     }
-    QScriptValue result = _callable.call(QScriptValue(),
+
+    QScriptValue result;
+
+    try {
+        result = _callable.call(QScriptValue(),
         QScriptValueList({ Pose::toScriptValue(_callable.engine(), newPose), QScriptValue(sourceID) }));
+    }
+    catch (...) {
+        qDebug() << "ERROR @ ScriptEndpoint.cpp internal apply.";
+        return;
+    }
+
     if (result.isError()) {
         // print JavaScript exception
         qCDebug(controllers).noquote() << formatException(result);
