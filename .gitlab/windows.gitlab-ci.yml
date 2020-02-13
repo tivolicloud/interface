@@ -1,0 +1,65 @@
+build windows production:
+    stage: build
+    tags:
+        - windows
+
+    extends: .production
+
+    dependencies:
+        - tivoli scripts
+
+    variables:
+        BUILD_TYPE: Release
+        RELEASE_TYPE: PRODUCTION
+        STABLE_BUILD: 1
+
+        RELEASE_NUMBER: $CI_COMMIT_TAG
+
+        #HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
+        #HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
+        HIFI_QT_BASE: C:\HIFI_QT
+        HIFI_VCPKG_BASE: C:\HIFI_VCPKG
+        HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
+
+        CL: /MP # might make vcpkg build faster (but doesn't)
+
+    # cache is intensly slow on windows ntfs
+    # cache:
+    #     paths:
+    #         - build/HIFI_QT
+    #         - build/HIFI_VCPKG
+
+    script:
+        - mkdir build
+        - cd build
+
+        # -DCLIENT_ONLY:BOOLEAN=TRUE
+        - cmake ..  -DCMAKE_BUILD_TYPE=Release -A x64
+        - cmake --build . --parallel --config Release --target interface
+
+        - cd interface\Release
+        - del interface.exp
+        - del interface.lib
+        - del interface.pdb
+
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/interface/Release
+
+trigger launcher:
+    stage: deploy
+
+    extends: .production-trigger
+
+    needs:
+        - build windows production
+
+    variables:
+        RELEASE_NUMBER: $CI_COMMIT_TAG
+        UPSTREAM_JOBS_URL: $CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs
+        UPSTREAM_JOB: build windows production
+
+    trigger:
+        project: tivolicloud-private/launcher
+        strategy: depend

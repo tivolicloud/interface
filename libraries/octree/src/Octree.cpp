@@ -718,7 +718,6 @@ bool Octree::readFromURL(
     const qint64 callerId
 ) {
     QString trimmedUrl = urlString.trimmed();
-    qDebug() << "!!!!! going to createResourceRequest " << callerId;
     auto request = std::unique_ptr<ResourceRequest>(
         DependencyManager::get<ResourceManager>()->createResourceRequest(
             this, trimmedUrl, isObservable, callerId, "Octree::readFromURL"));
@@ -750,6 +749,23 @@ bool Octree::readFromURL(
     return readFromStream(data.size(), inputStream);
 }
 
+bool Octree::readFromByteArray(
+    const QString& urlString,
+    const QByteArray& data
+) {
+    QString trimmedUrl = urlString.trimmed();
+
+    QByteArray uncompressedJsonData;
+    bool wasCompressed = gunzip(data, uncompressedJsonData);
+
+    if (wasCompressed) {
+        QDataStream inputStream(uncompressedJsonData);
+        return readFromStream(uncompressedJsonData.size(), inputStream);
+    }
+
+    QDataStream inputStream(data);
+    return readFromStream(data.size(), inputStream);
+}
 
 bool Octree::readFromStream(
     uint64_t streamLength,

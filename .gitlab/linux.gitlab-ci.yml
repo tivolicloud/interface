@@ -1,0 +1,124 @@
+build linux production:
+    stage: build
+    image: ubuntu:18.04
+
+    extends: .production
+
+    dependencies:
+        - tivoli scripts
+
+    variables:
+        BUILD_TYPE: Release
+        RELEASE_TYPE: PRODUCTION
+        STABLE_BUILD: 1
+
+        RELEASE_NUMBER: $CI_COMMIT_TAG
+
+        HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
+        HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
+        HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
+
+    cache:
+        paths:
+            - build/HIFI_QT
+            - build/HIFI_VCPKG
+
+    script:
+        # system dependencies
+        - apt-get update -y
+        - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        # for interface
+        #- apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
+        #- apt-get install -y npm
+
+        # build
+        - mkdir -p build
+        - cd build
+        - cmake .. -DCMAKE_BUILD_TYPE=Release
+        - make domain-server assignment-client oven ice-server -j$(nproc)
+
+        # save shared libraries
+        - mkdir -p _lib-server _lib-ice
+
+        - ldd domain-server/domain-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
+        - ldd assignment-client/assignment-client | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
+        - ldd tools/oven/oven | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
+
+        - ldd ice-server/ice-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-ice
+
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/domain-server/domain-server
+            - build/domain-server/resources
+            - build/assignment-client/assignment-client
+            - build/tools/oven/oven
+            - build/ice-server/ice-server
+            - build/_lib-server
+            - build/_lib-ice
+
+deploy linux server:
+    stage: deploy
+    image: docker:latest
+
+    extends: .production
+
+    dependencies:
+        - build linux production
+
+    variables:
+        DOCKER_TLS_CERTDIR: ""
+
+    services:
+        - docker:dind
+
+    script:
+        - docker system info
+        - docker image ls
+        - cd docker
+
+        # prepare server image
+        - cd server
+        - mkdir -p dist
+
+        - cp ../../build/domain-server/domain-server dist/domain-server
+        - cp -r ../../build/domain-server/resources dist/resources
+        - cp ../../build/assignment-client/assignment-client dist/assignment-client
+        - cp ../../build/tools/oven/oven dist/oven
+        - cp -r ../../build/_lib-server dist/lib
+        - cp modify-domain-port.py dist
+
+        # build server image
+        - docker build
+          -t tivolicloud/server:$CI_COMMIT_TAG
+          -t tivolicloud/server:latest
+          -t registry.tivolicloud.com/tivolicloud/interface/server:$CI_COMMIT_TAG
+          -t registry.tivolicloud.com/tivolicloud/interface/server:latest
+          .
+        - docker image ls
+        - cd ..
+
+        # prepare ice image
+        - cd ice
+        - mkdir -p dist
+
+        - cp ../../build/ice-server/ice-server dist/ice-server
+        - cp -r ../../build/_lib-ice dist/lib
+
+        # build ice image
+        - docker build
+          -t registry.tivolicloud.com/tivolicloud/interface/ice:latest
+          .
+        - docker image ls
+        - cd ..
+
+        # publish server to docker hub
+        - docker login --username makitsune --password $DOCKER_HUB_ACCESS_TOKEN
+        - docker push tivolicloud/server:$CI_COMMIT_TAG
+        - docker push tivolicloud/server:latest
+
+        # publish server and ice to our registry
+        - docker login registry.tivolicloud.com --username gitlab-ci-token --password $CI_JOB_TOKEN
+        - docker push registry.tivolicloud.com/tivolicloud/interface/server:$CI_COMMIT_TAG
+        - docker push registry.tivolicloud.com/tivolicloud/interface/server:latest
+        - docker push registry.tivolicloud.com/tivolicloud/interface/ice:latest

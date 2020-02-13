@@ -33,12 +33,20 @@ if (WIN32)
 
   list(APPEND CMAKE_PREFIX_PATH "${WINDOW_SDK_PATH}")
 
+  # multi core parallel building
+  include(ProcessorCount)
+  ProcessorCount(PROCESSOR_COUNT)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
+  set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
+
   # /wd4351 disables warning C4351: new behavior: elements of array will be default initialized
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${HIFI_MAX_BUILD_CORES} /wd4351")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4351")
+
   # /LARGEADDRESSAWARE enables 32-bit apps to use more than 2GB of memory.
   # Caveats: http://stackoverflow.com/questions/2288728/drawbacks-of-using-largeaddressaware-for-32-bit-windows-executables
   # TODO: Remove when building 64-bit.
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+
   # always produce symbols as PDB files
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /OPT:REF /OPT:ICF")
