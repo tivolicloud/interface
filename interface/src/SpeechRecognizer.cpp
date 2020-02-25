@@ -20,6 +20,10 @@
 
 #include <sapi.h>
 
+//#define SPPROP_HIGH_CONFIDENCE_THRESHOLD 0
+//#define SPPROP_NORMAL_CONFIDENCE_THRESHOLD 0
+//#define SPPROP_LOW_CONFIDENCE_THRESHOLD 0
+
 SpeechRecognizer::SpeechRecognizer() :
     QObject(),
     _enabled(false),
@@ -209,8 +213,27 @@ void SpeechRecognizer::reloadCommands() {
     }
 
     if (FAILED(hr)) {
-        qCDebug(interfaceapp) << "ERROR: Didn't successfully reload speech commands";
+        qCDebug(interfaceapp) << "ERROR: Didn't successfully reload speech commands. Error " << hr;
+        qDebug() << "KEY:  -2004287480 is AUDCLNT_E_UNSUPPORTED_FORMAT";
     }
+}
+
+void errorDescription(HRESULT hr)
+{
+    if (FACILITY_WINDOWS == HRESULT_FACILITY(hr))
+        hr = HRESULT_CODE(hr);
+    TCHAR* szErrMsg;
+
+    if (FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&szErrMsg, 0, NULL) != 0)
+    {
+        qDebug() << "THE ERROR MESSAGE " << szErrMsg;
+        LocalFree(szErrMsg);
+    }
+    else
+        qDebug() << "Could not find a description for error #  " << hr;
 }
 
 void SpeechRecognizer::notifyCommandRecognized(void* handle) {

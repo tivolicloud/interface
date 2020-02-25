@@ -120,6 +120,7 @@ public:
     virtual QOpenGLContext* getPrimaryContext() override;
     virtual bool makeRenderingContextCurrent() override;
     virtual bool isForeground() const override;
+    void speakText(QString speakText);
 
     virtual DisplayPluginPointer getActiveDisplayPlugin() const override;
 
@@ -143,7 +144,7 @@ public:
     void initializeDisplayPlugins();
     void initializeRenderEngine();
     void initializeUi();
-
+    void speakThis();
     void updateSecondaryCameraViewFrustum();
 
     void updateCamera(RenderArgs& renderArgs, float deltaTime);
@@ -250,6 +251,7 @@ public:
 
     NodeToOctreeSceneStats* getOcteeSceneStats() { return &_octreeServerSceneStats; }
 
+
     virtual controller::ScriptingInterface* getControllerScriptingInterface() { return _controllerScriptingInterface; }
     virtual void registerScriptEngineWithApplicationServices(const ScriptEnginePointer& scriptEngine) override;
 
@@ -272,6 +274,7 @@ public:
     bool isAboutToQuit() const { return _aboutToQuit; }
     bool isPhysicsEnabled() const { return _physicsEnabled; }
     PhysicsEnginePointer getPhysicsEngine() { return _physicsEngine; }
+    bool isEditMode() const;
 
     // the isHMDMode is true whenever we use the interface from an HMD and not a standard flat display
     // rendering of several elements depend on that
@@ -314,6 +317,7 @@ public:
     QUuid getTabletHomeButtonID() const;
     QUuid getTabletFrameID() const;
     QVector<QUuid> getTabletIDs() const;
+
 
     void setAvatarOverrideUrl(const QUrl& url, bool save);
     void clearAvatarOverrideUrl() {

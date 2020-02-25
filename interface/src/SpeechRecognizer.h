@@ -21,6 +21,7 @@
 #endif
 
 #include <DependencyManager.h>
+#include <sapi.h>
 
 /**jsdoc
  * The <code>SpeechRecognizer</code> API provides facilities to recognize voice commands.
@@ -125,7 +126,8 @@ signals:
      *     print("Speech recognition: " + (enabled ? "enabled" : "disabled"));
      * });
      */
-    void enabledUpdated(bool enabled);
+    void enabledUpdated(bool enabled); 
+    void errorDescription(HRESULT hr);
 
 protected:
     void reloadCommands();
