@@ -318,9 +318,9 @@ void ViveControllerManager::enableGestureDetection() {
 #else
     UseExternalTransform(false); // camera hand tracker results are in sensor frame
 #endif
-    GestureOption options; // defaults are GestureBackendAuto and GestureModeSkeleton
-    GestureFailure gestureFailure = StartGestureDetection(&options);
-    switch (gestureFailure) {
+    // GestureOption options; // defaults are GestureBackendAuto and GestureModeSkeleton
+    // GestureFailure gestureFailure = StartGestureDetection(&options);
+    /*switch (gestureFailure) {
         case GestureFailureNone:
             qDebug() << "StartGestureDetection success";
             _viveCameraHandTracker = true;
@@ -337,7 +337,7 @@ void ViveControllerManager::enableGestureDetection() {
         case GestureFailureCPUOnPC:
             qDebug() << "StartGestureDetection CPU backend is not supported on Windows";
             break;
-    }
+    }*/
 }
 
 void ViveControllerManager::disableGestureDetection() {
