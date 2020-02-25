@@ -23,8 +23,8 @@
 
 #include "RenderPipelines.h"
 
-static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
-static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
+// static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
+// static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
 
 bool MeshPartPayload::enableMaterialProceduralShaders = false;
 
@@ -435,6 +435,7 @@ void ModelMeshPartPayload::setShapeKey(bool invalidateShapeKey, PrimitiveMode pr
         }
     }
 
+    _prevUseDualQuaternionSkinning = useDualQuaternionSkinning;
     _shapeKey = builder.build();
 }
 
@@ -480,7 +481,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
             _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders && ENABLE_MATERIAL_PROCEDURAL_SHADERS)) {
+        if (!(enableMaterialProceduralShaders)) {
             return;
         }
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
@@ -512,6 +513,14 @@ void ModelMeshPartPayload::setBlendshapeBuffer(const std::unordered_map<int, gpu
         auto blendshapeBuffer = blendshapeBuffers.find(_meshIndex);
         if (blendshapeBuffer != blendshapeBuffers.end()) {
             _meshBlendshapeBuffer = blendshapeBuffer->second;
+            if (_isSkinned || (_isBlendShaped && _meshBlendshapeBuffer)) {
+                ShapeKey::Builder builder(_shapeKey);
+                builder.withDeformed();
+                if (_prevUseDualQuaternionSkinning) {
+                    builder.withDualQuatSkinned();
+                }
+                _shapeKey = builder.build();
+            }
         }
     }
 }

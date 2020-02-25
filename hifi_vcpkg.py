@@ -81,24 +81,24 @@ endif()
         if 'Windows' == system:
             self.exe = os.path.join(self.path, 'vcpkg.exe')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.bat') ]
-            self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-win32-client.zip'
-            self.vcpkgHash = 'a650db47a63ccdc9904b68ddd16af74772e7e78170b513ea8de5a3b47d032751a3b73dcc7526d88bcb500753ea3dd9880639ca842bb176e2bddb1710f9a58cd3'
+            # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-win32-client.zip'
+            # self.vcpkgHash = 'a650db47a63ccdc9904b68ddd16af74772e7e78170b513ea8de5a3b47d032751a3b73dcc7526d88bcb500753ea3dd9880639ca842bb176e2bddb1710f9a58cd3'
             self.hostTriplet = 'x64-windows'
             if usePrebuilt:
                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-win32.zip"
         elif 'Darwin' == system:
             self.exe = os.path.join(self.path, 'vcpkg')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '--allowAppleClang' ]
-            self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-osx-client.tar'
-            self.vcpkgHash = '519d666d02ef22b87c793f016ca412e70f92e1d55953c8f9bd4ee40f6d9f78c1df01a6ee293907718f3bbf24075cc35492fb216326dfc50712a95858e9cbcb4d'
+            # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-osx-client.tar'
+            # self.vcpkgHash = '519d666d02ef22b87c793f016ca412e70f92e1d55953c8f9bd4ee40f6d9f78c1df01a6ee293907718f3bbf24075cc35492fb216326dfc50712a95858e9cbcb4d'
             self.hostTriplet = 'x64-osx'
             if usePrebuilt:
                 self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-osx.tgz"
         else:
             self.exe = os.path.join(self.path, 'vcpkg')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh') ]
-            self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
-            self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
+            # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
+            # self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
             self.hostTriplet = 'x64-linux'
 
         if self.args.android:
@@ -178,14 +178,14 @@ endif()
             downloadVcpkg = True
 
         if downloadVcpkg:
-            if "HIFI_VCPKG_BOOTSTRAP" in os.environ:
+            # if "HIFI_VCPKG_BOOTSTRAP" in os.environ:
                 print("Cloning vcpkg from github to {}".format(self.path))
                 hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
                 print("Bootstrapping vcpkg")
                 hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)
-            else:
-                print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
-                hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
+            # else:
+                # print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
+                # hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
 
         print("Replacing port files")
         portsPath = os.path.join(self.path, 'ports')
