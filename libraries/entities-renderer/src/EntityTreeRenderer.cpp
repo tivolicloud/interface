@@ -40,6 +40,7 @@
 
 #include "RenderableWebEntityItem.h"
 
+
 #include <PointerManager.h>
 
 std::function<bool()> EntityTreeRenderer::_entitiesShouldFadeFunction = []() { return true; };
@@ -512,39 +513,26 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const EntityItemID& entityId : changedEntities) {
-            quint16 t = static_cast<int>(fmod(secTimestampNow(), STATIC_ENTITY_UPDATE_INTERVAL)); // force a render update on statics every 7s in case the file loads in late
+            quint16 t = 0; //static_cast<int>(fmod(secTimestampNow(), STATIC_ENTITY_UPDATE_INTERVAL)); // force a render update on statics every 7s in case the file loads in late
             EntityRendererPointer renderable = renderableForEntityId(entityId);
 
-            // If anything is currently selected by the edit tools, we want to deprioritize everything else in order to minimize hitching
-            if (false) 
-            { // This experimental test code will stop all updates except on selected entities in the edit tools.
-                if (isAnythingSelected()) // scene will appear to pause if something is selected
-                {  
-                    if (checkIfEntityIsSelected(entityId)) {
-                        if (renderable) {
-                            _priorityRenderablesToUpdate.insert(renderable);
-                            selectionPriority = true;
-                        }
-                    }
-                }
-            }
 
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
-                if (!selectionPriority && renderable) 
+                if (renderable) 
                 { // only add valid renderables _renderablesToUpdate
-                    if (getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED 
+                    if (_isEditMode || getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED
                         //  || getEntity(entityId)->isAvatarEntity()    // prioritize avatar entities
                         //  || !getEntity(entityId)->getParentID().isNull() // if it has a parent
-                        || getEntity(entityId)->isLocalEntity()         // or prioritize local entities  
+                       //  || getEntity(entityId)->isLocalEntity()         // or prioritize local entities  
                     ) 
                     {
                         _priorityRenderablesToUpdate.insert(renderable);
-                    }
-                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC) _renderablesToUpdate.insert(renderable);
+                    } // Static entities are added to automatic updates if in edit mode
+                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC ) _renderablesToUpdate.insert(renderable);
                     else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC) 
                     {
-                        if (!getSceneIsReady() || t  == 1  )  _renderablesToUpdate.insert(renderable);
+                        // if (t  == 1  )  _renderablesToUpdate.insert(renderable);
                         _staticRenderablesToUpdate.insert(renderable); 
                     }
                 } 
@@ -560,7 +548,8 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
        
         // Update all the priority items first
-        if (_priorityRenderablesToUpdate.size()>0) 
+       //  if (!_isEditMode && _priorityRenderablesToUpdate.size()>0)
+        if (_priorityRenderablesToUpdate.size() > 0)
         {
             for (const auto& renderable : _priorityRenderablesToUpdate) 
             {
@@ -692,6 +681,7 @@ void EntityTreeRenderer::update(bool simulate) {
                 scene->enqueueTransaction(transaction);
             }
         }
+
         {
             PerformanceTimer perfTimer("workload::transaction");
             workload::Transaction spaceTransaction;
@@ -867,7 +857,7 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         if (renderable) 
         {
             const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());
-            if (hasChanged) 
+            if (hasChanged || _isEditMode) 
             {
                 renderable->updateInScene(scene, transaction);
                 renderable->getEntity()->setNeedsRenderUpdate(true);

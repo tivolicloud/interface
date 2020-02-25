@@ -62,6 +62,7 @@ public:
     bool _bypassPrioritySorting = false;
     bool _forcedBypassPrioritySorting = false;
     bool _updateStaticEntities = false;
+    bool _isEditMode = false;
 
     const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1; 
     const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5; 
@@ -77,6 +78,8 @@ public:
     void updateStaticEntities(bool value) { _updateStaticEntities = value; }
     void setSceneIsReady(bool value) { _sceneIsReady = value; }
     bool getSceneIsReady() { return _sceneIsReady; }
+
+    void setIsEditMode(bool modeState) { _isEditMode = modeState; }
 
     quint64 getStaticUpdateTime() { return _updateStaticEntitiesTime; }
     void setStaticUpdateTime(quint64& time) { if (time > _updateStaticEntitiesTime) _updateStaticEntitiesTime = time; }
