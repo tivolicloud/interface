@@ -106,6 +106,7 @@ void ScriptEndpoint::apply(const Pose& newPose, const Pointer& source) {
     internalApply(newPose, source->getInput().getID());
 }
 
+// CPM - I've seen periodic crash bugs around internalApply
 void ScriptEndpoint::internalApply(const Pose& newPose, int sourceID) {
     _lastPoseWritten = newPose;
     if (QThread::currentThread() != thread()) {
