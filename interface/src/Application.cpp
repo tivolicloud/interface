@@ -2787,7 +2787,13 @@ void Application::cleanupBeforeQuit() {
 
     // FIXME: Something is still holding on to the ScriptEnginePointers contained in ScriptEngines, and they hold backpointers to ScriptEngines,
     // so this doesn't shut down properly
-    DependencyManager::get<ScriptEngines>()->shutdownScripting(); // stop all currently running global scripts
+
+    // CPM Commenting this out below makes much faster shutdown and takes care of the 30s shutdown delay
+    // It does come at the expense of scripts not being able to shut down promptly.  TO DO
+    // Look at the ScriptEngine shutdownScripting() function itself and see if there's a way to speed it up
+
+    //  DependencyManager::get<ScriptEngines>()->shutdownScripting(); // stop all currently running global scripts
+
     // These classes hold ScriptEnginePointers, so they must be destroyed before ScriptEngines
     // Must be done after shutdownScripting in case any scripts try to access these things
     {
@@ -6911,6 +6917,7 @@ int Application::sendNackPackets() {
     return packetsSent;
 }
 
+
 void Application::queryOctree(
     NodeType_t serverType,
     PacketType packetType,
@@ -6932,7 +6939,7 @@ void Application::queryOctree(
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
-        float radius = glm::max(INITIAL_QUERY_RADIUS, 5000.0f);// was 0.5 * glm::length(box.getDimensions()));
+        float radius = glm::max(INITIAL_QUERY_RADIUS, 25000.0f);// was 0.5 * glm::length(box.getDimensions()));
         sphericalView.setPositionAndSimpleRadius(box.calcCenter(), radius);
 
         //if (interstitialModeEnabled) {
@@ -6944,8 +6951,8 @@ void Application::queryOctree(
                 farView.set(_viewFrustum);
 
                 QJsonObject queryFlags;
-                queryFlags["includeDescendants"] = true;
-                queryFlags["includeAncestors"] = true;
+                queryFlags["includeDescendants"] = true; // forces entire tree
+                queryFlags["includeAncestors"] = true; // forces entire tree
                 queryFlags["serverScripts"] = true;
 
                 queryJSONParameters["flags"] = queryFlags;
@@ -6969,25 +6976,25 @@ void Application::queryOctree(
     }
     _octreeQuery.setReportInitialCompletion(isModifiedQuery);
 
-    // TIVOLI new feature to load entire tree at once in headless mode.
-    auto menu = Menu::getInstance(); 
-    if (menu) {
-        //if (menu->isOptionChecked(MenuOption::LoadCompleteEntityTree)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree true
-        //    _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
-        //    _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-        // }
 
-        // is this really where this should be?
-        if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-            DependencyManager::get<EntityTreeRenderer>()->setForcedBypassPrioritySorting(true); // TIVOLI bypass priority sorting
-        } else {
-            DependencyManager::get<EntityTreeRenderer>()->setForcedBypassPrioritySorting(false); // TIVOLI bypass priority sorting
+    auto menu = Menu::getInstance();
+    auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
+
+    if (treeRenderer) {
+        treeRenderer->setIsEditMode(isEditMode()); // CPM ETR needs to know to determine static clutching in edit
+        if (menu) {
+            if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
+                treeRenderer->setForcedBypassPrioritySorting(true); // TIVOLI bypass priority sorting
+            }
+            else {
+                treeRenderer->setForcedBypassPrioritySorting(false); // TIVOLI bypass priority sorting
+            }
         }
-    }
+    }   
 
     auto nodeList = DependencyManager::get<NodeList>();
-
     auto node = nodeList->soloNodeOfType(serverType);
+
     if (node && node->getActiveSocket()) {
         _octreeQuery.setMaxQueryPacketsPerSecond(getMaxOctreePacketsPerSecond());
 
@@ -7003,6 +7010,13 @@ void Application::queryOctree(
     }
 }
 
+bool Application::isEditMode() const { // cpm
+    auto settings = SettingsScriptingInterface::getInstance();
+    // how much time does getting a settings value actually take?
+    bool editState = settings->getValue("io.highfidelity.isEditing").toBool();
+    // qDebug() << "EDITING MODE IS " << editState;
+    return editState;
+}
 
 bool Application::isHMDMode() const {
     return getActiveDisplayPlugin()->isHmd();
