@@ -516,7 +516,6 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             quint16 t = 0; //static_cast<int>(fmod(secTimestampNow(), STATIC_ENTITY_UPDATE_INTERVAL)); // force a render update on statics every 7s in case the file loads in late
             EntityRendererPointer renderable = renderableForEntityId(entityId);
 
-
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
                 if (renderable) 
