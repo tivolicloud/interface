@@ -9,7 +9,7 @@ const path = require("jsdoc/path");
 const taffy = require("taffydb").taffy;
 const template = require("jsdoc/template");
 const util = require("util");
-const sass = require("node-sass");
+const sass = require("sass");
 
 var htmlsafe = helper.htmlsafe;
 var linkto = helper.linkto;
@@ -690,19 +690,12 @@ exports.publish = function(taffyData, opts, tutorials) {
 		const fileNameOut = path.join(toDir, path.basename(fileName));
 
 		if (fileName.endsWith(".scss")) {
-			sass.render(
-				{
-					file: fileName,
-					outputStyle: "compressed",
-				},
-				(err, result) => {
-					if (err) console.err(err);
-					fs.writeFileSync(
-						fileNameOut.replace(".scss", ".css"),
-						result.css,
-					);
-				},
-			);
+			const result = sass.renderSync({
+				file: fileName,
+				outputStyle: "compressed",
+			});
+
+			fs.writeFileSync(fileNameOut.replace(".scss", ".css"), result.css);
 		} else {
 			copyFile(fileName, fileNameOut, function(err) {
 				if (err) console.err(err);

@@ -5,6 +5,6 @@
 	"devDependencies": {
 		"cross-env": "^7.0.0",
 		"jsdoc": "^3.6.3",
-		"node-sass": "^4.13.0"
+		"sass": "^1.26.2"
 	}
 }
