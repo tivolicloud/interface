@@ -122,15 +122,16 @@ body {
     color: #000000;
     font-size: 0.95rem;
     //line-height: 20px;
-    // for scrollbar
-    overflow: auto;
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    bottom: 4px;
-    left: 0;
-    margin: 0;
-    @include scrollbar();
+
+    // for scrollbar (ctrl+f wont indicated anymore if this is enabled)
+    //  overflow: auto;
+    //  position: absolute;
+    //  top: 4px;
+    //  right: 4px;
+    //  bottom: 4px;
+    //  left: 0;
+    //  margin: 0;
+    //  @include scrollbar(); 
 }
 
 a,
