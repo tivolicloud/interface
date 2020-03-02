@@ -2,7 +2,7 @@ pages:
     stage: deploy
     image: node:latest
 
-    #extends: .production
+    extends: .production
 
     script:
         - cd tools/jsdoc
