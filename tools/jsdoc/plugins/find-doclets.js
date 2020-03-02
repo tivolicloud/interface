@@ -9,12 +9,8 @@ const sourceDirsExclude = ["interface/src/audio"].map(e => path.join(e)); // to 
 function getSourceFiles() {
 	const filePaths = [];
 
-	const isExcluded = dir => {
-		for (let exclude of sourceDirsExclude) {
-			if (dir.indexOf(exclude) > -1) return true;
-		}
-		return false;
-	};
+	const isExcluded = dir =>
+		sourceDirsExclude.some(excludeDir => dir.indexOf(excludeDir) > -1);
 
 	const readDir = dir => {
 		const files = fs.readdirSync(dir);
@@ -119,33 +115,19 @@ exports.handlers = {
 };
 
 exports.defineTags = dictionary => {
-	dictionary.defineTag("hifi-interface", {
-		onTagged: doclet => {
-			doclet.hifiInterface = true;
-		},
-	});
+	const tags = [
+		["hifi-interface", "hifiInterface"],
+		["hifi-assignment-client", "hifiAssignmentClient"],
+		["hifi-avatar", "hifiAvatar"],
+		["hifi-client-entity", "hifiClientEntity"],
+		["hifi-server-entity", "hifiServerEntity"],
+	];
 
-	dictionary.defineTag("hifi-assignment-client", {
-		onTagged: doclet => {
-			doclet.hifiAssignmentClient = true;
-		},
-	});
-
-	dictionary.defineTag("hifi-avatar", {
-		onTagged: doclet => {
-			doclet.hifiAvatar = true;
-		},
-	});
-
-	dictionary.defineTag("hifi-client-entity", {
-		onTagged: doclet => {
-			doclet.hifiClientEntity = true;
-		},
-	});
-
-	dictionary.defineTag("hifi-server-entity", {
-		onTagged: doclet => {
-			doclet.hifiServerEntity = true;
-		},
-	});
+	for (const tag of tags) {
+		dictionary.defineTag(tag[0], {
+			onTagged: doclet => {
+				doclet[tag[1]] = true;
+			},
+		});
+	}
 };
