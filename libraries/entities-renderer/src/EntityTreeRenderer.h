@@ -124,6 +124,7 @@ public:
     void setMouseRayPickResultOperator(std::function<RayToEntityIntersectionResult(unsigned int)> getPrevRayPickResultOperator) { _getPrevRayPickResultOperator = getPrevRayPickResultOperator;  }
     void setSetPrecisionPickingOperator(std::function<void(unsigned int, bool)> setPrecisionPickingOperator) { _setPrecisionPickingOperator = setPrecisionPickingOperator; }
 
+    //void forceUpdateStaticEntities(const render::ScenePointer& scene, render::Transaction& transaction);
     void shutdown();
     void preUpdate();
     void update(bool simulate);
@@ -185,6 +186,8 @@ signals:
     void enterEntity(const EntityItemID& entityItemID);
     void leaveEntity(const EntityItemID& entityItemID);
     void collisionWithEntity(const EntityItemID& idA, const EntityItemID& idB, const Collision& collision);
+    // void requestSpecialUpdate(const EntityItemID& entityItemID);
+    void updateStaticEntities();
 
 public slots:
     void addingEntity(const EntityItemID& entityID);

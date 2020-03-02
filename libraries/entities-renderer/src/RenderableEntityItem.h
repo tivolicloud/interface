@@ -70,10 +70,15 @@ public:
 
     ZoneCullingState _zoneCullState{ ZoneCullingState::ZoneCull_Inactive };
     ZoneCullingState _prevZoneCullState{ ZoneCullingState::ZoneCull_Inactive };
-    virtual bool evaluateEntityZoneCullState(const EntityItemPointer& entity);
+    virtual bool evaluateEntityZoneCullState(const EntityItemPointer& entity);//, QVector<QUuid>& skiplist);
 
     virtual void setStaticUpdateTime(quint64 time) { _staticUpdateTime = time; }
     virtual quint64 getStaticUpdateTime() { return _staticUpdateTime; }
+
+public slots:
+    // If an entity is static, it will not be receiving regular updates from the ETR update loop
+    // specialUpdateRequest listens in case the entity sits outside the ETR loop & needs a state change 
+   void handleSpecialUpdate(); // so the renderer can request the entity to update itself.
 
 
 protected:
@@ -124,7 +129,9 @@ protected:
     virtual void setPreviouslyVisible(bool value) { _previouslyVisible = value; }
 
 signals:
-    void requestRenderUpdate();
+    void requestRenderUpdate(); // so entity can call out to the renderer to re-render it
+
+
 
 protected:
     template<typename T>

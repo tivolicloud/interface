@@ -2075,16 +2075,23 @@ void EntityItem::setCollisionMask(uint16_t value) {
 }
 
 void EntityItem::setDynamic(bool value) {
-    if (getDynamic() != value) {
+    
+    if (getDynamic() != value) 
+    {
         auto shapeType = getShapeType();
-        withWriteLock([&] {
+        withWriteLock([&] 
+        {
             // dynamic and STATIC_MESH are incompatible so we check for that case
-            if (value && shapeType == SHAPE_TYPE_STATIC_MESH) {
-                if (_dynamic) {
+            if (value && shapeType == SHAPE_TYPE_STATIC_MESH) // || getEntityPriority() == EntityPriority::STATIC)) 
+            {
+                if (_dynamic) 
+                {
                     _dynamic = false;
                     _flags |= Simulation::DIRTY_MOTION_TYPE;
                 }
-            } else {
+            } 
+            else 
+            {
                 _dynamic = value;
                 _flags |= Simulation::DIRTY_MOTION_TYPE;
             }
@@ -3045,7 +3052,7 @@ uint16_t EntityItem::getCollisionMask() const {
 }
 
 bool EntityItem::getDynamic() const {
-    if (SHAPE_TYPE_STATIC_MESH == getShapeType()) {
+    if (SHAPE_TYPE_STATIC_MESH == getShapeType()) {// || getEntityPriority() == EntityPriority::STATIC) {
         return false;
     }
     return _dynamic;

@@ -531,6 +531,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                     else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC ) _renderablesToUpdate.insert(renderable);
                     else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC) 
                     {
+                        //connect(this, &EntityTreeRenderer::requestSpecialUpdate, renderable, &EntityRenderer::handleSpecialUpdate);
                         // if (t  == 1  )  _renderablesToUpdate.insert(renderable);
                         _staticRenderablesToUpdate.insert(renderable); 
                     }
@@ -641,6 +642,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         }
     }        
 }
+
 
 void EntityTreeRenderer::preUpdate() {
 
@@ -808,12 +810,11 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
     });
 }
 
-QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() { 
-
-  QVector<QUuid> result;
-  _getZoneCullSkiplistGuard.withReadLock([&] { result = _zoneCullSkipList; });
-  return result;
-
+QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() 
+{
+    QVector<QUuid> result;
+    _getZoneCullSkiplistGuard.withReadLock([&] { result = _zoneCullSkipList; });
+    return result;
 }
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
@@ -847,22 +848,23 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
                 break;
         }
     }
-    
+
     auto scene = _viewState->getMain3DScene();
     render::Transaction transaction;
-
-    // Since statics are generally not in the update loop, force an update pass for them here
+    
+    //// Since statics are generally not in the update loop, force an update pass for them here
     for (const auto& renderable : _staticRenderablesToUpdate) {
-        if (renderable) 
-        {
-            const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());
-            if (hasChanged || _isEditMode) 
-            {
-                renderable->updateInScene(scene, transaction);
-                renderable->getEntity()->setNeedsRenderUpdate(true);
-            }
-        }
+      if (renderable) 
+      {
+          const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());//, _zoneCullSkipList);
+          //if (hasChanged || _isEditMode) 
+          //{
+              renderable->updateInScene(scene, transaction);
+              renderable->getEntity()->setNeedsRenderUpdate(true);
+          //}
+      }
     }
+
     scene->enqueueTransaction(transaction);
 }
 
@@ -1035,6 +1037,15 @@ void EntityTreeRenderer::processEraseMessage(ReceivedMessage& message, const Sha
 
 //const DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
 //connect(&domainHandler, &DomainHandler::connectedToDomain, this, &WindowScriptingInterface::domainChanged);
+
+//QLabel *label = new QLabel;
+//QLineEdit *lineEdit = new QLineEdit;
+//QObject::connect(lineEdit, &QLineEdit::textChanged,label, &QLabel::setText);
+    // emit enterEntity(entityID);
+
+void requestSpecialUpdate(){
+
+}
 
 void EntityTreeRenderer::connectSignalsToSlots(EntityScriptingInterface* entityScriptingInterface) {
 

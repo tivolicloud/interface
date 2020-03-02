@@ -379,8 +379,11 @@ bool EntityRenderer::needsRenderUpdateFromEntity(const EntityItemPointer& entity
         return true;
     }
 
-    if (_moving != entity->isMovingRelativeToParent()) {
-        return true;
+    if (entity->getEntityPriority() != EntityPriority::STATIC)
+    {
+        if (_moving != entity->isMovingRelativeToParent()) {
+            return true;
+        }
     }
 
     return false;
@@ -420,6 +423,9 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
         updateModelTransformAndBound();
 
         _moving = entity->isMovingRelativeToParent();
+
+        //if (entity->getEntityPriority() == EntityPriority::STATIC) _moving = false; // statics can't move
+
         _visible = entity->getVisible();
 
         if (_visible) {  // TIVOLI Zone Culling logic. Goes in doRenderUpdateSynchronous     
@@ -505,6 +511,21 @@ bool EntityRenderer::evaluateEntityZoneCullState(const EntityItemPointer& entity
     }
 
     return hasChanged;
+}
+
+// QObject::connect(&a, &Counter::valueChanged,&b, &Counter::setValue);
+// QObject::connect(this, &EntityRenderer::requestRenderUpdate, this,
+// QObject::disconnect(this, &EntityRenderer::requestRenderUpdate, this, nullptr);
+
+void EntityRenderer::handleSpecialUpdate() {
+    qDebug() << _entity->getName() << ", " << _entity->getID()  << ", STATIC RECEIVED A HANDLE SPECIAL UPDATE REQUEST";
+    // We'll need to hit the do render or whatever and be sure to change the state against the skiplist state
+    //const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());
+    //if (hasChanged || _isEditMode)
+    //{
+    //    updateInScene(scene, transaction);
+    //    le->getEntity()->setNeedsRenderUpdate(true);
+    //}
 }
 
 void EntityRenderer::onAddToScene(const EntityItemPointer& entity) {
