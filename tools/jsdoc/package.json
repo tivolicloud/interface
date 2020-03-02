@@ -1,9 +1,10 @@
 {
-    "scripts": {
-        "build": "jsdoc -R intro.md -c config.json"
-    },
-    "devDependencies": {
-        "jsdoc": "^3.6.3",
-        "node-sass": "^4.13.0"
-    }
+	"scripts": {
+		"build": "cross-env NODE_OPTIONS=--max_old_space_size=2048 jsdoc -R intro.md -c config.json"
+	},
+	"devDependencies": {
+		"cross-env": "^7.0.0",
+		"jsdoc": "^3.6.3",
+		"node-sass": "^4.13.0"
+	}
 }
