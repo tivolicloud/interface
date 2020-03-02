@@ -134,13 +134,13 @@ void IDsToBounds::run(const RenderContextPointer& renderContext, const ItemIDs& 
 
     // Now we have a selection of items to render
     outItems.clear();
-
+    _disableAABBs = true; // CPM BFE (Brute Force Experiment) as a test
     if (!_disableAABBs) {
         for (auto id : inItems) {
             auto& item = scene->getItem(id);
             if (item.exist()) {
                 try {
-                    outItems.emplace_back(ItemBound{ id, item.getBound() });
+                    outItems.emplace_back(ItemBound{ id, item.getBound() }); // crashes
                 } 
                 catch (...) {
                     qDebug() << "Handling exception outItems emplace in FilterTask.cpp, item ID is " << id;
