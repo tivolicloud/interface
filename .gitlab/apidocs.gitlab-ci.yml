@@ -1,0 +1,15 @@
+pages:
+    stage: deploy
+    image: node:latest
+
+    #extends: .production
+
+    script:
+        - cd tools/jsdoc
+        - npm install
+        - npm run build
+        - mv out ../../public
+
+    artifacts:
+        paths:
+            - public

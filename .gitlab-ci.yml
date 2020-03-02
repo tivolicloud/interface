@@ -25,5 +25,6 @@ tivoli scripts:
             - scripts/tivoli.js
 
 include:
+    - local: .gitlab/apidocs.gitlab-ci.yml
     - local: .gitlab/linux.gitlab-ci.yml
     - local: .gitlab/windows.gitlab-ci.yml
