@@ -166,6 +166,7 @@ void EntitySimulation::addEntity(EntityItemPointer entity) {
     addEntityInternal(entity);
 
     _allEntities.insert(entity);
+    //if (entity->getEntityPriority() != EntityPriority::STATIC) 
     entity->setSimulated(true);
 
     // DirtyFlags are used to signal changes to entities that have already been added,

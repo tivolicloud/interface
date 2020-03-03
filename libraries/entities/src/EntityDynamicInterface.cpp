@@ -178,7 +178,7 @@ EntityDynamicType EntityDynamicInterface::dynamicTypeFromString(QString dynamicT
     return DYNAMIC_TYPE_NONE;
 }
 
-QString EntityDynamicInterface::dynamicTypeToString(EntityDynamicType dynamicType) {
+QString EntityDynamicInterface::dynamicTypeToString(EntityDynamicType dynamicType) { // CPM actions related
     switch(dynamicType) {
         case DYNAMIC_TYPE_NONE:
             return "none";
