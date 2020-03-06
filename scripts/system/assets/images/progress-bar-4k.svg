@@ -1,26 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 4480 6" style="enable-background:new 0 0 4480 6;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:url(#SVGID_1_);}
-</style>
-<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="0.607" y1="-0.4217" x2="4479.3096" y2="-0.4217" gradientTransform="matrix(-1 0 0 0.5607 4480.1401 3.471)">
-	<stop  offset="0" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.13" style="stop-color:#020202;stop-opacity:0"/>
-	<stop  offset="0.1515" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.28" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.3" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.42" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.44" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.57" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.5885" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.71" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.73" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.85" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.869" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.9831" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="1" style="stop-color:#0FE8CD"/>
-</linearGradient>
-<rect x="0.8" y="0.7" class="st0" width="4478.7" height="5.1"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 4480 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <use xlink:href="#_Image1" x="0.8" y="0.824" width="4478.7px" height="5.1px" transform="matrix(0.999933,0,0,0.85,0,0)"/>
+    <defs>
+        <image id="_Image1" width="4479px" height="6px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAEX8AAAAGCAYAAACF6FoRAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABwklEQVR4nO3cW27CMBAFUNNN8MfmWFc3xx974NGPCqmlhfJw8Z3kHAkZNZ7xbQiVFalZbFfrfWtt31rbnY2X3v91fLK9lpv33Xa1XrRPRqPRaJzWmJDBmDnuC74OARmuvU5Gfj/1Gt9zDr3S8/XslZ4vtVd6vp690vOl9krP17NXj57Hdtt+6NIxNbfVnPznZ/lM7ej1K2e3vvVHrl85u/XnvX7l7JXWv/de1+7O+XOqOT/nt5z/R4/Nob5CRvWuEfXZ9RUyqq9dXyHjqPqv9xIr3ZurVnPp/Pe4rvWqky+1V3q+nr3S86X2Ss/Xs1d6vtRe6flSe/Xoeb6XS9j3TLHm5JHP7tk5r1hjqnNSclSck5Kj4pyUHBXnpOSY6pyUHBXnpOR45Zxj+74/OrSfe6ZH3/fokZip2++13Lzvr/zP7m8/e+X1rD7/74n6eddXyKjeNaI+uz4u41sDAAAAAAAAAAAAAAAAAAAAAODlPPwFAAAAAAAAAAAAAAAAAAAAAGAAD38BAAAAAAAAAAAAAAAAAAAAABjAw18AAAAAAAAAAAAAAAAAAAAAAAbw8BcAAAAAAAAAAAAAAAAAAAAAgAE+AA9kapOutsl2AAAAAElFTkSuQmCC"/>
+    </defs>
 </svg>
