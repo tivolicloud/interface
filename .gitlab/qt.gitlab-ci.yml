@@ -1,0 +1,36 @@
+# build qt ubuntu:
+#     stage: dependencies
+#     image: ubuntu:18.04
+
+#     script:
+#         # dependencies
+#         - apt-get update -y
+#         - apt-get build-dep -y qt5-default
+#         - apt-get install -y git python gperf flex bison pkg-config mesa-utils libgl1-mesa-dev make g++ libdbus-glib-1-dev libnss3-dev
+
+#         # clone qt
+#         - cd tools/qt-builder
+#         - git clone --recursive https://code.qt.io/qt/qt5.git -b 5.15 --single-branch
+
+#         # apply patches
+#         - cp -R patches qt5
+#         - cd qt5
+#         - git apply --ignore-space-change --ignore-whitespace patches/aec.patch
+#         - git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch
+#         - cd ..
+
+#         # configure
+#         - mkdir qt5-install
+#         - mkdir qt5-build
+#         - cd qt5-build
+#         - ../qt5/configure -force-debug-info -release -opensource -confirm-license -gdb-index -recheck-all -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
+
+#         # build
+#         - make -j$(nproc)
+#         - make module-qtwebengine -j$(nproc)
+#         - make module-qtscript -j$(nproc)
+#         - make install
+
+#         # fixing
+#         - cd ../qt5-install
+#         - find . -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
