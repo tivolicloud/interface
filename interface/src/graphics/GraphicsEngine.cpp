@@ -257,10 +257,10 @@ void GraphicsEngine::render_performFrame() {
         gpu::doInBatch("splashFrame", _gpuContext, [&](gpu::Batch& batch) {
             batch.setFramebuffer(finalFramebuffer);
             batch.enableSkybox(true);
-            batch.enableStereo(isStereo);
+            batch.enableStereo(false);// CPM SPECTATOR CAMERA isStereo);
             batch.clearDepthStencilFramebuffer(1.0, 0);
             batch.setViewportTransform({ 0, 0, finalFramebuffer->getSize() });
-            _splashScreen->render(batch, viewFrustum, renderArgs._renderMethod == RenderArgs::RenderMethod::FORWARD);
+            _splashScreen->render(batch, viewFrustum, renderArgs._renderMethod == RenderArgs::RenderMethod::DEFERRED); // CPM SPECTATOR CAMERA 
         });
     } else {
         {
