@@ -3038,7 +3038,7 @@ void Application::initializeGL() {
     QStringList chromiumFlags;
     // HACK: re-expose mic and camera to prevent crash on domain-change in chromium's media::FakeAudioInputStream::ReadAudioFromSource()
     // Bug 21993: disable microphone and camera input
-    //chromiumFlags << "--use-fake-device-for-media-stream";
+    chromiumFlags << "--use-fake-device-for-media-stream";
 
     // Disable signed distance field font rendering on ATI/AMD GPUs, due to
     // https://highfidelity.manuscript.com/f/cases/13677/Text-showing-up-white-on-Marketplace-app
@@ -8033,8 +8033,9 @@ void Application::addAssetToWorldWithNewMapping(QString filePath, QString mappin
         } else if (result != GetMappingRequest::NoError) {
             QString errorInfo = "Could not map asset name: "
                 + mapping.left(mapping.length() - QString::number(copy).length() - 1);
-            qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
-            addAssetToWorldError(filenameFromPath(filePath), errorInfo);
+            //qWarning(interfaceapp) << "Error downloading model: " + errorInfo;
+            qDebug() << "Couldn't map asset name... Error downloading model: " + errorInfo;
+           // addAssetToWorldError(filenameFromPath(filePath), errorInfo);
         } else if (copy < MAX_COPY_COUNT - 1) {
             if (copy > 0) {
                 mapping = mapping.remove(mapping.lastIndexOf("-"), QString::number(copy).length() + 1);
