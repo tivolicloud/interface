@@ -34,11 +34,7 @@ endif()
         if (not os.path.isdir(self.basePath)):
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)
-
         self.fullPath = os.path.join(self.path, 'qt5-install')
-        if (not os.path.isdir(self.fullPath)):
-            self.fullPath = os.path.join(self.path, 'gcc_64')
-
         self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
@@ -65,6 +61,8 @@ endif()
                 raise Exception('UNKNOWN LINUX VERSION!!!')
         else:
             raise Exception('UNKNOWN OPERATING SYSTEM!!!')
+
+        # TODO: support regular qt install with self.fullPath = os.path.join(self.path, 'gcc_64')
 
     def writeConfig(self):
         print("Writing cmake config to {}".format(self.configFilePath))
