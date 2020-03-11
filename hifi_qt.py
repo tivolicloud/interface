@@ -38,7 +38,7 @@ endif()
         self.fullPath = os.path.join(self.path, 'qt5-install')
         if (not os.path.isdir(self.fullPath)):
             self.fullPath = os.path.join(self.path, 'gcc_64')
-            
+
         self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
@@ -52,19 +52,19 @@ endif()
         # OS dependent information
         system = platform.system()
 
-        # if 'Windows' == system:
-        #     self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-windows3.tar.gz'
-        # elif 'Darwin' == system:
-        #     self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
-        # elif 'Linux' == system:
-        #     if platform.linux_distribution()[1][:3] == '16.':
-        #         self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
-        #     elif platform.linux_distribution()[1][:3] == '18.':
-        #         self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
-        #     else:
-        #         raise Exception('UNKNOWN LINUX VERSION!!!')
-        # else:
-        #     raise Exception('UNKNOWN OPERATING SYSTEM!!!')
+        if 'Windows' == system:
+            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-windows3.tar.gz'
+        elif 'Darwin' == system:
+            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
+        elif 'Linux' == system:
+            if platform.linux_distribution()[1][:3] == '16.':
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
+            elif platform.linux_distribution()[1][:3] == '18.':
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
+            else:
+                raise Exception('UNKNOWN LINUX VERSION!!!')
+        else:
+            raise Exception('UNKNOWN OPERATING SYSTEM!!!')
 
     def writeConfig(self):
         print("Writing cmake config to {}".format(self.configFilePath))
