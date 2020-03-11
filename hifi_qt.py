@@ -35,6 +35,11 @@ endif()
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)
         self.fullPath = os.path.join(self.path, 'qt5-install')
+
+        # regular qt installation
+        if (os.path.isdir(os.path.join(self.path, 'gcc_64'))):
+            self.fullPath = os.path.join(self.path, 'gcc_64')
+
         self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
