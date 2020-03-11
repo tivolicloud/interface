@@ -1,26 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 2240 3" style="enable-background:new 0 0 2240 3;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:url(#SVGID_1_);}
-</style>
-<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="0.1399" y1="-1.9217" x2="2239.7764" y2="-1.9217" gradientTransform="matrix(-1 0 0 0.5607 2240.1399 2.812)">
-	<stop  offset="0" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.13" style="stop-color:#020202;stop-opacity:0"/>
-	<stop  offset="0.1515" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.28" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.3" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.42" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.44" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.57" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.5885" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.71" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.73" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.85" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="0.869" style="stop-color:#0FE8CD"/>
-	<stop  offset="0.9831" style="stop-color:#000000;stop-opacity:0"/>
-	<stop  offset="1" style="stop-color:#0FE8CD"/>
-</linearGradient>
-<rect x="0.4" y="0.5" class="st0" width="2239.6" height="2.5"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 2240 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <use xlink:href="#_Image1" x="0.4" y="0" width="2239.6px" height="15px" transform="matrix(0.999821,0,0,1,0,0)"/>
+    <defs>
+        <image id="_Image1" width="2240px" height="15px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACMAAAAAPCAYAAAAIoSEjAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABjElEQVR4nO3aQW6CUBAG4EFjPUJ3Xs5zebnuPIVdWBJLIoIt8v72+5KJ4PDGkcULJNOdD8dLVd1GDc7lX5tvoQd5+SXz966pqtpV1dvX5/D42dwrayx5f5a4Ri/t95LWr17W+Z2q617U70dzjtdas53wf6fel6nRai29tVFPb+vXGqu3qbb2sCnH3Q/um7z8WL6FHuRz8tv6vpf1sZ/5/ZJr+nfpqf/vUSSvT+79v69P7j12/fvH6XI+HFt7Bnx03XDP+617mFBLb23U09v6tebU6+r+c1ZrMfYOLIT4u9HvU/ubGDufc+3TtTYFAAAAAAAAAADBDMAAAAAAAAAAABDNAAwAAAAAAAAAANEMwAAAAAAAAAAAEM0ADAAAAAAAAAAA0QzAAAAAAAAAAAAQzQAMAAAAAAAAAADRDMAAAAAAAAAAABDNAAwAAAAAAAAAANEMwAAAAAAAAAAAEM0ADAAAAAAAAAAA0QzAAAAAAAAAAAAQzQAMAAAAAAAAAADRDMAAAAAAAAAAABDtE3po+N37nhvsAAAAAElFTkSuQmCC"/>
+    </defs>
 </svg>
