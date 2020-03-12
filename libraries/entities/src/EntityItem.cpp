@@ -2860,7 +2860,7 @@ QString EntityItem::getScript() const {
 }
 
 void EntityItem::setScript(const QString& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
+   
     withWriteLock([&] { _script = value; });
 }
 
@@ -2871,7 +2871,6 @@ quint64 EntityItem::getScriptTimestamp() const {
 }
 
 void EntityItem::setScriptTimestamp(const quint64 value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _scriptTimestamp = value; });
 }
 
@@ -2882,7 +2881,6 @@ QString EntityItem::getServerScripts() const {
 }
 
 void EntityItem::setServerScripts(const QString& serverScripts) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] {
         _serverScripts = serverScripts;
         _serverScriptsChangedTimestamp = usecTimestampNow();
@@ -3106,7 +3104,6 @@ QString EntityItem::getUserData() const {
 }
 
 void EntityItem::setUserData(const QString& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not for static entity priority
     withWriteLock([&] { _userData = value; });
 }
 
