@@ -99,7 +99,7 @@ bool ModelEntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(blendshapeCoefficients, setBlendshapeCoefficients);
 
 
-    if (getEntityPriority() == EntityPriority::STATIC) { // No animation support for static entity priority
+    if (getEntityPriority() != EntityPriority::STATIC) { // No animation support for static entity priority
         withWriteLock([&] {
             AnimationPropertyGroup animationProperties = _animationProperties;
             animationProperties.setProperties(properties);
