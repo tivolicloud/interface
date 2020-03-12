@@ -134,7 +134,7 @@ void IDsToBounds::run(const RenderContextPointer& renderContext, const ItemIDs& 
 
     // Now we have a selection of items to render
     outItems.clear();
-    _disableAABBs = true; // CPM BFE (Brute Force Experiment) as a test
+   // _disableAABBs =  true; // CPM was false
     if (!_disableAABBs) {
         for (auto id : inItems) {
             auto& item = scene->getItem(id);
