@@ -94,7 +94,8 @@ static const QString RESOURCE_SCHEME = "resource";
 static const QUrl SPECTATOR_CAMERA_FRAME_URL("resource://spectatorCameraFrame");
 static const QUrl HMD_PREVIEW_FRAME_URL("resource://hmdPreviewFrame");
 
-static const float SKYBOX_LOAD_PRIORITY { 10.0f }; // Make sure skybox loads first
+static const float SKYBOX_LOAD_PRIORITY { 10.1f }; // Make sure skybox loads first
+static const float AMBIENT_MAP_LOAD_PRIORITY{ 10.0f }; // Make sure ambient loads high too
 static const float HIGH_MIPS_LOAD_PRIORITY { 9.0f }; // Make sure high mips loads after skybox but before models
 
 TextureCache::TextureCache() {
@@ -441,7 +442,11 @@ void NetworkTexture::setExtra(void* extra) {
 
     if (_type == image::TextureUsage::SKY_TEXTURE) {
         setLoadPriority(this, SKYBOX_LOAD_PRIORITY);
-    } else if (_currentlyLoadingResourceType == ResourceType::KTX) {
+    } 
+    else if (_type == image::TextureUsage::AMBIENT_TEXTURE) {
+        setLoadPriority(this, AMBIENT_MAP_LOAD_PRIORITY);
+    }
+    else if (_currentlyLoadingResourceType == ResourceType::KTX) {
         setLoadPriority(this, HIGH_MIPS_LOAD_PRIORITY);
     }
 
