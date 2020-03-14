@@ -27,7 +27,7 @@ endif()
     def __init__(self, args):
         self.args = args
         self.configFilePath = os.path.join(args.build_root, 'qt.cmake')
-        self.version = '5.12.3'
+        self.version = os.getenv('HIFI_QT_VERSION', '5.12.3')
 
         defaultBasePath = os.path.expanduser('~/hifi/qt')
         self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
@@ -35,6 +35,11 @@ endif()
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)
         self.fullPath = os.path.join(self.path, 'qt5-install')
+
+        # regular qt installation
+        if (os.path.isdir(os.path.join(self.path, 'gcc_64'))):
+            self.fullPath = os.path.join(self.path, 'gcc_64')
+
         self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
@@ -48,21 +53,29 @@ endif()
         # OS dependent information
         system = platform.system()
 
-        if 'Windows' == system:
+        if system == 'Windows':
             self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-windows3.tar.gz'
-        elif 'Darwin' == system:
+        
+        elif system == 'Darwin':
             self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
-        elif 'Linux' == system:
-            if platform.linux_distribution()[1][:3] == '16.':
-                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
-            elif platform.linux_distribution()[1][:3] == '18.':
-                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
-            else:
-                raise Exception('UNKNOWN LINUX VERSION!!!')
-        else:
-            raise Exception('UNKNOWN OPERATING SYSTEM!!!')
+       
+        elif system == 'Linux':
+            etcIssue = open("/etc/issue", "r").read().split(" ")
+            distro = etcIssue[0]
+            version = etcIssue[1]
 
-        # TODO: support regular qt install with self.fullPath = os.path.join(self.path, 'gcc_64')
+            if distro == "Ubuntu":
+                if version[0:2] == "16":
+                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
+            
+                elif version[0:2] == "18":
+                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
+
+            else:
+                if (not os.path.isdir(self.fullPath)):
+                    raise Exception('Unknown Linux version!')
+        else:
+            raise Exception('Unknown operating system!')
 
     def writeConfig(self):
         print("Writing cmake config to {}".format(self.configFilePath))
