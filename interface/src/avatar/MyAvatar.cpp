@@ -3407,8 +3407,11 @@ void MyAvatar::updateOrientation(float deltaTime) {
     //  Smoothly rotate body with arrow keys
     float targetSpeed = getDriveKey(YAW) * _yawSpeed;
     CameraMode mode = qApp->getCamera().getMode();
-    bool computeLookAt = isReadyForPhysics() && !qApp->isHMDMode() && 
-                        (mode == CAMERA_MODE_FIRST_PERSON_LOOK_AT || mode == CAMERA_MODE_LOOK_AT || mode == CAMERA_MODE_SELFIE);
+    //bool computeLookAt = isReadyForPhysics() && !qApp->isHMDMode() && 
+    //                    (mode == CAMERA_MODE_FIRST_PERSON_LOOK_AT || mode == CAMERA_MODE_LOOK_AT || mode == CAMERA_MODE_SELFIE);
+    bool computeLookAt = !qApp->isHMDMode() &&
+        (mode == CAMERA_MODE_FIRST_PERSON_LOOK_AT || mode == CAMERA_MODE_LOOK_AT || mode == CAMERA_MODE_SELFIE);
+    
     bool smoothCameraYaw = computeLookAt && mode != CAMERA_MODE_FIRST_PERSON_LOOK_AT;
     if (smoothCameraYaw) {
         // For "Look At" and "Selfie" camera modes we also smooth the yaw rotation from right-click mouse movement.
