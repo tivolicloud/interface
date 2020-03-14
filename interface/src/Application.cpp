@@ -7296,7 +7296,8 @@ void Application::nodeKilled(SharedNodePointer node) {
         QMetaObject::invokeMethod(DependencyManager::get<AudioClient>().data(), "audioMixerKilled");
     } else if (node->getType() == NodeType::EntityServer) {
         // we lost an entity server, clear all of the domain octree details
-        clearDomainOctreeDetails(false);
+        // clearDomainOctreeDetails(false); // CPM
+        qDebug() << "*** DOMAIN OCTREE WOULD HAVE BEEN CLEARED HERE ***";
     } else if (node->getType() == NodeType::AssetServer) {
         // asset server going away - check if we have the asset browser showing
 
