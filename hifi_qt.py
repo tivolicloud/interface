@@ -27,7 +27,7 @@ endif()
     def __init__(self, args):
         self.args = args
         self.configFilePath = os.path.join(args.build_root, 'qt.cmake')
-        self.version = os.getenv('HIFI_QT_VERSION', '5.12.3')
+        self.version = '5.12.3'
 
         defaultBasePath = os.path.expanduser('~/hifi/qt')
         self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
@@ -35,11 +35,6 @@ endif()
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)
         self.fullPath = os.path.join(self.path, 'qt5-install')
-
-        # regular qt installation
-        if (os.path.isdir(os.path.join(self.path, 'gcc_64'))):
-            self.fullPath = os.path.join(self.path, 'gcc_64')
-
         self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
@@ -72,8 +67,7 @@ endif()
                     self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
 
             else:
-                if (not os.path.isdir(self.fullPath)):
-                    raise Exception('Unknown Linux version!')
+                raise Exception('Unknown Linux version!')
         else:
             raise Exception('Unknown operating system!')
 
