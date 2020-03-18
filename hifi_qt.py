@@ -31,11 +31,17 @@ endif()
 
         defaultBasePath = os.path.expanduser('~/hifi/qt')
         self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
-        if (not os.path.isdir(self.basePath)):
+        if not os.path.isdir(self.basePath):
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)
         self.fullPath = os.path.join(self.path, 'qt5-install')
-        self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
+
+        self.hasQt = False
+        if os.getenv("QT_CMAKE_PREFIX_PATH"):
+            self.hasQt = True
+            self.cmakePath = os.getenv("QT_CMAKE_PREFIX_PATH")
+        else:
+            self.cmakePath = os.path.join(self.fullPath, 'lib/cmake')
 
         print("Using qt path {}".format(self.path))
         lockDir, lockName = os.path.split(self.path)
@@ -45,7 +51,9 @@ endif()
 
         self.lockFile = os.path.join(lockDir, lockName)
 
-        # OS dependent information
+        if self.hasQt:
+            return
+            
         system = platform.system()
 
         if system == 'Windows':
@@ -79,7 +87,7 @@ endif()
             f.write(cmakeConfig)
 
     def installQt(self):
-        if not os.path.isdir(self.fullPath):
+        if not os.path.isdir(self.fullPath) and not self.hasQt:
             print ('Downloading Qt from CDN')
             print('Extracting ' + self.qtUrl + ' to ' + self.path)
             hifi_utils.downloadAndExtract(self.qtUrl, self.path)
