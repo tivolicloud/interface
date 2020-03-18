@@ -164,12 +164,16 @@ Run `python3 prepare-windows-symbols-for-backtrace.py qt5-install` to scan the q
 #### Preparing source files
 `git clone --recursive git://code.qt.io/qt/qt5.git -b 5.12.3 --single-branch`  
   
-*  Copy the **patches** folder to qt5  
-*   Apply patches to Qt  
-`cd qt5`  
-`git apply --ignore-space-change --ignore-whitespace patches/aec.patch`  
-`git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch`  
-`cd ..`
+- Copy the **patches** folder to qt5  
+- Apply patches to Qt  
+  `cd qt5`  
+  `git apply --ignore-space-change --ignore-whitespace patches/aec.patch`  
+  `git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch`  
+  - If using Arch Linux   
+    `git apply --ignore-space-change --ignore-whitespace patches/SIOCGSTAMP-not-declared.patch`   
+    `git apply --ignore-space-change --ignore-whitespace patches/pulseaudio-13.patch`   
+    
+  `cd ..`
 #### Configuring
 `mkdir qt5-install`  
 `mkdir qt5-build`  
@@ -178,7 +182,7 @@ Run `python3 prepare-windows-symbols-for-backtrace.py qt5-install` to scan the q
 *Ubuntu 16.04*  
 `../qt5/configure -opensource -confirm-license -platform linux-g++-64 -qt-zlib -qt-libjpeg -qt-libpng -qt-xcb -qt-freetype -qt-pcre -qt-harfbuzz -nomake examples -nomake tests -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -no-warnings-are-errors -no-pch -no-egl -no-icu -prefix ../qt5-install`  
 
-*Ubuntu 18.04*  
+*Ubuntu 18.04 or Arch Linux*  
 `../qt5/configure -force-debug-info -release -opensource -confirm-license -gdb-index -recheck-all -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install`  
 
 
@@ -198,6 +202,12 @@ Run `python3 prepare-windows-symbols-for-backtrace.py qt5-install` to scan the q
 `find . -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;`  
 1.   Copy *qt.conf* to *qt5-install\bin*  
 #### Uploading  
+
+*Ubuntu 18.04*  
+1.  Create archive           
+`tar -zcvf qt5-install.tar.gz qt5-install`  
+2.  Upload qt5-install.tar.gz to https://hifi-qa.s3.amazonaws.com/qt5/Ubuntu/18.04
+
 *Ubuntu 16.04*  
 1.  Return to the home folder    
 `cd ..`  
@@ -210,10 +220,6 @@ Run `python3 prepare-windows-symbols-for-backtrace.py qt5-install` to scan the q
 `filename.add("qt5-install", os.path.basename("qt5-install"))`    
 `exit()`  
 1.  Upload qt5-install.tar.gz to https://hifi-qa.s3.amazonaws.com/qt5/Ubuntu/16.04    
-
-*Ubuntu 18.04*  
-``tar -zcvf qt5-install.tar.gz qt5-install`  
-1.  Upload qt5-install.tar.gz to https://hifi-qa.s3.amazonaws.com/qt5/Ubuntu/18.04  
 
 ### Mac  
 #### Preparing source files  
