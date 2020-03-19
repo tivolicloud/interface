@@ -4008,7 +4008,7 @@ bool Application::isServerlessMode() const {
 
 void Application::setIsInterstitialMode(bool interstitialMode) {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-    if (enableInterstitial) {
+    if (enableInterstitial) {  // cpm force true to turn on ism
         if (_interstitialMode != interstitialMode) {
             _interstitialMode = interstitialMode;
             emit interstitialModeChanged(_interstitialMode);
@@ -6181,21 +6181,24 @@ static bool domainLoadingInProgress = false;
 
 void Application::tryToEnablePhysics() {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-
+    qDebug() << "TRY TO ENABLE PHYSICS 1";
     if (gpuTextureMemSizeStable() || !enableInterstitial) {
         _fullSceneCounterAtLastPhysicsCheck = _fullSceneReceivedCounter;
         _lastQueriedViews.clear();  // Force new view.
+        qDebug() << "TRY TO ENABLE PHYSICS 2";
 
         // process octree stats packets are sent in between full sends of a scene (this isn't currently true).
         // We keep physics disabled until we've received a full scene and everything near the avatar in that
         // scene is ready to compute its collision shape.
         auto myAvatar = getMyAvatar();
         if (myAvatar->isReadyForPhysics()) {
+            qDebug() << "TRY TO ENABLE PHYSICS 31";
             myAvatar->getCharacterController()->setPhysicsEngine(_physicsEngine);
             _octreeProcessor.resetSafeLanding();
             _physicsEnabled = true;
             setIsInterstitialMode(false);
             myAvatar->updateMotionBehaviorFromMenu();
+            qDebug() << "TRY TO ENABLE PHYSICS 4";
             DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
         }
     }
@@ -6212,6 +6215,7 @@ void Application::update(float deltaTime) {
         if (!domainLoadingInProgress) {
             PROFILE_ASYNC_BEGIN(app, "Scene Loading", "");
             domainLoadingInProgress = true;
+            qDebug() << "SCENE LOADING";
         }
 
         // we haven't yet enabled physics.  we wait until we think we have all the collision information
@@ -6221,10 +6225,17 @@ void Application::update(float deltaTime) {
         } else if (_failedToConnectToEntityServer) {
             if (_octreeProcessor.safeLandingIsActive()) {
                 _octreeProcessor.stopSafeLanding();
+                qDebug() << "FAILED TO CONNECT TO ENTITY SERVER";
             }
         } else {
             _octreeProcessor.updateSafeLanding();
+
+            //qDebug() << "UPDATE SAFE LANDING";
+            //DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
             if (_octreeProcessor.safeLandingIsComplete()) {
+                // DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
+
+                qDebug() << "SAFELANDING COMPLETE. NEXT TRY TO ENABLE PHYSICS 1";
                 // weird this is just constantly called over and over rather than once... what?
                 // also look into interstitail mode, how its frustum works, its jsonqueryparameters, and 
                 // where it's designated in domain settings, and see if we can get it working again
@@ -7292,14 +7303,23 @@ void Application::nodeKilled(SharedNodePointer node) {
 
     _entityEditSender.nodeKilled(node);
 
+    // Let's somehow compute a network reliability value here depending on 
+    // the frequency of things getting lost and use that to determine when
+    // to show the user a message that they need a better network connection
+
+    if (node->getType() == NodeType::DomainServer) qDebug() <<"*** DOMAIN SERVER LOST ***";
+    if (node->getType() == NodeType::AvatarMixer) qDebug() << "*** AVATAR MIXER LOST ***";
+    if (node->getType() == NodeType::MessagesMixer) qDebug() << "*** MESSAGES MIXER LOST ***";
+    if (node->getType() == NodeType::EntityScriptServer) qDebug() << "*** ENTITY SCRIPT SERVER LOST ***";
     if (node->getType() == NodeType::AudioMixer) {
+        qDebug() << "*** AUDIO MIXER LOST ***";
         QMetaObject::invokeMethod(DependencyManager::get<AudioClient>().data(), "audioMixerKilled");
     } else if (node->getType() == NodeType::EntityServer) {
-        // we lost an entity server, clear all of the domain octree details
-        // clearDomainOctreeDetails(false); // CPM
-        qDebug() << "*** DOMAIN OCTREE WOULD HAVE BEEN CLEARED HERE ***";
+        // clearDomainOctreeDetails(false); // CPM No. Terrible user experience.
+        qDebug() << "*** ENTITY SERVER LOST ***";
     } else if (node->getType() == NodeType::AssetServer) {
         // asset server going away - check if we have the asset browser showing
+        qDebug() << "*** ASSET SERVER LOST ***";
 
 #if !defined(DISABLE_QML)
         auto offscreenUi = getOffscreenUI();
