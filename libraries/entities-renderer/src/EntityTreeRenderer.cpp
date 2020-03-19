@@ -554,7 +554,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const auto& renderable : _priorityRenderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
             }
         }
 
@@ -570,7 +570,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const EntityRendererPointer& renderable : _renderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
             }
 
             size_t numRenderables = _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
@@ -629,7 +629,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                         break;
                     }
                     const auto& renderable = sortedRenderable.getRenderer();
-                    renderable->updateInScene(scene, transaction);
+                    if (renderable != nullptr) renderable->updateInScene(scene, transaction);
                     _renderablesToUpdate.erase(renderable);
                 }
 
