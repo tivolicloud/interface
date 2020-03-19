@@ -563,7 +563,7 @@ void DomainHandler::processDomainServerConnectionDeniedPacket(QSharedPointer<Rec
     }
 }
 
-static const int SILENT_DOMAIN_TRAFFIC_DROP_MIN = 2;
+static const int SILENT_DOMAIN_TRAFFIC_DROP_MIN = 25;
 
 bool DomainHandler::checkInPacketTimeout() {
     ++_checkInPacketsSinceLastReply;

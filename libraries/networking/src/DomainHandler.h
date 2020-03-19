@@ -64,7 +64,7 @@ const quint16 DOMAIN_SERVER_HTTPS_PORT =
             .toUInt()
         : 40101;
 
-const int MAX_SILENT_DOMAIN_SERVER_CHECK_INS = 5;
+const int MAX_SILENT_DOMAIN_SERVER_CHECK_INS = 25;
 
 class DomainHandler : public QObject {
     Q_OBJECT
