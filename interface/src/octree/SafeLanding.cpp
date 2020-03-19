@@ -186,6 +186,7 @@ float SafeLanding::loadingProgressPercentage() {
     float entityReadyPercentage = 0.0f;
     if (_maxTrackedEntityCount > 0) {
         entityReadyPercentage = ((_maxTrackedEntityCount - _trackedEntities.size()) / (float)_maxTrackedEntityCount);
+        qDebug() << "SAFE LANDING PROGRESS  " << _maxTrackedEntityCount << ". ERP IS " << entityReadyPercentage;
     }
 
     constexpr int32_t MINIMUM_TRACKED_ENTITY_STABILITY_COUNT = 15;
