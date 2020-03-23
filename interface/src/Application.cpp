@@ -2001,7 +2001,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 
     // If launched from Steam, let it handle updates
     const QString HIFI_NO_UPDATER_COMMAND_LINE_KEY = "--no-updater";
-    bool noUpdater = arguments().indexOf(HIFI_NO_UPDATER_COMMAND_LINE_KEY) != -1;
+    bool noUpdater = true; // CPM arguments().indexOf(HIFI_NO_UPDATER_COMMAND_LINE_KEY) != -1;
     bool buildCanUpdate = BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable
         || BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Master;
     if (!noUpdater && buildCanUpdate) {
