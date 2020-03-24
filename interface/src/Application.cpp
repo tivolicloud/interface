@@ -3047,6 +3047,12 @@ void Application::initializeGL() {
         chromiumFlags << "--disable-distance-field-text";
     }
 
+    // Fixes "seccomp-bpf failure in syscall 0230" on Arch Linux
+    chromiumFlags << "--disable-seccomp-filter-sandbox";
+
+    // Enable this for debugging chromium
+    //chromiumFlags << "--enable-logging" << "--log-level=0" << "--v=1";
+
     // Ensure all Qt webengine processes launched from us have the appropriate command line flags
     if (!chromiumFlags.empty()) {
         qputenv("QTWEBENGINE_CHROMIUM_FLAGS", chromiumFlags.join(' ').toLocal8Bit());
