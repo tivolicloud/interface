@@ -20,6 +20,5 @@ apt-get install -y curl nodejs npm && \
 npm install pm2 -g
 
 COPY dist/. /root
-COPY ecosystem.config.js /root/ecosystem.config.js
 
 CMD pm2-runtime start /root/ecosystem.config.js

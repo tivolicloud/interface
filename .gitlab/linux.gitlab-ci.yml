@@ -86,7 +86,7 @@ deploy linux server:
         - cp ../../build/assignment-client/assignment-client dist/assignment-client
         - cp ../../build/tools/oven/oven dist/oven
         - cp -r ../../build/_lib-server dist/lib
-        - cp modify-domain-port.py dist
+        - cp ecosystem.config.js dist
 
         # build server image
         - docker build
