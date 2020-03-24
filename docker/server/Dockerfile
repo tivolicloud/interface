@@ -14,9 +14,12 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
 ENV LD_LIBRARY_PATH=/root/lib
 
-RUN apt update -y && apt install -y python3 supervisor curl
+RUN \
+apt-get update -y && \
+apt-get install -y curl nodejs npm && \
+npm install pm2 -g
 
 COPY dist/. /root
-COPY supervisor.conf /etc/supervisor/conf.d/tivoli.conf
+COPY ecosystem.config.js /root/ecosystem.config.js
 
-CMD python3 /root/modify-domain-port.py && /usr/bin/supervisord -c /etc/supervisor/conf.d/tivoli.conf
+CMD pm2-runtime start /root/ecosystem.config.js

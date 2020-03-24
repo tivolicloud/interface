@@ -2,7 +2,7 @@ build linux production:
     stage: build
     image: ubuntu:18.04
 
-    extends: .production
+    # extends: .production
 
     dependencies:
         - tivoli scripts
@@ -61,7 +61,7 @@ deploy linux server:
     stage: deploy
     image: docker:latest
 
-    extends: .production
+    # extends: .production
 
     dependencies:
         - build linux production
