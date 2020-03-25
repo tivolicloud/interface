@@ -90,27 +90,24 @@ deploy linux server:
 
         # build server image
         - docker build
-          -t tivolicloud/server:$CI_COMMIT_TAG
-          -t tivolicloud/server:latest
-          -t registry.tivolicloud.com/tivolicloud/interface/server:$CI_COMMIT_TAG
-          -t registry.tivolicloud.com/tivolicloud/interface/server:latest
+          -t registry.tivolicloud.com/tivolicloud/interface/server:staging
           .
         - docker image ls
         - cd ..
 
         # prepare ice image
-        - cd ice
-        - mkdir -p dist
+        # - cd ice
+        # - mkdir -p dist
 
-        - cp ../../build/ice-server/ice-server dist/ice-server
-        - cp -r ../../build/_lib-ice dist/lib
+        # - cp ../../build/ice-server/ice-server dist/ice-server
+        # - cp -r ../../build/_lib-ice dist/lib
 
-        # build ice image
-        - docker build
-          -t registry.tivolicloud.com/tivolicloud/interface/ice:latest
-          .
-        - docker image ls
-        - cd ..
+        # # build ice image
+        # - docker build
+        #   -t registry.tivolicloud.com/tivolicloud/interface/ice:latest
+        #   .
+        # - docker image ls
+        # - cd ..
 
         # publish server to docker hub
         # - docker login --username makitsune --password $DOCKER_HUB_ACCESS_TOKEN
