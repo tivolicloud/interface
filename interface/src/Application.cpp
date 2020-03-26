@@ -3047,8 +3047,10 @@ void Application::initializeGL() {
         chromiumFlags << "--disable-distance-field-text";
     }
 
-    // Fixes "seccomp-bpf failure in syscall 0230" on Arch Linux
-    chromiumFlags << "--disable-seccomp-filter-sandbox";
+    #if defined(Q_OS_LINUX)
+        // Fixes "seccomp-bpf failure in syscall 0230" on Arch Linux
+        chromiumFlags << "--disable-seccomp-filter-sandbox";
+    #endif
 
     // Enable this for debugging chromium
     //chromiumFlags << "--enable-logging" << "--log-level=0" << "--v=1";
