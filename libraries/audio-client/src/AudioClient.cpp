@@ -611,6 +611,17 @@ QString defaultAudioDeviceName(QAudio::Mode mode) {
 #endif
 
 #endif
+#if defined(Q_OS_LINUX)
+    // QAudioDeviceInfo device;
+    // for (const auto& queryDevice: QAudioDeviceInfo::availableDevices(mode)) {
+    //     if (queryDevice.deviceName().trimmed() == "default") {
+    //         device = queryDevice;
+    //         break;
+    //     }
+    // }
+    deviceName = "default";
+#endif
+
    return deviceName;
 }
 
