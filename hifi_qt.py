@@ -27,7 +27,7 @@ endif()
     def __init__(self, args):
         self.args = args
         self.configFilePath = os.path.join(args.build_root, 'qt.cmake')
-        self.version = '5.12.3'
+        self.version = '5.14.1'
 
         defaultBasePath = os.path.expanduser('~/hifi/qt')
         self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
