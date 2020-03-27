@@ -52,6 +52,7 @@ macro(PACKAGE_LIBRARIES_FOR_DEPLOYMENT)
     add_custom_command(
       TARGET ${TARGET_NAME}
       POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${QTAUDIO_PATH}"
       COMMAND ${CMAKE_COMMAND} -E make_directory "${QTAUDIO_WIN7_PATH}"
       COMMAND ${CMAKE_COMMAND} -E make_directory "${QTAUDIO_WIN8_PATH}"
       # copy release DLLs
