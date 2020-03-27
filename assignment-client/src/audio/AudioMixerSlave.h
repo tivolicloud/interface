@@ -12,7 +12,9 @@
 #ifndef hifi_AudioMixerSlave_h
 #define hifi_AudioMixerSlave_h
 
+#if !defined(Q_MOC_RUN)
 #include <tbb/concurrent_vector.h>
+#endif
 
 #include <AABox.h>
 #include <AudioHRTF.h>

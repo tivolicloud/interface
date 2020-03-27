@@ -11,7 +11,6 @@
 #include "TouchscreenVirtualPadDevice.h"
 #include "KeyboardMouseDevice.h"
 
-#include <QtGui/QTouchEvent>
 #include <QGestureEvent>
 #include <QGuiApplication>
 #include <QWindow>
