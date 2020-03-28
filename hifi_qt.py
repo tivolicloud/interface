@@ -59,20 +59,17 @@ endif()
         if system == 'Windows':
             self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-windows.tar.gz'
         
-        elif system == 'Darwin':
-            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
+        # elif system == 'Darwin':
+        #     self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
        
         elif system == 'Linux':
             etcIssue = open("/etc/issue", "r").read().split(" ")
             distro = etcIssue[0]
             version = etcIssue[1]
 
-            if distro == "Ubuntu":
-                if version[0:2] == "16":
-                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-16.04-with-symbols.tar.gz'
-            
-                elif version[0:2] == "18":
-                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-ubuntu-18.04.tar.gz'
+            if distro == "Ubuntu":           
+                if version[0:2] == "18":
+                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz'
 
             else:
                 raise Exception('Unknown Linux version!')

@@ -13,7 +13,7 @@ git clone --recursive git://code.qt.io/qt/qt5.git -b 5.14.1 --single-branch
 ### Apply patches:
 
 ```bash
-cp -r patches qt5
+cp -R patches qt5
 cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch
@@ -56,6 +56,7 @@ cd ..
 
 ```bash
 tar -zcvf tivoli-qt5-install-5.14.1-arch-linux.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.
