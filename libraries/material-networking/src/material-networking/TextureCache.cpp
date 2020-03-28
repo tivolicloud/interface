@@ -223,12 +223,12 @@ public:
 };
 
 namespace std {
-    template <>
-    struct hash<QByteArray> {
-        size_t operator()(const QByteArray& byteArray) const {
-            return qHash(byteArray);
-        }
-    };
+    // template <>
+    // struct hash<QByteArray> {
+    //     size_t operator()(const QByteArray& byteArray) const {
+    //         return qHash(byteArray);
+    //     }
+    // };
 
     template <>
     struct hash<TextureExtra> {

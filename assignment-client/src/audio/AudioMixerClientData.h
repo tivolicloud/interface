@@ -14,7 +14,9 @@
 
 #include <queue>
 
+#if !defined(Q_MOC_RUN)
 #include <tbb/concurrent_vector.h>
+#endif
 
 #include <QtCore/QJsonObject>
 

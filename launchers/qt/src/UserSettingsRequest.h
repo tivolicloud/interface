@@ -6,7 +6,7 @@
 #include "LoginRequest.h"
 
 struct UserSettings {
-    QString homeLocation{ QString::null };
+    QString homeLocation{ QString() };
 };
 
 class UserSettingsRequest : public QObject {

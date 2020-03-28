@@ -15,7 +15,8 @@
 #include <controllers/InputDevice.h>
 #include "InputPlugin.h"
 #include <QtGui/qtouchdevice.h>
-#include <QtGui/QList>
+#include <QtCore/QList>
+#include <QtGui/QTouchEvent>
 #include "VirtualPadManager.h"
 
 class QTouchEvent;
