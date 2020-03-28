@@ -14,9 +14,7 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
 ENV LD_LIBRARY_PATH=/root/lib
 
-RUN \
-pacman -Syu --no-confirm && \
-pacman -S --no-confirm curl pm2
+RUN pacman -Syu --noconfirm curl pm2
 
 COPY dist/. /root
 
