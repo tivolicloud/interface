@@ -1,6 +1,7 @@
 build linux production:
     stage: build
-    image: ubuntu:18.04
+    # image: ubuntu:18.04
+    image: archlinux:latest
 
     extends: .production
 
@@ -16,7 +17,6 @@ build linux production:
 
         HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
         HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
-        HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
 
     cache:
         paths:
@@ -24,12 +24,16 @@ build linux production:
             - build/HIFI_VCPKG
 
     script:
+        # ubuntu 18.04
+        # - apt-get update -y
+        # - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        # ubuntu 18.04 for interface
+        # - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
+        # - apt-get install -y npm
+
         # system dependencies
-        - apt-get update -y
-        - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
-        # for interface
-        #- apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
-        #- apt-get install -y npm
+        - pacman -Syu --noconfirm
+        - pacman -S --noconfirm base-devel git curl unzip gcc cmake python python-distutils-extra nodejs openssl double-conversion libpng harfbuzz mesa alsa-lib libxmu libxi freeglut jack libxrandr libudev0-shim zlib md4c
 
         # build
         - mkdir -p build
