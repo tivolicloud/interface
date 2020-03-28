@@ -67,9 +67,13 @@ endif()
             distro = etcIssue[0]
             version = etcIssue[1]
 
-            if distro == "Ubuntu":           
-                if version[0:2] == "18":
-                    self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz'
+            # currently doesn't work
+            # if distro == "Ubuntu":           
+            #     if version[0:2] == "18":
+            #         self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz'
+
+            if distro == "Arch":
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-arch-linux.tar.gz'
 
             else:
                 raise Exception('Unknown Linux version!')
