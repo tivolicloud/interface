@@ -1653,7 +1653,7 @@
             isCheckable: true,
             isChecked: Settings.getValue(
                 SETTING_EDIT_PREFIX + MENU_CREATE_ENTITIES_GRABBABLE,
-                true
+                false
             )
         });
 
