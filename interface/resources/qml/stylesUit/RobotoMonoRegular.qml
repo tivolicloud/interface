@@ -1,5 +1,5 @@
 //
-//  AnonymousProRegular.qml
+//  RobotoMonoRegular.qml
 //
 //  Created by David Rowe on 12 Feb 2016
 //  Copyright 2016 High Fidelity, Inc.
@@ -16,5 +16,5 @@ Text {
     font.pixelSize: size
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignLeft
-    font.family: "Anonymous Pro"
+    font.family: "Roboto Mono"
 }

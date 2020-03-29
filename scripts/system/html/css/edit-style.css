@@ -29,8 +29,8 @@
 }
 
 @font-face {
-    font-family: AnonymousPro-Regular;
-    src: url(../fonts/AnonymousPro-Regular.ttf);
+    font-family: RobotoMono-Regular;
+    src: url(../fonts/RobotoMono-Regular.ttf);
 }
 
 @font-face {
@@ -188,7 +188,7 @@ input[type="text"], input[type="search"], input[type="number"], textarea {
 }
 
 textarea {
-    font-family: AnonymousPro-Regular;
+    font-family: RobotoMono-Regular;
     font-size: 16px;
     padding-top: 5px;
     padding-bottom: 5px;

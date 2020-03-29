@@ -11,6 +11,6 @@
 import QtQuick 2.5
 import "."
 
-AnonymousProRegular {
+RobotoMonoRegular {
     font.pixelSize: hifi.fontSizes.logs
 }

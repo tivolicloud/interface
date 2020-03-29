@@ -377,7 +377,7 @@ Rectangle {
             // Style
             color: hifi.colors.darkGray;
         }
-        AnonymousProRegular {
+        RobotoMonoRegular {
             id: edition;
             text: root.itemEdition;
             // Text size
@@ -490,7 +490,7 @@ Rectangle {
             elide: Text.ElideRight;
         }
         
-        AnonymousProRegular {
+        RobotoMonoRegular {
             id: isMyCertText;
             visible: root.isMyCert && ownedBy.text !== "--" && ownedBy.text !== "";
             text: "(Private)";
@@ -555,7 +555,7 @@ Rectangle {
             // Style
             color: hifi.colors.darkGray;
         }
-        AnonymousProRegular {
+        RobotoMonoRegular {
             id: dateAcquired;
             text: root.dateAcquired;
             // Text size
@@ -601,7 +601,7 @@ Rectangle {
             verticalAlignment: Text.AlignTop;
             horizontalAlignment: Text.AlignLeft;
         }
-        AnonymousProRegular {
+        RobotoMonoRegular {
             id: priceText;
             text: root.itemCost;
             // Text size

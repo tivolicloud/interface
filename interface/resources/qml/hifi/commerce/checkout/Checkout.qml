@@ -1013,7 +1013,7 @@ Rectangle {
             border.color: "#F3808F";
             color: "#FFC3CD";
 
-            AnonymousProRegular {
+            RobotoMonoRegular {
                 id: failureErrorText;
                 // Text size
                 size: 16;

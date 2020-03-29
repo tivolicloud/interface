@@ -1,5 +1,5 @@
 module stylesUit
-AnonymousProRegular 1.0 AnonymousProRegular.qml
+RobotoMonoRegular 1.0 RobotoMonoRegular.qml
 ButtonLabel 1.0 ButtonLabel.qml
 HifiConstants 1.0 HifiConstants.qml
 HiFiGlyphs 1.0 HiFiGlyphs.qml

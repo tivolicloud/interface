@@ -283,7 +283,7 @@ Item {
                         width: parent.width;
                         height: visible ? parent.height : 0;
 
-                        AnonymousProRegular {
+                        RobotoMonoRegular {
                             id: pendingCountText;
                             anchors.fill: parent;
                             text: model.count + ' Transaction' + (model.count > 1 ? 's' : '') + ' Pending';
@@ -303,7 +303,7 @@ Item {
                         width: parent.width;
                         height: visible ? parent.height : 0;
 
-                        AnonymousProRegular {
+                        RobotoMonoRegular {
                             id: hfcText;
                             text: model.hfc_text || '';
                             // Style
@@ -318,7 +318,7 @@ Item {
                             horizontalAlignment: Text.AlignRight;
                         }
 
-                        AnonymousProRegular {
+                        RobotoMonoRegular {
                             id: transactionText;
                             text: model.transaction_text ? (model.status === "invalidated" ? ("INVALIDATED: " + model.transaction_text) : model.transaction_text) : "";
                             size: 18;
