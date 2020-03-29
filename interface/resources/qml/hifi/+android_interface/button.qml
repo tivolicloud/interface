@@ -32,7 +32,7 @@ Item {
     property string hoverTextColor: "#ffffff"
     property string activeTextColor: "#ffffff"
     property string activeHoverTextColor: "#ffffff"
-    property string fontFamily: "FiraSans"
+    property string fontFamily: "Roboto"
     property bool fontBold: false
 
     property int bottomMargin: 30
@@ -88,8 +88,8 @@ Item {
         source: urlHelper(button.icon)
     }
     FontLoader {
-        id: firaSans
-        source: "../../../fonts/FiraSans-Regular.ttf"
+        id: roboto
+        source: "../../../fonts/Roboto-Regular.ttf"
     }
     Text {
         id: text

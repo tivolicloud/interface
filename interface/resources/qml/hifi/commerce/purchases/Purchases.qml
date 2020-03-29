@@ -184,7 +184,7 @@ Rectangle {
         anchors.bottom: parent.bottom;
         width: parent.width;
 
-        RalewayRegular {
+        RobotoRegular {
             id: installedAppsHeader;
             anchors.top: parent.top;
             anchors.topMargin: 10;
@@ -211,7 +211,7 @@ Rectangle {
                 width: parent.width;
                 height: 40;
                 
-                RalewayRegular {
+                RobotoRegular {
                     text: model.appUrl;
                     // Text size
                     size: 16;
@@ -401,7 +401,7 @@ Rectangle {
             anchors.top: parent.top;
             anchors.topMargin: 4;
 
-            RalewayRegular {
+            RobotoRegular {
                 id: myText;
                 anchors.top: parent.top;
                 anchors.topMargin: 10;
@@ -837,7 +837,7 @@ Rectangle {
                 color: "red";
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "You have " + root.numUpdatesAvailable + " item updates available.";
                 // Text size
                 size: 18;
@@ -887,7 +887,7 @@ Rectangle {
             width: parent.width;
 
             // Explanitory text
-            RalewayRegular {
+            RobotoRegular {
                 id: noItemsYet;
                 text: "<b>You haven't submitted anything to the Marketplace yet!</b><br><br>Submit an item to the Marketplace to add it to My Submissions.";
                 // Text size
@@ -936,7 +936,7 @@ Rectangle {
             width: parent.width;
 
             // Explanitory text
-            RalewayRegular {
+            RobotoRegular {
                 id: haventPurchasedYet;
                 text: "<b>You haven't gotten anything yet!</b><br><br>Get an item from <b>Marketplace</b> to add it to your Inventory.";
                 // Text size

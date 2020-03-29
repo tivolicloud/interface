@@ -89,7 +89,7 @@ Rectangle {
         color: "white"
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             id: title
             size: 24;
             anchors.top: parent.top
@@ -124,7 +124,7 @@ Rectangle {
             }
 
             // TextStyle3
-            RalewayRegular {
+            RobotoRegular {
                 id: body
 
                 AvatarAppStyle {

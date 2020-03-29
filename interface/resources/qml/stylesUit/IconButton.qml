@@ -11,7 +11,7 @@
 import QtQuick 2.5
 import "."
 
-RalewayRegular {
+RobotoRegular {
     font.pixelSize: hifi.fontSizes.iconButton
     font.capitalization: Font.AllUppercase
     font.letterSpacing: 1.5

@@ -74,7 +74,7 @@ TableView {
         color: isLightColorScheme ? hifi.colors.tableBackgroundLight : hifi.colors.tableBackgroundDark
 
 
-        RalewayRegular {
+        RobotoRegular {
             id: titleText
             x: centerHeaderText ? (parent.width - paintedWidth -
                                   ((sortIndicatorVisible &&

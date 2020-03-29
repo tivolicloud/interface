@@ -144,7 +144,7 @@ Rectangle {
         }
         height: 50
         
-        RalewaySemiBold {
+        RobotoMedium {
             id: nameText
 
             anchors {
@@ -170,7 +170,7 @@ Rectangle {
                 rightMargin: 5
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: heart
 
                 anchors {
@@ -186,7 +186,7 @@ Rectangle {
                 color: root.liked ? hifi.colors.redAccent  : hifi.colors.lightGrayText
             }
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: likesText
 
                 anchors {
@@ -318,7 +318,7 @@ Rectangle {
             width: paintedWidth
             height: childrenRect.height
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: creatorLabel
                 
                 anchors.top: parent.top
@@ -331,7 +331,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: creatorText
                 
                 anchors {
@@ -359,7 +359,7 @@ Rectangle {
             width: parent.width
             height: childrenRect.height
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: postedLabel
 
                 anchors.top: parent.top
@@ -372,7 +372,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: created_at
 
                 anchors {
@@ -415,7 +415,7 @@ Rectangle {
             height: attributionsModel.count > 0 ? childrenRect.height : 0
             visible: attributionsModel.count > 0
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: attributionsLabel
 
                 anchors.top: parent.top
@@ -446,7 +446,7 @@ Rectangle {
                 delegate: Item {
                     height: 24
                     width: parent.width
-				    RalewaySemiBold {
+				    RobotoMedium {
 						id: attributionName
 
 						anchors.leftMargin: 15
@@ -494,7 +494,7 @@ Rectangle {
             width: parent.width
             height: childrenRect.height
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: licenseLabel
 
                 anchors.top: parent.top;
@@ -507,7 +507,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter;
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: licenseText
                 
                 anchors.top: licenseLabel.bottom
@@ -521,7 +521,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: licenseHelp
 
                 anchors.top: licenseText.bottom
@@ -578,7 +578,7 @@ Rectangle {
             
             visible: root.standaloneVisible
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: standaloneLabel
                 
                 anchors.top: parent.top
@@ -592,7 +592,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: standaloneOptimizedText
 
                 anchors.top: standaloneLabel.bottom
@@ -621,7 +621,7 @@ Rectangle {
             onHeightChanged: {
                 footer.evalHeight();
             }
-            RalewaySemiBold {
+            RobotoMedium {
                 id: descriptionLabel
                 
                 anchors.top: parent.top
@@ -635,7 +635,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: descriptionText
                 
                 anchors.top: descriptionLabel.bottom
@@ -674,7 +674,7 @@ Rectangle {
             
             onHeightChanged: { footer.evalHeight(); }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: categoryLabel
                 
                 anchors.top: parent.top
@@ -701,7 +701,7 @@ Rectangle {
                 height: 24*model.count+10
 
                 model: categoriesListModel
-                delegate: RalewaySemiBold {
+                delegate: RobotoMedium {
                     id: categoryText
 
                     anchors.leftMargin: 15

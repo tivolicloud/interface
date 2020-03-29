@@ -24,7 +24,7 @@ Rectangle {
     height: 32
     color: hifi.colors.white
     HifiConstants { id: hifi }
-    RalewaySemiBold {
+    RobotoMedium {
         id: label;
         color: hifi.colors.blueHighlight;
         font.pixelSize: 15;

@@ -9,59 +9,33 @@
 */
 
 @font-face {
-    font-family: Raleway-Regular;
-    src: url(../../../../resources/fonts/Raleway-Regular.ttf),  /* Windows production */
-         url(../../../../fonts/Raleway-Regular.ttf),  /* OSX production */
-         url(../../../../interface/resources/fonts/Raleway-Regular.ttf),  /* Development, running script in /HiFi/examples */
-         url(../fonts/Raleway-Regular.ttf);  /* Marketplace script */
+    font-family: Roboto-Regular;
+    src: url(../fonts/Roboto-Regular.ttf);
 }
 
 @font-face {
-    font-family: Raleway-Light;
-    src: url(../../../../resources/fonts/Raleway-Light.ttf),
-         url(../../../../fonts/Raleway-Light.ttf),
-         url(../../../../interface/resources/fonts/Raleway-Light.ttf),
-         url(../fonts/Raleway-Light.ttf);
+    font-family: Roboto-Light;
+    src: url(../fonts/Roboto-Light.ttf);
 }
 
 @font-face {
-    font-family: Raleway-Bold;
-    src: url(../../../../resources/fonts/Raleway-Bold.ttf),
-         url(../../../../fonts/Raleway-Bold.ttf),
-         url(../../../../interface/resources/fonts/Raleway-Bold.ttf),
-         url(../fonts/Raleway-Bold.ttf);
+    font-family: Roboto-Bold;
+    src: url(../fonts/Roboto-Bold.ttf);
 }
 
 @font-face {
-    font-family: Raleway-SemiBold;
-    src: url(../../../../resources/fonts/Raleway-SemiBold.ttf),
-         url(../../../../fonts/Raleway-SemiBold.ttf),
-         url(../../../../interface/resources/fonts/Raleway-SemiBold.ttf),
-         url(../fonts/Raleway-SemiBold.ttf);
-}
-
-@font-face {
-    font-family: FiraSans-SemiBold;
-    src: url(../../../../resources/fonts/FiraSans-SemiBold.ttf),
-         url(../../../../fonts/FiraSans-SemiBold.ttf),
-         url(../../../../interface/resources/fonts/FiraSans-SemiBold.ttf),
-         url(../fonts/FiraSans-SemiBold.ttf);
+    font-family: Roboto-Medium;
+    src: url(../fonts/Roboto-Medium.ttf);
 }
 
 @font-face {
     font-family: AnonymousPro-Regular;
-    src: url(../../../../resources/fonts/AnonymousPro-Regular.ttf),
-         url(../../../../fonts/AnonymousPro-Regular.ttf),
-         url(../../../../interface/resources/fonts/AnonymousPro-Regular.ttf),
-         url(../fonts/AnonymousPro-Regular.ttf);
+    src: url(../fonts/AnonymousPro-Regular.ttf);
 }
 
 @font-face {
     font-family: HiFi-Glyphs;
-    src: url(../../../../resources/fonts/hifi-glyphs.ttf),
-         url(../../../../fonts/hifi-glyphs.ttf),
-         url(../../../../interface/resources/fonts/hifi-glyphs.ttf),
-         url(../fonts/hifi-glyphs.ttf);
+    src: url(../fonts/hifi-glyphs.ttf);
 }
 
 * {
@@ -73,7 +47,7 @@ body {
 
     color: #afafaf;
     background-color: #404040;
-    font-family: Raleway-Regular;
+    font-family: Roboto-Regular;
     font-size: 12px;
 
     -webkit-touch-callout: none;
@@ -88,7 +62,7 @@ body {
 }
 
 table {
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     color: #afafaf;
     border-collapse: collapse;
@@ -98,7 +72,7 @@ table {
 }
 
 thead {
-    font-family: Raleway-Regular;
+    font-family: Roboto-Regular;
     font-size: 12px;
     text-transform: uppercase;
     background-color: #1c1c1c;
@@ -113,7 +87,7 @@ tbody {
 }
 
 tfoot {
-    font-family: Raleway-Light;
+    font-family: Roboto-Light;
     font-size: 13px;
     background-color: #1c1c1c;
     border-top: 1px solid #575757;
@@ -209,7 +183,7 @@ input[type="text"], input[type="search"], input[type="number"], textarea {
     color: #afafaf;
     background-color: #252525;
     border: none;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
 }
 
@@ -382,7 +356,7 @@ input.no-spin::-webkit-inner-spin-button {
 }
 
 input[type=button], button.hifi-edit-button {
-    font-family: Raleway-Bold;
+    font-family: Roboto-Bold;
     font-size: 13px;
     text-transform: uppercase;
     vertical-align: top;
@@ -587,7 +561,7 @@ div.section-header, hr {
     display: flex;
     flex-flow: row nowrap;
     padding: 10px 16px;
-    font-family: Raleway-Regular;
+    font-family: Roboto-Regular;
     font-size: 12px;
     color: #afafaf;
     height: 28px;
@@ -695,24 +669,24 @@ span.indented {
 .property label, .number label {
     display: table-cell;
     vertical-align: middle;
-    font-family: Raleway-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 14px;
 }
 .property label .unit, .number label .unit {
     margin-left: 8px;
-    font-family: Raleway-Light;
+    font-family: Roboto-Light;
     font-size: 13px;
 }
 
 .property div.legend, .number div.legend {
     display: table-cell;
     vertical-align: middle;
-    font-family: Raleway-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 14px;
 }
 .property div.legend .unit, .number div.legend .unit {
     margin-left: 8px;
-    font-family: Raleway-Light;
+    font-family: Roboto-Light;
     font-size: 13px;
 }
 
@@ -781,7 +755,7 @@ span.indented {
 .dropdown dl {
     clear: both;
     cursor: pointer;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     width: 292px;
     height: 28px;
@@ -841,7 +815,7 @@ span.indented {
     padding: 3px 0 1px 12px;
     width: 320px;
     height: auto;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     color: #404040;
     background-color: #afafaf;
@@ -866,7 +840,7 @@ span.indented {
     position: absolute;
 }
 .multiselect-box select {
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     color: #afafaf;
     background-color: #252525;
@@ -893,7 +867,7 @@ span.indented {
 .multiselect-options label {
     z-index: 2;
     display: block;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 11px;
     color: #000000;
     background-color: #afafaf;
@@ -992,7 +966,7 @@ div.refresh input[type="button"] {
     display: inline-block;
     color: #afafaf;
     background-color: #252525;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;   
     margin: 0;
     padding: 0 16px;
@@ -1052,7 +1026,7 @@ div.refresh input[type="button"] {
     position: absolute;
     top: 6px;
     left: -16px;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
 }
 
@@ -1135,7 +1109,7 @@ div.refresh input[type="button"] {
     width: 100%;
     margin: 21px -21px 0 -21px;
     padding: 16px 0 0 21px;
-    font-family: Raleway-Regular;
+    font-family: Roboto-Regular;
     font-size: 12px;
     color: #afafaf;
     height: 10px;
@@ -1349,7 +1323,7 @@ input[type=button]#export {
     position: absolute;
     top: 80px;
     padding: 12px;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     font-style: italic;
     color: #afafaf;
@@ -1600,7 +1574,7 @@ input.rename-entity {
     height: 100%;
     width: 100%;
     border: none;
-    font-family: FiraSans-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 15px;
     /* need this to show the text cursor when the input field is empty */
     padding-left: 2px;
@@ -1624,7 +1598,7 @@ input.rename-entity {
 }
 
 .create-app-tooltip .create-app-tooltip-js-attribute {
-    font-family: Raleway-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 11px;
     color: #000000;
     bottom: 0;
@@ -1739,7 +1713,7 @@ input.number-slider {
 }
 
 #property-serverScripts-status {
-    font-family: Raleway-Light;
+    font-family: Roboto-Light;
     font-size: 14px;
     margin: 6px 0;
     cursor: default;

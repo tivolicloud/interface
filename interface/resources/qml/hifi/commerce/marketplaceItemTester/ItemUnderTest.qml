@@ -71,7 +71,7 @@ Rectangle {
             width: parent.width * 0.5
             height: childrenRect.height
 
-            HifiStylesUit.RalewaySemiBold {
+            HifiStylesUit.RobotoMedium {
                 id: resourceName
                 height: paintedHeight
                 width: parent.width
@@ -84,7 +84,7 @@ Rectangle {
                 wrapMode: Text.WrapAnywhere
             }
 
-            HifiStylesUit.RalewayRegular {
+            HifiStylesUit.RobotoRegular {
                 id: resourceUrl
                 anchors.top: resourceName.bottom;
                 anchors.topMargin: 4;

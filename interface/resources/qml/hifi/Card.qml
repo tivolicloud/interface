@@ -157,7 +157,7 @@ Item {
         color: hifi.colors.black;
         spread: dropSpread;
     }
-    RalewaySemiBold {
+    RobotoMedium {
         id: place;
         visible: showPlace;
         text: placeName;
@@ -187,7 +187,7 @@ Item {
             height: 40;
             visible: ((action === 'snapshot') || isAnnouncement) && (messageHeight >= 40);
         }
-        FiraSansRegular {
+        RobotoRegular {
             id: users;
             visible: isConcurrency || isAnnouncement;
             text: onlineUsers;
@@ -195,7 +195,7 @@ Item {
             color: messageColor;
             anchors.verticalCenter: message.verticalCenter;
         }
-        RalewayRegular {
+        RobotoRegular {
             id: message;
             visible: !isAnnouncement;
             text: isConcurrency ? pluralize(onlineUsers, "person", "people") : (drillDownToPlace ? "snapshots" : ("by " + userName));
@@ -213,12 +213,12 @@ Item {
         }
         Column {
             visible: isAnnouncement;
-            RalewayRegular {
+            RobotoRegular {
                 text: pluralize(onlineUsers, "connection") + "   "; // hack padding
                 size: textSizeSmall;
                 color: messageColor;
             }
-            RalewayRegular {
+            RobotoRegular {
                 text: pluralize(onlineUsers, "is here now", "are here now");
                 size: textSizeSmall * 0.7;
                 color: messageColor;

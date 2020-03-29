@@ -53,7 +53,7 @@ Item {
         color: "#121212"
         radius: 4
 
-        RalewayBold {
+        RobotoBold {
             id: title
             elide: Text.ElideRight
             anchors {
@@ -68,7 +68,7 @@ Item {
             size: 24
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: path
             anchors {
                 top: title.bottom

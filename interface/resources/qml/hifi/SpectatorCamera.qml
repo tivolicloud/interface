@@ -52,7 +52,7 @@ Rectangle {
         anchors.top: parent.top;
 
         // "Spectator" text
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleBarText;
             text: "Spectator";
             // Text size
@@ -110,7 +110,7 @@ Rectangle {
         }
 
         // "Spectator" app description text
-        RalewayLight {
+        RobotoLight {
             id: spectatorDescriptionText;
             text: "Spectator lets you change what your monitor displays while you're using a VR headset. Use Spectator when streaming and recording video.";
             // Text size
@@ -132,7 +132,7 @@ Rectangle {
         }
 
         // "Learn More" text
-        RalewayRegular {
+        RobotoRegular {
             id: spectatorLearnMoreText;
             text: "Learn More About Spectator";
             // Text size
@@ -234,7 +234,7 @@ Rectangle {
             }
 
             // Instructions (visible when display texture isn't set)
-            FiraSansRegular {
+            RobotoRegular {
                 id: spectatorCameraInstructions;
                 text: "Turn on Spectator Camera for a preview\nof what your monitor shows.";
                 size: 16;
@@ -272,7 +272,7 @@ Rectangle {
             anchors.left: parent.left;
         }
         // "Monitor Shows" Switch Label
-        RalewayLight {
+        RobotoLight {
             id: monitorShowsSwitchLabel;
             text: "MONITOR SHOWS:";
             anchors.top: spectatorCameraImageContainer.bottom;

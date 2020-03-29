@@ -236,7 +236,7 @@ Windows.ScrollingWindow {
                         rightMargin: hifi.dimensions.tablePadding
                     }
 
-                    FiraSansSemiBold {
+                    RobotoMedium {
                         id: textItem
                         text: styleData.value
                         size: hifi.fontSizes.tableText
@@ -296,7 +296,7 @@ Windows.ScrollingWindow {
 
                     }
 
-                    FiraSansSemiBold {
+                    RobotoMedium {
                         text: runningScriptsModel.get(styleData.row) ? runningScriptsModel.get(styleData.row).url : ""
                         elide: Text.ElideMiddle
                         size: hifi.fontSizes.tableText

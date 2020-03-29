@@ -615,7 +615,7 @@ Windows.ScrollingWindow {
 
                 Component {
                     id: labelComponent
-                    FiraSansSemiBold {
+                    RobotoMedium {
                         text: styleData.value
                         size: hifi.fontSizes.tableText
                         color: colorScheme == hifi.colorSchemes.light
@@ -673,7 +673,7 @@ Windows.ScrollingWindow {
 
                         text: styleData.value
 
-                        font.family: "Fira Sans SemiBold"
+                        font.family: "Roboto Medium"
                         font.pixelSize: hifi.fontSizes.textFieldInput
                         height: hifi.dimensions.tableRowHeight
 
@@ -731,7 +731,7 @@ Windows.ScrollingWindow {
                 color: colorScheme == hifi.colorSchemes.light ? hifi.colors.tableRowLightOdd : hifi.colors.tableRowDarkOdd
                 border.color: colorScheme == hifi.colorSchemes.light ? hifi.colors.black : hifi.colors.lightGrayText
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     id: toolTipText
                     anchors.centerIn: parent
 
@@ -816,7 +816,7 @@ Windows.ScrollingWindow {
             anchors.right: treeView.right
             anchors.bottom: uploadSection.top
 
-            RalewayRegular {
+            RobotoRegular {
                 anchors.verticalCenter: parent.verticalCenter
 
                 function makeText() {

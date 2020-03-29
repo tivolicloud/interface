@@ -87,7 +87,7 @@ Item {
         anchors.top: rootSwitch.top;
         height: rootSwitch.height;
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: labelOff;
             text: labelTextOff;
             size: labelTextSize;
@@ -128,7 +128,7 @@ Item {
         anchors.top: rootSwitch.top;
         height: rootSwitch.height;
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: labelOn;
             text: labelTextOn;
             size: labelTextSize;

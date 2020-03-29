@@ -249,7 +249,7 @@ Rectangle {
     }
 
     // Title text
-    RalewayLight {
+    RobotoLight {
         id: titleBarText;
         text: "Certificate";
         // Text size
@@ -267,7 +267,7 @@ Rectangle {
         wrapMode: Text.WordWrap;
     }
     // Title text
-    RalewayRegular {
+    RobotoRegular {
         id: popText;
         // Text size
         size: 16;
@@ -324,7 +324,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.rightMargin: 24;
 
-        RalewayRegular {
+        RobotoRegular {
             id: itemNameHeader;
             text: "ITEM NAME";
             // Text size
@@ -337,7 +337,7 @@ Rectangle {
             // Style
             color: hifi.colors.darkGray;
         }
-        RalewaySemiBold {
+        RobotoMedium {
             id: itemName;
             text: root.itemName;
             // Text size
@@ -363,7 +363,7 @@ Rectangle {
             }
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: editionHeader;
             text: "EDITION";
             // Text size
@@ -443,7 +443,7 @@ Rectangle {
             color: hifi.colors.blueHighlight
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: errorText;
             visible: !root.useGoldCert;
             // Text size
@@ -460,7 +460,7 @@ Rectangle {
             verticalAlignment: Text.AlignTop;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: ownedByHeader;
             text: "OWNER";
             // Text size
@@ -475,7 +475,7 @@ Rectangle {
             color: hifi.colors.darkGray;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: ownedBy;
             text: root.itemOwner;
             // Text size
@@ -508,7 +508,7 @@ Rectangle {
             verticalAlignment: Text.AlignVCenter;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: standaloneHeader;
             text: root.standaloneOptimized ? "STAND-ALONE OPTIMIZED" : "STAND-ALONE INCOMPATIBLE";
             // Text size
@@ -524,7 +524,7 @@ Rectangle {
             color: hifi.colors.darkGray;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: standaloneText;
             text: root.standaloneOptimized ? "This item is stand-alone optimized" : "This item is incompatible with stand-alone devices";
             // Text size
@@ -540,7 +540,7 @@ Rectangle {
             elide: Text.ElideRight;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: dateAcquiredHeader;
             text: "ACQUISITION DATE";
             // Text size
@@ -570,7 +570,7 @@ Rectangle {
             color: root.infoTextColor;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: priceHeader;
             text: "ACQUISITION PRICE";
             // Text size

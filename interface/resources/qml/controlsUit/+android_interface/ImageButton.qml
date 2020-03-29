@@ -34,7 +34,7 @@ Item {
             source: button.source
         }
 
-        HifiStyles.FiraSansRegular {
+        HifiStyles.RobotoRegular {
             id: buttonText
             anchors.centerIn: parent
             text: button.text

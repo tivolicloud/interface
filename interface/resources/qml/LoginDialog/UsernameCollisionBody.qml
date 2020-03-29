@@ -22,7 +22,7 @@ Item {
     readonly property string termsContainerText: qsTr("By creating this user profile, you agree to High Fidelity's Terms of Service")
     width: root.width
     height: root.height
-    readonly property string fontFamily: "Raleway"
+    readonly property string fontFamily: "Roboto"
     readonly property int fontSize: 15
     readonly property int textFieldFontSize: 18
     readonly property bool fontBold: true
@@ -121,7 +121,7 @@ Item {
                 topMargin: hifi.dimensions.contentSpacing.y
             }
             focus: true
-            font.family: "Fira Sans"
+            font.family: "Roboto"
             font.pixelSize: usernameCollisionBody.textFieldFontSize
             styleRenderType: Text.QtRendering
             width: root.bannerWidth

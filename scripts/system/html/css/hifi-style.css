@@ -9,58 +9,39 @@
 */
 
 @font-face {
-    font-family: Raleway-Regular;
-    src: url(../../../../resources/fonts/Raleway-Regular.ttf),  /* Windows production */
-         url(../../../../fonts/Raleway-Regular.ttf),  /* OSX production */
-         url(../../../../interface/resources/fonts/Raleway-Regular.ttf);  /* Development, running script in /HiFi/examples */
+    font-family: Roboto-Regular;
+    src: url(../fonts/Roboto-Regular.ttf);
 }
 
 @font-face {
-    font-family: Raleway-Light;
-    src: url(../../../../resources/fonts/Raleway-Light.ttf),
-         url(../../../../fonts/Raleway-Light.ttf),
-         url(../../../../interface/resources/fonts/Raleway-Light.ttf);
+    font-family: Roboto-Light;
+    src: url(../fonts/Roboto-Light.ttf);
 }
 
 @font-face {
-    font-family: Raleway-Bold;
-    src: url(../../../../resources/fonts/Raleway-Bold.ttf),
-         url(../../../../fonts/Raleway-Bold.ttf),
-         url(../../../../interface/resources/fonts/Raleway-Bold.ttf);
+    font-family: Roboto-Bold;
+    src: url(../fonts/Roboto-Bold.ttf);
 }
 
 @font-face {
-    font-family: Raleway-SemiBold;
-    src: url(../../../../resources/fonts/Raleway-SemiBold.ttf),
-         url(../../../../fonts/Raleway-SemiBold.ttf),
-         url(../../../../interface/resources/fonts/Raleway-SemiBold.ttf);
-}
-
-@font-face {
-    font-family: FiraSans-SemiBold;
-    src: url(../../../../resources/fonts/FiraSans-SemiBold.ttf),
-         url(../../../../fonts/FiraSans-SemiBold.ttf),
-         url(../../../../interface/resources/fonts/FiraSans-SemiBold.ttf);
+    font-family: Roboto-Medium;
+    src: url(../fonts/Roboto-Medium.ttf);
 }
 
 @font-face {
     font-family: AnonymousPro-Regular;
-    src: url(../../../../resources/fonts/AnonymousPro-Regular.ttf),
-         url(../../../../fonts/AnonymousPro-Regular.ttf),
-         url(../../../../interface/resources/fonts/AnonymousPro-Regular.ttf);
+    src: url(../fonts/AnonymousPro-Regular.ttf);
 }
 
 @font-face {
     font-family: HiFi-Glyphs;
-    src: url(../../../../resources/fonts/hifi-glyphs.ttf),
-         url(../../../../fonts/hifi-glyphs.ttf),
-         url(../../../../interface/resources/fonts/hifi-glyphs.ttf);
+    src: url(../fonts/hifi-glyphs.ttf);
 }
 
 body {
     color: #afafaf;
     background-color: #404040;
-    font-family: Raleway-Regular;
+    font-family: Roboto-Regular;
     font-size: 15px;
 
     -webkit-touch-callout: none;
@@ -104,7 +85,7 @@ input[type=radio] + label{
     display: inline-block;
     margin-left: -2em;
     line-height: 2em;
-    font-family: Raleway-SemiBold;
+    font-family: Roboto-Medium;
     font-size: 14px;
 }
 input[type=radio] + label > span{
@@ -136,7 +117,7 @@ input[type=radio]:active + label > span > span{
 }
 
 .grayButton {
-    font-family: Raleway-Bold;
+    font-family: Roboto-Bold;
     font-size: 13px;
     color: black;
     padding: 0 10px;
@@ -155,7 +136,7 @@ input[type=radio]:active + label > span > span{
     background-image: linear-gradient(#FFFFFF, ##AFAFAF);
 }
 .blueButton {
-    font-family: Raleway-Bold;
+    font-family: Roboto-Bold;
     font-size: 13px;
     color: white;
     padding: 0 10px;

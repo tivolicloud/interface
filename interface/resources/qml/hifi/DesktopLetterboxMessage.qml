@@ -75,7 +75,7 @@ Item {
                     // Text Size
                     font.pixelSize: headerTextPixelSize
                     // Style
-                    font.family: "Raleway"
+                    font.family: "Roboto"
                     font.weight: Font.DemiBold
                     color: hifi.colors.darkGray
                     horizontalAlignment: Text.AlignHLeft
@@ -99,7 +99,7 @@ Item {
                 horizontalAlignment: Text.AlignHLeft
                 // Style
                 font.pixelSize: popupTextPixelSize
-                font.family: "Raleway"
+                font.family: "Roboto"
                 color: hifi.colors.darkGray
                 wrapMode: Text.WordWrap
                 textFormat: Text.StyledText

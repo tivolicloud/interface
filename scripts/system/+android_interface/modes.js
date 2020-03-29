@@ -53,7 +53,7 @@ function init() {
         height:240,
         bottomMargin: 16,
         textSize: 38,
-        fontFamily: "Raleway",
+        fontFamily: "Roboto",
         fontBold: true
 
     });

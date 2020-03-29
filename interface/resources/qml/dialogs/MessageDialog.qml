@@ -91,7 +91,7 @@ ModalWindow {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: mainTextContainer
             onTextChanged: d.resize();
             wrapMode: Text.WordWrap
@@ -109,7 +109,7 @@ ModalWindow {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: informativeTextContainer
             onTextChanged: d.resize();
             wrapMode: Text.WordWrap

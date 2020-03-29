@@ -46,7 +46,7 @@
         );
 
         // Supporting styles from edit-style.css.
-        // Font family, size, and position adjusted because Raleway-Bold cannot be used cross-domain.
+        // Font family, size, and position adjusted because Roboto-Bold cannot be used cross-domain.
         $("head").append(
             '<style>' +
                 'input[type=button] { font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 12px; text-transform: uppercase; vertical-align: center; height: 28px; min-width: 100px; padding: 0 15px; border-radius: 5px; border: none; color: #fff; background-color: #000; background: linear-gradient(#343434 20%, #000 100%); cursor: pointer; }' +

@@ -37,7 +37,7 @@ Item {
     }
 
     // Username Text
-    RalewayRegular {
+    RobotoRegular {
         id: usernameText;
         text: Account.username;
         // Text size
@@ -65,7 +65,7 @@ Item {
         anchors.bottom: parent.bottom;
 
         // "Change Passphrase" text
-        RalewaySemiBold {
+        RobotoMedium {
             id: passphraseTitle;
             text: "Change Passphrase:";
             // Text size

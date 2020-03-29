@@ -11,7 +11,7 @@
 import QtQuick 2.5
 import "."
 
-RalewaySemiBold {
+RobotoMedium {
     lineHeight: 2
     font.pixelSize: hifi.fontSizes.menuItem
 }

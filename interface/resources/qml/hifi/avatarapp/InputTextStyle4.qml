@@ -6,7 +6,7 @@ import QtQuick.Controls 2.2
 
 HifiControlsUit.TextField {
     id: control
-    font.family: "Fira Sans"
+    font.family: "Roboto"
     font.pixelSize: 15;
     implicitHeight: 40
 

@@ -67,7 +67,7 @@ Item {
         return name.text !== "" && projectLocation.text !== "" && avatarModel.text !== "";
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: errorMessage
         visible: text !== ""
         text: ""

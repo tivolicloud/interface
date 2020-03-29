@@ -102,6 +102,7 @@ Item {
         id: text
         color: "#ffffff"
         text: newEntityButton.text
+        font.family: "Roboto"
         font.bold: true
         font.pixelSize: 16
         anchors.bottom: parent.bottom

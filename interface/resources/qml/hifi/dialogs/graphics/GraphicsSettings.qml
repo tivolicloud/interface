@@ -39,7 +39,7 @@ Item {
             Layout.topMargin: 18
             spacing: 0
 
-            HifiStylesUit.RalewayRegular {
+            HifiStylesUit.RobotoRegular {
                 text: "GRAPHICS SETTINGS"
                 Layout.maximumWidth: parent.width
                 height: 30
@@ -117,7 +117,7 @@ Item {
                     Layout.preferredWidth: parent.width
                     Layout.preferredHeight: 35
 
-                    HifiStylesUit.RalewayRegular {
+                    HifiStylesUit.RobotoRegular {
                         id: worldDetailHeader
                         text: "World Detail"
                         anchors.left: parent.left
@@ -174,7 +174,7 @@ Item {
                     Layout.preferredHeight: 35
                     Layout.topMargin: 20
 
-                    HifiStylesUit.RalewayRegular {
+                    HifiStylesUit.RobotoRegular {
                         id: renderingEffectsHeader
                         text: "Rendering Effects"
                         anchors.left: parent.left
@@ -249,7 +249,7 @@ Item {
                     Layout.preferredHeight: 35
                     Layout.topMargin: 20
 
-                    HifiStylesUit.RalewayRegular {
+                    HifiStylesUit.RobotoRegular {
                         id: refreshRateHeader
                         text: "Refresh Rate"
                         anchors.left: parent.left
@@ -315,7 +315,7 @@ Item {
                     Layout.preferredHeight: 35
                     Layout.topMargin: 16
 
-                    HifiStylesUit.RalewayRegular {
+                    HifiStylesUit.RobotoRegular {
                         id: resolutionHeader
                         text: "Resolution Scale (" + Number.parseFloat(Render.viewportResolutionScale).toPrecision(3) + ")"
                         anchors.left: parent.left

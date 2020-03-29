@@ -31,7 +31,7 @@ ShadowRectangle {
     }
 
     // TextStyle6
-    RalewaySemiBold {
+    RobotoMedium {
         id: title
         size: 22;
         anchors.left: avatarIcon.visible ? avatarIcon.right : avatarIcon.left

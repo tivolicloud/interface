@@ -154,7 +154,7 @@ Item {
             }
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: errorMessage
 
             visible: false

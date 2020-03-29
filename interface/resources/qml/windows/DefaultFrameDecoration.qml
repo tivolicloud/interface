@@ -86,7 +86,7 @@ Decoration {
         }
     }
 
-    RalewayRegular {
+    RobotoRegular {
         // Title
         id: titleText
         anchors {

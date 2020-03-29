@@ -110,7 +110,7 @@ Item {
                     x: -hifi.dimensions.contentMargin.x
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: header
                     text: "Control Settings"
                     size: 22
@@ -141,7 +141,7 @@ Item {
                     anchors.topMargin: 20
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: configuration
                     text: "SELECT DEVICE"
                     size: 15
@@ -210,7 +210,7 @@ Item {
                     anchors.topMargin: 20
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: configurationHeader
                     text: "CONFIGURATION"
                     size: 15

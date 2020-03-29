@@ -37,7 +37,7 @@ Rectangle {
         }
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: head
 
         text: "Track hand controllers in Oculus Home"

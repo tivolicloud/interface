@@ -55,7 +55,7 @@ Rectangle {
         height: childrenRect.height + 30;
         color: "white";
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleText;
             text: root.titleText;
             anchors.top: parent.top;
@@ -71,7 +71,7 @@ Rectangle {
             wrapMode: Text.WordWrap;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: bodyText;
             text: root.bodyText;
             anchors.top: root.bodyImageSource ? bodyImage.bottom : (root.titleText ? titleText.bottom : parent.top);

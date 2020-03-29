@@ -73,7 +73,7 @@ Rectangle {
         }
     }
 
-    RalewayBold {
+    RobotoBold {
         id: statusText
         text: info.calibratingCountText
         size: 16
@@ -87,7 +87,7 @@ Rectangle {
     }
 
 
-    RalewayBold {
+    RobotoBold {
         id: countDown
         text: info.count
         color: hifi.colors.blueHighlight
@@ -100,7 +100,7 @@ Rectangle {
     }
     
 
-    RalewayBold {
+    RobotoBold {
         id: directions
 
         anchors {

@@ -87,7 +87,7 @@ Rectangle {
     }
 
     // Username Text
-    HifiStylesUit.RalewayRegular {
+    HifiStylesUit.RobotoRegular {
         id: usernameText;
         text: Account.username === "Unknown user" ? "Please Log In" : Account.username;
         // Text size
@@ -112,7 +112,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.bottom: parent.bottom;
 
-        HifiStylesUit.RalewayRegular {
+        HifiStylesUit.RobotoRegular {
             text: "Please log in for security settings."
             // Text size
             size: 24;
@@ -164,7 +164,7 @@ Rectangle {
                 height: 55;
                 color: hifi.colors.baseGrayHighlight;
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     text: "Account";
                     anchors.fill: parent;
                     anchors.leftMargin: 20;
@@ -203,7 +203,7 @@ Rectangle {
                     }
                 }
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     id: autoLogoutHelp;
                     text: '[?]';
                     // Anchors
@@ -256,7 +256,7 @@ Rectangle {
                 height: 55;
                 color: hifi.colors.baseGrayHighlight;
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     text: "Plugin Permissions";
                     anchors.fill: parent;
                     anchors.leftMargin: 20;
@@ -289,7 +289,7 @@ Rectangle {
                     onCheckedChanged: Settings.setValue(kpiSettingsKey, checked);
                 }
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     id: kpiScriptHelp;
                     text: '[?]';
                     // Anchors
@@ -342,7 +342,7 @@ Rectangle {
                 height: 55;
                 color: hifi.colors.baseGrayHighlight;
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     text: "Secure Transactions";
                     anchors.fill: parent;
                     anchors.leftMargin: 20;
@@ -372,7 +372,7 @@ Rectangle {
                     cache: false;
                 }
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     id: securityPictureText;
                     text: "Security Picture";
                     // Anchors
@@ -413,7 +413,7 @@ Rectangle {
                 anchors.right: parent.right;
                 height: 60;
 
-                HifiStylesUit.RalewayRegular {
+                HifiStylesUit.RobotoRegular {
                     text: "Your wallet is not set up.\n" +
                         "Open the INVENTORY app to get started.";
                     // Anchors

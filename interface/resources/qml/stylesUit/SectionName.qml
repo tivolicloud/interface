@@ -11,7 +11,7 @@
 import QtQuick 2.5
 import "."
 
-RalewayRegular {
+RobotoRegular {
     font.pixelSize: hifi.fontSizes.sectionName
     font.capitalization: Font.AllUppercase
 }

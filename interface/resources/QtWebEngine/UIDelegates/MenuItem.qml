@@ -17,7 +17,7 @@ Item {
     implicitHeight: 2 * label.implicitHeight
     implicitWidth: 2 * hifi.dimensions.menuPadding.x + label.width
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: label
         size: hifi.fontSizes.rootMenu
         anchors.left: parent.left

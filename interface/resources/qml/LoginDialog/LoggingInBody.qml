@@ -23,7 +23,7 @@ Item {
     width: root.width
     property int textFieldHeight: 31
     property int loggingInGlyphRightMargin: 10
-    property string fontFamily: "Raleway"
+    property string fontFamily: "Roboto"
     property int fontSize: 15
     property bool fontBold: true
     property bool withSteam: withSteam

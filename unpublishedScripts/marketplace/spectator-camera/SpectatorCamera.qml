@@ -58,7 +58,7 @@ Rectangle {
         color: "#121212";
 
         // "Spectator" text
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             id: titleBarText;
             text: "Spectator Camera 2.3";
             // Anchors
@@ -153,7 +153,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter;
         }
 
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             text: root.uiReady ? "Processing..." : "";
             // Anchors
             anchors.top: processingImage.bottom;
@@ -196,7 +196,7 @@ Rectangle {
             }
 
             // Instructions (visible when display texture isn't set)
-            HifiStylesUit.FiraSansRegular {
+            HifiStylesUit.RobotoRegular {
                 id: spectatorCameraInstructions;
                 text: "Turn on Spectator Camera for a preview\nof " + (HMD.active ? "what your monitor shows." : "the camera's view.");
                 size: 16;
@@ -207,7 +207,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter;
             }
 
-            HifiStylesUit.FiraSansRegular {
+            HifiStylesUit.RobotoRegular {
                 text: ":)";
                 size: 28;
                 color: hifi.colors.white;
@@ -258,7 +258,7 @@ Rectangle {
                     anchors.left: parent.left;
                     anchors.leftMargin: 16;
                 }
-                HifiStylesUit.RalewayLight {
+                HifiStylesUit.RobotoLight {
                     id: monitorShowsSwitchLabel;
                     text: "Monitor View:";
                     anchors.top: parent.top;
@@ -403,7 +403,7 @@ Rectangle {
                 anchors.right: parent.right;
                 height: 35;
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     id: fieldOfViewLabel;
                     text: "Field of View (" + fieldOfViewSlider.value + "\u00B0): ";
                     size: 20;
@@ -462,7 +462,7 @@ Rectangle {
                 anchors.right: parent.right;
                 height: childrenRect.height;
 
-                HifiStylesUit.RalewaySemiBold {
+                HifiStylesUit.RobotoMedium {
                     id: shortcutsHeaderText;
                     anchors.top: parent.top;
                     anchors.left: parent.left;
@@ -533,7 +533,7 @@ Rectangle {
                 anchors.bottomMargin: 20;
 
                 // "Spectator" app description text
-                HifiStylesUit.RalewayRegular {
+                HifiStylesUit.RobotoRegular {
                     id: spectatorDescriptionText;
                     text: "While you're using a VR headset, you can use this app to change what your monitor shows. " +
                     "Try it when streaming or recording video.";
@@ -554,7 +554,7 @@ Rectangle {
                 }
 
                 // "Learn More" text
-                HifiStylesUit.RalewayRegular {
+                HifiStylesUit.RobotoRegular {
                     id: spectatorLearnMoreText;
                     text: "Learn More About Spectator";
                     // Text size

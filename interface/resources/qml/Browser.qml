@@ -155,7 +155,7 @@ ScrollingWindow {
                 GradientStop { position: 1.0; color: "grey" }
             }
 
-            RalewayLight {
+            RobotoLight {
                     id: permissionsInfo
                     anchors.right:permissionsRow.left
                     anchors.rightMargin: 32

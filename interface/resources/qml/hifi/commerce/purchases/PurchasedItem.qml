@@ -200,7 +200,7 @@ Item {
                             color: buttonMouseArea.enabled ? buttonColor : hifi.colors.lightGrayText;
                         }
 
-                        RalewayRegular {
+                        RobotoRegular {
                             id: buttonText;
                             visible: text !== "";
                             anchors.top: parent.verticalCenter;
@@ -402,7 +402,7 @@ Item {
                 anchors.rightMargin: 8;
                 color: hifi.colors.white;
 
-                RalewayRegular {
+                RobotoRegular {
                     id: permissionExplanationText;
                     anchors.fill: parent;
                     text: {
@@ -489,7 +489,7 @@ Item {
             }
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: itemName;
             anchors.top: parent.top;
             anchors.topMargin: 4;
@@ -509,7 +509,7 @@ Item {
             verticalAlignment: Text.AlignVCenter;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: editionNumberText;
             visible: root.displayedItemCount > 1 && !statusContainer.visible;
             anchors.left: itemName.left;
@@ -535,7 +535,7 @@ Item {
             anchors.bottom: buttonContainer.top;
             anchors.bottomMargin: 4;
 
-            RalewayRegular {
+            RobotoRegular {
                 id: statusText;
                 anchors.left: parent.left;
                 anchors.top: parent.top;
@@ -683,7 +683,7 @@ Item {
                 hoverEnabled: true;
             }
 
-            RalewayBold {
+            RobotoBold {
                 anchors.fill: parent;
                 text: (root.buttonTextClicked)[itemTypesArray.indexOf(root.itemType)];
                 size: 15;
@@ -802,7 +802,7 @@ Item {
                         font: rezIconLabel.font;
                         text: rezIconLabel.text;
                     }
-                    RalewayBold {
+                    RobotoBold {
                         id: rezIconLabel;
                         text: root.isInstalled ? "OPEN" : (MyAvatar.skeletonModelURL === root.itemHref ? "CURRENT" : (root.buttonTextNormal)[itemTypesArray.indexOf(root.itemType)]);
                         anchors.verticalCenter: parent.verticalCenter;

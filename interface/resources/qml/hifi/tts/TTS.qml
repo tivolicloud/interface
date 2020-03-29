@@ -38,7 +38,7 @@ Rectangle {
         anchors.top: parent.top;
 
         // Title bar text
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             id: titleBarText;
             text: "Text-to-Speech";
             // Text size
@@ -76,7 +76,7 @@ Rectangle {
         anchors.right: parent.right;
         height: 70;
 
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             id: tagButtonTitle;
             text: "Insert Tag:";
             // Text size
@@ -202,7 +202,7 @@ Rectangle {
 
         TextArea {
             id: messageToSpeak;
-            font.family: "Fira Sans SemiBold";
+            font.family: "Roboto Medium";
             font.pixelSize: 20;
             // Anchors
             anchors.top: parent.top;
@@ -229,7 +229,7 @@ Rectangle {
                 }
             }
 
-            HifiStylesUit.FiraSansRegular {
+            HifiStylesUit.RobotoRegular {
                 text: "<i>Input Text to Speak...</i>";
                 size: 20;
                 anchors.fill: parent;

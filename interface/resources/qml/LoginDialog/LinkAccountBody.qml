@@ -26,7 +26,7 @@ Item {
     height: root.height
     width: root.width
     property int textFieldHeight: 31
-    property string fontFamily: "Raleway"
+    property string fontFamily: "Roboto"
     property int fontSize: 15
     property int textFieldFontSize: 18
     property bool fontBold: true

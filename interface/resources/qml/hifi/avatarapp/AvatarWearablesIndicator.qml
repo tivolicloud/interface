@@ -37,7 +37,7 @@ ShadowRectangle {
         anchors.bottomMargin: 2.76
 
         // TextStyle2
-        RalewayBold {
+        RobotoBold {
             size: 15;
             anchors.horizontalCenter: parent.horizontalCenter
             text: wearablesCount

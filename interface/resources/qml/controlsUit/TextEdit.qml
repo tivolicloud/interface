@@ -15,7 +15,7 @@ TextEdit {
 
     property real size: 32
     
-    font.family: "Raleway"
+    font.family: "Roboto"
     font.weight: Font.DemiBold
     font.pointSize: size
     verticalAlignment: Text.AlignVCenter

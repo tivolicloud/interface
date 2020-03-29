@@ -95,7 +95,7 @@ Item {
             colorScheme: hifi.colorSchemes.dark
             anchors.left: back.right
             anchors.leftMargin: 10
-            font.family: firaSansSemiBold.name
+            font.family: robotoMedium.name
             placeholderText: "Search"
             onAccepted: {
                 console.log("Enter Pressed");
@@ -159,7 +159,7 @@ Item {
             width: parent.width - 208
             height: 40
             colorScheme: hifi.colorSchemes.dark
-            font.family: firaSansSemiBold.name
+            font.family: robotoMedium.name
             placeholderText: "Value"
             anchors.left: evaluate.right
             anchors.leftMargin: 12
@@ -248,7 +248,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 10
 
-                        FiraSansSemiBold {
+                        RobotoMedium {
                             property var isMainKey: apiType === "class";
                             text: apiMember
                             size: isMainKey ? 17 : 15
@@ -274,7 +274,7 @@ Item {
                             }
                         }
 
-                        FiraSansRegular {
+                        RobotoRegular {
                             text: apiType
                             anchors.left: apiMember.right
                             anchors.verticalCenter: parent.verticalCenter
@@ -282,7 +282,7 @@ Item {
                             color: hifi.colors.lightGrayText
                         }
 
-                        FiraSansRegular {
+                        RobotoRegular {
                             text: !apiValue ? "" : apiValue;
                             anchors.left: apiType.right
                             anchors.verticalCenter: parent.verticalCenter

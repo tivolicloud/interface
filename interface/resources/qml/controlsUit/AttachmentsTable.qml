@@ -43,7 +43,7 @@ TableView {
         border.width: 0.5
         border.color: hifi.colors.baseGrayHighlight
 
-        RalewayRegular {
+        RobotoRegular {
             id: textHeader
             size: hifi.fontSizes.tableHeading
             color: hifi.colors.lightGrayText
@@ -135,7 +135,7 @@ TableView {
             right: parent ? parent.right : undefined
             rightMargin: hifi.dimensions.tablePadding
         }
-        FiraSansSemiBold {
+        RobotoMedium {
             id: textItem
             text: styleData.value
             size: hifi.fontSizes.tableText

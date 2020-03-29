@@ -150,11 +150,11 @@ body {
 }
 
 #instructions p {
-    font-family: Raleway-Bold;
+    font-family: Roboto-Bold;
 }
 
 #instructions ul {
-    font-family: Raleway-SemiBold;
+    font-family: Roboto-Medium;
     margin-left: 21px;
     font-weight: normal;
 }

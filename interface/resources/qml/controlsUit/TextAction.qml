@@ -40,7 +40,7 @@ Item {
         width: visible ? implicitWidth : 0
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: string
         anchors {
             left: glyph.visible ? glyph.right : parent.left

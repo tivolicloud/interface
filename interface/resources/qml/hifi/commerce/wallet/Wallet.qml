@@ -148,7 +148,7 @@ Rectangle {
         }
 
         // Title Bar text
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleBarText;
             text: "INVENTORY";
             // Text size
@@ -475,7 +475,7 @@ Rectangle {
                 color: "red";
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "RECENT ACTIVITY";
                 // Text size
                 size: 16;
@@ -548,7 +548,7 @@ Rectangle {
                 color: "red";
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "ITEMS";
                 // Text size
                 size: 16;
@@ -604,7 +604,7 @@ Rectangle {
                 color: WalletScriptingInterface.limitedCommerce ? hifi.colors.lightGray50 : ((root.activeView === "sendMoney" || sendMoneyTabMouseArea.containsMouse) ? hifi.colors.white : hifi.colors.blueHighlight);
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "SEND MONEY";
                 // Text size
                 size: 16;
@@ -660,7 +660,7 @@ Rectangle {
                 color: root.activeView === "help" || helpTabMouseArea.containsMouse ? hifi.colors.white : hifi.colors.blueHighlight;
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "HELP";
                 // Text size
                 size: 16;

@@ -11,6 +11,6 @@
 import QtQuick 2.5
 import "."
 
-RalewayLight {
+RobotoLight {
     font.pixelSize: hifi.fontSizes.shortcutText
 }

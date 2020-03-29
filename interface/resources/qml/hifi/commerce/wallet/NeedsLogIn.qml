@@ -51,7 +51,7 @@ Item {
             anchors.top: parent.top;
 
             // Title Bar text
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "Log in to continue";
                 // Text size
                 size: hifi.fontSizes.overlayTitle;
@@ -70,7 +70,7 @@ Item {
         }
 
         // Text below title bar
-        RalewaySemiBold {
+        RobotoMedium {
             id: loginTitleHelper;
             text: "Please Log In to High Fidelity";
             // Text size
@@ -91,7 +91,7 @@ Item {
         }
 
         // Text below helper text
-        RalewayRegular {
+        RobotoRegular {
             id: loginDetailText;
             text: "To get items on the <b>Marketplace</b>, or to use your <b>Assets</b>, you must first log in to High Fidelity.";
             // Text size

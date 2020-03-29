@@ -192,7 +192,7 @@ Item {
             height: 160;
 
             // Username Text
-            RalewayRegular {
+            RobotoRegular {
                 id: usernameText;
                 text: Account.username;
                 // Text size
@@ -233,7 +233,7 @@ Item {
                 }
 
                 // Balance Text
-                FiraSansRegular {
+                RobotoRegular {
                     id: balanceText;
                     text: "--";
                     // Text size
@@ -252,7 +252,7 @@ Item {
                 }
 
                 // "balance" text below field
-                RalewayRegular {
+                RobotoRegular {
                     text: "BALANCE (HFC)";
                     // Text size
                     size: 14;
@@ -290,7 +290,7 @@ Item {
                 }
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: sendAssetText;
                 text: root.assetCertID === "" ? "Send Money To:" : "Send \"" + root.assetName + "\" To:";
                 // Anchors
@@ -329,7 +329,7 @@ Item {
                     mipmap: true;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     text: "Connection";
                     // Anchors
                     anchors.bottom: parent.bottom;
@@ -372,7 +372,7 @@ Item {
                     mipmap: true;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     text: "Someone Nearby";
                     // Anchors
                     anchors.bottom: parent.bottom;
@@ -413,7 +413,7 @@ Item {
                     mipmap: true;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     text: "Create Coupon";
                     // Anchors
                     anchors.bottom: parent.bottom;
@@ -497,7 +497,7 @@ Item {
             color: "#FFFFFF";
             radius: 8;
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: chooseRecipientText_connections;
                 text: "Choose Recipient:";
                 // Anchors
@@ -645,7 +645,7 @@ Item {
                     anchors.fill: parent;
                     color: "white";
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: makeAConnectionText;
                         // Properties
                         text: "Make a Connection";
@@ -675,7 +675,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter;
                     }
 
-                    FontLoader { id: ralewayRegular; source: "qrc:/fonts/Raleway-Regular.ttf"; }
+                    FontLoader { id: robotoRegular; source: "qrc:/fonts/Roboto-Regular.ttf"; }
                     Text {
                         id: connectionHelpText;
                         // Anchors
@@ -690,7 +690,7 @@ Item {
                         horizontalAlignment: Text.AlignHLeft
                         // Style
                         font.pixelSize: 18;
-                        font.family: ralewayRegular.name
+                        font.family: robotoRegular.name
                         color: hifi.colors.darkGray;
                         wrapMode: Text.Wrap
                         textFormat: Text.StyledText;
@@ -741,7 +741,7 @@ Item {
             color: "#FFFFFF";
             radius: 8;
 
-            RalewaySemiBold {
+            RobotoMedium {
                 text: "Choose Recipient:";
                 // Anchors
                 anchors.top: parent.top;
@@ -781,7 +781,7 @@ Item {
                 }
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: selectionInstructions;
                 text: chooseRecipientNearby.selectedRecipient === "" ? "Trigger or click on\nsomeone nearby to select them" : 
                     "Trigger or click on\nsomeone else to select again";
@@ -833,7 +833,7 @@ Item {
                     anchors.right: selectionMadeContainer.right;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: sendToText;
                     text: root.assetCertID === "" ? "Send to:" : "Gift to:";
                     // Anchors
@@ -865,7 +865,7 @@ Item {
                     mipmap: true;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: avatarDisplayName;
                     text: '"' + AvatarList.getAvatar(chooseRecipientNearby.selectedRecipient).sessionDisplayName + '"';
                     // Anchors
@@ -882,7 +882,7 @@ Item {
                     color: hifi.colors.blueAccent;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: avatarUserName;
                     text: sendAssetStep.selectedRecipientUserName;
                     // Anchors
@@ -938,7 +938,7 @@ Item {
         anchors.fill: parent;
         anchors.topMargin: root.parentAppTitleBarHeight;
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: sendAssetText_sendAssetStep;
             text: ((sendAssetStep.referrer === "payIn" || sendAssetStep.referrer === "createCoupon") &&
                 root.assetCertID !== "") ? "Send \"" + root.assetName + "\":" :
@@ -968,7 +968,7 @@ Item {
             anchors.rightMargin: 20;
             height: 80;
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: sendToText_sendAssetStep;
                 text: sendAssetStep.referrer === "createCoupon" ? "Coupon ID:" :
                     (root.assetCertID === "" || sendAssetStep.referrer === "payIn") ? "Send to:" : "Gift to:";
@@ -1009,7 +1009,7 @@ Item {
                 anchors.right: parent.right;
                 height: parent.height;
                 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: couponIDHelp;
                     text: "[?]";
                     // Anchors
@@ -1096,7 +1096,7 @@ Item {
             anchors.rightMargin: 20;
             height: 80;
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: amountText;
                 text: "Amount:";
                 // Anchors
@@ -1134,7 +1134,7 @@ Item {
                 }
             }
 
-            FiraSansSemiBold {
+            RobotoMedium {
                 visible: amountTextFieldError.text === "";
                 text: "Balance: ";
                 // Anchors
@@ -1168,7 +1168,7 @@ Item {
                 verticalAlignment: Text.AlignTop;
                 horizontalAlignment: Text.AlignRight;
             }
-            FiraSansSemiBold {
+            RobotoMedium {
                 id: sendAssetBalanceText;
                 visible: amountTextFieldError.text === "";
                 text: balanceText.text;
@@ -1186,7 +1186,7 @@ Item {
                 horizontalAlignment: Text.AlignRight;
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: amountTextFieldError;
                 // Anchors
                 anchors.top: amountTextField.bottom;
@@ -1219,7 +1219,7 @@ Item {
                 property int maximumLength: 72;
                 property string previousText: text;
                 placeholderText: "<i>Optional Public Message (" + maximumLength + " character limit)</i>";
-                font.family: "Fira Sans SemiBold";
+                font.family: "Roboto Medium";
                 font.pixelSize: 20;
                 // Anchors
                 anchors.fill: parent;
@@ -1257,7 +1257,7 @@ Item {
                     previousText = text;
                 }
             }
-            FiraSansSemiBold {
+            RobotoMedium {
                 id: optionalMessageCharacterCount;
                 text: optionalMessage.text.length + "/" + optionalMessage.maximumLength;
                 // Anchors
@@ -1290,7 +1290,7 @@ Item {
                 Settings.setValue("sendAssetsNearbyPublicly", checked);
             }
         }
-        RalewaySemiBold {
+        RobotoMedium {
             id: sendPubliclyCheckboxHelp;
             visible: sendPubliclyCheckbox.visible;
             text: "[?]";
@@ -1438,7 +1438,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter;
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             text: "Sending";
             // Anchors
             anchors.top: sendingAssetImage.bottom;
@@ -1487,7 +1487,7 @@ Item {
                 sendAssetStep.referrer === "createCoupon" ? 15 : 125;
             color: "#FFFFFF";
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: paymentSentText;
                 text: root.assetCertID === "" ? (sendAssetStep.referrer === "createCoupon" ? "Payment Authorized" : "Payment Sent") :
                     (sendAssetStep.referrer === "createCoupon" ? "Item Transfer Authorized" :
@@ -1560,7 +1560,7 @@ Item {
                     anchors.right: parent.right;
                     height: childrenRect.height;
 
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: authorizationIDLabel;
                         text: "Authorization ID:";
                         // Anchors
@@ -1574,7 +1574,7 @@ Item {
                         verticalAlignment: Text.AlignVCenter;
                     }
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: authorizationIDText;
                         text: root.authorizationID;
                         anchors.top: parent.top;
@@ -1620,7 +1620,7 @@ Item {
                         }
                     }
 
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: couponIDLabel;
                         text: "Coupon ID:";
                         // Anchors
@@ -1634,7 +1634,7 @@ Item {
                         verticalAlignment: Text.AlignVCenter;
                     }
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: couponIDText;
                         text: root.couponID;
                         anchors.top: authorizationIDText.bottom;
@@ -1690,7 +1690,7 @@ Item {
                     anchors.right: parent.right;
                     height: 80;
 
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: sendToText_paymentSuccess;
                         text: "Sent To:";
                         // Anchors
@@ -1732,7 +1732,7 @@ Item {
                 anchors.rightMargin: 20;
                 height: 30;
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: gift_paymentSuccess;
                     text: sendAssetStep.referrer === "payIn" || sendAssetStep.referrer === "createCoupon" ?
                         "Item:" : "Gift:";
@@ -1748,7 +1748,7 @@ Item {
                     verticalAlignment: Text.AlignVCenter;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     text: root.assetName;
                     // Anchors
                     anchors.top: parent.top;
@@ -1775,7 +1775,7 @@ Item {
                 anchors.rightMargin: 20;
                 height: 80;
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: amountText_paymentSuccess;
                     text: "Amount:";
                     // Anchors
@@ -1804,7 +1804,7 @@ Item {
                     color: hifi.colors.blueAccent;
                 }
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     id: amountSentText;
                     text: amountTextField.text;
                     // Anchors
@@ -1819,7 +1819,7 @@ Item {
                 }
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: optionalMessage_paymentSuccess;
                 visible: root.assetCertID === "";
                 text: optionalMessage.text;
@@ -1901,7 +1901,7 @@ Item {
                 sendAssetStep.referrer === "createCoupon" ? 15 : 300;
             color: "#FFFFFF";
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: paymentFailureText;
                 text: root.assetCertID === "" && sendAssetStep.referrer !== "payIn" ? "Payment Failed" : "Failed";
                 // Anchors
@@ -1948,7 +1948,7 @@ Item {
                 }
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: paymentFailureDetailText;
                 text: sendAssetStep.referrer === "createCoupon" ? "The server was unable to handle your request. Please try again later." :
                 ("The recipient you specified was unable to receive your " +
@@ -1980,7 +1980,7 @@ Item {
                 anchors.rightMargin: 20;
                 height: 80;
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: sentToText_paymentFailure;
                     text: "Sent To:";
                     // Anchors
@@ -2022,7 +2022,7 @@ Item {
                 anchors.rightMargin: 20;
                 height: 80;
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: amountText_paymentFailure;
                     text: "Amount:";
                     // Anchors
@@ -2051,7 +2051,7 @@ Item {
                     color: hifi.colors.baseGray;
                 }
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     id: amountSentText_paymentFailure;
                     text: amountTextField.text;
                     // Anchors
@@ -2066,7 +2066,7 @@ Item {
                 }
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: optionalMessage_paymentFailure;
                 visible: root.assetCertID === "" || sendAssetStep.referrer === "payIn";
                 text: optionalMessage.text;

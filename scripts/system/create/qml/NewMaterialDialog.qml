@@ -56,6 +56,7 @@ Rectangle {
             id: text1
             text: qsTr("Material URL")
             color: "#ffffff"
+            font.family: "Roboto"
             font.pixelSize: 12
         }
 
@@ -70,6 +71,7 @@ Rectangle {
             anchors.leftMargin: 0
             anchors.right: parent.right
             anchors.rightMargin: 0
+            font.family: "Roboto"
             font.pixelSize: 12
 
             onAccepted: {
@@ -114,6 +116,7 @@ Rectangle {
                     id: text3
                     text: qsTr("Material Mode")
                     color: "#ffffff"
+                    font.family: "Roboto"
                     font.pixelSize: 12
                 }
 

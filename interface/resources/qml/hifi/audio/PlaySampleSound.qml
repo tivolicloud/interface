@@ -64,7 +64,7 @@ RowLayout {
         height: 32;
     }
 
-    RalewayRegular {
+    RobotoRegular {
         Layout.leftMargin: 2;
         size: 18;
         color: "white";

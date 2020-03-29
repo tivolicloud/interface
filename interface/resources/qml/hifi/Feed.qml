@@ -97,7 +97,7 @@ Column {
         };
     }
 
-    RalewayBold {
+    RobotoBold {
         id: label;
         text: labelText;
         color: hifi.colors.blueAccent;

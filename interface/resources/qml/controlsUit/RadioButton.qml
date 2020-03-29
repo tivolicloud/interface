@@ -81,7 +81,7 @@ Original.RadioButton {
         }
     }
 
-    contentItem: RalewaySemiBold {
+    contentItem: RobotoMedium {
         text: radioButton.text
         size: radioButton.fontSize
         font.letterSpacing: letterSpacing

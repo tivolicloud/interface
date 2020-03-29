@@ -26,6 +26,7 @@ TabButton {
     contentItem: Text {
         id: text
         text: control.text
+        font.family: "Roboto"
         font.pixelSize: 14
         font.bold: true
         color: "white"

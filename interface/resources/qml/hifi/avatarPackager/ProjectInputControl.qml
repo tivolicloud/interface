@@ -27,7 +27,7 @@ Column {
     property int colorScheme
 
     Row {
-        RalewaySemiBold {
+        RobotoMedium {
             id: label
             size: 20
             font.weight: Font.Medium
@@ -42,7 +42,7 @@ Column {
         HifiControls.TextField {
             id: input
             colorScheme: control.colorScheme
-            font.family: "Fira Sans"
+            font.family: "Roboto"
             font.pixelSize: 18
             height: parent.height
             width: browseButton.visible ? parent.width - browseButton.width - parent.spacing : parent.width

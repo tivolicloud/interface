@@ -138,7 +138,7 @@ Item {
 
                 white: true
             }
-            RalewayRegular {
+            RobotoRegular {
                 id: stepText
 
                 size: 20
@@ -239,7 +239,7 @@ Item {
         source: "../../../icons/checkmark-stroke.svg"
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: doctorStatusMessage
 
         states: [
@@ -270,7 +270,7 @@ Item {
         wrapMode: Text.Wrap
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: infoMessage
 
         states: [
@@ -306,7 +306,7 @@ Item {
         text: "You can upload your files to our servers to always access them, and to make your avatar visible to other users."
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: notForSaleMessage
 
         visible: root.hasSuccessfullyUploaded
@@ -330,7 +330,7 @@ Item {
         }
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: showErrorsLink
 
         color: 'white'
@@ -368,7 +368,7 @@ Item {
         }
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: showFilesText
 
         color: 'white'
@@ -423,7 +423,7 @@ Item {
                 text: "+"
                 color: "black"
             }
-            RalewayRegular {
+            RobotoRegular {
                 id: loginWarningText
 
                 anchors.verticalCenter: parent.verticalCenter

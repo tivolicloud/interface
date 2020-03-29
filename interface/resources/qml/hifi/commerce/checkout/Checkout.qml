@@ -385,7 +385,7 @@ Rectangle {
             }
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: confirmPurchaseText;
             anchors.top: parent.top;
             anchors.topMargin: 30;
@@ -426,7 +426,7 @@ Rectangle {
                 fillMode: Image.PreserveAspectCrop;
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: itemNameText;
                 text: root.itemName;
                 // Text size
@@ -473,7 +473,7 @@ Rectangle {
                     // Style
                     color: hifi.colors.blueAccent;
                 }
-                FiraSansSemiBold {
+                RobotoMedium {
                     id: itemPriceText;
                     text: isTradingIn ? "FREE\nUPDATE" : 
                        (isStocking ? "Free for creator" :
@@ -548,7 +548,7 @@ Rectangle {
                     verticalAlignment: Text.AlignTop;
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: buyText;
                     // Text size
                     size: 18;
@@ -693,7 +693,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.rightMargin: 20;
 
-        RalewayRegular {
+        RobotoRegular {
             id: completeText;
             anchors.top: parent.top;
             anchors.topMargin: 18;
@@ -705,7 +705,7 @@ Rectangle {
             size: 36;
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: completeText2;
             text: "The " + (root.itemTypesText)[itemTypesArray.indexOf(root.itemType)] +
                 ' <font color="' + hifi.colors.blueAccent + '"><a href="#">' + root.itemName + '</a></font>' +
@@ -742,7 +742,7 @@ Rectangle {
                 hoverEnabled: true;
             }
 
-            RalewayBold {
+            RobotoBold {
                 anchors.fill: parent;
                 text: (root.buttonTextClicked)[itemTypesArray.indexOf(root.itemType)];
                 size: 18;
@@ -820,7 +820,7 @@ Rectangle {
                 }
             }
         }
-        RalewaySemiBold {
+        RobotoMedium {
             id: noPermissionText;
             visible: !root.canRezCertifiedItems && root.itemType === "entity";
             text: '<font color="' + hifi.colors.redAccent + '"><a href="#">You do not have Certified Rez permissions in this domain.</a></font>'
@@ -854,7 +854,7 @@ Rectangle {
                 lightboxPopup.visible = true;
             }
         }
-        RalewaySemiBold {
+        RobotoMedium {
             id: explainRezText;
             visible: root.itemType === "entity";
             text: '<font color="' + hifi.colors.redAccent + '"><a href="#">What does "Rez" mean?</a></font>'
@@ -877,7 +877,7 @@ Rectangle {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: myPurchasesLink;
             text: '<font color="' + hifi.colors.primaryHighlight + '"><a href="#">View this item in your Inventory</a></font>';
             // Text size
@@ -899,7 +899,7 @@ Rectangle {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: walletLink;
             visible: !WalletScriptingInterface.limitedCommerce;
             text: '<font color="' + hifi.colors.primaryHighlight + '"><a href="#">View receipt in Recent Activity</a></font>';
@@ -922,7 +922,7 @@ Rectangle {
             }
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: pendingText;
             text: 'Your item is marked "pending" while the transfer is being confirmed. ' +
             '<b><font color="' + hifi.colors.primaryHighlight + '"><a href="#">Learn More</a></font></b>';
@@ -985,7 +985,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.rightMargin: 16;
 
-        RalewayRegular {
+        RobotoRegular {
             id: failureHeaderText;
             text: "<b>Purchase Failed.</b><br>Your Inventory and HFC balance haven't changed.";
             // Text size

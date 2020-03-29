@@ -58,6 +58,7 @@ TabBar {
                         id: header
                         color: "#ffffff"
                         text: "Choose an Entity Type to Create:"
+                        font.family: "Roboto"
                         font.pixelSize: 14
                         font.bold: true
                         anchors.top: parent.top

@@ -40,7 +40,7 @@ Item {
         }
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: helpTitleText;
         text: "Help Topics";
         // Anchors
@@ -137,7 +137,7 @@ At the moment, there is currently no way to convert HFC to other currencies. Sta
                 width: parent.width;
                 height: questionText.paintedHeight + 50;
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: plusMinusButton;
                     text: model.isExpanded ? "-" : "+";
                     // Anchors
@@ -154,7 +154,7 @@ At the moment, there is currently no way to convert HFC to other currencies. Sta
                     verticalAlignment: Text.AlignVCenter;
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: questionText;
                     text: model.question;
                     size: 18;
@@ -190,7 +190,7 @@ At the moment, there is currently no way to convert HFC to other currencies. Sta
                 anchors.right: parent.right;
                 height: answerText.paintedHeight + 50;
 
-                RalewayRegular {
+                RobotoRegular {
                     id: answerText;
                     text: model.answer;
                     size: 18;

@@ -20,7 +20,7 @@ TabButton {
 
     HifiConstants { id: hifi; }
 
-    contentItem: RalewaySemiBold {
+    contentItem: RobotoMedium {
         text: control.text
         font: control.font
         color: "white"

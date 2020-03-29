@@ -49,14 +49,14 @@ Item {
         anchors.right: parent.right;
         anchors.left: parent.left;
 
-        font.family: "Fira Sans"
+        font.family: "Roboto"
         font.pixelSize: hifi.fontSizes.textFieldInput;
 
         placeholderText: root.primaryFilter_index === -1 ? root.placeholderText : "";
                     
         TextMetrics {
             id: primaryFilterTextMetrics;
-            font.family: "FiraSans Regular";
+            font.family: "Roboto Regular";
             font.pixelSize: hifi.fontSizes.textFieldInput;
             font.capitalization: Font.AllUppercase;
             text: root.primaryFilter_displayName;
@@ -194,7 +194,7 @@ Item {
                 visible: primaryFilterText.text !== "";
                 radius: height/2;
 
-                FiraSansRegular {
+                RobotoRegular {
                     id: primaryFilterText;
                     text: root.primaryFilter_displayName;
                     anchors.fill: parent;
@@ -270,7 +270,7 @@ Item {
                     height: 50;
                     visible: true;
 
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: dropDownButtonText;
                         text: model.displayName;
                         anchors.fill: parent;

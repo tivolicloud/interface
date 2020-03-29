@@ -102,7 +102,7 @@ Rectangle {
             }
             height: 50
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: nameText
 
                 anchors {
@@ -144,7 +144,7 @@ Rectangle {
                     }
                 }                
                 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: heart
                     
                     anchors {
@@ -160,7 +160,7 @@ Rectangle {
                     color: root.liked ? hifi.colors.redAccent  : hifi.colors.lightGrayText
                 }
                 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: likesText
                     
                     anchors {
@@ -220,7 +220,7 @@ Rectangle {
             }
             height: 60
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: creatorLabel
                 
                 anchors {
@@ -237,7 +237,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
             
-            RalewaySemiBold {
+            RobotoMedium {
                 id: creatorText
 
                 anchors {
@@ -255,7 +255,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: categoryLabel
                 
                 anchors {
@@ -271,7 +271,7 @@ Rectangle {
                 verticalAlignment: Text.AlignVCenter
             }
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: categoryText
 
                 anchors {

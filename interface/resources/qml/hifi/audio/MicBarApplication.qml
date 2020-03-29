@@ -208,7 +208,7 @@ Rectangle {
             font: statusText.font
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: statusText
             anchors {
                 horizontalCenter: parent.horizontalCenter;

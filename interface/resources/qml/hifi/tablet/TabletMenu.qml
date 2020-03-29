@@ -73,7 +73,7 @@ FocusScope {
             color: "#34a2c7"
         }
 
-        RalewayBold {
+        RobotoBold {
             id: breadcrumbText
             text: "Menu"
             size: 26

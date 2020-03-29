@@ -29,7 +29,7 @@ Rectangle {
             Layout.preferredHeight: 75
             Layout.preferredWidth: parent.width
 
-            HifiStyles.RalewayBold {
+            HifiStyles.RobotoBold {
                 text: "REQUEST FOR DEVICE ACCESS"
 
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -44,7 +44,7 @@ Rectangle {
             Layout.preferredHeight: 35
             Layout.preferredWidth: parent.width
 
-            HifiStyles.RalewayLight {
+            HifiStyles.RobotoLight {
                 text: "This website is attempting to " + root.permissionLanguage[root.currentRequestedPermission] + "."
 
                 anchors.centerIn: parent

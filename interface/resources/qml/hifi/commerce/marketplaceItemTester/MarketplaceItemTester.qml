@@ -45,7 +45,7 @@ Rectangle {
         anchors.top: parent.top
 
         // Title bar text
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             id: titleBarText
             text: "Marketplace Item Tester"
             // Text size
@@ -106,7 +106,7 @@ Rectangle {
         anchors.bottom: buttonContainer.top
         anchors.bottomMargin: 20
 
-        HifiStylesUit.RalewayRegular {
+        HifiStylesUit.RobotoRegular {
             text: "Use Marketplace Item Tester to test out your items before submitting them to the Marketplace." +
                 "\n\nUse one of the buttons below to load your item."
             // Text size

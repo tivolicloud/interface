@@ -42,7 +42,7 @@ Item {
             }
         }
 
-        RalewayBold {
+        RobotoBold {
             text: "Audio Interface Statistics"
             size: 26
             color: "#34a2c7"

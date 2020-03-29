@@ -210,7 +210,7 @@ Rectangle {
                     anchors.fill: parent;
                     anchors.leftMargin: 15;
                     // "NEARBY" text
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: nearbyTabSelectorText;
                         text: "NEARBY";
                         // Text size
@@ -313,7 +313,7 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter;
                     }
                     // "CONNECTIONS" text
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: connectionsTabSelectorText;
                         text: "CONNECTIONS";
                         // Text size
@@ -345,7 +345,7 @@ Rectangle {
                         anchors.top: connectionsTabSelectorTextContainer.top;
                         anchors.topMargin: 1;
                         anchors.leftMargin: connectionsTabSelectorTextMetrics.width + 42 + connectionsOnlineDot.width + connectionsTabSelectorText.anchors.leftMargin;
-                        RalewayRegular {
+                        RobotoRegular {
                             id: connectionsHelpText;
                             text: "[?]";
                             size: connectionsTabSelectorText.size + 6;
@@ -405,7 +405,7 @@ Rectangle {
             border.color: hifi.colors.lightGrayText;
             border.width: 2;
             // "ADMIN" text
-            RalewaySemiBold {
+            RobotoMedium {
                 id: adminTabText;
                 text: "ADMIN";
                 // Text size
@@ -668,7 +668,7 @@ Rectangle {
                 }
             }
 
-            RalewayRegular {
+            RobotoRegular {
                 id: helpText;
                 text: "[?]";
                 size: hifi.fontSizes.tableHeading + 2;
@@ -704,7 +704,7 @@ Rectangle {
             anchors.rightMargin: 12 + hifi.dimensions.scrollbarBackgroundWidth;
             anchors.top: adminTab.top;
             anchors.topMargin: 2;
-            RalewayRegular {
+            RobotoRegular {
                 id: adminHelpText;
                 text: "[?]";
                 size: hifi.fontSizes.tableHeading + 2;
@@ -765,7 +765,7 @@ Rectangle {
         }
 
         // "This is taking too long..." text
-        FiraSansSemiBold {
+        RobotoMedium {
             id: connectionsRefreshProblemText
             // Properties
             text: "This is taking longer than normal.\nIf you get stuck, try refreshing the Connections tab.";
@@ -860,7 +860,7 @@ Rectangle {
                 }
 
                 // LOCATION data
-                FiraSansRegular {
+                RobotoRegular {
                     id: connectionsLocationData
                     // Properties
                     visible: styleData.role === "placeName";
@@ -922,7 +922,7 @@ Rectangle {
             anchors.topMargin: hifi.dimensions.tableHeaderHeight;
             color: "white";
 
-            RalewayRegular {
+            RobotoRegular {
                 id: makeAConnectionText;
                 // Properties
                 text: "Make a Connection";
@@ -966,7 +966,7 @@ Rectangle {
                 horizontalAlignment: Text.AlignHLeft
                 // Style
                 font.pixelSize: 18;
-                font.family: "Raleway"
+                font.family: "Roboto"
                 color: hifi.colors.darkGray
                 wrapMode: Text.WordWrap
                 textFormat: Text.StyledText;
@@ -1028,7 +1028,7 @@ Rectangle {
             anchors.top: parent.top;
             anchors.right: parent.right;
 
-            RalewayRegular {
+            RobotoRegular {
                 id: availabilityText;
                 text: "set availability";
                 // Text size
@@ -1058,7 +1058,7 @@ Rectangle {
                 function determineAvailabilityString() {
                     return availabilityStrings[determineAvailabilityIndex()];
                 }
-                RalewayRegular {
+                RobotoRegular {
                     text: myData.userName === "Unknown user" ? "Login to Set" : availabilityComboBox.determineAvailabilityString();
                     anchors.fill: parent;
                     anchors.leftMargin: 10;

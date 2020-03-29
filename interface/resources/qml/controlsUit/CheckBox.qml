@@ -27,7 +27,7 @@ Original.CheckBox {
     property bool wrap: true;
     readonly property int checkSize: Math.max(boxSize - 8, 10)
     readonly property int checkRadius: 2
-    property string labelFontFamily: "Raleway"
+    property string labelFontFamily: "Roboto"
     property int labelFontSize: 14;
     property int labelFontWeight: Font.DemiBold;
     focusPolicy: Qt.ClickFocus

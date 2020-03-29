@@ -102,7 +102,7 @@ TreeView {
             height: hifi.dimensions.tableHeaderHeight
             color: isLightColorScheme ? hifi.colors.tableBackgroundLight : hifi.colors.tableBackgroundDark
 
-            RalewayRegular {
+            RobotoRegular {
                 id: titleText
                 text: styleData.value
                 size: hifi.fontSizes.tableHeading
@@ -178,7 +178,7 @@ TreeView {
                  : (styleData.alternate ? hifi.colors.tableRowDarkEven : hifi.colors.tableRowDarkOdd)
     }
 
-    itemDelegate: FiraSansSemiBold {
+    itemDelegate: RobotoMedium {
         anchors {
             left: parent ? parent.left : undefined
             leftMargin: (2 + styleData.depth) * hifi.dimensions.tablePadding

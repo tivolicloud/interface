@@ -70,7 +70,7 @@ Rectangle {
             source: marketplaceHeaderImage;
             color: "#FFFFFF"
         }
-        RalewayRegular {
+        RobotoRegular {
             id: introText1;
             text: "INTRODUCTION TO";
             // Text size
@@ -85,7 +85,7 @@ Rectangle {
             // Style
             color: hifi.colors.white;
         }
-        RalewayRegular {
+        RobotoRegular {
             id: introText2;
             text: "Inventory";
             // Text size
@@ -114,7 +114,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.bottom: parent.bottom;
 
-        RalewayRegular {
+        RobotoRegular {
             id: step1text;
             text: "The <b>'REZ IT'</b> button makes your item appear in front of you.";
             // Text size
@@ -177,7 +177,7 @@ Rectangle {
         anchors.right: parent.right;
         anchors.bottom: parent.bottom;
 
-        RalewayRegular {
+        RobotoRegular {
             id: step2text;
             text: "If you rez an item twice, the first one will disappear.";
             // Text size

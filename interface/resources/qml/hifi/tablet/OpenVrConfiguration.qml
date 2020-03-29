@@ -96,7 +96,7 @@ Flickable {
 
             color: hifi.colors.baseGray
 
-            RalewayBold {
+            RobotoBold {
                 id: head
 
                 text: "Head:"
@@ -132,7 +132,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: stack.selectedPlugin + " HMD"
                     color: hifi.colors.lightGrayText
@@ -155,7 +155,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Tracker"
                     color: hifi.colors.lightGrayText
@@ -182,7 +182,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     visible: viveInDesktop.checked
                     text: "None"
@@ -233,7 +233,7 @@ Flickable {
                 }
             }
 
-            RalewayBold {
+            RobotoBold {
                 id: hands
 
                 text: "Hands:"
@@ -271,7 +271,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Controllers"
                     color: hifi.colors.lightGrayText
@@ -293,7 +293,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Trackers"
                     color: hifi.colors.lightGrayText
@@ -343,7 +343,7 @@ Flickable {
                 }
             }
 
-            RalewayBold {
+            RobotoBold {
                 id: additional
 
                 text: "Additional Trackers"
@@ -357,7 +357,7 @@ Flickable {
                 anchors.leftMargin: leftMargin
             }
 
-            RalewayRegular {
+            RobotoRegular {
                 id: info
 
                 text: "See Recommended Tracker Placement"
@@ -427,7 +427,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Feet"
                     color: hifi.colors.lightGrayText
@@ -460,13 +460,13 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Hips"
                     color: hifi.colors.lightGrayText
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     size: 12
                     text: "requires feet"
                     color: hifi.colors.lightGray
@@ -498,13 +498,13 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Chest"
                     color: hifi.colors.lightGrayText
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     size: 12
                     text: "requires hips"
                     color: hifi.colors.lightGray
@@ -536,13 +536,13 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     size: 12
                     text: "Shoulders"
                     color: hifi.colors.lightGrayText
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     size: 12
                     text: "requires hips"
                     color: hifi.colors.lightGray
@@ -667,7 +667,7 @@ Flickable {
                     }
                 }
 
-                RalewayBold {
+                RobotoBold {
                     id: calibrationText
                     font.capitalization: Font.AllUppercase
                     color: enabled ? hifi.buttons.textColor[calibrationButton.color]
@@ -772,7 +772,7 @@ Flickable {
                 }
             }
 
-            RalewayBold {
+            RobotoBold {
                 id: delayTextInfo
                 size: 10
                 text: "Delay Before Calibration Starts"
@@ -785,7 +785,7 @@ Flickable {
                 }
             }
 
-            RalewayRegular {
+            RobotoRegular {
                 size: 12
                 text: "sec"
                 color: hifi.colors.lightGray
@@ -804,7 +804,7 @@ Flickable {
                 anchors.topMargin: 10
             }
 
-            RalewayBold {
+            RobotoBold {
                 id: advanceSettings
 
                 text: "Advanced Settings"
@@ -848,7 +848,7 @@ Flickable {
                 anchors.leftMargin: leftMargin + 10
                 spacing: 15
 
-                RalewayRegular {
+                RobotoRegular {
                     id: outOfRangeDataStrategyLabel
                     size: 12
                     text: "Out Of Range Data Strategy:"
@@ -873,7 +873,7 @@ Flickable {
                 }
             }
 
-            RalewayBold {
+            RobotoBold {
                 id: viveDesktopText
                 size: 12
                 text: "Use " + stack.selectedPlugin + " devices in desktop mode"

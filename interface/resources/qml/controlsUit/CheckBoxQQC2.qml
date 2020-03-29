@@ -111,7 +111,7 @@ CheckBox {
     contentItem: Text {
         id: root
         font.pixelSize: fontSize;
-        font.family: "Raleway"
+        font.family: "Roboto"
         font.weight: Font.DemiBold
         text: checkBox.text
         color: checkBox.color

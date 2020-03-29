@@ -27,7 +27,7 @@ ShadowRectangle {
     signal docsButtonClicked
     signal videoButtonClicked
 
-    RalewayButton {
+    RobotoButton {
         id: back
 
         visible: backButtonEnabled && backButtonVisible
@@ -62,7 +62,7 @@ ShadowRectangle {
             id: title
             anchors.fill: parent
 
-            RalewaySemiBold {
+            RobotoMedium {
                 id: titleNotRenameable
 
                 visible: !root.canRename
@@ -73,7 +73,7 @@ ShadowRectangle {
                 color: "white"
             }
 
-            RalewayButton {
+            RobotoButton {
                 id: titleRenameable
 
                 visible: root.canRename
@@ -105,7 +105,7 @@ ShadowRectangle {
                 anchors.fill: parent
                 text: ""
                 colorScheme: root.colorScheme
-                font.family: "Fira Sans"
+                font.family: "Roboto"
                 font.pixelSize: 28
                 z: 200
                 onFocusChanged: {
@@ -128,7 +128,7 @@ ShadowRectangle {
         }
     }
 
-    RalewayButton {
+    RobotoButton {
         id: video
         visible: false
         size: 28
@@ -142,7 +142,7 @@ ShadowRectangle {
         onClicked: videoButtonClicked()
     }
 
-    RalewayButton {
+    RobotoButton {
         id: docs
         visible: false
         size: 28

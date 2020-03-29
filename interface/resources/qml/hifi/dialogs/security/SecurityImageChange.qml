@@ -85,7 +85,7 @@ Rectangle {
                 color: hifi.colors.white;
             }
             // "Security image" text below image
-            HifiStylesUit.RalewayRegular {
+            HifiStylesUit.RobotoRegular {
                 id: securityImageText;
                 text: "SECURITY PIC";
                 // Text size
@@ -117,7 +117,7 @@ Rectangle {
         anchors.bottom: parent.bottom;
 
         // "Change Security Image" text
-        HifiStylesUit.RalewaySemiBold {
+        HifiStylesUit.RobotoMedium {
             id: securityImageTitle;
             text: "Change Security Image:";
             // Text size

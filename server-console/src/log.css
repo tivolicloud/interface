@@ -1,24 +1,24 @@
 @font-face {
-    font-family: 'Raleway';
-    src: url('vendor/Raleway/Raleway-Regular.ttf');
+    font-family: 'Roboto';
+    src: url('vendor/Roboto/Roboto-Regular.ttf');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
-    font-family: 'Raleway';
-    src: url('vendor/Raleway/Raleway-ExtraLight.ttf');
+    font-family: 'Roboto';
+    src: url('vendor/Roboto/Roboto-Thin.ttf');
     font-weight: 200;
     font-style: normal;
 }
 @font-face {
-    font-family: 'Raleway';
-    src: url('vendor/Raleway/Raleway-SemiBold.ttf');
+    font-family: 'Roboto';
+    src: url('vendor/Roboto/Roboto-Medium.ttf');
     font-weight: bold;
     font-style: normal;
 }
 
 body {
-    font-family: "Raleway", "Open Sans", Arial, Helvetica, sans-serif;
+    font-family: "Roboto", "Open Sans", Arial, Helvetica, sans-serif;
     font-size: 13.5pt;
     line-height: 1.6;
     margin: 0;

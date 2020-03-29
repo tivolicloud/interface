@@ -64,7 +64,7 @@ Rectangle {
                 anchors.left: parent.left
             }
             
-            RalewayRegular {
+            RobotoRegular {
                 id: title
                 text: root.title
                 elide: Text.ElideRight

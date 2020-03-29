@@ -52,7 +52,7 @@ Rectangle {
         height: android.dimen.headerIconHeight
     }
 
-    /*HifiStylesUit.*/FiraSansSemiBold {
+    /*HifiStylesUit.*/RobotoMedium {
         id: windowTitle
         x: windowIcon.x + android.dimen.headerIconTitleDistance
         anchors.verticalCenter: windowIcon.verticalCenter
@@ -92,7 +92,7 @@ Rectangle {
                 horizontalCenter: parent.horizontalCenter
             }
         }
-        /*HifiStyles.*/FiraSansRegular {
+        /*HifiStyles.*/RobotoRegular {
             anchors {
                 top: hideIcon.bottom
                 horizontalCenter: hideIcon.horizontalCenter

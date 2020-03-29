@@ -28,24 +28,24 @@ Rectangle {
             id: buildColumm
             anchors.left: parent.left
             anchors.leftMargin: 70
-            RalewayRegular {
+            RobotoRegular {
                 text: "Build " + TivoliAbout.buildVersion
                 size: 16
                 color: "white"
             }
-            RalewayRegular {
+            RobotoRegular {
                 text: "Released " + TivoliAbout.buildDate
                 size: 16
                 color: "white"
             }
         }
         Item { height: 10; width: 1 }
-        RalewayRegular {
+        RobotoRegular {
             text: "Tivoli Cloud VR"
             size: 20
             color: "white"
         }
-        RalewayRegular {
+        RobotoRegular {
             textFormat: Text.StyledText
             linkColor: "#00B4EF"
             color: "white"
@@ -69,7 +69,7 @@ Rectangle {
                     }
                 }
             }
-            RalewayRegular {
+            RobotoRegular {
                 color: "white"
                 text: "Built with HiFi core, OpenGL & Qt " + TivoliAbout.qtVersion
                 size: 12
@@ -81,7 +81,7 @@ Rectangle {
                 sourceSize.height: 26
                 source: "../../../images/about-physics.png"
             }
-            RalewayRegular {
+            RobotoRegular {
                 color: "white"
                 text: "Physics powered by Bullet"
                 size: 12
@@ -90,7 +90,7 @@ Rectangle {
         }
         Item { height: 20; width: 1 }
         
-        RalewayRegular {
+        RobotoRegular {
             color: "white"
             text: "Copyright 2020 Tivoli Cloud VR, Inc. All rights reserved."
             size: 14

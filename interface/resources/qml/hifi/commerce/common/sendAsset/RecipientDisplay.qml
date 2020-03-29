@@ -36,7 +36,7 @@ Item {
         visible: root.multiLineDisplay;
         anchors.fill: parent;
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: recipientDisplayName;
             text: root.displayName;
             // Anchors
@@ -53,7 +53,7 @@ Item {
             elide: Text.ElideRight;
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             text: root.userName;
             // Anchors
             anchors.bottom: parent.bottom;
@@ -99,7 +99,7 @@ Item {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             text: root.userName;
             // Anchors
             anchors.left: userImage.right;

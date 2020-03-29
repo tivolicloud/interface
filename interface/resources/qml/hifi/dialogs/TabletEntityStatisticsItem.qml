@@ -35,7 +35,7 @@ Column {
         colorScheme: root.colorScheme
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: valueLabel
         anchors.left: parent.left
         anchors.right: parent.right

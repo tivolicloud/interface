@@ -25,7 +25,7 @@ Item {
     width: root.width
     readonly property string termsContainerText: qsTr("By signing up, you agree to High Fidelity's Terms of Service")
     property int textFieldHeight: 31
-    property string fontFamily: "Raleway"
+    property string fontFamily: "Roboto"
     property int fontSize: 15
     property int textFieldFontSize: 18
     property bool fontBold: true

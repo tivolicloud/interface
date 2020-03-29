@@ -75,7 +75,7 @@ Rectangle {
                 contentHeight: contentItem.childrenRect.height
                 interactive: contentHeight > height
 
-                HifiStylesUit.RalewayBold {
+                HifiStylesUit.RobotoBold {
                     id: headerText
                     text: "We know this isn't you..."
                     color: simplifiedUI.colors.text.black
@@ -88,7 +88,7 @@ Rectangle {
                     anchors.rightMargin: 16
                 }
 
-                HifiStylesUit.RalewayRegular {
+                HifiStylesUit.RobotoRegular {
                     id: descriptionText
                     anchors.top: headerText.bottom
                     anchors.topMargin: 10
@@ -132,7 +132,7 @@ Rectangle {
                     fillMode: Image.PreserveAspectFit
                 }
 
-                HifiStylesUit.RalewayBold {
+                HifiStylesUit.RobotoBold {
                     id: instructionText
                     anchors.top: avatarAppQRCodeImage.top
                     anchors.bottom: avatarAppQRCodeImage.bottom
@@ -162,7 +162,7 @@ Rectangle {
             anchors.bottom: parent.bottom
             height: continueLink.height + 48
         
-            HifiStylesUit.RalewayBold {
+            HifiStylesUit.RobotoBold {
                 id: continueLink
                 anchors.centerIn: parent
                 text: "Continue >"
@@ -195,7 +195,7 @@ Rectangle {
         visible: false
         anchors.fill: parent
 
-        HifiStylesUit.RalewayRegular {
+        HifiStylesUit.RobotoRegular {
             id: controlsDescriptionText
             text: "Use these avatar controls to<br><b>interact with and move around in your new HQ.</b>"
             anchors.top: parent.top
@@ -273,7 +273,7 @@ Rectangle {
             anchors.bottom: parent.bottom
             height: iHaveAGoodGrip.height + learnMoreLink.height + 48
 
-            HifiStylesUit.RalewayBold {
+            HifiStylesUit.RobotoBold {
                 id: iHaveAGoodGrip
                 anchors.centerIn: parent
                 text: "I've got a good grip on the controls."
@@ -300,7 +300,7 @@ Rectangle {
                 }
             }
         
-            HifiStylesUit.RalewayBold {
+            HifiStylesUit.RobotoBold {
                 id: learnMoreLink
                 anchors.left: parent.left
                 anchors.leftMargin: 16

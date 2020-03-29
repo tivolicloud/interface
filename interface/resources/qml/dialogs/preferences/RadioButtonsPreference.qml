@@ -51,7 +51,7 @@ Preference {
         preference.save();
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: heading
         size: hifi.fontSizes.inputLabel
         text: preference.heading

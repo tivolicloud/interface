@@ -28,7 +28,7 @@ Rectangle {
 
     HifiConstants { id: hifi }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: label;
         color: enabled ? enabledColor : disabledColor
         font.pixelSize: 15;

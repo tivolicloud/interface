@@ -57,7 +57,7 @@ Item {
     }
 
     // Username Text
-    RalewayRegular {
+    RobotoRegular {
         id: usernameText;
         text: Account.username;
         // Text size
@@ -98,7 +98,7 @@ Item {
         }
 
         // Balance Text
-        FiraSansRegular {
+        RobotoRegular {
             id: balanceText;
             text: "--";
             // Text size
@@ -117,7 +117,7 @@ Item {
         }
 
         // "balance" text below field
-        RalewayRegular {
+        RobotoRegular {
             text: "BALANCE (HFC)";
             // Text size
             size: 14;
@@ -164,7 +164,7 @@ Item {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: recentActivityText;
             text: "Recent Activity";
             // Anchors
@@ -371,7 +371,7 @@ Item {
                     anchors.top: parent.top;
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: noActivityText;
                     text: "Congrats! Your wallet is all set!<br><br>" +
                         "<b>Where's my HFC?</b><br>" +

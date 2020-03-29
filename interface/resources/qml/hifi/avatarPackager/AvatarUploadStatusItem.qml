@@ -83,7 +83,7 @@ Item {
             color: "#EA4C5F"
         }
     }
-    RalewayRegular {
+    RobotoRegular {
         id: stepText
 
         anchors.left: statusItem.right

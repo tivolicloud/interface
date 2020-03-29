@@ -96,7 +96,7 @@ FocusScope {
             }
         }
 
-        contentItem: FiraSansSemiBold {
+        contentItem: RobotoMedium {
             id: textField
             anchors {
                 left: parent.left
@@ -128,7 +128,7 @@ FocusScope {
                                                                       : hifi.colors.dropDownPressedDark)
             }
 
-            contentItem: FiraSansSemiBold {
+            contentItem: RobotoMedium {
                 id: popupText
                 anchors.left: parent.left
                 anchors.leftMargin: hifi.dimensions.textPadding

@@ -368,7 +368,7 @@ Item {
             itemDelegate: Item {
                 clip: true
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     text: styleData.value
                     elide: styleData.elideMode
                     anchors {
@@ -381,7 +381,7 @@ Item {
                     size: hifi.fontSizes.tableText
                     color: hifi.colors.baseGrayHighlight
                     font.family: (styleData.row !== -1 && assetTableView.model.get(styleData.row).fileIsDir)
-                        ? "Fira Sans SemiBold" : "Fira Sans"
+                        ? "Roboto Medium" : "Roboto"
                 }
             }
 

@@ -35,7 +35,7 @@ TextField {
 
     placeholderText: textField.placeholderText
 
-    font.family: "Fira Sans"
+    font.family: "Roboto"
     font.pixelSize: hifi.fontSizes.textFieldInput
     height: implicitHeight + 3  // Make surrounding box higher so that highlight is vertically centered.
     property alias textFieldLabel: textFieldLabel

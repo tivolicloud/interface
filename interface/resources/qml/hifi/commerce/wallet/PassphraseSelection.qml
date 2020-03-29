@@ -182,7 +182,7 @@ Item {
                 color: hifi.colors.white;
             }
             // "Security image" text below pic
-            RalewayRegular {
+            RobotoRegular {
                 id: securityImageText;
                 text: "SECURITY PIC";
                 // Text size
@@ -203,7 +203,7 @@ Item {
     }
 
     // Error text above TextFields
-    RalewaySemiBold {
+    RobotoMedium {
         id: errorText;
         text: "";
         // Text size
@@ -244,7 +244,7 @@ Item {
     }
 
     // Text below checkbox
-    RalewayRegular {
+    RobotoRegular {
         visible: !root.isShowingTip;
         text: "Your passphrase is used to encrypt your private keys. Only you have it.<br><br>Please write it down.<br><br><b>If it is lost, you will not be able to recover it.</b>";
         // Text size

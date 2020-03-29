@@ -91,7 +91,7 @@ Item {
         height: 163
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: testingPackageTitle
 
         anchors {
@@ -105,7 +105,7 @@ Item {
         color: "white"
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: testingPackageText
 
         anchors {

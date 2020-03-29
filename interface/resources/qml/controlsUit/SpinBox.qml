@@ -77,7 +77,7 @@ SpinBox {
     to : realTo*factor
     from : realFrom*factor
 
-    font.family: "Fira Sans SemiBold"
+    font.family: "Roboto Medium"
     font.pixelSize: hifi.fontSizes.textFieldInput
     height: hifi.fontSizes.textFieldInput + 13  // Match height of TextField control.
 

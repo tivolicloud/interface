@@ -110,7 +110,7 @@ Item {
         }
 
         // Title Bar text
-        RalewayRegular {
+        RobotoRegular {
             id: titleBarText;
             text: "Wallet Setup" + (securityImageTip.visible ? "" : " - Step " + root.activeView.split("_")[1] + " of 4");
             // Text size
@@ -187,7 +187,7 @@ Item {
             color: hifi.colors.white;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: firstPage_text01;
             text: "Let's set up your wallet!";
             // Text size
@@ -208,7 +208,7 @@ Item {
             verticalAlignment: Text.AlignVCenter;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: firstPage_text02;
             text: "Set up your wallet to claim your <b>free High Fidelity Coin (HFC)</b> and get items from the Marketplace.<br><br>" +
             "<b>No credit card is required.</b>";
@@ -290,7 +290,7 @@ Item {
             anchors.fill: parent;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: tipText;
             text: '<font size="5">Tip:</font><br><br>When you see your security picture like this, you know ' +
             "the page asking for your passphrase is legitimate.";
@@ -344,7 +344,7 @@ Item {
         }
 
         // Text below title bar
-        RalewayRegular {
+        RobotoRegular {
             id: passphraseTitleHelper;
             text: "Set Your Passphrase:";
             // Text size
@@ -450,7 +450,7 @@ Item {
         anchors.right: parent.right;
 
         // Text below title bar
-        RalewayRegular {
+        RobotoRegular {
             id: keysReadyTitleHelper;
             text: "Back Up Your Private Keys";
             // Text size
@@ -469,7 +469,7 @@ Item {
             verticalAlignment: Text.AlignVCenter;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: explanationText;
             text: "To protect your privacy, you control your private keys. High Fidelity has no access to your private keys and cannot " +
             "recover them for you.<br><br><b>If they are lost, you will not be able to access your money or purchases.</b>";
@@ -504,7 +504,7 @@ Item {
                 id: instructions01Container;
                 anchors.fill: parent;
                 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: keyFilePathHelperText;
                     text: "Private Key File Location:";
                     size: 18;
@@ -543,7 +543,7 @@ Item {
                         Qt.openUrlExternally("file:///" + keyFilePath.substring(0, keyFilePath.lastIndexOf('/')));
                     }
                 }
-                RalewayRegular {
+                RobotoRegular {
                     id: keyFilePathText;
                     text: root.keyFilePath;
                     size: 18;
@@ -592,7 +592,7 @@ Item {
                 anchors.fill: parent;
                 visible: false;
 
-                RalewayRegular {
+                RobotoRegular {
                     text: "All set!<br>Instructions for backing up your keys have been opened on your desktop. " +
                     "Be sure to look them over after your session.";
                     size: 22;

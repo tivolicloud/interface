@@ -1201,8 +1201,8 @@ Section "-Core installation"
   Delete "$SMSTARTUP\@PRE_SANDBOX_CONSOLE_SHORTCUT_NAME@.lnk"
   SetShellVarContext all
 
-  ; Rename the incorrectly cased Raleway font
-  Rename "$INSTDIR\resources\qml\styles-uit\RalewaySemibold.qml" "$INSTDIR\resources\qml\styles-uit\RalewaySemiBold.qml"
+  ; Rename the incorrectly cased Roboto font
+  Rename "$INSTDIR\resources\qml\styles-uit\RobotoMedium.qml" "$INSTDIR\resources\qml\styles-uit\RobotoMedium.qml"
 
   ; Remove the Old Interface directory and vcredist_x64.exe (from installs prior to Server Console)
   RMDir /r "$INSTDIR\Interface"

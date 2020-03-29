@@ -12,7 +12,7 @@ import QtQuick 2.7
 
 import "../stylesUit"
 
-RalewaySemiBold {
+RobotoMedium {
     HifiConstants { id: hifi }
     property int colorScheme: hifi.colorSchemes.light
 

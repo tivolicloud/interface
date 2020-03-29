@@ -114,7 +114,7 @@ Item {
             color: hifi.colors.blueHighlight;
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleBarText;
             text: root.titleBarText;
             anchors.top: parent.top;
@@ -168,7 +168,7 @@ Item {
         anchors.rightMargin: 8;
         height: 250;
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: instructionsText;
             text: "Please Enter Your Passphrase";
             size: 24;
@@ -185,7 +185,7 @@ Item {
         }
 
         // Error text above buttons
-        RalewaySemiBold {
+        RobotoMedium {
             id: errorText;
             text: "";
             // Text size
@@ -294,7 +294,7 @@ Item {
                     color: hifi.colors.white;
                 }
                 // "Security image" text below pic
-                RalewayRegular {
+                RobotoRegular {
                     id: securityImageText;
                     text: "SECURITY PIC";
                     // Text size

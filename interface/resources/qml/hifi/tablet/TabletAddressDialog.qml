@@ -191,7 +191,7 @@ StackView {
                 left: parent.left;
             }
 
-            HifiStyles.RalewayRegular {
+            HifiStyles.RobotoRegular {
                 id: notice;
                 font.pixelSize: hifi.fonts.pixelSize * 0.7;
                 anchors {
@@ -200,7 +200,7 @@ StackView {
                 }
             }
 
-            HifiStyles.FiraSansRegular {
+            HifiStyles.RobotoRegular {
                 id: location;
                 anchors {
                     left: notice.right

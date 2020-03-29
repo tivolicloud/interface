@@ -204,7 +204,7 @@ Rectangle {
                 height: 70
                 visible: HMD.active
 
-                RalewayRegular {
+                RobotoRegular {
                     anchors.fill: parent
                     anchors.leftMargin: 18
                     anchors.rightMargin: 18
@@ -227,7 +227,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
 
-                RalewayBold {
+                RobotoBold {
                     size: 15;
                     lineHeightMode: Text.FixedHeight
                     lineHeight: 18;
@@ -237,7 +237,7 @@ Rectangle {
 
                 spacing: 10
 
-                RalewayBold {
+                RobotoBold {
                     size: 15;
                     lineHeightMode: Text.FixedHeight
                     lineHeight: 18;
@@ -255,7 +255,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    RalewayBold {
+                    RobotoBold {
                         size: 15;
                         lineHeightMode: Text.FixedHeight
                         lineHeight: 18;
@@ -318,7 +318,7 @@ Rectangle {
         Column {
             width: parent.width
 
-            RalewayBold {
+            RobotoBold {
                 size: 15;
                 lineHeightMode: Text.FixedHeight
                 lineHeight: 18;
@@ -383,7 +383,7 @@ Rectangle {
                 spacing: 20
 
                 // TextStyle5
-                RalewayBold {
+                RobotoBold {
                     id: positionLabel
                     size: 15;
                     lineHeightMode: Text.FixedHeight
@@ -392,7 +392,7 @@ Rectangle {
                 }
 
                 // TextStyle7
-                RalewayBold {
+                RobotoBold {
                     size: 15;
                     lineHeightMode: Text.FixedHeight
                     lineHeight: 18;
@@ -443,7 +443,7 @@ Rectangle {
                 spacing: 20
 
                 // TextStyle5
-                RalewayBold {
+                RobotoBold {
                     id: rotationLabel
                     size: 15;
                     lineHeightMode: Text.FixedHeight
@@ -452,7 +452,7 @@ Rectangle {
                 }
 
                 // TextStyle7
-                RalewayBold {
+                RobotoBold {
                     size: 15;
                     lineHeightMode: Text.FixedHeight
                     lineHeight: 18;
@@ -534,7 +534,7 @@ Rectangle {
                 anchors.right: parent.right
 
                 // TextStyle5
-                RalewayBold {
+                RobotoBold {
                     id: scaleLabel
                     size: 15;
                     lineHeightMode: Text.FixedHeight

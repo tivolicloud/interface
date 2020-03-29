@@ -613,7 +613,7 @@ Rectangle {
 
                 Component {
                     id: labelComponent
-                    FiraSansSemiBold {
+                    RobotoMedium {
                         text: styleData.value
                         size: hifi.fontSizes.tableText
                         color: colorScheme == hifi.colorSchemes.light
@@ -671,7 +671,7 @@ Rectangle {
 
                         text: styleData.value
 
-                        font.family: "Fira Sans SemiBold"
+                        font.family: "Roboto Medium"
                         font.pixelSize: hifi.fontSizes.textFieldInput
                         height: hifi.dimensions.tableRowHeight
 
@@ -729,7 +729,7 @@ Rectangle {
                 color: colorScheme == hifi.colorSchemes.light ? hifi.colors.tableRowLightOdd : hifi.colors.tableRowDarkOdd
                 border.color: colorScheme == hifi.colorSchemes.light ? hifi.colors.black : hifi.colors.lightGrayText
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     id: toolTipText
                     anchors.centerIn: parent
 
@@ -814,7 +814,7 @@ Rectangle {
             anchors.right: treeView.right
             anchors.bottomMargin: hifi.dimensions.contentSpacing.y
 
-            RalewayRegular {
+            RobotoRegular {
                 anchors.verticalCenter: parent.verticalCenter
 
                 function makeText() {

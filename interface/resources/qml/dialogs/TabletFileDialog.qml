@@ -496,7 +496,7 @@ TabletModalWindow {
             itemDelegate: Item {
                 clip: true
 
-                FiraSansSemiBold {
+                RobotoMedium {
                     text: getText();
                     elide: styleData.elideMode
                     anchors {
@@ -509,7 +509,7 @@ TabletModalWindow {
                     size: hifi.fontSizes.tableText
                     color: hifi.colors.baseGrayHighlight
                     //font.family: (styleData.row !== -1 && fileTableView.model.get(styleData.row).fileIsDir)
-                        //? "Fira Sans SemiBold" : "Fira Sans"
+                        //? "Roboto Medium" : "Roboto"
 
                     function getText() {
                         if (styleData.row === -1) {

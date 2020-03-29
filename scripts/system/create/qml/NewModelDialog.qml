@@ -56,6 +56,7 @@ Rectangle {
             id: text1
             text: qsTr("Model URL")
             color: "#ffffff"
+            font.family: "Roboto"
             font.pixelSize: 12
         }
 
@@ -70,6 +71,7 @@ Rectangle {
             anchors.leftMargin: 0
             anchors.right: parent.right
             anchors.rightMargin: 0
+            font.family: "Roboto"
             font.pixelSize: 12
 
             onAccepted: {
@@ -142,6 +144,7 @@ Rectangle {
                         color: "#ffffff"
                         text: qsTr("Models with automatic collisions set to 'Exact' cannot be dynamic.")
                         wrapMode: Text.WordWrap
+                        font.family: "Roboto"
                         font.pixelSize: 12
                     }
                 }
@@ -156,6 +159,7 @@ Rectangle {
                     id: text3
                     text: qsTr("Automatic Collisions")
                     color: "#ffffff"
+                    font.family: "Roboto"
                     font.pixelSize: 12
                 }
 

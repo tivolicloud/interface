@@ -110,7 +110,7 @@ Rectangle {
             spacing: 17
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 text: "Avatar Scale"
                 verticalAlignment: Text.AlignVCenter
@@ -150,7 +150,7 @@ Rectangle {
                     Layout.fillWidth: true
 
                     // TextStyle9
-                    RalewaySemiBold {
+                    RobotoMedium {
                         size: 17;
                         anchors.left: scaleSlider.left
                         anchors.leftMargin: 5
@@ -160,7 +160,7 @@ Rectangle {
                     }
 
                     // TextStyle9
-                    RalewaySemiBold {
+                    RobotoMedium {
                         size: 17;
                         anchors.right: scaleSlider.right
                         anchors.rightMargin: 5
@@ -193,7 +193,7 @@ Rectangle {
 
                 radius: 3
 
-                RalewaySemiBold {
+                RobotoMedium {
                     color: 'white'
                     anchors.centerIn: parent
                     text: "1x"
@@ -222,7 +222,7 @@ Rectangle {
             columns: 3
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 Layout.row: 0
                 Layout.column: 0
@@ -272,7 +272,7 @@ Rectangle {
             }
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 Layout.row: 1
                 Layout.column: 0
@@ -316,7 +316,7 @@ Rectangle {
             }
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 Layout.row: 2
                 Layout.column: 0
@@ -360,7 +360,7 @@ Rectangle {
             }
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 Layout.row: 3
                 Layout.column: 0
@@ -416,7 +416,7 @@ Rectangle {
             spacing: 4
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 text: "Avatar Animation JSON"
                 verticalAlignment: Text.AlignVCenter
@@ -445,7 +445,7 @@ Rectangle {
             spacing: 4
 
             // TextStyle9
-            RalewaySemiBold {
+            RobotoMedium {
                 size: 17;
                 text: "Avatar collision sound URL (optional)"
                 verticalAlignment: Text.AlignVCenter

@@ -47,7 +47,7 @@ Item {
         visible: index > 0
     }
     
-    RalewayRegular {
+    RobotoRegular {
         id: buttonGlyph
         text: root.ascending ? root.ascGlyph : root.descGlyph
         // Size
@@ -63,7 +63,7 @@ Item {
         // Style
         color: hifi.colors.lightGray
     }
-    RalewayRegular {
+    RobotoRegular {
         id: buttonText
         text: root.text
         // Text size

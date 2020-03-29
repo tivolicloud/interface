@@ -22,7 +22,7 @@ Rectangle {
     height: 32;
     color: "transparent";
     HifiConstants { id: hifi; }
-    RalewaySemiBold {
+    RobotoMedium {
         id: label;
         color: hifi.colors.white;
         font.pixelSize: 20;

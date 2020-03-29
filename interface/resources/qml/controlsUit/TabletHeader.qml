@@ -23,7 +23,7 @@ Rectangle {
 
     color: hifi.colors.darkGray
 
-    RalewayBold {
+    RobotoBold {
         text: title
         size: 26
         color: hifi.colors.white

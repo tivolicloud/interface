@@ -82,7 +82,7 @@ Column {
             }
             height: isCollapsible ? 36 : 28
 
-            RalewayRegular {
+            RobotoRegular {
                 id: title
                 anchors {
                     left: parent.left

@@ -11,6 +11,6 @@
 import QtQuick 2.5
 import "."
 
-RalewayBold {
+RobotoBold {
     font.pixelSize: hifi.fontSizes.buttonLabel
 }

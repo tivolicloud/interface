@@ -24,7 +24,7 @@ Item {
     readonly property string termsContainerText: qsTr("By creating this user profile, you agree to High Fidelity's Terms of Service")
     readonly property string termsContainerOculusText: qsTr("By signing up, you agree to High Fidelity's Terms of Service")
     readonly property int textFieldHeight: 31
-    readonly property string fontFamily: "Raleway"
+    readonly property string fontFamily: "Roboto"
     readonly property int fontSize: 15
     readonly property bool fontBold: true
     readonly property int textFieldFontSize: 18

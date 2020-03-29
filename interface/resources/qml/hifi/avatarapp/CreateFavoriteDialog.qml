@@ -68,7 +68,7 @@ Rectangle {
         color: "white"
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             id: title
             size: 24;
             anchors.top: parent.top
@@ -109,7 +109,7 @@ Rectangle {
                 anchors.verticalCenter: avatarThumbnail.verticalCenter
                 placeholderText: "Enter Favorite Name"
 
-                RalewayRegular {
+                RobotoRegular {
                     id: wrongName
                     anchors.top: parent.bottom;
                     anchors.topMargin: 2

@@ -239,7 +239,7 @@ Rectangle {
                 border.width: 1
                 border.color: hifi.colors.lightGrayText
                 
-                RalewayRegular {
+                RobotoRegular {
                     id: categoriesText
 
                     anchors.centerIn: parent
@@ -287,7 +287,7 @@ Rectangle {
             }
                 
             // or
-            RalewayRegular {
+            RobotoRegular {
                 id: orText
 
                 anchors.left: categoriesButton.right
@@ -317,7 +317,7 @@ Rectangle {
 
                 isSearchField: true
                 colorScheme: hifi.colorSchemes.faintGray
-                font.family: "Fira Sans"
+                font.family: "Roboto"
                 font.pixelSize: hifi.fontSizes.textFieldInput
                 placeholderText: "Search Marketplace"
 
@@ -429,7 +429,7 @@ Rectangle {
                         border.color: hifi.colors.blueHighlight
                         border.width: 0
 
-                        RalewaySemiBold {
+                        RobotoMedium {
                             id: categoriesItemText
 
                             anchors.leftMargin: 15
@@ -459,7 +459,7 @@ Rectangle {
                             color: hifi.colors.faintGray
                             radius: height/2
                             
-                            RalewaySemiBold {
+                            RobotoMedium {
                                 anchors.top: parent.top
                                 anchors.bottom: parent.bottom
                                 width: 50
@@ -670,7 +670,7 @@ Rectangle {
                         }
                     }
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: itemsLoginText
 
                         anchors {
@@ -698,7 +698,7 @@ Rectangle {
                     height: 34
                     visible: categoriesListView.currentIndex >= 0
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: categoriesItemText
 
                         anchors.leftMargin: 15
@@ -734,7 +734,7 @@ Rectangle {
                     }
                     height: 50
                     
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: searchScopeText;
 
                         anchors {
@@ -763,7 +763,7 @@ Rectangle {
                     }
                     height: visible ? 36 : 0
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: sortText
 
                         anchors.leftMargin: 15
@@ -956,7 +956,7 @@ Rectangle {
                     }
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: itemsLoginText
 
                     anchors {
@@ -982,7 +982,7 @@ Rectangle {
                 width: parent.width
                 height: childrenRect.height;
                 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: backText
 
                     anchors {
@@ -1100,7 +1100,7 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                RalewaySemiBold {
+                RobotoMedium {
                     id: footerInfo
 
                     anchors {
@@ -1190,7 +1190,7 @@ Rectangle {
 
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-            RalewayRegular {
+            RobotoRegular {
                 id: licenseText
 
                 width:440

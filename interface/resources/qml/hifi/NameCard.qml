@@ -182,7 +182,7 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: editGlyph.width + editGlyph.anchors.rightMargin
             // Style
-            font.family: "Fira Sans SemiBold"
+            font.family: "Roboto Medium"
             font.pixelSize: displayNameTextPixelSize
             selectionColor: hifi.colors.blueAccent
             selectedTextColor: "black"
@@ -226,7 +226,7 @@ Item {
         anchors.left: avatarImage.right
         anchors.leftMargin: avatarImage.visible ? 5 : 0;
         // DisplayName Text for others' cards
-        FiraSansSemiBold {
+        RobotoMedium {
             id: displayNameText
             // Properties
             text: thisNameCard.displayName
@@ -266,7 +266,7 @@ Item {
             text:   displayNameText.text
         }
         // "ADMIN" label for other users' cards
-        RalewaySemiBold {
+        RobotoMedium {
             id: adminLabelText
             visible: isAdmin
             text: "ADMIN"
@@ -292,7 +292,7 @@ Item {
             // Anchors
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: adminLabelText.right
-            RalewayRegular {
+            RobotoRegular {
                 id: adminLabelQuestionMarkText
                 text: "[?]"
                 size: adminLabelText.size
@@ -316,7 +316,7 @@ Item {
     }
 
     // UserName Text
-    FiraSansRegular {
+    RobotoRegular {
         id: userNameText
         // Properties
         text: thisNameCard.userName === "Unknown user" ? "not logged in" : thisNameCard.userName;
@@ -381,7 +381,7 @@ Item {
             nameCardConnectionInfoImage.buttonState = 0;
         }
     }
-    FiraSansRegular {
+    RobotoRegular {
         id: nameCardConnectionInfoText
         visible: selected && !isMyCard && pal.activeTab == "connectionsTab" && PlatformInfo.has3DHTML()
         height: displayNameTextPixelSize
@@ -418,7 +418,7 @@ Item {
             nameCardRemoveConnectionImage.text = hifi.glyphs.close;
         }
     }
-    FiraSansRegular {
+    RobotoRegular {
         id: nameCardRemoveConnectionText
         visible: selected && !isMyCard && pal.activeTab == "connectionsTab"
         width: parent.width

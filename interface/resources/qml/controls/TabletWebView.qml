@@ -83,7 +83,7 @@ Item {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: displayUrl
             color: hifi.colors.baseGray
             font.pixelSize: 12

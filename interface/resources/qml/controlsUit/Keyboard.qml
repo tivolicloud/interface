@@ -143,7 +143,7 @@ Rectangle {
         TextInput {
             id: mirrorText
             visible: showMirrorText
-            font.family: "Fira Sans"
+            font.family: "Roboto"
             font.pixelSize: 20
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter

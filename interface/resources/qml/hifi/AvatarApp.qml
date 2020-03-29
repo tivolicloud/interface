@@ -320,7 +320,7 @@ Rectangle {
         anchors.bottom: favoritesBlock.top
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             size: 24;
             anchors.left: parent.left
             anchors.top: parent.top
@@ -328,7 +328,7 @@ Rectangle {
         }
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             id: displayNameLabel
             size: 24;
             anchors.left: parent.left
@@ -340,7 +340,7 @@ Rectangle {
         InputField {
             id: displayNameInput
 
-            font.family: "Fira Sans"
+            font.family: "Roboto"
             font.pixelSize: 15
             anchors.left: displayNameLabel.right
             anchors.leftMargin: 30
@@ -426,7 +426,7 @@ Rectangle {
             }
 
             // TextStyle5
-            FiraSansSemiBold {
+            RobotoMedium {
                 size: 22;
                 Layout.fillWidth: true
                 text: isAvatarInFavorites ? avatarName : "Add to Favorites"
@@ -462,7 +462,7 @@ Rectangle {
         }
 
         // TextStyle3
-        RalewayRegular {
+        RobotoRegular {
             id: avatarNameLabel
             size: 22;
             text: getAvatarModelName();
@@ -484,7 +484,7 @@ Rectangle {
         }
 
         // TextStyle3
-        RalewayRegular {
+        RobotoRegular {
             id: wearablesLabel
             size: 22;
             anchors.left: avatarImage.right
@@ -545,7 +545,7 @@ Rectangle {
         color: style.colors.lightGrayBackground
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             id: favoritesLabel
             size: 24;
             anchors.top: parent.top
@@ -556,7 +556,7 @@ Rectangle {
         }
 
         // TextStyle8
-        RalewaySemiBold {
+        RobotoMedium {
             id: manageLabel
             color: style.colors.blueHighlight
             size: 20;
@@ -786,7 +786,7 @@ Rectangle {
                     }
 
                     // TextStyle7
-                    FiraSansRegular {
+                    RobotoRegular {
                         id: text
                         size: 18;
                         lineHeightMode: Text.FixedHeight

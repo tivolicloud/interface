@@ -34,7 +34,7 @@ Rectangle {
     function fromScript(message) {
     }
 
-    RalewayRegular {
+    RobotoRegular {
         id: title;
         color: hifi.colors.white;
         text: qsTr("Avatar Inputs Persistent UI Settings")

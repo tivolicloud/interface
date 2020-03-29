@@ -54,7 +54,7 @@ Item {
                     width: parent.width
                     height: fileText.implicitHeight + 8
                     color: "#404040"
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: fileText
                         size: 16
                         elide: Text.ElideLeft
@@ -81,7 +81,7 @@ Item {
         boxWidth: 380
         boxHeight: 293
 
-        content: RalewayRegular {
+        content: RobotoRegular {
 
             id: bodyMessage
 
@@ -359,14 +359,14 @@ Item {
                         leftMargin: 16
                         rightMargin: 16
                     }
-                    RalewayRegular {
+                    RobotoRegular {
                         size: 20
                         color: "white"
                         text: "Use a custom avatar of your choice."
                         width: parent.width
                         wrapMode: Text.WordWrap
                     }
-                    RalewayRegular {
+                    RobotoRegular {
                         size: 20
                         color: "white"
                         text: "<a href='javascript:void'>Visit our docs</a> to learn more about using the packager."
@@ -384,7 +384,7 @@ Item {
 
                     visible: AvatarPackagerCore.recentProjects.length > 0
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: recentProjectsText
 
                         color: 'white'

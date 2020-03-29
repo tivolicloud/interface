@@ -74,7 +74,7 @@ Item {
         }
 
         // Title Bar text
-        RalewayRegular {
+        RobotoRegular {
             id: titleBarText;
             text: "Wallet Setup";
             // Text size
@@ -120,7 +120,7 @@ Item {
             color: hifi.colors.white;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: text01;
             text: root.activeView === "preexisting" ? 
                 "Where are your private keys?" :
@@ -143,7 +143,7 @@ Item {
             verticalAlignment: Text.AlignVCenter;
         }
 
-        RalewayRegular {
+        RobotoRegular {
             id: text02;
             text: root.activeView === "preexisting" ? 
                 "Our records indicate that you created a wallet, but the private keys are not in the folder where we checked." :
@@ -220,7 +220,7 @@ Item {
         }
 
         // "What's This?" link
-        RalewayRegular {
+        RobotoRegular {
             id: whatsThisLink;
             text: '<font color="#FFFFFF"><a href="#whatsthis">What\'s this?</a></font>';
             // Anchors

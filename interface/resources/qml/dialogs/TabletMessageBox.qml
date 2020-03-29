@@ -86,7 +86,7 @@ TabletModalWindow {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: mainTextContainer
             onTextChanged: d.resize();
             wrapMode: Text.WordWrap
@@ -107,7 +107,7 @@ TabletModalWindow {
             verticalAlignment: Text.AlignVCenter
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: informativeTextContainer
             onTextChanged: d.resize();
             wrapMode: Text.WordWrap

@@ -1,8 +1,6 @@
 module stylesUit
 AnonymousProRegular 1.0 AnonymousProRegular.qml
 ButtonLabel 1.0 ButtonLabel.qml
-FiraSansRegular 1.0 FiraSansRegular.qml
-FiraSansSemiBold 1.0 FiraSansSemiBold.qml
 HifiConstants 1.0 HifiConstants.qml
 HiFiGlyphs 1.0 HiFiGlyphs.qml
 GraphikMedium 1.0 GraphikMedium.qml
@@ -15,10 +13,10 @@ ListItem 1.0 ListItem.qml
 Logs 1.0 Logs.qml
 OverlayTitle 1.0 OverlayTitle.qml
 Rawline 1.0 Rawline.qml
-RalewayBold 1.0 RalewayBold.qml
-RalewayLight 1.0 RalewayLight.qml
-RalewayRegular 1.0 RalewayRegular.qml
-RalewaySemiBold 1.0 RalewaySemiBold.qml
+RobotoBold 1.0 RobotoBold.qml
+RobotoLight 1.0 RobotoLight.qml
+RobotoRegular 1.0 RobotoRegular.qml
+RobotoMedium 1.0 RobotoMedium.qml
 SectionName 1.0 SectionName.qml
 Separator 1.0 Separator.qml
 ShortcutText 1.0 ShortcutText.qml

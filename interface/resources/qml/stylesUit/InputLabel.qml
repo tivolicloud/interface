@@ -11,6 +11,6 @@
 import QtQuick 2.5
 import "."
 
-RalewaySemiBold {
+RobotoMedium {
     font.pixelSize: hifi.fontSizes.inputLabel
 }

@@ -53,7 +53,7 @@ Item {
         width: combo.dialogWidth;
         height: combo.dialogHeight;
 
-        RalewayRegular {
+        RobotoRegular {
             id: dialogTitle;
             text: combo.dialogTitleText;
             anchors.top: parent.top;
@@ -127,7 +127,7 @@ Item {
                     }
 
 
-                    RalewaySemiBold {
+                    RobotoMedium {
                         id: optionTitle;
                         text: titleText;
                         anchors.top: parent.top;
@@ -142,7 +142,7 @@ Item {
                         color: hifi.colors.darkGray;
                     }
 
-                    RalewayRegular {
+                    RobotoRegular {
                         id: optionBody;
                         text: bodyText;
                         anchors.top: optionTitle.bottom;

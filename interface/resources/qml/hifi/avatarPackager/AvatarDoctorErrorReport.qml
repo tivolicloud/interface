@@ -83,7 +83,7 @@ Item {
                     }
                 }
 
-                RalewayRegular {
+                RobotoRegular {
                     id: errorLink
                     anchors {
                         top: parent.top

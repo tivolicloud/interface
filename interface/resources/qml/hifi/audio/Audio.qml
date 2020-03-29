@@ -314,7 +314,7 @@ Rectangle {
             anchors.left: parent.left;
             width: rightMostInputLevelPos;
             height: pttText.height;
-            RalewayRegular {
+            RobotoRegular {
                 id: pttText;
                 x: margins.paddings;
                 color: hifi.colors.white;
@@ -352,7 +352,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter;
                 size: 30;
             }
-            RalewayRegular {
+            RobotoRegular {
                 anchors.verticalCenter: parent.verticalCenter;
                 width: margins.sizeText + margins.sizeLevel;
                 anchors.left: parent.left;
@@ -447,7 +447,7 @@ Rectangle {
                 size: 36;
             }
 
-            RalewayRegular {
+            RobotoRegular {
                 width: margins.sizeText + margins.sizeLevel
                 anchors.left: parent.left
                 anchors.leftMargin: margins.sizeCheckBox
@@ -543,7 +543,7 @@ Rectangle {
                 text: avatarGainSliderText.text
                 font: avatarGainSliderText.font
             }
-            RalewayRegular {
+            RobotoRegular {
                 // The slider for my card is special, it controls the master gain
                 id: avatarGainSliderText;
                 text: "People volume";
@@ -605,7 +605,7 @@ Rectangle {
                 text: injectorGainSliderText.text
                 font: injectorGainSliderText.font
             }
-            RalewayRegular {
+            RobotoRegular {
                 id: injectorGainSliderText;
                 text: "Environment volume";
                 size: 16;
@@ -666,7 +666,7 @@ Rectangle {
                 text: systemInjectorGainSliderText.text
                 font: systemInjectorGainSliderText.font
             }
-            RalewayRegular {
+            RobotoRegular {
                 id: systemInjectorGainSliderText;
                 text: "UI FX volume";
                 size: 16;

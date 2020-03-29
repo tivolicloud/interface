@@ -36,7 +36,7 @@ Item {
     readonly property color colorGreenHighlight: hifi.colors.greenHighlight
 
     readonly property real fontSize: 12
-    readonly property var fontFamily: "Raleway"
+    readonly property var fontFamily: "Roboto"
     readonly property var fontWeight: Font.DemiBold
     readonly property color fontColor: hifi.colors.faintGray
 

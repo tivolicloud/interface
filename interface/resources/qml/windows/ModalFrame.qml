@@ -76,7 +76,7 @@ Frame {
                     anchors.verticalCenter: title.verticalCenter
                     anchors.left: parent.left
                 }
-                RalewayRegular {
+                RobotoRegular {
                     id: title
                     text: window.title
                     elide: Text.ElideRight

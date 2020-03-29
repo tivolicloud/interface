@@ -1,0 +1,1 @@
+Copied from `interface/resources/fonts`

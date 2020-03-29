@@ -67,7 +67,7 @@ Item {
         anchors.top: parent.top;
         anchors.right: parent.right;
         anchors.topMargin: 20;
-        RalewayBold {
+        RobotoBold {
             id: titleBarText;
             text: "Skybox Changer";
             size: hifi.fontSizes.overlayTitle;
@@ -79,7 +79,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter;
             verticalAlignment: Text.AlignVCenter;
         }
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleBarDesc;
             text: "Click an image to choose a new Skybox.";
             wrapMode: Text.Wrap

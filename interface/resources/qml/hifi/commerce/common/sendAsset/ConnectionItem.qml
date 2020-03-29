@@ -80,7 +80,7 @@ Item {
             }
         }
 
-        RalewaySemiBold {
+        RobotoMedium {
             id: userName;
             anchors.left: avatarImage.right;
             anchors.leftMargin: 12;

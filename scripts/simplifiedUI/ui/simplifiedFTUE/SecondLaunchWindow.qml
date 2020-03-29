@@ -63,7 +63,7 @@ Rectangle {
                 contentHeight: contentItem.childrenRect.height
                 interactive: contentHeight > height
 
-                HifiStylesUit.RalewayBold {
+                HifiStylesUit.RobotoBold {
                     id: headerText
                     text: "Stand out from the crowd!"
                     color: simplifiedUI.colors.text.black
@@ -76,7 +76,7 @@ Rectangle {
                     anchors.rightMargin: 16
                 }
 
-                HifiStylesUit.RalewayRegular {
+                HifiStylesUit.RobotoRegular {
                     id: descriptionText
                     anchors.top: headerText.bottom
                     anchors.topMargin: 10
@@ -110,7 +110,7 @@ Rectangle {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    HifiStylesUit.RalewayBold {
+                    HifiStylesUit.RobotoBold {
                         id: instructionText
                         anchors.top: avatarAppQRCodeImage.top
                         anchors.bottom: avatarAppQRCodeImage.bottom
@@ -134,7 +134,7 @@ Rectangle {
     }
         
 
-    HifiStylesUit.RalewayBold {
+    HifiStylesUit.RobotoBold {
         id: continueLink
         anchors.bottom: parent.bottom
         anchors.left: parent.left

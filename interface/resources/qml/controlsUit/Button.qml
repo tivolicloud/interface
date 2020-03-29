@@ -19,7 +19,7 @@ Original.Button {
 
     property int color: 0
     property int colorScheme: hifi.colorSchemes.light
-    property string fontFamily: "Raleway"
+    property string fontFamily: "Roboto"
     property int fontSize: hifi.fontSizes.buttonLabel
     property bool fontBold: true
     property int radius: hifi.buttons.radius

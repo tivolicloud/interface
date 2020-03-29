@@ -66,7 +66,7 @@ Item {
         }
     }
 
-    RalewaySemiBold {
+    RobotoMedium {
         id: label
         size: 20
         //wrap will work only if width is set
@@ -114,7 +114,7 @@ Item {
             rightMargin: hifi.dimensions.menuPadding.x
         }
 
-        RalewayLight {
+        RobotoLight {
             id: shortcut
             text: source !== null ? source.shortcut ? source.shortcut : "" : ""
             size: hifi.fontSizes.shortcutText

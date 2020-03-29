@@ -72,7 +72,7 @@ Rectangle {
         color: "#252525"
 
         // TextStyle1
-        RalewaySemiBold {
+        RobotoMedium {
             id: titleText
             size: 24
             color: "white"
