@@ -26,7 +26,7 @@
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/raleway"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/menuOption"/>
         <LinearLayout android:id="@+id/userOnlineInfo"
             android:layout_width="wrap_content"
@@ -36,14 +36,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/online"
-                android:fontFamily="@font/raleway"
+                android:fontFamily="@font/roboto"
                 android:textColor="@color/hifiAquamarine" />
             <TextView
                 android:id="@+id/userLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:fontFamily="@font/raleway_italic"
+                android:fontFamily="@font/roboto_italic"
                 android:textColor="@color/menuOption"/>
         </LinearLayout>
     </LinearLayout>

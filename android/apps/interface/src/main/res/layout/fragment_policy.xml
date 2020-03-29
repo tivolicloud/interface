@@ -33,7 +33,7 @@
             android:id="@+id/policyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/raleway"
+            android:fontFamily="@font/roboto"
             android:textSize="12sp" />
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

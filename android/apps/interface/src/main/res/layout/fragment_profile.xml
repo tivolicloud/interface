@@ -84,7 +84,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/okButton"
                 app:layout_constraintRight_toLeftOf="@id/okButton"
                 android:textColor="@color/white_opaque"
-                android:fontFamily="@font/raleway_bold"
+                android:fontFamily="@font/roboto_bold"
                 android:textSize="@dimen/button_medium_text_size"
                 android:text="@string/cancel_uppercase" />
 
@@ -93,7 +93,7 @@
                 android:layout_width="@dimen/button_medium_width"
                 android:layout_height="@dimen/button_medium_height"
                 android:background="@drawable/rounded_button_color3"
-                android:fontFamily="@font/raleway_bold"
+                android:fontFamily="@font/roboto_bold"
                 android:layout_marginTop="@dimen/button_medium_margin"
                 android:layout_marginBottom="@dimen/button_medium_margin"
                 android:text="@string/ok"

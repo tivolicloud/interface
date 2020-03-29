@@ -30,12 +30,12 @@
         parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textSize">18dp</item>
         <item name="android:paddingLeft">0dp</item>
-        <item name="android:fontFamily">@font/raleway_bold</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
         <item name="android:layout_marginLeft">0dp</item>
     </style>
 
     <style name="TabText">
-        <item name="android:fontFamily">@font/raleway_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/tabs</item>
         <item name="android:height">30dp</item>
@@ -44,7 +44,7 @@
     </style>
 
     <style name="SearchText">
-        <item name="android:fontFamily">@font/raleway_light_italic</item>
+        <item name="android:fontFamily">@font/roboto_light_italic</item>
         <item name="android:textSize">19sp</item>
     </style>
 

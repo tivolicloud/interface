@@ -7,7 +7,7 @@
     android:paddingBottom="5dp">
     <TextView
         android:id="@+id/avatarName"
-        android:fontFamily="@font/raleway_bold"
+        android:fontFamily="@font/roboto_bold"
         android:textSize="20sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
