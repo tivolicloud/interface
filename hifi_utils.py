@@ -87,6 +87,31 @@ def hashFolder(folder):
     filenames = recursiveFileList(folder)
     return hashFiles(filenames)
 
+def downloadProgressHook(count, block_size, total_size):
+    global start_time
+    if count == 0:
+        start_time = time.time()
+        return
+    duration = time.time() - start_time
+    progress_size = int(count * block_size)
+    speed = progress_size / (1024 * 1024 * duration)
+    percent = int(count * block_size * 100 / total_size)
+    sys.stdout.write(
+        "\r%s %d%% %s %d MB / %d MB %s %.2f MB/s %s %d seconds passed" %
+        (
+            "\u001b[42m", # green
+            percent,
+            "\u001b[45m", # magenta
+            progress_size / (1024 * 1024),
+            total_size/(1024*1024),
+            "\u001b[44m", # blue
+            speed, 
+            "\u001b[0m", # reset
+            duration
+        )
+    )
+    sys.stdout.flush()
+
 def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
     for i in range(retries):
         tempFileName = None
@@ -98,7 +123,7 @@ def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
             with urllib.request.urlopen(url, context=context) as response, open(tempFileDescriptor, 'wb') as tempFile:
                 shutil.copyfileobj(response, tempFile)
         else:
-            tempFileName, headers = urllib.request.urlretrieve(url)
+            tempFileName, headers = urllib.request.urlretrieve(url, reporthook=downloadProgressHook)
 
         downloadHash = hashFile(tempFileName, hasher)
         # Verify the hash
