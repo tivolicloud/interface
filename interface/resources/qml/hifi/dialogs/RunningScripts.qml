@@ -21,7 +21,7 @@ import "../"
 Windows.ScrollingWindow {
     id: root
     objectName: "RunningScripts"
-    title: "Running Scripts"
+    title: "Running scripts"
     resizable: true
     destroyOnHidden: false
     implicitWidth: 424
@@ -185,7 +185,7 @@ Windows.ScrollingWindow {
         width: pane.contentWidth
 
         HifiControls.ContentSection {
-            name: "Currently Running"
+            name: "Currently running"
             isFirst: true
 
             HifiControls.VerticalSpacer {}
@@ -194,19 +194,19 @@ Windows.ScrollingWindow {
                 spacing: hifi.dimensions.contentSpacing.x
 
                 HifiControls.Button {
-                    text: "Reload All"
+                    text: "Reload all"
                     color: hifi.buttons.black
                     onClicked: reloadAll()
                 }
 
                 HifiControls.Button {
-                    text: "Remove All"
+                    text: "Remove all"
                     color: hifi.buttons.red
                     onClicked: stopAll()
                 }
 
                 HifiControls.Button {
-                    text: "Load Defaults"
+                    text: "Load defaults"
                     color: hifi.buttons.black
                     height: 26
                     visible: root.developerMenuEnabled;
@@ -323,7 +323,7 @@ Windows.ScrollingWindow {
         }
 
         HifiControls.ContentSection {
-            name: "Load Scripts"
+            name: "Load scripts"
 
             HifiControls.VerticalSpacer {}
 
@@ -331,14 +331,14 @@ Windows.ScrollingWindow {
                 spacing: hifi.dimensions.contentSpacing.x
 
                 HifiControls.QueuedButton {
-                    text: "from URL"
+                    text: "From URL"
                     color: hifi.buttons.black
                     height: 26
                     onClickedQueued: ApplicationInterface.loadScriptURLDialog()
                 }
 
                 HifiControls.QueuedButton {
-                    text: "from Disk"
+                    text: "From disk"
                     color: hifi.buttons.black
                     height: 26
                     onClickedQueued: ApplicationInterface.loadDialog()
@@ -433,7 +433,7 @@ Windows.ScrollingWindow {
                 id: directoryButton
                 icon: hifi.glyphs.script
                 iconSize: 24
-                text: "Reveal Scripts Folder"
+                text: "Reveal scripts folder"
                 onClicked: fileDialogHelper.openDirectory(scripts.defaultScriptsPath)
                 colorScheme: hifi.colorSchemes.dark
                 anchors.left: parent.left
