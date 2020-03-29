@@ -219,18 +219,18 @@ h5,
 
 table {
     border-collapse: collapse;
-    border: solid #d8e1d9 1px;
+    border: solid rgba(29,31,33,0.1) 1px;
     margin-bottom: 1.5rem;
     width: 100%;
 }
 
 thead {
-    border-color: #d8e1d9;
-    background: #d8e1d9;
+    border-color: rgba(29,31,33,0.1);
+    background: rgba(29,31,33,0.1);
 }
 
 table tr {
-    border-bottom: 1px solid #d8e1d9;
+    border-bottom: 1px solid rgba(29,31,33,0.1);
 }
 
 table tr:nth-child(even) {
@@ -283,7 +283,7 @@ a:visited {
 #main a:visited,
 #main a:active,
 #main a:hover {
-    color: #009ee0;
+    color: #e91e63;
 }
 
 /*******************************************************************
