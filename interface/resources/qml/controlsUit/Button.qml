@@ -27,7 +27,8 @@ Original.Button {
     property string buttonGlyph: "";
     property int buttonGlyphSize: 34;
     property int buttonGlyphRightMargin: 0;
-    property int fontCapitalization: Font.AllUppercase
+    // property int fontCapitalization: Font.AllUppercase
+    property int fontCapitalization: Font.MixedCase
 
     width: hifi.dimensions.buttonWidth
     height: hifi.dimensions.controlLineHeight
@@ -63,35 +64,15 @@ Original.Button {
                        (control.color === hifi.buttons.noneBorderlessGray && control.hovered)) ? 1 : 0;
         border.color: control.color === hifi.buttons.noneBorderless ? hifi.colors.blueHighlight :
                                                                       (control.color === hifi.buttons.noneBorderlessGray ? hifi.colors.baseGray : hifi.colors.white);
-
-        gradient: Gradient {
-            GradientStop {
-                position: 0.2
-                color: {
-                    if (!control.enabled) {
-                        hifi.buttons.disabledColorStart[control.colorScheme]
-                    } else if (control.pressed) {
-                        hifi.buttons.pressedColor[control.color]
-                    } else if (control.hovered) {
-                        hifi.buttons.hoveredColor[control.color]
-                    } else {
-                        hifi.buttons.colorStart[control.color]
-                    }
-                }
-            }
-            GradientStop {
-                position: 1.0
-                color: {
-                    if (!control.enabled) {
-                        hifi.buttons.disabledColorFinish[control.colorScheme]
-                    } else if (control.pressed) {
-                        hifi.buttons.pressedColor[control.color]
-                    } else if (control.hovered) {
-                        hifi.buttons.hoveredColor[control.color]
-                    } else {
-                        hifi.buttons.colorFinish[control.color]
-                    }
-                }
+        color: {
+            if (!control.enabled) {
+                hifi.buttons.disabledColor[control.colorScheme]
+            } else if (control.pressed) {
+                hifi.buttons.pressedColor[control.color]
+            } else if (control.hovered) {
+                hifi.buttons.hoveredColor[control.color]
+            } else {
+                hifi.buttons.color[control.color]
             }
         }
     }

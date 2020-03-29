@@ -202,15 +202,60 @@ QtObject {
         readonly property int noneBorderlessWhite: 6
         readonly property int noneBorderlessGray: 7
         readonly property var textColor: [ colors.darkGray, colors.white, colors.white, colors.white, colors.white, colors.blueAccent, colors.white, colors.darkGray ]
-        readonly property var colorStart: [ colors.white, colors.primaryHighlight, "#d42043", "#343434", Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0) ]
-        readonly property var colorFinish: [ colors.lightGrayText, colors.blueAccent, "#94132e", colors.black, Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0), Qt.rgba(0, 0, 0, 0) ]
+        
+        readonly property var colorStart: [
+            colors.white,
+            colors.primaryHighlight,
+            "#d42043",
+            "#343434",
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0)
+        ]
+        readonly property var colorFinish: [
+            colors.lightGrayText,
+            colors.blueAccent,
+            "#94132e",
+            colors.black,
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0)
+        ]
+        // TODO: Button.qml uses this for flat color temporarily
+        readonly property var color: [
+            // colors.white + colors.lightGrayText
+            "#d7d7d7",
+            // colors.primaryHighlight + colors.blueAccent
+            "#00a9da",
+            // "#d42043" + "#94132e"
+            "#b41a39",
+            // "#343434" + colors.black
+            "#1a1a1a",
+            // rest is black + black
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0),
+            Qt.rgba(0, 0, 0, 0)
+        ]
+        
         readonly property var hoveredColor: [ colorStart[white], colorStart[blue], colorStart[red], colorFinish[black], colorStart[none], colorStart[noneBorderless], colorStart[noneBorderlessWhite], colorStart[noneBorderlessGray] ]
         readonly property var pressedColor: [ colorFinish[white], colorFinish[blue], colorFinish[red], colorStart[black], colorStart[none], colorStart[noneBorderless], colorStart[noneBorderlessWhite], colors.lightGrayText ]
         readonly property var focusedColor: [ colors.lightGray50, colors.blueAccent, colors.redAccent, colors.darkGray, colorStart[none], colorStart[noneBorderless], colorStart[noneBorderlessWhite], colorStart[noneBorderlessGray] ]
+        
         readonly property var disabledColorStart: [ colorStart[white], colors.baseGrayHighlight]
         readonly property var disabledColorFinish: [ colorFinish[white], colors.baseGrayShadow]
+        // TODO: Button.qml uses this for flat color temporarily
+        readonly property var disabledColor: [ 
+            // colors.white + colors.lightGrayText
+            "#d7d7d7",
+            // colors.baseGrayHighlight + colors.baseGrayShadow
+            "#3e3e3e"
+        ]
+
         readonly property var disabledTextColor: [ colors.lightGrayText, colors.baseGrayShadow]
-        readonly property int radius: 5
+        readonly property int radius: 4
     }
 
     readonly property QtObject effects: QtObject {
