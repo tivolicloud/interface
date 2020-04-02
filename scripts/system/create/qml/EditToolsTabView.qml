@@ -23,7 +23,7 @@ TabBar {
     readonly property HifiConstants hifi: HifiConstants {}
 
     EditTabButton {
-        title: "CREATE"
+        title: "Create"
         active: true
         enabled: true
         property string originalUrl: ""
@@ -80,7 +80,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/94-model-01.svg"
-                            text: "MODEL"
+                            text: "Model"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -92,7 +92,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/21-cube-01.svg"
-                            text: "SHAPE"
+                            text: "Shape"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -104,7 +104,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/24-light-01.svg"
-                            text: "LIGHT"
+                            text: "Light"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -116,7 +116,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/20-text-01.svg"
-                            text: "TEXT"
+                            text: "Text"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -128,7 +128,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/image.svg"
-                            text: "IMAGE"
+                            text: "Image"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -140,7 +140,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/25-web-1-01.svg"
-                            text: "WEB"
+                            text: "Web"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -152,7 +152,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/23-zone-01.svg"
-                            text: "ZONE"
+                            text: "Zone"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -164,7 +164,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/90-particles-01.svg"
-                            text: "PARTICLE"
+                            text: "Particles"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -176,7 +176,7 @@ TabBar {
 
                         NewEntityButton {
                             icon: "icons/126-material-01.svg"
-                            text: "MATERIAL"
+                            text: "Material"
                             onClicked: {
                                 editRoot.sendToScript({
                                     method: "newEntityButtonClicked",
@@ -230,7 +230,7 @@ TabBar {
     }
 
     EditTabButton {
-        title: "PROPERTIES"
+        title: "Properties"
         active: true
         enabled: true
         property string originalUrl: ""
@@ -246,7 +246,7 @@ TabBar {
     }
 
     EditTabButton {
-        title: "GRID"
+        title: "Grid"
         active: true
         enabled: true
         property string originalUrl: ""

@@ -54,7 +54,7 @@ body {
 input[type=button] {
     font-family: Roboto-Bold;
     font-size: 13px;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     vertical-align: top;
     height: 28px;
     min-width: 120px;
