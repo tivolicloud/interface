@@ -3194,6 +3194,71 @@
                             );
                         }
                     }
+                } else if (data.action === "reloadModel") {
+                    if (selectionManager.hasSelection()) {
+                        var timestamp = Math.floor(Date.now() / 1000);
+                        
+                        function parseQuery(queryStr) {
+                            var query = {};
+                        
+                            if (queryStr.indexOf("?") == 0) queryStr = queryStr.slice(1);
+                        
+                            queryStr.split("&").forEach(function(pairStr) {
+                                var pair = pairStr.split("=");
+                                var key = pair[0];
+                                if (key.trim() == "") return;
+                                var value = pair.length > 1 ? pair[1] : "";
+                                query[key] = value;
+                            });
+                        
+                            return query;
+                        }
+                        
+                        function renderQuery(query) {
+                            var keys = Object.keys(query);
+                            return keys.length == 0
+                                ? ""
+                                : "?" +
+                                    keys
+                                        .map(function(key) {
+                                            return (
+                                                key +
+                                                (query[key].trim() == "" ? "" : "=" + query[key])
+                                            );
+                                        })
+                                        .join("&");
+                        }
+
+                        for (
+                            i = 0;
+                            i < selectionManager.selections.length;
+                            i++
+                        ) {
+                            properties = selectionManager.savedProperties[
+                                selectionManager.selections[i]
+                            ];
+
+                            var newUrl;
+                            var url = properties.modelURL.split("?");
+
+                            if (url.length > 1) {
+                                var query = parseQuery(url[1]);
+                                query[timestamp] = "";
+
+                                newUrl = url[0] + renderQuery(query);
+                            } else {
+                                newUrl = url[0] + "?" + timestamp
+                            }
+
+                            Entities.editEntity(
+                                selectionManager.selections[i],
+                                { modelURL: newUrl }
+                            );
+                            
+                            pushCommandForSelections();
+                            selectionManager._update(false, this);
+                        }
+                    }
                 }
             } else if (data.type === "propertiesPageReady") {
                 updateSelections(true);

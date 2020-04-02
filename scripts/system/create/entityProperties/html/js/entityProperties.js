@@ -546,7 +546,15 @@ const GROUPS = [
                 type: "string",
                 placeholder: "URL",
                 propertyID: "modelURL",
-                hideIfCertified: true
+                hideIfCertified: true,
+                buttons: [
+                    {
+                        id: "reload",
+                        label: "Reload Model",
+                        className: "red",
+                        onClick: reloadModel
+                    }
+                ],
             },
             {
                 label: "Collision Shape",
@@ -3436,6 +3444,15 @@ function parentIDChanged() {
 /**
  * BUTTON CALLBACKS
  */
+
+function reloadModel() {
+    EventBridge.emitWebEvent(
+        JSON.stringify({
+            type: "action",
+            action: "reloadModel",
+        })
+    )
+}
 
 function rescaleDimensions() {
     EventBridge.emitWebEvent(
