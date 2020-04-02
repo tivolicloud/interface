@@ -963,7 +963,7 @@
                 captionColor: hasRezPermissions ? "#ffffff" : "#888888",
                 icon: createButtonIconRsrc,
                 activeIcon: "icons/tablet-icons/edit-a.svg",
-                text: "CREATE",
+                text: "Create",
                 sortOrder: 10
             });
             createButton = activeButton;

@@ -704,7 +704,7 @@ function processRezPermissionChange(canRez) {
 
 function startup() {
     ui = new AppUi({
-        buttonName: "SNAP",
+        buttonName: "Snap",
         sortOrder: 5,
         home: Script.resolvePath("html/SnapshotReview.html"),
         onOpened: fillImageDataFromPrevious,

@@ -884,7 +884,7 @@ function isReturnedDataEmpty(data) {
 
 function startup() {
     ui = new AppUi({
-        buttonName: "PEOPLE",
+        buttonName: "People",
         sortOrder: 7,
         home: "hifi/Pal.qml",
         onOpened: palOpened,

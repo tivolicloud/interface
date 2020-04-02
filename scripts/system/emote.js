@@ -33,7 +33,7 @@ EMOTE_ANIMATIONS.forEach(function (name) {
 
 var EMOTE_APP_BASE = "html/EmoteApp.html";
 var EMOTE_APP_URL = Script.resolvePath(EMOTE_APP_BASE);
-var EMOTE_LABEL = "EMOTE";
+var EMOTE_LABEL = "Emote";
 var EMOTE_APP_SORT_ORDER = 12;
 var FPS = 60;
 var MSEC_PER_SEC = 1000;
