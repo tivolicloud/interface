@@ -113,6 +113,9 @@ public:
     bool isCauterized() const { return _cauterized; }
     void setCauterized(bool value, const render::ScenePointer& scene);
 
+    void setPrimitiveMode(PrimitiveMode primitiveMode, const render::ScenePointer& scene = nullptr);
+    PrimitiveMode getPrimitiveMode() const { return _primitiveMode; }
+
     void setCullWithParent(bool value);
 
     // Access the current RenderItemKey Global Flags used by the model and applied to the render items  representing the parts of the model.
@@ -152,9 +155,6 @@ public:
     bool isLoaded() const { return (bool)_renderGeometry && _renderGeometry->isHFMModelLoaded(); }
     bool isAddedToScene() const { return _addedToScene; }
 
-    void setPrimitiveMode(PrimitiveMode primitiveMode);//, const render::ScenePointer& scene = nullptr);
-    PrimitiveMode getPrimitiveMode() const { return _primitiveMode; }
-    
     void reset();
 
     void setSnapModelToRegistrationPoint(bool snapModelToRegistrationPoint, const glm::vec3& registrationPoint);

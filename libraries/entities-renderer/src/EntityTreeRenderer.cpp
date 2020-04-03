@@ -477,6 +477,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
 
     {
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
+        _prevTotalNeededEntityUpdates = _renderablesToUpdate.size();
        
         // Update all the priority items first
         // if (!_isEditMode && _priorityRenderablesToUpdate.size()>0)
@@ -503,7 +504,8 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 }
             }
 
-            size_t numRenderables = _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
+            _prevNumEntityUpdates = _renderablesToUpdate.size();
+            size_t numRenderables = _prevNumEntityUpdates + 1;  // add one to avoid divide by zero
             _renderablesToUpdate.clear();
             float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
             const float BLEND = 0.1f;
@@ -565,8 +567,9 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                     _renderablesToUpdate.erase(renderable);
                 }
 
-                //compute average per - renderable update cost
-                size_t numUpdated = sortedRenderables.size() - _renderablesToUpdate.size() + 1;   // add one to avoid divide by zero
+                // compute average per-renderable update cost
+                _prevNumEntityUpdates = sortedRenderables.size() - _renderablesToUpdate.size();
+                size_t numUpdated = _prevNumEntityUpdates + 1; // add one to avoid divide by zero
                 float cost = (float)(usecTimestampNow() - updateStart) / (float)(numUpdated);
                 const float BLEND = 0.1f;
                 _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;

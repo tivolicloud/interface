@@ -75,13 +75,11 @@ void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
     });
 
     void* key = (void*)this;
-    AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this]() {
+    AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this, entity]() {
         withWriteLock([&] {
-            auto entity = getEntity();
             _position = entity->getWorldPosition();
             _dimensions = entity->getUnscaledDimensions();  // get unscaled to avoid scaling twice
             _orientation = entity->getWorldOrientation();
-            updateModelTransformAndBound();
             _renderTransform = getModelTransform();  // contains parent scale, if this entity scales with its parent
             if (_shape == entity::Sphere) {
                 _renderTransform.postScale(SPHERE_ENTITY_SCALE);
@@ -89,7 +87,6 @@ void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
 
             _renderTransform.postScale(_dimensions);
         });
-        ;
     });
 }
 
@@ -132,6 +129,7 @@ void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoint
             auto materials = _materials.find("0");
             if (materials != _materials.end()) {
                 materials->second.setNeedsUpdate(true);
+                emit requestRenderUpdate();
             }
         }
     });
