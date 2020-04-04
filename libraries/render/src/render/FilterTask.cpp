@@ -134,17 +134,24 @@ void IDsToBounds::run(const RenderContextPointer& renderContext, const ItemIDs& 
 
     // Now we have a selection of items to render
     outItems.clear();
-   // _disableAABBs =  true; // CPM was false
+    _disableAABBs =  true; //  Circumvents regular crashing on Windows if true when reloading gltf models.
     if (!_disableAABBs) {
         for (auto id : inItems) {
             auto& item = scene->getItem(id);
             if (item.exist()) {
+                // outItems.emplace_back(ItemBound{ id, item.getBound() }); // swapping this out with beloow try/catch and if/else
+                AABox bound;
                 try {
-                    outItems.emplace_back(ItemBound{ id, item.getBound() }); // crashes
+                    bound = item.getBound(); // We seem to be getting crashes in getBound() when GLTF files are reloaded in the create tools on Windows..
+                    // disabling the AABBs feature to bypass this section averts the crashes, but may come at the cost of some other funcitonality
+                    // in the realm of AABBs which I profess to not understand fully enough, so this might just be a stop gap if 
+                    // the AABB functionality is essential. 
                 } 
                 catch (...) {
                     qDebug() << "Handling exception outItems emplace in FilterTask.cpp, item ID is " << id;
                 }
+                if (!bound.isInvalid()) outItems.emplace_back(ItemBound{ id, bound });// cpm item.getBound() }); 
+                else  outItems.emplace_back(ItemBound{ id }); // cpm if it's not valid just emplace_back the way we do when ignoring AABB
             }
         }
     } else {
