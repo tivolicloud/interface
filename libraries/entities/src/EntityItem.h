@@ -340,7 +340,13 @@ public:
     bool getDynamic() const;
     void setDynamic(bool value);
 
-    virtual bool shouldBePhysical() const { return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && getEntityPriority() != EntityPriority::STATIC; }
+    virtual bool shouldBePhysical() const { 
+        bool isStaticShape = (getEntityPriority() == EntityPriority::STATIC &&
+                getShapeType() != ShapeType::SHAPE_TYPE_NONE &&
+                getShapeType() != ShapeType::SHAPE_TYPE_STATIC_MESH);
+            return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && (isStaticShape || getEntityPriority() != EntityPriority::STATIC);
+     }
+
     bool isVisuallyReady() const { return _visuallyReady; }
 
     bool getLocked() const;

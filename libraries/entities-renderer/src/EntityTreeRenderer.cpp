@@ -513,14 +513,29 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const EntityItemID& entityId : changedEntities) {
-            quint16 t = 0; //static_cast<int>(fmod(secTimestampNow(), STATIC_ENTITY_UPDATE_INTERVAL)); // force a render update on statics every 7s in case the file loads in late
-            EntityRendererPointer renderable = renderableForEntityId(entityId);
-
+           quint16 t = 0; 
+           EntityRendererPointer& renderable = renderableForEntityId(entityId);
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
+               EntityItemPointer& _entity = getEntity(entityId);
+               ShapeType _entityShapeType = _entity->getShapeType();
+               EntityPriority _entityPriority = _entity->getEntityPriority();
+
+               // Make sure avatar entities and shapes aren't somehow set to static
+               if (_entityPriority == EntityPriority::STATIC) 
+               {
+                   if (_entity->getEntityHostType() == entity::HostType::AVATAR) _entityPriority = EntityPriority::AUTOMATIC;
+                   if (_entityShapeType != ShapeType::SHAPE_TYPE_NONE && 
+                       _entityShapeType != ShapeType::SHAPE_TYPE_STATIC_MESH) 
+                   {
+                       _entityPriority = EntityPriority::AUTOMATIC;
+                   }
+               }
+
                 if (renderable) 
                 { // only add valid renderables _renderablesToUpdate
-                    if (_isEditMode || getEntity(entityId)->getEntityPriority() == EntityPriority::PRIORITIZED
+                    if (_isEditMode || 
+                        _entityPriority == EntityPriority::PRIORITIZED
                         //  || getEntity(entityId)->isAvatarEntity()    // prioritize avatar entities
                         //  || !getEntity(entityId)->getParentID().isNull() // if it has a parent
                        //  || getEntity(entityId)->isLocalEntity()         // or prioritize local entities  
@@ -528,12 +543,13 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                     {
                         _priorityRenderablesToUpdate.insert(renderable);
                     } // Static entities are added to automatic updates if in edit mode
-                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::AUTOMATIC ) _renderablesToUpdate.insert(renderable);
-                    else if (getEntity(entityId)->getEntityPriority() == EntityPriority::STATIC) 
+                    else if (_entityPriority == EntityPriority::AUTOMATIC)
                     {
-                        //connect(this, &EntityTreeRenderer::requestSpecialUpdate, renderable, &EntityRenderer::handleSpecialUpdate);
-                        // if (t  == 1  )  _renderablesToUpdate.insert(renderable);
-                        _staticRenderablesToUpdate.insert(renderable); 
+                            _renderablesToUpdate.insert(renderable);
+                    }
+                    else if (_entityPriority == EntityPriority::STATIC)
+                    {
+                            _staticRenderablesToUpdate.insert(renderable); 
                     }
                 } 
            }
