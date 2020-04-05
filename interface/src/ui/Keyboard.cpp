@@ -792,7 +792,7 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
             EntityItemProperties properties;
             properties.setType(EntityTypes::Box);
             properties.setName("Keyboard-BackPlate");
-            properties.setVisible(true);
+            properties.setVisible(false);
             properties.getGrab().setGrabbable(false);
             properties.setAlpha(0.0f);
             properties.setIgnorePickIntersection(false);
