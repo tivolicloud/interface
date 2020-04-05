@@ -306,7 +306,7 @@ $(document).ready(function(){
 
     if (hasAccessToken) {
       el = "<p>";
-      el += "<span class='account-connected-header'>Tivoli Cloud world connected</span>";
+      el += "<span class='account-connected-header'>Tivoli world connected</span>";
       el += "<button id='" + Settings.DISCONNECT_ACCOUNT_BTN_ID + "' class='btn'>Disconnect</button>";
       el += "</p>";
       el = $(el);
@@ -319,7 +319,7 @@ $(document).ready(function(){
       }
       buttonSetting.help = "";
       buttonSetting.classes = "btn-primary";
-      buttonSetting.button_label = "Connect Tivoli Cloud world";
+      buttonSetting.button_label = "Connect Tivoli world";
       buttonSetting.html_id = Settings.CONNECT_ACCOUNT_BTN_ID;
 
       //buttonSetting.href = METAVERSE_URL + "/user/tokens/new?for_domain_server=true";
@@ -888,13 +888,13 @@ $(document).ready(function(){
   function appendDomainIDButtons() {
     var domainIDInput = $(Settings.DOMAIN_ID_SELECTOR);
 
-    var createButton = dynamicButton(Settings.CREATE_DOMAIN_ID_BTN_ID, Strings.CREATE_DOMAIN_BUTTON);
-    createButton.css('margin-top', '10px');
+    // var createButton = dynamicButton(Settings.CREATE_DOMAIN_ID_BTN_ID, Strings.CREATE_DOMAIN_BUTTON);
+    // createButton.css('margin-top', '10px');
     var chooseButton = dynamicButton(Settings.CHOOSE_DOMAIN_ID_BTN_ID, Strings.CHOOSE_DOMAIN_BUTTON);
-    chooseButton.css('margin', '10px 0px 0px 10px');
+    chooseButton.css('margin-top', '10px');
 
     domainIDInput.after(chooseButton);
-    domainIDInput.after(createButton);
+    // domainIDInput.after(createButton);
   }
 
   function editHighFidelityPlace(placeID, name, path) {
@@ -979,7 +979,7 @@ $(document).ready(function(){
     if (Settings.initialValues.metaverse.access_token) {
 
       // add a spinner to the choose button
-      clickedButton.html("Loading domains...");
+      clickedButton.html("Loading worlds...");
       clickedButton.attr('disabled', 'disabled');
 
       // get a list of user domains from data-web
@@ -1027,7 +1027,7 @@ $(document).ready(function(){
                 window.open(METAVERSE_URL + "/user/domains", '_blank');
               }
             }
-            modal_body = "<p>You do not have any domains in your High Fidelity account." +
+            modal_body = "<p>You do not have any domains in your Tivoli account." +
               "<br/><br/>Go to your domains page to create a new one. Once your domain is created re-open this dialog to select it.</p>"
           }
 
@@ -1039,7 +1039,7 @@ $(document).ready(function(){
           })
         },
         error: function() {
-          bootbox.alert("Failed to retrieve your domains from the High Fidelity Metaverse");
+          bootbox.alert("Failed to retrieve your worlds from the Tivoli metaverse");
         },
         complete: function() {
           // remove the spinner from the choose button
@@ -1050,7 +1050,7 @@ $(document).ready(function(){
 
       } else {
         bootbox.alert({
-          message: "You must have an access token to query your High Fidelity domains.<br><br>" +
+          message: "You must have an access token to query your Tivoli worlds.<br><br>" +
           "Please follow the instructions on the settings page to add an access token.",
           title: "Access token required"
         })
