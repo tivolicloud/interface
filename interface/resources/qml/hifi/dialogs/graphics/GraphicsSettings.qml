@@ -51,6 +51,20 @@ Item {
                 Layout.topMargin: 10
                 Layout.preferredWidth: parent.width
                 spacing: 0
+                
+                HifiControlsUit.RadioButton {
+                    id: performancePotato
+                    colorScheme: hifi.colorSchemes.dark
+                    height: 18
+                    fontSize: 16
+                    leftPadding: 0
+                    text: "Potato"
+                    checked: Performance.getPerformancePreset() === PerformanceEnums.POTATO
+                    onClicked: {
+                        Performance.setPerformancePreset(PerformanceEnums.POTATO);
+                        root.refreshAllDropdowns();
+                    }
+                }
 
                 HifiControlsUit.RadioButton {
                     id: performanceLow
@@ -58,7 +72,7 @@ Item {
                     height: 18
                     fontSize: 16
                     leftPadding: 0
-                    text: "Potato (Low)"
+                    text: "Low"
                     checked: Performance.getPerformancePreset() === PerformanceEnums.LOW
                     onClicked: {
                         Performance.setPerformancePreset(PerformanceEnums.LOW);
@@ -144,7 +158,7 @@ Item {
                 
                     HifiControlsUit.ComboBox {
                         id: worldDetailDropdown
-                        enabled: performanceCustom.checked
+                        // enabled: performanceCustom.checked
                         anchors.left: worldDetailHeader.right
                         anchors.leftMargin: 20
                         anchors.top: parent.top
@@ -207,7 +221,7 @@ Item {
                 
                     HifiControlsUit.ComboBox {
                         id: renderingEffectsDropdown
-                        enabled: performanceCustom.checked
+                        // enabled: performanceCustom.checked
                         anchors.left: renderingEffectsHeader.right
                         anchors.leftMargin: 20
                         anchors.top: parent.top
@@ -328,7 +342,7 @@ Item {
                 
                     HifiControlsUit.Slider {
                         id: resolutionScaleSlider
-                        enabled: performanceCustom.checked
+                        // enabled: performanceCustom.checked
                         anchors.left: resolutionHeader.right
                         anchors.leftMargin: 57
                         anchors.top: parent.top

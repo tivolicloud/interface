@@ -217,7 +217,7 @@ PlatformInfoScriptingInterface::PlatformTier PlatformInfoScriptingInterface::get
 }
 
 QStringList PlatformInfoScriptingInterface::getPlatformTierNames() {
-    static const QStringList platformTierNames = { "UNKNWON", "LOW", "MID", "HIGH" };
+    static const QStringList platformTierNames = { "UNKNOWN", "POTATO", "LOW", "MID", "HIGH" };
     return platformTierNames;
 }
 

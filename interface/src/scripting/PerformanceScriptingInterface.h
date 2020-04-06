@@ -46,10 +46,10 @@ public:
      *   <tbody>
      *     <tr><td><code>0</code></td><td>UNKNOWN</td><td>Custom settings of world detail, rendering effects, and refresh 
      *       rate.</td></tr>
-     *     <tr><td><code>1</code></td><td>LOW</td><td>Low world detail, no rendering effects, lo refresh rate.</td></tr>
-     *     <tr><td><code>2</code></td><td>MID</td><td>Medium world detail, some rendering effects, medium refresh 
-     *       rate.</td></tr>
-     *     <tr><td><code>3</code></td><td>HIGH</td><td>Maximum world detail, all rendering effects, high refresh rate.</td></tr>
+     *     <tr><td><code>1</code></td><td>POTATO</td><td>Low world detail, forward rendering, no rendering effects, low target fps, 1/4 resolution.</td></tr>
+     *     <tr><td><code>1</code></td><td>LOW</td><td>Low world detail, forward rendering, no rendering effects, reduced resolution.</td></tr>
+     *     <tr><td><code>2</code></td><td>MID</td><td>Medium world detail, deferred rendering, some rendering effects</td></tr>
+     *     <tr><td><code>3</code></td><td>HIGH</td><td>Maximum world detail, deferred rendering, all rendering effects</td></tr>
      *   </tbody>
      * </table>
      * @typedef {number} Performance.PerformancePreset
@@ -57,6 +57,7 @@ public:
     // PerformanceManager PerformancePreset tri state level enums
     enum PerformancePreset {
         UNKNOWN = PerformanceManager::PerformancePreset::UNKNOWN,
+        POTATO = PerformanceManager::PerformancePreset::POTATO,
         LOW = PerformanceManager::PerformancePreset::LOW,
         MID = PerformanceManager::PerformancePreset::MID,
         HIGH = PerformanceManager::PerformancePreset::HIGH,
@@ -64,18 +65,18 @@ public:
     Q_ENUM(PerformancePreset)
 
     /**jsdoc
-     * <p>Refresh rate profile.</p>
+     * <p>Target FPS (formerly Refresh Rate) profile.</p>
      * <table>
      *   <thead>
      *     <tr><th>Value</th><th>Name</th><th>Description</th>
      *   </thead>
      *   <tbody>
-     *     <tr><td><code>0</code></td><td>ECO</td><td>Low refresh rate, which is reduced when Interface doesn't have focus or 
-     *       is minimized.</td></tr>
-     *     <tr><td><code>1</code></td><td>INTERACTIVE</td><td>Medium refresh rate, which is reduced when Interface doesn't have 
-     *       focus or is minimized.</td></tr>
-     *     <tr><td><code>2</code></td><td>REALTIME</td><td>High refresh rate, even when Interface doesn't have focus or is 
-     *       minimized. </td></tr>
+     *     <tr><td><code>0</code></td><td>ECO</td><td>20 FPS target rate, reduced when Interface doesn't have focus or 
+     *       is minimized</td></tr>
+     *     <tr><td><code>1</code></td><td>INTERACTIVE</td><td>30 FPS target rate, reduced when Interface doesn't have 
+     *       focus or is minimized</td></tr>
+     *     <tr><td><code>2</code></td><td>REALTIME</td><td>60 FPS or higher target rate, even when Interface doesn't have focus or is 
+     *       minimized</td></tr>
      *   </tbody>
      * </table>
      * @typedef {number} Performance.RefreshRateProfile

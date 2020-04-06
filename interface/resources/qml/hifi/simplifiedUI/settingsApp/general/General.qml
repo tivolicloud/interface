@@ -175,6 +175,15 @@ Flickable {
                 spacing: simplifiedUI.margins.settings.spacingBetweenRadiobuttons
 
                 SimplifiedControls.RadioButton {
+                    id: performancePotato
+                    text: "Potato Quality" + (PlatformInfo.getTierProfiled() === PerformanceEnums.POTATO ? " (Recommended)" : "")
+                    checked: Performance.getPerformancePreset() === PerformanceEnums.POTATO
+                    onClicked: {
+                        Performance.setPerformancePreset(PerformanceEnums.POTATO);
+                    }
+                }
+
+                SimplifiedControls.RadioButton {
                     id: performanceLow
                     text: "Low Quality" + (PlatformInfo.getTierProfiled() === PerformanceEnums.LOW ? " (Recommended)" : "")
                     checked: Performance.getPerformancePreset() === PerformanceEnums.LOW
