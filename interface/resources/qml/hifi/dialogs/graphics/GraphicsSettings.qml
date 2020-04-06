@@ -251,7 +251,7 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: refreshRateHeader
-                        text: "Refresh Rate"
+                        text: "Target frame rate"
                         anchors.left: parent.left
                         anchors.top: parent.top
                         width: 130
@@ -264,15 +264,15 @@ Item {
                         id: refreshRateModel
 
                         ListElement {
-                            text: "Economical"
+                            text: "20 fps"
                             refreshRatePreset: 0 // RefreshRateProfile::ECO
                         }
                         ListElement {
-                            text: "Interactive"
+                            text: "30 fps"
                             refreshRatePreset: 1 // RefreshRateProfile::INTERACTIVE
                         }
                         ListElement {
-                            text: "Real-Time"
+                            text: "60 fps"
                             refreshRatePreset: 2 // RefreshRateProfile::REALTIME
                         }
                     }
