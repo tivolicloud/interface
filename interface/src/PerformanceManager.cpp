@@ -39,7 +39,8 @@ void PerformanceManager::setupPerformancePresetSettings(bool evaluatePlatformTie
         auto platformTier = platform::Profiler::profilePlatform();
 
         // Then let's assign the performance preset setting from it
-        setPerformancePreset(platformToPerformancePresetMap[platformTier]);
+        // setPerformancePreset(platformToPerformancePresetMap[platformTier]);
+        setPerformancePreset(PerformanceManager::PerformancePreset::HIGH);
     }
 }
 
