@@ -531,12 +531,12 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                    _entityPriority = EntityPriority::AUTOMATIC;
                }
 
-                if ( _isEditMode || _entityPriority == EntityPriority::PRIORITIZED ) 
+                if (  _entityPriority == EntityPriority::PRIORITIZED ) 
                 {
                     _priorityRenderablesToUpdate.insert(renderable);
-                } // Static entities are added to automatic updates if in edit mode
-                else if ( _entityPriority == EntityPriority::AUTOMATIC )
-                {
+                } 
+                else if ( _isEditMode || _entityPriority == EntityPriority::AUTOMATIC ) 
+                { // Static entities are added to automatic updates if in edit mode
                         _renderablesToUpdate.insert(renderable);
                 }
                 else if ( _entityPriority == EntityPriority::STATIC )
