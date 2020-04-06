@@ -3346,6 +3346,13 @@ bool EntityItem::shouldPreloadScript() const {
     return !_script.isEmpty() && ((_loadedScript != _script) || (_loadedScriptTimestamp != _scriptTimestamp));
 }
 
+bool EntityItem::shouldBePhysical() const {
+    bool isStaticShape = (getEntityPriority() == EntityPriority::STATIC &&
+        getShapeType() != ShapeType::SHAPE_TYPE_NONE &&
+        getShapeType() != ShapeType::SHAPE_TYPE_STATIC_MESH);
+    return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && (isStaticShape || getEntityPriority() != EntityPriority::STATIC);
+}
+
 void EntityItem::scriptHasPreloaded() {
     _loadedScript = _script;
     _loadedScriptTimestamp = _scriptTimestamp;
