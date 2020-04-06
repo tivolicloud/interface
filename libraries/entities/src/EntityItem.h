@@ -340,15 +340,9 @@ public:
     bool getDynamic() const;
     void setDynamic(bool value);
 
+    bool isPrimitiveShapeType() const;
 
     virtual bool shouldBePhysical() const;
-
- /*   virtual bool shouldBePhysical() const { 
-        bool isStaticShape = (getEntityPriority() == EntityPriority::STATIC &&
-                getShapeType() != ShapeType::SHAPE_TYPE_NONE &&
-                getShapeType() != ShapeType::SHAPE_TYPE_STATIC_MESH);
-            return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && (isStaticShape || getEntityPriority() != EntityPriority::STATIC);
-     }*/
 
     bool isVisuallyReady() const { return _visuallyReady; }
 
@@ -432,7 +426,6 @@ public:
 
     /// return preferred shape type (actual physical shape may differ)
     virtual ShapeType getShapeType() const { return SHAPE_TYPE_NONE; }
-
     void setPosition(const glm::vec3& value);
     virtual void setParentID(const QUuid& parentID) override;
     virtual void setShapeType(ShapeType type) { /* do nothing */ }
@@ -532,9 +525,12 @@ public:
     virtual bool isWearable() const;
     bool isDomainEntity() const { return _hostType == entity::HostType::DOMAIN; } // CPM look
     bool isAvatarEntity() const { return _hostType == entity::HostType::AVATAR; }  // CPM look
-    bool isMyAvatarEntity() const;  // CPM look
+    bool isMyAvatarEntity() const;  
     bool isLocalEntity() const { return _hostType == entity::HostType::LOCAL; }  // CPM look
+
     entity::HostType getEntityHostType() const { return _hostType; }
+    //entity::HostType getEntityHostType() const { return resultWithReadLock<entity::HostType>([&] { return _hostType; }); }
+    
     virtual void setEntityHostType(entity::HostType hostType) { _hostType = hostType; }
 
     // if this entity is an avatar entity, which avatar is it associated with?

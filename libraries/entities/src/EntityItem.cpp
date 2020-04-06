@@ -3069,6 +3069,11 @@ uint16_t EntityItem::getCollisionMask() const {
     return _collisionMask;
 }
 
+bool EntityItem::isPrimitiveShapeType() const {
+    return getShapeType() != SHAPE_TYPE_NONE && 
+        getShapeType() != SHAPE_TYPE_STATIC_MESH; 
+}
+
 bool EntityItem::getDynamic() const {
     if (SHAPE_TYPE_STATIC_MESH == getShapeType()) {// || getEntityPriority() == EntityPriority::STATIC) {
         return false;

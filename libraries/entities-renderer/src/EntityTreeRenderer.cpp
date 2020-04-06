@@ -518,40 +518,31 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
                EntityItemPointer& _entity = getEntity(entityId);
-               ShapeType _entityShapeType = _entity->getShapeType();
+               
+               if ( !_entity || _entity->isDead()) continue;  
+               if ( !renderable ) continue;
+
                EntityPriority _entityPriority = _entity->getEntityPriority();
 
                // Make sure avatar entities and shapes aren't somehow set to static
-               if (_entityPriority == EntityPriority::STATIC) 
+               if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
+                   _entity->isPrimitiveShapeType() ) ) 
                {
-                   if (_entity->getEntityHostType() == entity::HostType::AVATAR) _entityPriority = EntityPriority::AUTOMATIC;
-                   if (_entityShapeType != ShapeType::SHAPE_TYPE_NONE && 
-                       _entityShapeType != ShapeType::SHAPE_TYPE_STATIC_MESH) 
-                   {
-                       _entityPriority = EntityPriority::AUTOMATIC;
-                   }
+                   _entityPriority = EntityPriority::AUTOMATIC;
                }
 
-                if (renderable) 
-                { // only add valid renderables _renderablesToUpdate
-                    if (_isEditMode || 
-                        _entityPriority == EntityPriority::PRIORITIZED
-                        //  || getEntity(entityId)->isAvatarEntity()    // prioritize avatar entities
-                        //  || !getEntity(entityId)->getParentID().isNull() // if it has a parent
-                       //  || getEntity(entityId)->isLocalEntity()         // or prioritize local entities  
-                    ) 
-                    {
-                        _priorityRenderablesToUpdate.insert(renderable);
-                    } // Static entities are added to automatic updates if in edit mode
-                    else if (_entityPriority == EntityPriority::AUTOMATIC)
-                    {
-                            _renderablesToUpdate.insert(renderable);
-                    }
-                    else if (_entityPriority == EntityPriority::STATIC)
-                    {
-                            _staticRenderablesToUpdate.insert(renderable); 
-                    }
-                } 
+                if ( _isEditMode || _entityPriority == EntityPriority::PRIORITIZED ) 
+                {
+                    _priorityRenderablesToUpdate.insert(renderable);
+                } // Static entities are added to automatic updates if in edit mode
+                else if ( _entityPriority == EntityPriority::AUTOMATIC )
+                {
+                        _renderablesToUpdate.insert(renderable);
+                }
+                else if ( _entityPriority == EntityPriority::STATIC )
+                {
+                        _staticRenderablesToUpdate.insert(renderable); 
+                }                 
            }
            else 
            {
