@@ -40,7 +40,7 @@ Item {
             spacing: 0
 
             HifiStylesUit.RobotoRegular {
-                text: "GRAPHICS SETTINGS"
+                text: "PERFORMANCE SETTINGS"
                 Layout.maximumWidth: parent.width
                 height: 30
                 size: 16
@@ -58,7 +58,7 @@ Item {
                     height: 18
                     fontSize: 16
                     leftPadding: 0
-                    text: "Low"
+                    text: "Potato (Low)"
                     checked: Performance.getPerformancePreset() === PerformanceEnums.LOW
                     onClicked: {
                         Performance.setPerformancePreset(PerformanceEnums.LOW);
@@ -279,7 +279,7 @@ Item {
                 
                     HifiControlsUit.ComboBox {
                         id: refreshRateDropdown
-                        enabled: performanceCustom.checked
+                        // enabled: performanceCustom.checked
                         anchors.left: refreshRateHeader.right
                         anchors.leftMargin: 20
                         anchors.top: parent.top
