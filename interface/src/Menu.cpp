@@ -267,7 +267,7 @@ Menu::Menu() {
     });
 
     // Settings > Graphics...
-    action = addActionToQMenuAndActionHash(settingsMenu, "Graphics...");
+    action = addActionToQMenuAndActionHash(settingsMenu, "Performance...");
     connect(action, &QAction::triggered, [] {
         auto tablet = DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
         auto hmd = DependencyManager::get<HMDScriptingInterface>();
@@ -292,9 +292,17 @@ Menu::Menu() {
 
     // Settings > Developer Menu
     addCheckableActionToQMenuAndActionHash(settingsMenu, "Developer Menu", 0, false, this, SLOT(toggleDeveloperMenus()));
+    
+    // Settings > Use shaders (procedural materials)
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, false);
+    connect(action, &QAction::triggered, [action] {
+        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+    });
 
     // Settings > Ask to Reset Settings
     addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::AskToResetSettings, 0, false);
+
+
 
     // Developer menu ----------------------------------
     MenuWrapper* developerMenu = addMenu("Developer", "Developer");
@@ -487,10 +495,10 @@ Menu::Menu() {
     addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ComputeBlendshapes, 0, true,
         DependencyManager::get<ModelBlender>().data(), SLOT(setComputeBlendshapes(bool)));
 
-    action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::MaterialProceduralShaders, 0, false);
-    connect(action, &QAction::triggered, [action] {
-        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
-    });
+    //action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::MaterialProceduralShaders, 0, false);
+    //connect(action, &QAction::triggered, [action] {
+    //    MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+    //});
 
     {
         auto drawStatusConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<render::DrawStatus>("RenderMainView.DrawStatus");
