@@ -59,17 +59,9 @@ public:
     QList<EntityItemID> _currentlySelectedEntities;  // selected by edit
     
     bool _zoneCullingActive = false;
-    bool _bypassPrioritySorting = false;
-    bool _forcedBypassPrioritySorting = false;
     bool _updateStaticEntities = false;
     bool _isEditMode = false;
 
-    const quint64 ZONECULLING_SORT_BYPASS_WAIT = 1; 
-    const quint64 DOMAINLOADING_SORT_BYPASS_WAIT = 5; 
-    const quint64 STATIC_ENTITY_UPDATE_INTERVAL = 10;
-    quint64 _updateStaticEntitiesTime;
-    quint64 _clutchEndTime = 0.0f;
-     
     void setCurrentlySelectedItems(QList<EntityItemID>& value) { _currentlySelectedEntities = value;}
     bool checkIfEntityIsSelected(const EntityItemID& value) { return _currentlySelectedEntities.contains(value); }
     bool isAnythingSelected() { return !_currentlySelectedEntities.isEmpty(); }
@@ -81,25 +73,11 @@ public:
 
     void setIsEditMode(bool modeState) { _isEditMode = modeState; }
 
-    quint64 getStaticUpdateTime() { return _updateStaticEntitiesTime; }
-    void setStaticUpdateTime(quint64& time) { if (time > _updateStaticEntitiesTime) _updateStaticEntitiesTime = time; }
-
-    void setPriorityClutchTime(quint64& time) {  if (time > _clutchEndTime) _clutchEndTime = time;  setBypassPrioritySorting(true); }
-
-    quint64 getPriorityClutchTime() { return _clutchEndTime; }
-
     ReadWriteLockable _getZoneCullSkiplistGuard;
     QVector<QUuid> getZoneCullSkiplist();
     void evaluateZoneCullingStack();  // We'll look at all the culling masks for each zone
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
-    void setBypassPrioritySorting(bool usePrioritySorting) { _bypassPrioritySorting = usePrioritySorting; }
-
-    // For overriding bypass in order to have it as a test feature in the developer menu
-    void setForcedBypassPrioritySorting(bool usePrioritySorting) { _forcedBypassPrioritySorting = usePrioritySorting; }
-
-    bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
-    bool getForcedBypassPrioritySorting() { return _forcedBypassPrioritySorting; }
 
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }

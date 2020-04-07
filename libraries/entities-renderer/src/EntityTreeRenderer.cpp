@@ -514,7 +514,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const EntityItemID& entityId : changedEntities) {
            quint16 t = 0; 
-           EntityRendererPointer& renderable = renderableForEntityId(entityId);
+           const EntityRendererPointer& renderable = renderableForEntityId(entityId);
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
                EntityItemPointer& _entity = getEntity(entityId);
@@ -565,10 +565,8 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
         }
 
-        // Bypass? Then handle without sorting
-        if (_bypassPrioritySorting || _forcedBypassPrioritySorting || !getSceneIsReady()) expectedUpdateCost = 0.0f; // Everything gets equal priority. Usually briefly for faster loads/zone culls
         if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) 
-        { // Enough resources exist or are forced via bypass
+        { 
 
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
 
@@ -588,7 +586,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
 
         } 
         else 
-        { // Else Sort normally if not bypassed
+        { 
             // we expect the cost to updating all renderables to exceed available time budget
             // so we first sort by priority and update in order until out of time
             class SortableRenderer : public PrioritySortUtil::Sortable {
@@ -654,13 +652,6 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
 void EntityTreeRenderer::preUpdate() {
 
     if (_tree && !_shuttingDown) {
-        if (getPriorityClutchTime() < secTimestampNow())
-        {
-            setBypassPrioritySorting(false);
-        } 
-        else 
-        {
-        }
         _tree->preUpdate();
     }
 }
@@ -752,8 +743,7 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
         entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result); // find all the stuff in the bounding box and put in uuid vector
     });
 
-    zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.
-    _updateStaticEntitiesTime = secTimestampNow();
+    zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.    
 
 }
 

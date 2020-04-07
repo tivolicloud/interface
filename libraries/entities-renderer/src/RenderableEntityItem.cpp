@@ -450,7 +450,6 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
 
 // Bool = if the state has changed or not
 bool EntityRenderer::evaluateEntityZoneCullState(const EntityItemPointer& entity){
-    // TODO: Add BypassRunderUpdate clutching for faster state change
 
     // Shapes aren't cooperating with zone culling, namely they are culled but not coming back
     // when they should not be culled. It may have to do with where they sit
