@@ -73,10 +73,10 @@ $(document).ready(function(){
   Settings.extraContentGroupsAtEnd = [];
 
   Settings.extraDomainGroupsAtIndex = {
-    1: {
-      html_id: 'places',
-      label: 'Places'
-    }
+    // 1: {
+    //   html_id: 'places',
+    //   label: 'Places'
+    // }
   }
 
   Settings.extraDomainGroupsAtEnd = [

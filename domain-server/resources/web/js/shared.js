@@ -58,7 +58,7 @@ var URLs = {
 var Strings = {
   LOADING_SETTINGS_ERROR: "There was a problem loading the domain settings.\nPlease refresh the page to try again.",
 
-  CHOOSE_DOMAIN_BUTTON: "Choose from my domains",
+  CHOOSE_DOMAIN_BUTTON: "Choose from my worlds",
   CREATE_DOMAIN_BUTTON: "Create new domain ID",
   CREATE_DOMAIN_SUCCESS_JUST_CONNECTED: "We connnected your High Fidelity account and created a new domain ID for this machine.",
   CREATE_DOMAIN_SUCCESS: "We created a new domain ID for this machine.",
@@ -475,10 +475,10 @@ function waitForDomainServerRestart(callback) {
 
 function prepareAccessTokenPrompt(callback) {
   swal({
-    title: "Connect Account",
+    title: "Connect world",
     type: "input",
     text: "Paste your created access token here." +
-      "</br></br>If you did not successfully create an access token click cancel below and attempt to connect your account again.</br></br>",
+      "</br></br>If you did not successfully create an access token click cancel below and attempt to connect your world again.</br></br>",
     showCancelButton: true,
     closeOnConfirm: false,
     html: true
