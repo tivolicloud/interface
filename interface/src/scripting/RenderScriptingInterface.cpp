@@ -153,6 +153,23 @@ void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
     });
 }
 
+bool RenderScriptingInterface::getCustomShadersEnabled() const {
+    return _customShadersEnabled;
+}
+void RenderScriptingInterface::setCustomShadersEnabled(bool enabled) {
+    if (_customShadersEnabled != enabled) {
+        forceCustomShadersEnabled(enabled);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceCustomShadersEnabled(bool enabled) {
+    _renderSettingLock.withWriteLock([&] {
+        _customShadersEnabled = (enabled);
+        _antialiasingEnabledSetting.set(enabled);
+        Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
+     });
+}
 
 float RenderScriptingInterface::getViewportResolutionScale() const {
     return _viewportResolutionScale;

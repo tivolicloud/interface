@@ -28,14 +28,17 @@
  * @property {boolean} ambientOcclusionEnabled - <code>true</code> if ambient occlusion is enabled, <code>false</code> if it's 
  *     disabled.
  * @property {boolean} antialiasingEnabled - <code>true</code> if anti-aliasing is enabled, <code>false</code> if it's disabled.
+ * @property {boolean} customShadersEnabled -  <code>true</code> if custom shaders/procedural materials are enabled, <code>false</code> if it's disabled.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  */
+
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
     Q_PROPERTY(RenderMethod renderMethod READ getRenderMethod WRITE setRenderMethod NOTIFY settingsChanged)
     Q_PROPERTY(bool shadowsEnabled READ getShadowsEnabled WRITE setShadowsEnabled NOTIFY settingsChanged)
     Q_PROPERTY(bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
     Q_PROPERTY(bool antialiasingEnabled READ getAntialiasingEnabled WRITE setAntialiasingEnabled NOTIFY settingsChanged)
+    Q_PROPERTY(bool customShadersEnabled READ getCustomShadersEnabled WRITE setCustomShadersEnabled NOTIFY settingsChanged)
     Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
 
 public:
@@ -154,7 +157,22 @@ public slots:
      * @function Render.setAntialiasingEnabled
      * @param {boolean} enabled - <code>true</code> to enable anti-aliasing, <code>false</code> to disable.
      */
+
     void setAntialiasingEnabled(bool enabled);
+
+    /**jsdoc
+     * Gets whether or not custom shaders/procedural materials are enabled.
+     * @function Render.getCustomShadersEnabled
+     * @returns {boolean} <code>true</code> if custom shaders/procedural materials are enabled, <code>false</code> if it's disabled.
+     */
+    bool getCustomShadersEnabled() const;
+
+    /**jsdoc
+     * Sets whether or not custom shaders/procedural materials are enabled.
+     * @function Render.setCustomShadersEnabled
+     * @param {boolean} enabled - <code>true</code> to enable custom shaders/procedural materials, <code>false</code> to disable.
+     */
+    void setCustomShadersEnabled(bool enabled);
 
     /**jsdoc
      * Gets the view port resolution scale.
@@ -193,6 +211,7 @@ private:
     bool _shadowsEnabled{ true };
     bool _ambientOcclusionEnabled{ false };
     bool _antialiasingEnabled{ true };
+    bool _customShadersEnabled{ true };
     float _viewportResolutionScale{ 1.0f };
 
     // Actual settings saved on disk
@@ -200,6 +219,7 @@ private:
     Setting::Handle<bool> _shadowsEnabledSetting { "shadowsEnabled", true };
     Setting::Handle<bool> _ambientOcclusionEnabledSetting { "ambientOcclusionEnabled", false };
     Setting::Handle<bool> _antialiasingEnabledSetting { "antialiasingEnabled", true };
+    Setting::Handle<bool> _customShadersEnabledSetting { "customShadersEnabled", true };
     Setting::Handle<float> _viewportResolutionScaleSetting { "viewportResolutionScale", 1.0f };
 
     // Force assign both setting AND runtime value to the parameter value
@@ -207,6 +227,7 @@ private:
     void forceShadowsEnabled(bool enabled);
     void forceAmbientOcclusionEnabled(bool enabled);
     void forceAntialiasingEnabled(bool enabled);
+    void forceCustomShadersEnabled(bool enabled);
     void forceViewportResolutionScale(float scale);
 
     static std::once_flag registry_flag;

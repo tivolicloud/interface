@@ -227,7 +227,7 @@ namespace MenuOption {
     const QString ForceCoarsePicking = "Force Coarse Picking";
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
-    const QString MaterialProceduralShaders = "Enable Procedural Materials";
+    const QString CustomShaders = "Enable Custom Shaders";
 
     // TIVOLI SPECIFIC
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";

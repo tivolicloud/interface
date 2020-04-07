@@ -103,15 +103,15 @@ void setupPreferences() {
         preference->setItems(refreshRateProfiles);
         preferences->addPreference(preference);
 
-        auto getterMaterialProceduralShaders = []() -> bool {
+        auto getterCustomShaders = []() -> bool {
             auto menu = Menu::getInstance();
-            return menu->isOptionChecked(MenuOption::MaterialProceduralShaders);
+            return menu->isOptionChecked(MenuOption::CustomShaders);
         };
-        auto setterMaterialProceduralShaders = [](bool value) {
+        auto setterCustomShaders = [](bool value) {
             auto menu = Menu::getInstance();
-            menu->setIsOptionChecked(MenuOption::MaterialProceduralShaders, value);
+            menu->setIsOptionChecked(MenuOption::CustomShaders, value);
         };
-        preferences->addPreference(new CheckPreference(GRAPHICS_QUALITY, "Enable Procedural Materials", getterMaterialProceduralShaders, setterMaterialProceduralShaders));
+        preferences->addPreference(new CheckPreference(GRAPHICS_QUALITY, "Enable Custom Shaders", getterCustomShaders, setterCustomShaders));
     }
     {
         // Expose the Viewport Resolution Scale

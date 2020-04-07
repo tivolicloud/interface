@@ -26,7 +26,7 @@
 // static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
 // static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
 
-bool MeshPartPayload::enableMaterialProceduralShaders = false;
+bool MeshPartPayload::enableCustomShaders = false;
 
 using namespace render;
 
@@ -193,7 +193,7 @@ void MeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
             _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders)) { // && ENABLE_MATERIAL_PROCEDURAL_SHADERS)) {
+        if (!(enableCustomShaders)) { // && ENABLE_MATERIAL_PROCEDURAL_SHADERS)) {
             return;
         }
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
@@ -481,7 +481,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
             _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders)) {
+        if (!(enableCustomShaders)) {
             return;
         }
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
