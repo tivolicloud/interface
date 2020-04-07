@@ -44,100 +44,35 @@
    
    Selection.enableListHighlight(HIGHLIGHT_LIST_NAME, editHandleOutlineStyle);
    
-   const SHADER_FILE_PATH =
-       "https://cdn.tivolicloud.com/assets/caitlyn/shader-tests/";
-   //const SHADER_FILE_PATH =
-   //	"file:///C:/Program Files/Tivoli Cloud/resources/app/interface/0.86.0/scripts/system/create/assets/shaders/";
-   var EMISSIVE_YELLOW =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'yellowEmissive.fs","version":3}}';
-   var EMISSIVE_YELLOW_HIGHLIGHT =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'hi_yellowEmissive.fs","version":3}}';
-   var EMISSIVE_GREEN =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'greenEmissive.fs","version":3}}';
-   var EMISSIVE_GREEN_HIGHLIGHT =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'hi_greenEmissive.fs","version":3}}';
-   var EMISSIVE_RED =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'redEmissive.fs","version":3}}';
-   var EMISSIVE_RED_HIGHLIGHT =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'hi_redEmissive.fs","version":3}}';
-   var EMISSIVE_BLUE =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'blueEmissive.fs","version":3}}';
-   var EMISSIVE_BLUE_HIGHLIGHT =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'hi_blueEmissive.fs","version":3}}';
-   
-   var EMISSIVE_GRAY =
-       '{"ProceduralEntity":{"shaderUrl":"' +
-       SHADER_FILE_PATH +
-       'grayEmissive.fs","version":3}}';
-   
-   // function scrambleShaderNames() {
-   // 	var d = new Date();
-   // 	timeStamp = d.getTime();
-   // 	EMISSIVE_YELLOW =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"yellowEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_YELLOW_HIGHLIGHT =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"hi_yellowEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_GREEN =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"greenEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_GREEN_HIGHLIGHT =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"hi_greenEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_RED =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"redEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_RED_HIGHLIGHT =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"hi_redEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_BLUE =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"blueEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // 	EMISSIVE_BLUE_HIGHLIGHT =
-   // 		'{"ProceduralEntity":{"shaderUrl":"' +
-   // 		SHADER_FILE_PATH +
-   // 		"hi_blueEmissive.fs?" +
-   // 		timeStamp +
-   // 		'","version":3}}';
-   // }
+   function emissiveShader(r, g, b) {
+       return JSON.stringify({
+            ProceduralEntity: {
+                version: 3,
+                shaderUrl: Script.resolvePath("../assets/emissive.fs"),
+                uniforms: {
+                    color: [
+                        r/255,
+                        g/255,
+                        b/255
+                    ]
+                }
+            }
+       })
+   }
+
+   var EMISSIVE_RED = emissiveShader(255, 0, 0);
+   var EMISSIVE_RED_HIGHLIGHT = emissiveShader(255, 100, 100);
+
+   var EMISSIVE_GREEN = emissiveShader(0, 255, 0);
+   var EMISSIVE_GREEN_HIGHLIGHT = emissiveShader(100, 255, 100);
+
+   var EMISSIVE_BLUE = emissiveShader(0, 0, 255);
+   var EMISSIVE_BLUE_HIGHLIGHT = emissiveShader(100, 100, 255);
+
+   var EMISSIVE_YELLOW = emissiveShader(255, 255, 0);
+   var EMISSIVE_YELLOW_HIGHLIGHT = emissiveShader(255, 255, 100);
+
+   var EMISSIVE_GRAY = emissiveShader(128, 128, 128);
    
    function deepCopy(v) {
        return JSON.parse(JSON.stringify(v));
