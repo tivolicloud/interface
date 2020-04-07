@@ -161,7 +161,6 @@ void Stats::updateStats(bool force) {
         STAT_UPDATE(presentdroprate, -1);
     }
 
-    STAT_UPDATE(bypassPrioritySorting, (bool)treeRenderer->getBypassPrioritySorting() || (bool)treeRenderer->getForcedBypassPrioritySorting());
     STAT_UPDATE(gameLoopRate, (int)qApp->getGameLoopRate());
 
     auto pickManager = DependencyManager::get<PickManager>();
