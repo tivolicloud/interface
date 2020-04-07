@@ -37,8 +37,7 @@
     var CREATE_TOOLS_WIDTH = 640;
     var MAX_DEFAULT_ENTITY_LIST_HEIGHT = 850;
 
-    var DEFAULT_IMAGE =
-        "https://hifi-content.s3.amazonaws.com/DomainContent/production/no-image.jpg";
+    var DEFAULT_IMAGE = "qrc:///images/empty-image-entity.png";
 
     var createToolsWindow = new CreateWindow(
         Script.resolvePath("qml/EditTools.qml"),
@@ -477,13 +476,14 @@
         Image: {
             name: "Image",
             dimensions: {
-                x: 0.5385,
-                y: 0.2819,
-                z: 0.0092
+                x: 1,
+                y: 1,
+                z: 0.01
             },
             shapeType: "box",
             collisionless: true,
-            keepAspectRatio: false,
+            keepAspectRatio: true,
+            emissive: true,
             imageURL: DEFAULT_IMAGE
         },
         Web: {
