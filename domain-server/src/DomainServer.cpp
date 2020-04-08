@@ -1974,7 +1974,7 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
     const QString URI_RESTART = "/restart";
     const QString URI_API_METAVERSE_INFO = "/api/metaverse_info";
     const QString URI_API_PLACES = "/api/places"; // TODO: deprecated because places dont exist anymore
-    const QString URI_API_DOMAIN = "/api2/domain";
+    const QString URI_API_DOMAIN = "/api/domain";
     const QString URI_API_DOMAINS = "/api/domains"; // TODO: deprecated
     const QString URI_API_DOMAINS_ID = "/api/domains/"; // TODO: deprecated
     const QString URI_API_BACKUPS = "/api/backups";
