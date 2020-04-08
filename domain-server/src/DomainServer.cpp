@@ -153,7 +153,11 @@ bool DomainServer::forwardMetaverseAPIRequest(HTTPConnection* connection,
             return;
         }
 
-        connection->respond(HTTPConnection::StatusCode200, reply->readAll());
+        connection->respond(
+            HTTPConnection::StatusCode200,
+            reply->readAll(),
+            "application/json"
+        );
     });
 
     return true;
