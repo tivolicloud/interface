@@ -6997,18 +6997,6 @@ void Application::queryOctree(
     auto menu = Menu::getInstance();
     auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
 
-    if (treeRenderer) {
-        treeRenderer->setIsEditMode(isEditMode()); // CPM ETR needs to know to determine static clutching in edit
-        if (menu) {
-            if (menu->isOptionChecked(MenuOption::BypassPrioritySorting)) {            // if Dev > Tivoli Options >>> LoadCompleteEntityTree truee
-                treeRenderer->setForcedBypassPrioritySorting(true); // TIVOLI bypass priority sorting
-            }
-            else {
-                treeRenderer->setForcedBypassPrioritySorting(false); // TIVOLI bypass priority sorting
-            }
-        }
-    }   
-
     auto nodeList = DependencyManager::get<NodeList>();
     auto node = nodeList->soloNodeOfType(serverType);
 

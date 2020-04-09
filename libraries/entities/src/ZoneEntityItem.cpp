@@ -530,29 +530,3 @@ bool ZoneEntityItem::matchesJSONFilters(const QJsonObject& jsonFilters) const {
     // Chain to base:
     return EntityItem::matchesJSONFilters(jsonFilters);
 }
-
-
-
-// moving to EntityTreeRenderer.cpp
-//void ZoneEntityItem::clearZoneCullSkiplist() {  // TIVOLI
-//    qDebug() << "CLEARING ZONE CULL SKIPLIST ";
-//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.clear(); });
-//}
-//
-//void ZoneEntityItem::skipZoneCull(const EntityItemID& id) {  // TIVOLI
-//    qDebug() << "NON CULL ENTITY ADDED: " << id;
-//    _zoneCullSkiplistGuard.withWriteLock([&] { _zoneCullSkiplist.insert(id); });
-//}
-//if (_zoneCullingMode == offExclusive) {
-//    qDebug() << "CPM OFF" << _zoneCullingMode;
-//    _localZoneCullSkiplist.clear();
-//} else if (_zoneCullingMode == onInclusive ||
-//           _zoneCullingMode == onExclusive) {  // ENABLED handles on and inherit?
-//    // POPULATE MY SKIPLIST AND SHARE WITH RENDERER
-//    // In which class would be the best place to actually hold that logic?
-//    //    1. Select all entities in box and touching box
-//    //    2. Add each Entity ID to _localZoneCullSkiplist.add my stuff
-//    // _localZoneCullSkiplist.insert()
-//} else if (_zoneCullingMode == inherit) {  // ENABLED handles on and inherit?
-//                                                            // do nothing
-//}
