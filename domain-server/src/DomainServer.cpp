@@ -153,7 +153,11 @@ bool DomainServer::forwardMetaverseAPIRequest(HTTPConnection* connection,
             return;
         }
 
-        connection->respond(HTTPConnection::StatusCode200, reply->readAll());
+        connection->respond(
+            HTTPConnection::StatusCode200,
+            reply->readAll(),
+            "application/json"
+        );
     });
 
     return true;
@@ -1969,9 +1973,10 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
     const QString URI_CONTENT_UPLOAD = "/content/upload";
     const QString URI_RESTART = "/restart";
     const QString URI_API_METAVERSE_INFO = "/api/metaverse_info";
-    const QString URI_API_PLACES = "/api/places";
-    const QString URI_API_DOMAINS = "/api/domains";
-    const QString URI_API_DOMAINS_ID = "/api/domains/";
+    const QString URI_API_PLACES = "/api/places"; // TODO: deprecated because places dont exist anymore
+    const QString URI_API_DOMAIN = "/api/domain";
+    const QString URI_API_DOMAINS = "/api/domains"; // TODO: deprecated
+    const QString URI_API_DOMAINS_ID = "/api/domains/"; // TODO: deprecated
     const QString URI_API_BACKUPS = "/api/backups";
     const QString URI_API_BACKUPS_ID = "/api/backups/";
     const QString URI_API_BACKUPS_DOWNLOAD_ID = "/api/backups/download/";
@@ -2230,6 +2235,9 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             connectionPtr->respond(HTTPConnection::StatusCode200, docJSON.toJson(), JSON_MIME_TYPE.toUtf8());
 
             return true;
+        } else if (url.path() == URI_API_DOMAIN) {
+            auto domainID = uuidStringWithoutCurlyBraces(nodeList->getSessionUUID());
+            return forwardMetaverseAPIRequest(connection, "/api/domain/" + domainID, "", {}, {}, false);
         } else if (url.path() == URI_API_DOMAINS) {
             return forwardMetaverseAPIRequest(connection, "/api/v1/domains", "");
         } else if (url.path().startsWith(URI_API_DOMAINS_ID)) {
@@ -2372,7 +2380,7 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
                 return true;
             }
 
-        } else if (url.path() == URI_API_DOMAINS) {
+        } else if (url.path() == URI_API_DOMAINS || url.path() == URI_API_DOMAIN) {
             return forwardMetaverseAPIRequest(connection, "/api/v1/domains", "domain", { "label" });
 
         } else if (url.path().startsWith(URI_API_BACKUPS_RECOVER)) {
@@ -2393,7 +2401,7 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             return true;
         }
     } else if (connection->requestOperation() == QNetworkAccessManager::PutOperation) {
-        if (url.path() == URI_API_DOMAINS) {
+        if (url.path() == URI_API_DOMAINS || url.path() == URI_API_DOMAIN) {
             QVariant domainSetting;
             if (!getSetting(METAVERSE_DOMAIN_ID_KEY_PATH, domainSetting)) {
                 connection->respond(HTTPConnection::StatusCode400, "Domain id has not been set");
