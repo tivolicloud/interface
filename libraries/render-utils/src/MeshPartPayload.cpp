@@ -486,6 +486,10 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         _drawMaterials.top().material->isProcedural() &&
        _drawMaterials.top().material->isReady()) 
     {
+        glm::vec4 outColor = glm::vec4(255.0f,128.0f,128.0f, 128.0f);
+        //procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
+          //  ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
+        batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
     } 
     else if (// DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
         !_drawMaterials.empty() &&
