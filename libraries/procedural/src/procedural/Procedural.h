@@ -26,6 +26,7 @@
 using UniformLambdas = std::list<std::function<void(gpu::Batch& batch)>>;
 const size_t MAX_PROCEDURAL_TEXTURE_CHANNELS{ 4 };
 
+
 /**jsdoc
  * An object containing user-defined uniforms for communicating data to shaders.
  * @typedef {object} ProceduralUniforms
@@ -129,6 +130,8 @@ public:
     static std::function<void(gpu::StatePointer)> opaqueStencil;
     static std::function<void(gpu::StatePointer)> transparentStencil;
 
+    static bool isCustomShadersEnabled;
+
 protected:
     // DO NOT TOUCH
     // We have to pack these in a particular way to match the ProceduralCommon.slh
@@ -214,12 +217,17 @@ public:
     bool isProcedural() const override { return true; }
     bool isEnabled() const override { return _procedural.isEnabled(); }
     bool isReady() const override { return _procedural.isReady(); }
-    QString getProceduralString() const override { return _proceduralString; }
+
+    QString getProceduralString() const override { 
+        return _proceduralString; 
+    }
 
     void setProceduralData(const QString& data) {
+        if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return;
         _proceduralString = data;
         _procedural.setProceduralData(ProceduralData::parse(data));
     }
+
     glm::vec4 getColor(const glm::vec4& color) const { return _procedural.getColor(color); }
     bool isFading() const { return _procedural.isFading(); }
     void setIsFading(bool isFading) { _procedural.setIsFading(isFading); }

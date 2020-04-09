@@ -196,6 +196,10 @@ public:
     static const int DEFAULT_SPECTATOR_CAM_HEIGHT { 1024 };
 
     void setGPUContext(const gpu::ContextPointer& context) { _gpuContext = context; }
+
+    static bool isCustomShadersEnabled() { return _isCustomShadersEnabled; }
+    static void setCustomShadersEnabled(bool value) { _isCustomShadersEnabled = value;}
+
     gpu::ContextPointer getGPUContext() const { return _gpuContext; }
 
 signals:
@@ -220,6 +224,7 @@ private:
 
     static const std::string KTX_DIRNAME;
     static const std::string KTX_EXT;
+    static bool _isCustomShadersEnabled;
 
     gpu::ContextPointer _gpuContext { nullptr };
 

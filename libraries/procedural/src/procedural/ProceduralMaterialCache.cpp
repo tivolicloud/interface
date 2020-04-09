@@ -212,7 +212,9 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
     if (modelJSONIter != materialJSON.end() && modelJSONIter.value().isString()) {
         modelString = modelJSONIter.value().toString().toStdString();
     }
-
+    
+    if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) modelString = graphics::Material::HIFI_PBR;
+    
     std::array<glm::mat4, graphics::Material::NUM_TEXCOORD_TRANSFORMS> texcoordTransforms;
 
     const QString FALLTHROUGH("fallthrough");
@@ -524,8 +526,10 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
                     material->setDefaultFallthrough(value.toBool());
                 }
             } else if (key == "procedural") {
-                auto value = materialJSON.value(key);
-                material->setProceduralData(QJsonDocument::fromVariant(value.toVariant()).toJson());
+                if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
+                    auto value = materialJSON.value(key);
+                    material->setProceduralData(QJsonDocument::fromVariant(value.toVariant()).toJson());
+                }
             }
         }
         networkMaterial = material;

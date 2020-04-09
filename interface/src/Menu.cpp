@@ -296,7 +296,11 @@ Menu::Menu() {
     // Settings > Use shaders (procedural materials)
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, false);
     connect(action, &QAction::triggered, [action] {
-        MeshPartPayload::enableCustomShaders = action->isChecked();
+        // MeshPartPayload::isCustomShadersEnabled = action->isChecked();
+        // NetworkMaterialResource::isCustomShadersEnabled = action->isChecked();
+        // Procedural::isCustomShadersEnabled = action->isChecked();
+        TextureCache::setCustomShadersEnabled(action->isChecked());
+        ShaderCache::instance().refreshAll();
     });
 
     // Settings > Ask to Reset Settings

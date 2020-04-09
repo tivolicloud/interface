@@ -26,7 +26,7 @@
 // static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
 // static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
 
-bool MeshPartPayload::enableCustomShaders = false;
+//bool MeshPartPayload::isCustomShadersEnabled = true;
 
 using namespace render;
 
@@ -191,11 +191,12 @@ void MeshPartPayload::render(RenderArgs* args) {
     //Bind the index buffer and vertex buffer and Blend shapes if needed
     bindMesh(batch);
 
-    if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
-            _drawMaterials.top().material->isReady()) {
-        if (!(enableCustomShaders)) { // && ENABLE_MATERIAL_PROCEDURAL_SHADERS)) {
-            return;
-        }
+    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
+        !_drawMaterials.empty() &&
+        _drawMaterials.top().material &&
+        _drawMaterials.top().material->isProcedural() &&
+        _drawMaterials.top().material->isReady()) 
+    {
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
         auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
         glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -479,11 +480,19 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         batch.setDrawcallUniform(drawcallInfo);
     }
 
-    if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
-            _drawMaterials.top().material->isReady()) {
-        if (!(enableCustomShaders)) {
-            return;
-        }
+    if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
+        !_drawMaterials.empty() &&
+        _drawMaterials.top().material &&
+        _drawMaterials.top().material->isProcedural() &&
+       _drawMaterials.top().material->isReady()) 
+    {
+    } 
+    else if (// DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
+        !_drawMaterials.empty() &&
+        _drawMaterials.top().material &&
+        _drawMaterials.top().material->isProcedural() &&
+        _drawMaterials.top().material->isReady()) 
+    {
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
         auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
         glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -491,15 +500,13 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
                             ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
         batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-    } else {
-        // apply material properties
-        if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
-            args->_details._materialSwitches++;
-        }
+    } 
+    else { // apply PBR (non-procedural) material properties
+            if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
+            args->_details._materialSwitches++;       
     }
-
-    // Draw!
-    {
+    
+    { // Draw!
         PerformanceTimer perfTimer("batch.drawIndexed()");
         drawCall(batch);
     }

@@ -120,9 +120,11 @@ void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoint
 
         auto userData = entity->getUserData();
         if (_proceduralData != userData) {
-            _proceduralData = userData;
-            _material->setProceduralData(_proceduralData);
-            materialChanged = true;
+            if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
+                _proceduralData = userData;
+                _material->setProceduralData(_proceduralData);
+                materialChanged = true;
+            }
         }
 
         if (materialChanged) {
@@ -157,6 +159,7 @@ bool ShapeEntityRenderer::isTransparent() const {
 }
 
 ShapeEntityRenderer::Pipeline ShapeEntityRenderer::getPipelineType(const graphics::MultiMaterial& materials) const {
+    if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return Pipeline::MATERIAL;
     if (materials.top().material && materials.top().material->isProcedural() && materials.top().material->isReady()) {
         return Pipeline::PROCEDURAL;
     }
