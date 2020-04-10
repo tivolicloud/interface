@@ -1469,11 +1469,11 @@ void ModelEntityRenderer::doRender(RenderArgs* args) {
     DETAILED_PERFORMANCE_TIMER("RMEIrender");
 
     // If the model doesn't have visual geometry, render our bounding box as green wireframe
-    static glm::vec4 greenColor(0.0f, 1.0f, 0.0f, 1.0f);
+    static glm::vec4 magentaColor(0.913f, 0.117f, 0.388f, 1.0f);
     gpu::Batch& batch = *args->_batch;
     batch.setModelTransform(getModelTransform()); // we want to include the scale as well
     auto geometryCache = DependencyManager::get<GeometryCache>();
-    geometryCache->renderWireCubeInstance(args, batch, greenColor, geometryCache->getShapePipelinePointer(false, false, args->_renderMethod == Args::RenderMethod::FORWARD));
+    geometryCache->renderWireCubeInstance(args, batch, magentaColor, geometryCache->getShapePipelinePointer(false, false, args->_renderMethod == Args::RenderMethod::FORWARD));
 
 #if WANT_EXTRA_DEBUGGING
     ModelPointer model;
