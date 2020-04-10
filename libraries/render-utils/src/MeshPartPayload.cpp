@@ -480,36 +480,31 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         batch.setDrawcallUniform(drawcallInfo);
     }
 
-    if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
-        !_drawMaterials.empty() &&
-        _drawMaterials.top().material &&
-        _drawMaterials.top().material->isProcedural() &&
-       _drawMaterials.top().material->isReady()) 
-    {
-        glm::vec4 outColor = glm::vec4(255.0f,128.0f,128.0f, 128.0f);
-        //procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
-          //  ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
-        batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-    } 
-    else if (// DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
+    if (
         !_drawMaterials.empty() &&
         _drawMaterials.top().material &&
         _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) 
     {
-        auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
-        auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
-        glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
-        outColor = procedural->getColor(outColor);
-        procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
-                            ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
-        batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-    } 
-    else { // apply PBR (non-procedural) material properties
+        if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) { 
+            auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
+            auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
+            glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
+            outColor = procedural->getColor(outColor);
+            procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
+                                ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
+            batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
+        } 
+        else { // Procedural but custom shaders are disabled; apply PBR as fallback
             if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
             args->_details._materialSwitches++;       
+        }   
+    } 
+    else { // apply PBR (non-procedural) material properties
+        if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
+            args->_details._materialSwitches++;
     }
-    
+
     { // Draw!
         PerformanceTimer perfTimer("batch.drawIndexed()");
         drawCall(batch);
