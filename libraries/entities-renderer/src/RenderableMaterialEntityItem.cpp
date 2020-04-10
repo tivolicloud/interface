@@ -228,7 +228,13 @@ ItemKey MaterialEntityRenderer::getKey() {
 }
 
 ShapeKey MaterialEntityRenderer::getShapeKey() {
+
+
     ShapeKey::Builder builder;
+
+    builder.withWireframe();
+    return builder.build();
+
     graphics::MaterialKey drawMaterialKey;
     const auto drawMaterial = getMaterial();
     if (drawMaterial) {

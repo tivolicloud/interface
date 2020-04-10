@@ -132,7 +132,8 @@ ShapeKey MeshPartPayload::getShapeKey() const {
         builder.withTranslucent();
     }
 
-    if (material && material->isProcedural() && material->isReady()) {
+    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
+        material && material->isProcedural() && material->isReady()) {
         builder.withOwnPipeline();
     } else {
         builder.withMaterial();
@@ -188,13 +189,13 @@ void MeshPartPayload::render(RenderArgs* args) {
 
     // You can find this functionality similarly implemented in ModelMeshPartPayload
     // currently found around line 190.  Be sure changes here are reflected there
-    if ( 
+    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
         !_drawMaterials.empty() &&
         _drawMaterials.top().material &&
         _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) 
     {
-        if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
+        // if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
             auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
             auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
             glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -202,12 +203,12 @@ void MeshPartPayload::render(RenderArgs* args) {
             procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
                                 ProceduralProgramKey(outColor.a < 1.0f));
             batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-            }
-            else {  // Procedural but custom shaders are disabled; apply PBR as fallback
-                if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
-                    args->_details._materialSwitches++;
-                }
-            }
+         //   }
+            //else {  // Procedural but custom shaders are disabled; apply PBR as fallback
+            //    if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
+            //        args->_details._materialSwitches++;
+            //    }
+            //}
     } 
     else { // Apply standard PBR
         if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
@@ -413,7 +414,8 @@ void ModelMeshPartPayload::setShapeKey(bool invalidateShapeKey, PrimitiveMode pr
         }
     }
 
-    if (material && material->isProcedural() && material->isReady()) {
+    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() && 
+        material && material->isProcedural() && material->isReady()) {
         builder.withOwnPipeline();
     } else {
         bool hasTangents = drawMaterialKey.isNormalMap() && _hasTangents;
@@ -486,13 +488,13 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     // You can find similar functionality in this .cpp under MeshPartPayload around line 490
     // Be sure any changes here are reflected there.
-    if (
+    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
         !_drawMaterials.empty() &&
         _drawMaterials.top().material &&
         _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) 
     {
-        if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) { 
+        //if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) { 
             auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
             auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
             glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -500,11 +502,11 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
             procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
                                 ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
             batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-        } 
-        else { // Procedural but custom shaders are disabled; apply PBR as fallback
-            if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
-            args->_details._materialSwitches++;       
-        }   
+      //  } 
+      //  else { // Procedural but custom shaders are disabled; apply PBR as fallback
+      ///*      if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
+      //      args->_details._materialSwitches++;    */   
+      //  }   
     } 
     else { // apply PBR (non-procedural) material properties
         if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
