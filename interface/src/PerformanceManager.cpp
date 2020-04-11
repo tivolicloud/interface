@@ -93,7 +93,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             
             RenderScriptingInterface::getInstance()->setShadowsEnabled(true);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(true);
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
+            // qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_HIGH);
             
@@ -126,8 +126,6 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
         case PerformancePreset::POTATO:
             RenderScriptingInterface::getInstance()->setRenderMethod(RenderScriptingInterface::RenderMethod::FORWARD);
             RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::ECO);
-
             RenderScriptingInterface::getInstance()->setViewportResolutionScale(0.25);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(false);
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
