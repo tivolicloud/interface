@@ -5476,6 +5476,12 @@ void Application::loadSettings() {
     // Do that explicitely before being used
     RenderScriptingInterface::getInstance()->loadSettings();
 
+    // If we launch with shaders disabled in settings, we still need to load and enable them once
+    // before before disabling them, otherwise they require a restart if you switch them on
+    if (!menu->isOptionChecked(MenuOption::CustomShaders)) {
+        TextureCache::setWasLaunchedWithShadersDisabled(true);
+    } 
+
     // Setup the PerformanceManager which will enforce the several settings to match the Preset
     // On the first run, the Preset is evaluated from the 
     getPerformanceManager().setupPerformancePresetSettings(_firstRun.get());
@@ -5973,6 +5979,53 @@ void Application::reloadResourceCaches() {
 
     getMyAvatar()->resetFullAvatarURL();
 }
+
+
+// Reload a domain without clearing the caches.
+void Application::refreshScene() { 
+    resetPhysicsReadyInformation();
+
+    // Query the octree to refresh everything in view
+    _queryExpiry = SteadyClock::now();
+    _octreeQuery.incrementConnectionID();
+
+    QJsonObject queryJSONParameters;
+    QJsonObject queryFlags;
+    queryFlags["includeDescendants"] = true;
+    queryFlags["includeAncestors"] = true;
+    queryJSONParameters["flags"] = queryFlags;
+    queryOctree(
+        NodeType::EntityServer,
+        PacketType::EntityQuery,
+        queryJSONParameters
+    );
+
+    getMyAvatar()->prepareAvatarEntityDataForReload();
+    // Clear the entities and their renderables
+    getEntities()->clear();
+
+    //DependencyManager::get<AssetClient>()->clearCache();
+    //DependencyManager::get<ScriptCache>()->clearCache();
+
+    // Clear all the resource caches
+    //DependencyManager::get<ResourceCacheSharedItems>()->clear();
+    DependencyManager::get<AnimationCache>()->refreshAll();
+    DependencyManager::get<SoundCache>()->refreshAll();
+    DependencyManager::get<MaterialCache>()->refreshAll();
+    DependencyManager::get<ModelCache>()->refreshAll();
+    ShaderCache::instance().refreshAll();
+    DependencyManager::get<TextureCache>()->refreshAll();
+    DependencyManager::get<recording::ClipCache>()->refreshAll();
+
+    DependencyManager::get<NodeList>()->reset("Reloading resources");  // Force redownload of .fst models
+    // DependencyManager::get<ScriptEngines>()->reloadAllScripts(); // can we make a version that doesn't reload client UI scripts?
+    //getOffscreenUI()->clearCache();
+
+    //DependencyManager::get<Keyboard>()->createKeyboard();
+
+    //getMyAvatar()->resetFullAvatarURL();
+}
+
 
 void Application::rotationModeChanged() const {
     if (!Menu::getInstance()->isOptionChecked(MenuOption::CenterPlayerInView)) {

@@ -153,8 +153,11 @@ Menu::Menu() {
     });
 #endif
 
-    // Edit > Reload All Content
+    // Edit > Reload All Content and clear caches
     addActionToQMenuAndActionHash(editMenu, MenuOption::ReloadContent, 0, qApp, SLOT(reloadResourceCaches()));
+    
+    // Edit > Refresh scene 
+    addActionToQMenuAndActionHash(editMenu, MenuOption::RefreshScene, 0, qApp, SLOT(refreshScene()));
 
     // Display menu ----------------------------------
     // FIXME - this is not yet matching Alan's spec because it doesn't have
@@ -296,11 +299,17 @@ Menu::Menu() {
     // Settings > Use shaders (procedural materials)
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, false);
     connect(action, &QAction::triggered, [action] {
-        // MeshPartPayload::isCustomShadersEnabled = action->isChecked();
-        // NetworkMaterialResource::isCustomShadersEnabled = action->isChecked();
-        // Procedural::isCustomShadersEnabled = action->isChecked();
-        TextureCache::setCustomShadersEnabled(action->isChecked());
-        ShaderCache::instance().refreshAll();
+        
+        TextureCache::setCustomShadersEnabled(action->isChecked());  
+
+        // Refresh entire scene if custom shaders were disabled in settings at startup
+        if (TextureCache::wasLaunchedWithShadersDisabled()) {
+            TextureCache::setWasLaunchedWithShadersDisabled(false);
+            qApp->refreshScene();
+        }
+        else { // do a quick refresh of the shaders
+            ShaderCache::instance().refreshAll(); // only refresh the shader cache
+        }
     });
 
     // Settings > Ask to Reset Settings

@@ -156,7 +156,8 @@ namespace MenuOption {
     const QString Preferences = "General...";
     const QString Quit =  "Quit";
     const QString ReloadAllScripts = "Reload All Scripts";
-    const QString ReloadContent = "Reload Content (Clears all caches)";
+    const QString ReloadContent = "Reload Content & Clear Cache (slow)";
+    const QString RefreshScene = "Refresh Scene (fast)";
     const QString RenderClearKtxCache = "Clear KTX Cache (requires restart)";
     const QString RenderMaxTextureMemory = "Maximum Texture Memory";
     const QString RenderMaxTextureAutomatic = "Automatic Texture Memory";
@@ -228,8 +229,6 @@ namespace MenuOption {
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
     const QString CustomShaders = "Enable Custom Shaders";
-
-    // TIVOLI SPECIFIC
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
     const QString BypassPrioritySorting = "Force Bypass Priority Sorting";
 
