@@ -187,8 +187,8 @@ void MeshPartPayload::render(RenderArgs* args) {
     //Bind the index buffer and vertex buffer and Blend shapes if needed
     bindMesh(batch);
 
-    // You can find this functionality similarly implemented in ModelMeshPartPayload
-    // currently found around line 190.  Be sure changes here are reflected there
+    // You can find this functionality similarly implemented in ModelMeshPartPayload::render
+    // currently found around line 490.  Be sure changes here are reflected there
     if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
         !_drawMaterials.empty() &&
         _drawMaterials.top().material &&
@@ -202,12 +202,6 @@ void MeshPartPayload::render(RenderArgs* args) {
             procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
                                 ProceduralProgramKey(outColor.a < 1.0f));
             batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-         //   }
-            //else {  // Procedural but custom shaders are disabled; apply PBR as fallback
-            //    if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
-            //        args->_details._materialSwitches++;
-            //    }
-            //}
     } 
     else { // Apply standard PBR
         if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing)) {
@@ -485,7 +479,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         batch.setDrawcallUniform(drawcallInfo);
     }
 
-    // You can find similar functionality in this .cpp under MeshPartPayload around line 490
+    // You can find similar functionality in this .cpp under MeshPartPayload::render (around line 200)
     // Be sure any changes here are reflected there.
     if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() &&
         !_drawMaterials.empty() &&
@@ -499,12 +493,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
             outColor = procedural->getColor(outColor);
             procedural->prepare(batch, _worldFromLocalTransform.getTranslation(), _worldFromLocalTransform.getScale(), _worldFromLocalTransform.getRotation(), _created,
                                 ProceduralProgramKey(outColor.a < 1.0f, _shapeKey.isDeformed(), _shapeKey.isDualQuatSkinned()));
-            batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a);
-      //  } 
-      //  else { // Procedural but custom shaders are disabled; apply PBR as fallback
-      ///*      if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))
-      //      args->_details._materialSwitches++;    */   
-      //  }   
+            batch._glColor4f(outColor.r, outColor.g, outColor.b, outColor.a); 
     } 
     else { // apply PBR (non-procedural) material properties
         if (RenderPipelines::bindMaterials(_drawMaterials, batch, args->_renderMode, args->_enableTexturing))

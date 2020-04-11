@@ -161,9 +161,7 @@ bool ShapeEntityRenderer::isTransparent() const {
 ShapeEntityRenderer::Pipeline ShapeEntityRenderer::getPipelineType(const graphics::MultiMaterial& materials) const {
    
     bool useCustomShaders = DependencyManager::get<TextureCache>()->isCustomShadersEnabled();
-
     if (_entity->isLocalEntity()) useCustomShaders = true; // Always shaders for gizmos/selection outlines
-
     if (!useCustomShaders) return Pipeline::MATERIAL;
 
     if (materials.top().material && materials.top().material->isProcedural() && materials.top().material->isReady()) {
