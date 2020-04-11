@@ -152,7 +152,7 @@ public:
     bool isLoaded() const { return (bool)_renderGeometry && _renderGeometry->isHFMModelLoaded(); }
     bool isAddedToScene() const { return _addedToScene; }
 
-    void setPrimitiveMode(PrimitiveMode primitiveMode, const render::ScenePointer& scene = nullptr);
+    void setPrimitiveMode(PrimitiveMode primitiveMode);//, const render::ScenePointer& scene = nullptr);
     PrimitiveMode getPrimitiveMode() const { return _primitiveMode; }
     
     void reset();

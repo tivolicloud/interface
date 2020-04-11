@@ -282,11 +282,13 @@ void Model::setRenderItemsNeedUpdate() {
 }
 
 
-void Model::setPrimitiveMode(PrimitiveMode primitiveMode, const render::ScenePointer& scene) {
-    if (_primitiveMode != primitiveMode) {
-        _primitiveMode = primitiveMode;
-        updateRenderItemsKey(scene);
-    }
+void Model::setPrimitiveMode(PrimitiveMode primitiveMode) {// const render::ScenePointer& scene) {
+    //if (_primitiveMode != primitiveMode) {
+    //    _primitiveMode = primitiveMode;
+    //    updateRenderItemsKey(scene);
+    //}
+    _primitiveMode = primitiveMode;
+    setRenderItemsNeedUpdate();
 }
 
 void Model::reset() {
