@@ -199,6 +199,8 @@ public:
 
     static bool isCustomShadersEnabled() { return _isCustomShadersEnabled; }
     static void setCustomShadersEnabled(bool value) { _isCustomShadersEnabled = value;}
+    static bool wasLaunchedWithShadersDisabled() { return _wasStartedWithShadersDisabled; }
+    static void setWasLaunchedWithShadersDisabled(bool value) { _wasStartedWithShadersDisabled = value; }
 
     gpu::ContextPointer getGPUContext() const { return _gpuContext; }
 
@@ -225,6 +227,7 @@ private:
     static const std::string KTX_DIRNAME;
     static const std::string KTX_EXT;
     static bool _isCustomShadersEnabled;
+    static bool _wasStartedWithShadersDisabled;
 
     gpu::ContextPointer _gpuContext { nullptr };
 

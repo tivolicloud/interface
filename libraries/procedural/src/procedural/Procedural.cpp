@@ -73,16 +73,11 @@ QJsonValue ProceduralData::getProceduralData(const QString& proceduralJson) {
 
 ProceduralData ProceduralData::parse(const QString& proceduralData) {
     ProceduralData result;
-    //if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return result;
     result.parse(getProceduralData(proceduralData).toObject());
     return result;
 }
 
 void ProceduralData::parse(const QJsonObject& proceduralData) {
-
-    //Procedural::isCustomShadersEnabled = false; 
-    // if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return;
-
     if (proceduralData.isEmpty()) {
         return;
     }
@@ -102,12 +97,6 @@ void ProceduralData::parse(const QJsonObject& proceduralData) {
     }
 
     { // Fragment shader URL (either fragmentShaderURL or shaderUrl)
-
-
-        //if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
-        //    proceduralData[FRAGMENT_URL_KEY] = QJsonObject();
-        //    proceduralData[URL_KEY] = QJsonObject();
-        //}
 
         auto rawShaderUrl = proceduralData[FRAGMENT_URL_KEY].toString();
         fragmentShaderUrl = DependencyManager::get<ResourceManager>()->normalizeURL(rawShaderUrl);

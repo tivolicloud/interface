@@ -195,7 +195,6 @@ void MeshPartPayload::render(RenderArgs* args) {
         _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) 
     {
-        // if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
             auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
             auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
             glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -494,7 +493,6 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
         _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) 
     {
-        //if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) { 
             auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
             auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
             glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);

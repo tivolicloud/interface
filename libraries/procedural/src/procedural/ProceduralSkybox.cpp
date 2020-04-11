@@ -43,8 +43,7 @@ void ProceduralSkybox::clear() {
     Skybox::clear();
 }
 
-void ProceduralSkybox::render(gpu::Batch& batch, const ViewFrustum& frustum, bool forward) const {
-    
+void ProceduralSkybox::render(gpu::Batch& batch, const ViewFrustum& frustum, bool forward) const {    
     if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() && _procedural.isReady() ) {
         ProceduralSkybox::render(batch, frustum, (*this), forward);
     } else {

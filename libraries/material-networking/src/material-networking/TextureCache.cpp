@@ -58,6 +58,7 @@ Q_LOGGING_CATEGORY(trace_resource_parse_image_raw, "trace.resource.parse.image.r
 Q_LOGGING_CATEGORY(trace_resource_parse_image_ktx, "trace.resource.parse.image.ktx")
 
 bool TextureCache::_isCustomShadersEnabled;
+bool TextureCache::_wasStartedWithShadersDisabled{ false };
 
 #if defined(USE_GLES)
 const std::string TextureCache::KTX_DIRNAME { "ktx_cache_gles" };

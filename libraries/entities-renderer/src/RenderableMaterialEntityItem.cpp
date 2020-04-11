@@ -229,11 +229,7 @@ ItemKey MaterialEntityRenderer::getKey() {
 
 ShapeKey MaterialEntityRenderer::getShapeKey() {
 
-
     ShapeKey::Builder builder;
-
-    builder.withWireframe();
-    return builder.build();
 
     graphics::MaterialKey drawMaterialKey;
     const auto drawMaterial = getMaterial();
@@ -245,12 +241,17 @@ ShapeKey MaterialEntityRenderer::getShapeKey() {
         builder.withTranslucent();
     }
 
-    if (drawMaterial && drawMaterial->isProcedural() && drawMaterial->isReady()) {
+    if (TextureCache::isCustomShadersEnabled() &&
+            drawMaterial && 
+            drawMaterial->isProcedural() && 
+            drawMaterial->isReady()) {
         builder.withOwnPipeline();
-    } else {
+    } 
+    else {
         builder.withMaterial();
 
-        if (drawMaterialKey.isNormalMap()) {
+        if (drawMaterialKey.isNormalMap() &&
+            (drawMaterial && !drawMaterial->isProcedural())) {
             builder.withTangents();
         }
         if (drawMaterialKey.isLightMap()) {

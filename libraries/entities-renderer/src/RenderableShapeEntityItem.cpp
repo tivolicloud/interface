@@ -159,13 +159,22 @@ bool ShapeEntityRenderer::isTransparent() const {
 }
 
 ShapeEntityRenderer::Pipeline ShapeEntityRenderer::getPipelineType(const graphics::MultiMaterial& materials) const {
-    if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return Pipeline::MATERIAL;
+   
+    bool useCustomShaders = DependencyManager::get<TextureCache>()->isCustomShadersEnabled();
+
+    if (_entity->isLocalEntity()) useCustomShaders = true; // Always shaders for gizmos/selection outlines
+
+    if (!useCustomShaders) return Pipeline::MATERIAL;
+
     if (materials.top().material && materials.top().material->isProcedural() && materials.top().material->isReady()) {
         return Pipeline::PROCEDURAL;
     }
 
     graphics::MaterialKey drawMaterialKey = materials.getMaterialKey();
-    if (drawMaterialKey.isEmissive() || drawMaterialKey.isUnlit() || drawMaterialKey.isMetallic() || drawMaterialKey.isScattering()) {
+    if (drawMaterialKey.isEmissive() || 
+        drawMaterialKey.isUnlit() || 
+        drawMaterialKey.isMetallic() || 
+        drawMaterialKey.isScattering()) {
         return Pipeline::MATERIAL;
     }
 
