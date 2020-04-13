@@ -284,7 +284,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         for (const auto& entry :  _entitiesInScene) 
         {
             const auto& renderer = entry.second;
-            const EntityItemPointer& entityItem = renderer->getEntity();
+            const EntityItemPointer entityItem = renderer->getEntity();
             if (!(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == sessionUUID))) 
             {
                 fadeOutRenderable(renderer);
@@ -517,7 +517,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
            const EntityRendererPointer& renderable = renderableForEntityId(entityId);
            if (getSceneIsReady()) 
            {  // no priority optimization until everything's loaded
-               EntityItemPointer& _entity = getEntity(entityId);
+               EntityItemPointer _entity = getEntity(entityId);
                
                if ( !_entity || _entity->isDead()) continue;  
                if ( !renderable ) continue;
