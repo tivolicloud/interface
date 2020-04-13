@@ -296,11 +296,12 @@ Menu::Menu() {
     // Settings > Developer Menu
     addCheckableActionToQMenuAndActionHash(settingsMenu, "Developer Menu", 0, false, this, SLOT(toggleDeveloperMenus()));
     
+
     // Settings > Use shaders (procedural materials)
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, false);
     connect(action, &QAction::triggered, [action] {
-        
-        TextureCache::setCustomShadersEnabled(action->isChecked());  
+
+        TextureCache::setCustomShadersEnabled(action->isChecked());
 
         // Refresh entire scene if custom shaders were disabled in settings at startup
         if (TextureCache::wasLaunchedWithShadersDisabled()) {
@@ -312,6 +313,17 @@ Menu::Menu() {
         }
     });
 
+
+    // Settings > Enable Flow / Dynamic Bone
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::EnableFlow, 0, true);
+    connect(action, &QAction::triggered, [action] {
+        qDebug() << "Please reload to see changes to dynamic bone flow: " << action->isChecked();
+        auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
+        myAvatar->setFlowEnabled(action->isChecked());
+        
+    });
+
+   
     // Settings > Ask to Reset Settings
     addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::AskToResetSettings, 0, false);
 
@@ -329,6 +341,7 @@ Menu::Menu() {
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
         qApp->getForcedBypassPrioritySorting());
     
+
     //// Developer > Tivoli Options > Test Zone Culling (test)
     //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);
 
@@ -514,6 +527,12 @@ Menu::Menu() {
             drawStatusConfig, SLOT(setShowFade(bool)));
     }
 
+    //// Settings > Developer > Render > ForceUnlit
+    //action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceUnlit, 0, true);
+    //connect(action, &QAction::triggered, [action] {
+
+
+    //});
     // Developer > Assets >>>
     // Menu item is not currently needed but code should be kept in case it proves useful again at some stage.
 //#define WANT_ASSET_MIGRATION

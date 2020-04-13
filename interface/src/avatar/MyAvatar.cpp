@@ -2491,7 +2491,7 @@ void MyAvatar::setSkeletonModelURL(const QUrl& skeletonModelURL) {
             _skeletonModel->setCauterizeBoneSet(_headBoneSet);
             _fstAnimGraphOverrideUrl = _skeletonModel->getNetworkModel()->getAnimGraphOverrideUrl();
             initAnimGraph();
-            initFlowFromFST();
+            if (getFlowEnabled()) initFlowFromFST();
         }
         QObject::disconnect(*skeletonConnection);
     });

@@ -1970,6 +1970,21 @@ public:
      */
     Q_INVOKABLE bool isSeated() { return _characterController.getSeated(); }
 
+
+    /**jsdoc
+     * Sets whether dynamic bones (flow bones) are enabled.
+     * @function MyAvatar.setEnableFlow
+     * @param {boolean} enabled - Whether dynamic bones (flow bones) are enabled.
+     */
+    Q_INVOKABLE void setFlowEnabled(bool enabled) { _enableFlow = enabled; resetFullAvatarURL(); }
+
+    /**jsdoc
+     * Gets whether dynamic bones (flow bones) are enabled.
+     * @function MyAvatar.getEnableFlow
+     * @returns {boolean}  - Whether dynamic bones (flow bones) are enabled.
+     */
+    Q_INVOKABLE bool getFlowEnabled() { return _enableFlow; }
+
     int getOverrideJointCount() const;
     bool getFlowActive() const;
     bool getNetworkGraphActive() const;
@@ -1989,6 +2004,8 @@ public:
     glm::vec3 getLookAtPivotPoint();
     glm::vec3 getCameraEyesPosition(float deltaTime);
     bool isJumping();
+
+  
 
 public slots:
 
@@ -2617,6 +2634,7 @@ signals:
      */
     void disableHandTouchForIDChanged(const QUuid& entityID, bool disable);
 
+
 private slots:
     void leaveDomain();
     void updateCollisionCapsuleCache();
@@ -2707,6 +2725,7 @@ private:
     bool _isBeingPushed { false };
     bool _isBraking { false };
     bool _isAway { false };
+    bool _enableFlow { true };
 
     float _boomLength { ZOOM_DEFAULT };
     float _yawSpeed; // degrees/sec

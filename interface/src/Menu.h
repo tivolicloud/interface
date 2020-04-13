@@ -229,6 +229,8 @@ namespace MenuOption {
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
     const QString CustomShaders = "Enable Custom Shaders";
+    const QString EnableFlow = "Enable Dynamic Bone Flow";
+    //const QString ForceUnlit = "Force unlit rendering";
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
     const QString BypassPrioritySorting = "Force Bypass Priority Sorting";
 
