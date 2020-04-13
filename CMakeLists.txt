@@ -58,6 +58,11 @@ if ((NOT "${RELEASE_TYPE}" STREQUAL "PRODUCTION") AND (NOT "${RELEASE_TYPE}" STR
     set(RELEASE_TYPE "DEV")
 endif()
 
+# ensure prebuild.py doesnt download qt if it's unneccesary
+if (DEFINED QT_CMAKE_PREFIX_PATH)
+    set(ENV{QT_CMAKE_PREFIX_PATH} ${QT_CMAKE_PREFIX_PATH})
+endif()
+
 if (HIFI_ANDROID)
     execute_process(
         COMMAND ${HIFI_PYTHON_EXEC} ${CMAKE_CURRENT_SOURCE_DIR}/prebuild.py --release-type ${RELEASE_TYPE} --android ${HIFI_ANDROID_APP} --build-root ${CMAKE_BINARY_DIR}
