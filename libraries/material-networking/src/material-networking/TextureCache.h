@@ -202,6 +202,9 @@ public:
     static bool wasLaunchedWithShadersDisabled() { return _wasStartedWithShadersDisabled; }
     static void setWasLaunchedWithShadersDisabled(bool value) { _wasStartedWithShadersDisabled = value; }
 
+    static bool isEverythingUnlit() { return _isEverythingUnlit; }
+    static void setEverythingUnlit(bool enabled) { _isEverythingUnlit = enabled; }
+
     gpu::ContextPointer getGPUContext() const { return _gpuContext; }
 
 signals:
@@ -228,6 +231,7 @@ private:
     static const std::string KTX_EXT;
     static bool _isCustomShadersEnabled;
     static bool _wasStartedWithShadersDisabled;
+    static bool _isEverythingUnlit;
 
     gpu::ContextPointer _gpuContext { nullptr };
 

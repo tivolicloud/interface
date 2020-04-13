@@ -96,7 +96,8 @@ ShapeKey ImageEntityRenderer::getShapeKey() {
     }
 
     withReadLock([&] {
-        if (_emissive) {
+        if (_emissive || 
+            DependencyManager::get<TextureCache>()->isEverythingUnlit()) {
             builder.withUnlit();
         }
 

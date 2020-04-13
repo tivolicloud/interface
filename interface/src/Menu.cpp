@@ -527,12 +527,13 @@ Menu::Menu() {
             drawStatusConfig, SLOT(setShowFade(bool)));
     }
 
-    //// Settings > Developer > Render > ForceUnlit
-    //action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceUnlit, 0, true);
-    //connect(action, &QAction::triggered, [action] {
+    // Settings > Developer > Render > ForceUnlit
+    action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceEverythingUnlit, 0, false);
+    connect(action, &QAction::triggered, [action] {
+        TextureCache::setEverythingUnlit(action->isChecked());
+        //qApp->refreshScene();
 
-
-    //});
+    });
     // Developer > Assets >>>
     // Menu item is not currently needed but code should be kept in case it proves useful again at some stage.
 //#define WANT_ASSET_MIGRATION

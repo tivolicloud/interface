@@ -160,7 +160,9 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         // else if component is enabled then push current state
         // (else mode is inherit, the value from the parent zone will be used
         //
-        if (_keyLightMode == COMPONENT_MODE_DISABLED) {
+        if (_keyLightMode == COMPONENT_MODE_DISABLED //||
+            //DependencyManager::get<TextureCache>()->isEverythingUnlit()
+        ) {
             _stage->_currentFrame.pushSunLight(_stage->getSunOffLight());
         } else if (_keyLightMode == COMPONENT_MODE_ENABLED) {
             _stage->_currentFrame.pushSunLight(_sunIndex);
@@ -172,18 +174,24 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
             _backgroundStage->_currentFrame.pushBackground(_backgroundIndex);
         }
 
-        if (_ambientLightMode == COMPONENT_MODE_DISABLED) {
+        if (_ambientLightMode == COMPONENT_MODE_DISABLED// ||
+           // DependencyManager::get<TextureCache>()->isEverythingUnlit()
+        ) {
             _stage->_currentFrame.pushAmbientLight(_stage->getAmbientOffLight());
         } else if (_ambientLightMode == COMPONENT_MODE_ENABLED) {
             _stage->_currentFrame.pushAmbientLight(_ambientIndex);
         }
 
         // Haze only if the mode is not inherit, as the model deals with on/off
-        if (_hazeMode != COMPONENT_MODE_INHERIT) {
+        if (_hazeMode != COMPONENT_MODE_INHERIT// &&
+        //    !DependencyManager::get<TextureCache>()->isEverythingUnlit()
+        ) {
             _hazeStage->_currentFrame.pushHaze(_hazeIndex);
         }
 
-        if (_bloomMode == COMPONENT_MODE_DISABLED) {
+        if (_bloomMode == COMPONENT_MODE_DISABLED //||
+            //DependencyManager::get<TextureCache>()->isEverythingUnlit()
+            ) {
             _bloomStage->_currentFrame.pushBloom(INVALID_INDEX);
         } else if (_bloomMode == COMPONENT_MODE_ENABLED) {
             _bloomStage->_currentFrame.pushBloom(_bloomIndex);

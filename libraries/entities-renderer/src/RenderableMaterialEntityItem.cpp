@@ -257,7 +257,10 @@ ShapeKey MaterialEntityRenderer::getShapeKey() {
         if (drawMaterialKey.isLightMap()) {
             builder.withLightMap();
         }
-        if (drawMaterialKey.isUnlit()) {
+        if (!drawMaterialKey.isEmissive() && 
+            (drawMaterialKey.isUnlit() ||
+            DependencyManager::get<TextureCache>()->isEverythingUnlit())
+        ) {
             builder.withUnlit();
         }
     }

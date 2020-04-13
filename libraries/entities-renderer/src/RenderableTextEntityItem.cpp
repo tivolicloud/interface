@@ -74,7 +74,8 @@ ShapeKey TextEntityRenderer::getShapeKey() {
     if (isTransparent()) {
         builder.withTranslucent();
     }
-    if (_unlit) {
+    if (_unlit || 
+        DependencyManager::get<TextureCache>()->TextureCache::isEverythingUnlit()) {
         builder.withUnlit();
     }
     if (_primitiveMode == PrimitiveMode::LINES) {
@@ -279,7 +280,8 @@ ShapeKey entities::TextPayload::getShapeKey() const {
             if (textRenderable->isTextTransparent()) {
                 builder.withTranslucent();
             }
-            if (textRenderable->_unlit) {
+            if (textRenderable->_unlit ||
+                DependencyManager::get<TextureCache>()->TextureCache::isEverythingUnlit()) {
                 builder.withUnlit();
             }
             if (textRenderable->_primitiveMode == PrimitiveMode::LINES) {

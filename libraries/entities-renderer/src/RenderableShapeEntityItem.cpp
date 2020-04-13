@@ -211,7 +211,8 @@ ShapeKey ShapeEntityRenderer::getShapeKey() {
         if (drawMaterialKey.isLightMap()) {
             builder.withLightMap();
         }
-        if (drawMaterialKey.isUnlit()) {
+        if (drawMaterialKey.isUnlit() ||
+            DependencyManager::get<TextureCache>()->TextureCache::isEverythingUnlit()) {
             builder.withUnlit();
         }
         builder.withCullFaceMode(mat->second.getCullFaceMode());

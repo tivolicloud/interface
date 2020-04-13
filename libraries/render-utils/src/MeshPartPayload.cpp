@@ -144,9 +144,14 @@ ShapeKey MeshPartPayload::getShapeKey() const {
         if (drawMaterialKey.isLightMap()) {
             builder.withLightMap();
         }
-        if (drawMaterialKey.isUnlit()) {
+
+        if (!drawMaterialKey.isEmissive() && 
+           (drawMaterialKey.isUnlit() ||
+            DependencyManager::get<TextureCache>()->isEverythingUnlit())
+        ) {
             builder.withUnlit();
         }
+
         if (material) {
             builder.withCullFaceMode(material->getCullFaceMode());
         }
@@ -414,6 +419,7 @@ void ModelMeshPartPayload::setShapeKey(bool invalidateShapeKey, PrimitiveMode pr
         bool hasTangents = drawMaterialKey.isNormalMap() && _hasTangents;
         bool hasLightmap = drawMaterialKey.isLightMap();
         bool isUnlit = drawMaterialKey.isUnlit();
+        bool isEmissive = drawMaterialKey.isEmissive();
 
         if (isWireframe) {
             hasTangents = hasLightmap = false;
@@ -427,9 +433,14 @@ void ModelMeshPartPayload::setShapeKey(bool invalidateShapeKey, PrimitiveMode pr
         if (hasLightmap) {
             builder.withLightMap();
         }
-        if (isUnlit) {
+
+        if (!isEmissive &&
+            (isUnlit ||
+             DependencyManager::get<TextureCache>()->isEverythingUnlit())
+        ) {
             builder.withUnlit();
         }
+
         if (material) {
             builder.withCullFaceMode(material->getCullFaceMode());
         }
