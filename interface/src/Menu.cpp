@@ -281,17 +281,6 @@ Menu::Menu() {
         }
     });
 
-    // Settings > Security...
-  //  action = addActionToQMenuAndActionHash(settingsMenu, "Security...");
-  //  connect(action, &QAction::triggered, [] {
-		//auto tablet = DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
-		//auto hmd = DependencyManager::get<HMDScriptingInterface>();
-		//tablet->pushOntoStack("hifi/dialogs/security/Security.qml");
-
-		//if (!hmd->getShouldShowTablet()) {
-		//	hmd->toggleShouldShowTablet();
-		//}
-  //  });
 
     // Settings > Developer Menu
     addCheckableActionToQMenuAndActionHash(settingsMenu, "Developer Menu", 0, false, this, SLOT(toggleDeveloperMenus()));
@@ -826,32 +815,32 @@ Menu::Menu() {
     });
     helpMenu->addSeparator();
 
-    // Help > HiFi Docs
+    // Help >  Online Documentation
     action = addActionToQMenuAndActionHash(helpMenu, "Online Documentation");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("https://docs.highfidelity.com/"));
+        QDesktopServices::openUrl(QUrl("https://docs.tivolicloud.com/"));
     });
 
-    // Help > HiFi Forum
-    action = addActionToQMenuAndActionHash(helpMenu, "Online Forums");
+    // Help > Discord Server
+    action = addActionToQMenuAndActionHash(helpMenu, "Discord Server");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("https://forums.highfidelity.com/"));
+        QDesktopServices::openUrl(QUrl("https://alpha.tivolicloud.com/discord"));
     });
 
-    // Help > Scripting Reference
+    // Help > Online Script Reference
     action = addActionToQMenuAndActionHash(helpMenu, "Online Script Reference");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("https://docs.highfidelity.com/api-reference"));
+        QDesktopServices::openUrl(QUrl("https://apidocs.tivolicloud.com/"));
     });
 
     addActionToQMenuAndActionHash(helpMenu, "Controls Reference", 0, qApp, SLOT(showHelp()));
 
     helpMenu->addSeparator();
 
-    // Help > Release Notes
-    action = addActionToQMenuAndActionHash(helpMenu, "Release Notes");
+    // Help >Changelogs
+    action = addActionToQMenuAndActionHash(helpMenu, "Changelogs");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("https://docs.highfidelity.com/release-notes.html"));
+        QDesktopServices::openUrl(QUrl("https://docs.tivolicloud.com/changelog/"));
     });
 
     // Help > Report a Bug!
