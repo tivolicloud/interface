@@ -522,6 +522,7 @@ bool GLTFSerializer::addMaterial(const QJsonObject& object) {
     getIndexFromObject(object, "emissiveTexture", material.emissiveTexture, material.defined);
     getIndexFromObject(object, "normalTexture", material.normalTexture, material.defined);
     getIndexFromObject(object, "occlusionTexture", material.occlusionTexture, material.defined);
+    getIndexFromObject(object, "lightmapTexture", material.lightmapTexture, material.defined); // proposal
     getBoolVal(object, "doubleSided", material.doubleSided, material.defined);
     QString alphaMode;
     if (getStringVal(object, "alphaMode", alphaMode, material.defined)) {
@@ -1737,6 +1738,12 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
     if (material.defined["occlusionTexture"]) {
         hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.occlusionTexture]);
         hfmMat.useOcclusionMap = true;
+    }
+
+    // https://github.com/KhronosGroup/glTF/pull/1658
+    if (material.defined["lightmapTexture"]) {
+        hfmMat.lightmapTexture = getHFMTexture(_file.textures[material.lightmapTexture]);
+        // hfmMat.lightmapParams
     }
 
     if (material.defined["pbrMetallicRoughness"]) {

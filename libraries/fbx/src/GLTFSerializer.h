@@ -424,6 +424,7 @@ struct GLTFMaterial {
     int emissiveTexture;
     int normalTexture;
     int occlusionTexture;
+    int lightmapTexture; // proposal
     graphics::MaterialKey::OpacityMapMode alphaMode;
     double alphaCutoff;
     bool doubleSided;
@@ -441,6 +442,9 @@ struct GLTFMaterial {
         }
         if (defined["occlusionTexture"]) {
             qCDebug(modelformat) << "occlusionTexture: " << occlusionTexture;
+        }
+        if (defined["lightmapTexture"]) {
+            qCDebug(modelformat) << "lightmapTexture: " << lightmapTexture;
         }
         if (defined["emissiveFactor"]) {
             qCDebug(modelformat) << "emissiveFactor: " << emissiveFactor;
