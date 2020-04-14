@@ -815,7 +815,7 @@ Menu::Menu() {
     });
     helpMenu->addSeparator();
 
-    // Help >  Online Documentation
+    // Help > Online Documentation
     action = addActionToQMenuAndActionHash(helpMenu, "Online Documentation");
     connect(action, &QAction::triggered, qApp, [] {
         QDesktopServices::openUrl(QUrl("https://docs.tivolicloud.com/"));
@@ -837,8 +837,8 @@ Menu::Menu() {
 
     helpMenu->addSeparator();
 
-    // Help >Changelogs
-    action = addActionToQMenuAndActionHash(helpMenu, "Changelogs");
+    // Help > Changelog
+    action = addActionToQMenuAndActionHash(helpMenu, "Changelog");
     connect(action, &QAction::triggered, qApp, [] {
         QDesktopServices::openUrl(QUrl("https://docs.tivolicloud.com/changelog/"));
     });
