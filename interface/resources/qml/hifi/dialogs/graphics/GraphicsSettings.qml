@@ -331,7 +331,7 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: resolutionHeader
-                        text: "Super sampling (" + Number.parseFloat(Render.viewportResolutionScale).toPrecision(3) + ")"
+                        text: "Supersampling " + Number.parseFloat(Render.viewportResolutionScale).toPrecision(2)
                         anchors.left: parent.left
                         anchors.top: parent.top
                         width: 130
