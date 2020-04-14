@@ -169,40 +169,40 @@ void setupPreferences() {
         preferences->addPreference(new CheckPreference(UI_CATEGORY, "Use reticle cursor instead of arrow", getter, setter));
     }
 
-    {
-        auto getter = []()->bool { return qApp->getMiniTabletEnabled(); };
-        auto setter = [](bool value) { qApp->setMiniTabletEnabled(value); };
-        preferences->addPreference(new CheckPreference(UI_CATEGORY, "Use mini tablet", getter, setter));
-    }
+    //{
+    //    auto getter = []()->bool { return qApp->getMiniTabletEnabled(); };
+    //    auto setter = [](bool value) { qApp->setMiniTabletEnabled(value); };
+    //    preferences->addPreference(new CheckPreference(UI_CATEGORY, "Use mini tablet", getter, setter));
+    //}
 
-    {
-        auto getter = []()->int { return DependencyManager::get<Keyboard>()->getUse3DKeyboard(); };
-        auto setter = [](int value) { DependencyManager::get<Keyboard>()->setUse3DKeyboard(value); };
-        preferences->addPreference(new CheckPreference(UI_CATEGORY, "Use Virtual Keyboard", getter, setter));
-    }
+    //{
+    //    auto getter = []()->int { return DependencyManager::get<Keyboard>()->getUse3DKeyboard(); };
+    //    auto setter = [](int value) { DependencyManager::get<Keyboard>()->setUse3DKeyboard(value); };
+    //    // preferences->addPreference(new CheckPreference(UI_CATEGORY, "Use Virtual Keyboard", getter, setter));
+    //}
 
     {
         auto getter = []()->bool { return DependencyManager::get<Keyboard>()->getPreferMalletsOverLasers() ? 1 : 0; };
-        auto setter = [](bool value) { return DependencyManager::get<Keyboard>()->setPreferMalletsOverLasers((bool)value); };
-        auto preference = new RadioButtonsPreference(UI_CATEGORY, "Keyboard laser / mallets", getter, setter);
-        QStringList items;
-        items << "Lasers" << "Mallets";
-        preference->setItems(items);
-        preference->setIndented(true);
-        preferences->addPreference(preference);
+        auto setter = [](bool value) { return DependencyManager::get<Keyboard>()->setPreferMalletsOverLasers(false); };
+        //auto preference = new RadioButtonsPreference(UI_CATEGORY, "Keyboard laser / mallets", getter, setter);
+        //QStringList items;
+        //items << "Lasers";// << "Mallets";
+        //preference->setItems(items);
+        //preference->setIndented(true);
+        //preferences->addPreference(preference);
     }
 
 
-    {
-        auto getter = []()->int { return qApp->getPreferStylusOverLaser() ? 1 : 0; };
-        auto setter = [](int value) { qApp->setPreferStylusOverLaser((bool)value); };
-        auto preference = new RadioButtonsPreference(UI_CATEGORY, "Tablet stylus / laser", getter, setter);
-        QStringList items;
-        items << "Lasers" << "Stylus";
-        preference->setHeading("Tablet Input Mechanism");
-        preference->setItems(items);
-        preferences->addPreference(preference);
-    }
+    //{
+    //    auto getter = []()->int { return qApp->getPreferStylusOverLaser() ? 1 : 0; };
+    //    auto setter = [](int value) { qApp->setPreferStylusOverLaser((bool)value); };
+    //    auto preference = new RadioButtonsPreference(UI_CATEGORY, "Tablet stylus / laser", getter, setter);
+    //    QStringList items;
+    //    items << "Lasers";// << "Stylus";
+    //    preference->setHeading("Tablet Input Mechanism");
+    //    preference->setItems(items);
+    //    preferences->addPreference(preference);
+    //}
 
     static const QString VIEW_CATEGORY{ "View" };
     {
