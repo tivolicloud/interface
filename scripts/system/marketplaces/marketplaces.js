@@ -21,14 +21,14 @@ Script.include("/~/system/libraries/gridTool.js");
 Script.include("/~/system/libraries/connectionUtils.js");
 Script.include("/~/system/libraries/accountUtils.js");
 
-var MARKETPLACE_CHECKOUT_QML_PATH = "hifi/commerce/checkout/Checkout.qml";
-var MARKETPLACE_INSPECTIONCERTIFICATE_QML_PATH = "hifi/commerce/inspectionCertificate/InspectionCertificate.qml";
-var MARKETPLACE_ITEM_TESTER_QML_PATH = "hifi/commerce/marketplaceItemTester/MarketplaceItemTester.qml";
-var MARKETPLACE_PURCHASES_QML_PATH = "hifi/commerce/wallet/Wallet.qml"; // HRS FIXME "hifi/commerce/purchases/Purchases.qml";
-var MARKETPLACE_WALLET_QML_PATH = "hifi/commerce/wallet/Wallet.qml";
-var MARKETPLACE_QML_PATH = "hifi/commerce/marketplace/Marketplace.qml";
-var MARKETPLACES_INJECT_SCRIPT_URL = Script.resolvePath("../html/js/marketplacesInject.js");
-var MARKETPLACES_URL = Script.resolvePath("../html/marketplaces.html");
+var MARKETPLACE_CHECKOUT_QML_PATH = "";
+var MARKETPLACE_INSPECTIONCERTIFICATE_QML_PATH = "";
+var MARKETPLACE_ITEM_TESTER_QML_PATH = ";
+var MARKETPLACE_PURCHASES_QML_PATH = ""; // HRS FIXME "hifi/commerce/purchases/Purchases.qml";
+var MARKETPLACE_WALLET_QML_PATH = "";
+var MARKETPLACE_QML_PATH = "";
+var MARKETPLACES_INJECT_SCRIPT_URL = Script.resolvePath("");
+var MARKETPLACES_URL = Script.resolvePath("");
 var METAVERSE_SERVER_URL = Account.metaverseServerURL;
 var REZZING_SOUND = SoundCache.getSound(Script.resolvePath("../assets/sounds/rezzing.wav"));
 

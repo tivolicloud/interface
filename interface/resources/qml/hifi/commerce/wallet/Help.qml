@@ -58,46 +58,12 @@ Item {
     ListModel {
         id: helpModel;
 
-        ListElement {
-            isExpanded: false;
-            question: "How can I get HFC?";
-            answer: "High Fidelity commerce is in open beta right now. Want more HFC? \
-Get it by going to <b><font color='#0093C5'><a href='#bank'>BankOfHighFidelity</a></font></b> and meeting with the banker!";
-        }
-        ListElement {
-            isExpanded: false;
-            question: "How do I send HFC to other people?";
-            answer: "You can send HFC to a High Fidelity connection (someone you've shaken hands with in-world) or somebody Nearby (currently in the same domain as you). \
-In your Wallet's Send Money tab, choose from your list of connections, or choose Nearby and select the glowing sphere of the person's avatar.";
-        }
-        ListElement {
-            isExpanded: false;
-            question: "What is a Security Pic?"
-            answer: "Your Security Pic acts as an extra layer of Wallet security. \
-When you see your Security Pic, you know that your actions and data are securely making use of your account.";
-        }
-        ListElement {
-            isExpanded: false;
-            question: "Why does my HFC balance not update instantly?";
-            answer: "HFC transations sometimes takes a few seconds to update as they are backed by a blockchain. \
-<br><br><b><font color='#0093C5'><a href='#blockchain'>Tap here to learn more about the blockchain.</a></font></b>";
-        }
-        ListElement {
-            isExpanded: false;
-            question: "Do I get charged money if a transaction fails?";
-            answer: "<b>No.</b> Your HFC balance only changes after a transaction is confirmed.";
-        }
-        ListElement {
-            isExpanded: false;
-            question: "How do I convert HFC to other currencies?"
-            answer: "We are hard at work building the tools needed to support a vibrant economy in High Fidelity. \
-At the moment, there is currently no way to convert HFC to other currencies. Stay tuned...";
-        }
+        
         ListElement {
             isExpanded: false;
             question: "Who can I reach out to with questions?";
             answer: "Please email us if you have any issues or questions: \
-<b><font color='#0093C5'><a href='#support'>support@highfidelity.com</a></font></b>";
+<b><font color='#0093C5'><a href='#support'>support@tivolicloud.com</a></font></b>";
         }
     }
 
@@ -204,18 +170,8 @@ At the moment, there is currently no way to convert HFC to other currencies. Sta
                     color: hifi.colors.white;
 
                     onLinkActivated: {
-                        if (link === "#privateKeyPath") {
-                            Qt.openUrlExternally("file:///" + root.keyFilePath.substring(0, root.keyFilePath.lastIndexOf('/')));
-                        } else if (link === "#blockchain") {
-                            Qt.openUrlExternally("https://docs.highfidelity.com/high-fidelity-commerce");
-                        } else if (link === "#bank") {
-                            if ((Account.metaverseServerURL).toString().indexOf("staging") >= 0) {
-                                Qt.openUrlExternally("hifi://hifiqa-master-metaverse-staging"); // So that we can test in staging.
-                            } else {
-                                Qt.openUrlExternally("hifi://BankOfHighFidelity");
-                            }
-                        } else if (link === "#support") {
-                            Qt.openUrlExternally("mailto:support@highfidelity.com");
+                        if (link === "#support") {
+                            Qt.openUrlExternally("mailto:support@tivolicloud.com");
                         }
                     }
                 }

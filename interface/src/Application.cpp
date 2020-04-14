@@ -3242,22 +3242,22 @@ void Application::initializeUi() {
         QUrl{ "hifi/simplifiedUI/avatarApp/AvatarApp.qml" },
         QUrl{ "hifi/simplifiedUI/topBar/SimplifiedTopBar.qml" },
     }, commerceCallback);
-
+/*
     QmlContextCallback marketplaceCallback = [](QQmlContext* context) {
         context->setContextProperty("MarketplaceScriptingInterface", new QmlMarketplace());
     };
     OffscreenQmlSurface::addWhitelistContextHandler({
         QUrl{ "hifi/commerce/marketplace/Marketplace.qml" },
-        }, marketplaceCallback);
+        }, marketplaceCallback);*/
 
     QmlContextCallback platformInfoCallback = [](QQmlContext* context) {
         context->setContextProperty("PlatformInfo", new PlatformInfoScriptingInterface());
     };
     OffscreenQmlSurface::addWhitelistContextHandler({
-        QUrl{ "hifi/commerce/marketplace/Marketplace.qml" },
-        QUrl{ "hifi/commerce/purchases/Purchases.qml" },
-        QUrl{ "hifi/commerce/wallet/Wallet.qml" },
-        QUrl{ "hifi/commerce/wallet/WalletHome.qml" },
+        //QUrl{ "hifi/commerce/marketplace/Marketplace.qml" },
+        // QUrl{ "hifi/commerce/purchases/Purchases.qml" },
+        // QUrl{ "hifi/commerce/wallet/Wallet.qml" },
+        // QUrl{ "hifi/commerce/wallet/WalletHome.qml" },
         QUrl{ "hifi/tablet/TabletAddressDialog.qml" },
         QUrl{ "hifi/Card.qml" },
         QUrl{ "hifi/Pal.qml" },

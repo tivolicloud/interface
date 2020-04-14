@@ -36,7 +36,7 @@ QmlMarketplace::QmlMarketplace() {
 void QmlMarketplace::openMarketplace(const QString& marketplaceItemId) {
     auto tablet = dynamic_cast<TabletProxy*>(
         DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system"));
-    tablet->loadQMLSource("hifi/commerce/marketplace/Marketplace.qml");
+    tablet->loadQMLSource("");
     DependencyManager::get<HMDScriptingInterface>()->openTablet();
     if (!marketplaceItemId.isEmpty()) {
         tablet->sendToQml(QVariantMap({ { "method", "marketplace_openItem" }, { "itemId", marketplaceItemId } }));
