@@ -157,7 +157,7 @@ public:
     float getResolutionScale() const { return resolutionScale; }
     void setResolutionScale(float scale) {
         const float SCALE_RANGE_MIN = 0.1f;
-        const float SCALE_RANGE_MAX = 2.0f;
+        const float SCALE_RANGE_MAX = 5.0f;
         resolutionScale = std::max(SCALE_RANGE_MIN, std::min(SCALE_RANGE_MAX, scale));
     }
 

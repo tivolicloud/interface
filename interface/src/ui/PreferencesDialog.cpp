@@ -125,7 +125,7 @@ void setupPreferences() {
 
         auto scaleSlider = new SliderPreference(GRAPHICS_QUALITY, "Resolution Scale", getter, setter);
         scaleSlider->setMin(0.25f);
-        scaleSlider->setMax(1.0f);
+        scaleSlider->setMax(5.0f);
         scaleSlider->setStep(0.02f);
         preferences->addPreference(scaleSlider);
     }

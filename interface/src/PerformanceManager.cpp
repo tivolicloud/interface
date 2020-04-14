@@ -89,7 +89,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::DEFERRED : 
                 RenderScriptingInterface::RenderMethod::FORWARD ) );
 
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
+            //RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.5);
             
             RenderScriptingInterface::getInstance()->setShadowsEnabled(true);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(true);
@@ -103,7 +103,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::DEFERRED :
                 RenderScriptingInterface::RenderMethod::FORWARD));
 
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
+           // RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
 
             RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(true);
@@ -117,7 +117,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             // qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::ECO);
 
             //RenderScriptingInterface::getInstance()->setViewportResolutionScale(recommendedPpiScale);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
+           // RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(false);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_MEDIUM);
@@ -126,7 +126,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
         case PerformancePreset::POTATO:
             RenderScriptingInterface::getInstance()->setRenderMethod(RenderScriptingInterface::RenderMethod::FORWARD);
             RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(0.5);
+           // RenderScriptingInterface::getInstance()->setViewportResolutionScale(0.5);
             RenderScriptingInterface::getInstance()->setCustomShadersEnabled(false);
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 

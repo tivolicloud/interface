@@ -212,7 +212,7 @@ private:
     bool _ambientOcclusionEnabled{ false };
     bool _antialiasingEnabled{ true };
     bool _customShadersEnabled{ true };
-    float _viewportResolutionScale{ 1.0f };
+    float _viewportResolutionScale{ 5.0f };  // >1.0 is super sampled
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting { "renderMethod", RENDER_FORWARD ? render::Args::RenderMethod::FORWARD : render::Args::RenderMethod::DEFERRED };

@@ -331,7 +331,7 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: resolutionHeader
-                        text: "Resolution Scale (" + Number.parseFloat(Render.viewportResolutionScale).toPrecision(3) + ")"
+                        text: "Super sampling (" + Number.parseFloat(Render.viewportResolutionScale).toPrecision(3) + ")"
                         anchors.left: parent.left
                         anchors.top: parent.top
                         width: 130
@@ -349,9 +349,9 @@ Item {
                         width: 150 
                         height: parent.height
                         colorScheme: hifi.colorSchemes.dark
-                        minimumValue: 0.25
-                        maximumValue: 1.0
-                        stepSize: 0.02
+                        minimumValue: 0.1
+                        maximumValue: 5.0
+                        stepSize: 0.1
                         value: Render.viewportResolutionScale
                         live: true
 
@@ -369,6 +369,16 @@ Item {
                                 updateResolutionScale(value);
                             }
                         }
+                    }
+
+                    HifiStylesUit.RobotoRegular {
+                        text: "\n\n\n\nWarning - Sampling over 1.0 can dramatically lower your frame rate."
+                        Layout.maximumWidth: parent.width
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        height: 30
+                        size: 12
+                        color: "#B33A3A"
                     }
                 }
             }
