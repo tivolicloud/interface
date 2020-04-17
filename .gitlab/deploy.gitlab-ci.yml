@@ -95,14 +95,11 @@ deploy interface:
 
     dependencies:
         - launcher windows
-        # - launcher macos
+        - launcher macos
 
-    # TODO: put deploy here instead
     script:
-        - rm -rf launcher # just incase
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
-
-        - cd launcher/.gitlab
+        - cd .gitlab
         - yarn install
+        - ls ../launcher/dist
         # needs DO_KEY_ID, DO_SECRET_KEY
-        - node deploy.js
+        - node deploy.js ../launcher/dist
