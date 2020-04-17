@@ -39,7 +39,7 @@
 			<string>${MACOSX_BUNDLE_BUNDLE_NAME} URL</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>hifi</string>
+				<string>tivoli</string>
 			</array>
 		</dict>
 		<dict>
@@ -47,7 +47,7 @@
 			<string>${MACOSX_BUNDLE_BUNDLE_NAME} APP URL</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>hifiapp</string>
+				<string>tivoliapp</string>
 			</array>
 		</dict>
 	</array>

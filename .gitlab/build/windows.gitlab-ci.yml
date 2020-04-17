@@ -1,4 +1,4 @@
-build windows production:
+interface windows:
     stage: build
     tags:
         - windows
@@ -19,7 +19,6 @@ build windows production:
         #HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
         HIFI_QT_BASE: C:\HIFI_QT
         HIFI_VCPKG_BASE: C:\HIFI_VCPKG
-        HIFI_VCPKG_BOOTSTRAP: 1 # should always bootstrap
 
         CL: /MP # might make vcpkg build faster (but doesn't)
 
@@ -34,7 +33,7 @@ build windows production:
         - cd build
 
         # -DCLIENT_ONLY:BOOLEAN=TRUE
-        - cmake ..  -DCMAKE_BUILD_TYPE=Release -A x64
+        - cmake -DCMAKE_BUILD_TYPE=Release -A x64 ..
         - cmake --build . --parallel --config Release --target interface
 
         - cd interface\Release
@@ -47,19 +46,38 @@ build windows production:
         paths:
             - build/interface/Release
 
-trigger launcher:
-    stage: deploy
+launcher windows:
+    stage: package
+    tags:
+        - windows
 
-    extends: .production-trigger
+    extends: .production
 
-    needs:
-        - build windows production
+    dependencies:
+        - interface windows
 
     variables:
-        RELEASE_NUMBER: $CI_COMMIT_TAG
-        UPSTREAM_JOBS_URL: $CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs
-        UPSTREAM_JOB: build windows production
+        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.p12
 
-    trigger:
-        project: tivolicloud-private/launcher
-        strategy: depend
+    script:
+        # - Remove-Item -Recurse -Force -ErrorAction Ignore launcher # just incase
+        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
+        - mv build/interface/Release launcher/interface
+
+        # TODO: this needs changing
+        - cd launcher/.gitlab
+        - yarn install
+        # needs CI_COMMIT_TAG
+        - node prepare.js
+        - cd ..
+
+        - yarn install
+        - yarn build
+        - yarn package
+
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - launcher/dist/*.exe
+            - launcher/dist/*.blockmap
+            - launcher/dist/*.yml

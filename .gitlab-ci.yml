@@ -1,6 +1,7 @@
 stages:
     - dependencies
     - build
+    - package
     - deploy
 
 .production-trigger:
@@ -12,6 +13,7 @@ stages:
     environment:
         name: production
 
+# TODO: should probably move pipeline to here
 tivoli scripts:
     stage: dependencies
     image: python:latest
@@ -25,6 +27,7 @@ tivoli scripts:
             - scripts/tivoli.js
 
 include:
-    - local: .gitlab/apidocs.gitlab-ci.yml
-    - local: .gitlab/linux.gitlab-ci.yml
-    - local: .gitlab/windows.gitlab-ci.yml
+    - local: .gitlab/build/linux.gitlab-ci.yml
+    - local: .gitlab/build/windows.gitlab-ci.yml
+    - local: .gitlab/build/macos.gitlab-ci.yml
+    - local: .gitlab/deploy.gitlab-ci.yml

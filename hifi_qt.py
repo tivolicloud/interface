@@ -59,8 +59,8 @@ endif()
         if system == 'Windows':
             self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-windows.tar.gz'
         
-        # elif system == 'Darwin':
-        #     self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/qt5-install-5.12.3-macos.tar.gz'
+        elif system == 'Darwin':
+            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-macos.tar.gz'
        
         elif system == 'Linux':
             etcIssue = open("/etc/issue", "r").read().split(" ")

@@ -18,10 +18,10 @@
 
 #if defined(Q_OS_WIN)
 #include <QWinEventNotifier>
+#include <sapi.h>
 #endif
 
 #include <DependencyManager.h>
-#include <sapi.h>
 
 /**jsdoc
  * The <code>SpeechRecognizer</code> API provides facilities to recognize voice commands.
@@ -127,7 +127,9 @@ signals:
      * });
      */
     void enabledUpdated(bool enabled); 
+#if defined(Q_OS_WIN)
     void errorDescription(HRESULT hr);
+#endif
 
 protected:
     void reloadCommands();

@@ -2,7 +2,11 @@
 
 ## Guide for the follow platforms:
 
-## [Linux](BUILD_LINUX.md)
+## [Windows](BUILD_LINUX.md)
+
+## [Linux](BUILD_WINDOWS.md)
+
+## [macOS](BUILD_MACOS.md)
 
 ---
 

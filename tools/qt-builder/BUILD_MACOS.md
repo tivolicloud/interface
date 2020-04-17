@@ -1,6 +1,13 @@
-# Building Qt 5.14.1 for Linux
+# Building Qt 5.14.1 for macOS
 
-## Install depenencies from [old readme](README.old.md)
+## Install depenencies
+
+### Make sure Xcode and Brew are installed
+
+```bash
+brew install git fontconfig dbus-glib pkg-config llvm
+sudo xcode-select --switch /Applications/Xcode.app
+```
 
 ## Inside this folder (interface/tools/qt-builder)
 
@@ -27,9 +34,9 @@ cd ..
 mkdir qt5-install qt5-build
 cd qt5-build
 
-../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
+../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
 
-make -j$(nproc)
+make -j$(sysctl -n hw.logicalcpu)
 make install
 
 cd ..
@@ -54,8 +61,7 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.14.1-arch-linux.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.14.1-macos.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.

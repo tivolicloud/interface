@@ -17,6 +17,30 @@ using buffer_helpers::glmVecToVariant;
 
 Q_LOGGING_CATEGORY(graphics_scripting, "hifi.scripting.graphics")
 
+// macos build cant link buffer_helpers::glmVecToVariant and i dont know why. maybe relevant:
+// https://stackoverflow.com/questions/40746352/symbols-not-found-for-architecture-x86-64-cmake-mac-sierra 
+namespace buffer_helpers {
+
+template <typename T>
+QVariant glmVecToVariant(const T& v, bool asArray /*= false*/) {
+    static const auto len = T().length();
+    if (asArray) {
+        QVariantList list;
+        for (int i = 0; i < len ; i++) {
+            list << v[i];
+        }
+        return list;
+    } else {
+        QVariantMap obj;
+        for (int i = 0; i < len ; i++) {
+            obj[XYZW[i]] = v[i];
+        }
+        return obj;
+    }
+}
+
+}
+
 namespace scriptable {
 
 QVariant toVariant(const glm::mat4& mat4) {

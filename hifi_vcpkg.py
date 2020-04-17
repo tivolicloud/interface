@@ -88,7 +88,8 @@ endif()
                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-win32.zip"
         elif 'Darwin' == system:
             self.exe = os.path.join(self.path, 'vcpkg')
-            self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '--allowAppleClang' ]
+            self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh') ]
+            self.bootstrapEnv["MACOSX_DEPLOYMENT_TARGET"] = "10.15" # just for bootstrapping
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-osx-client.tar'
             # self.vcpkgHash = '519d666d02ef22b87c793f016ca412e70f92e1d55953c8f9bd4ee40f6d9f78c1df01a6ee293907718f3bbf24075cc35492fb216326dfc50712a95858e9cbcb4d'
             self.hostTriplet = 'x64-osx'
@@ -182,6 +183,7 @@ endif()
                 print("Cloning vcpkg from github to {}".format(self.path))
                 hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
                 print("Bootstrapping vcpkg")
+                print(self.bootstrapEnv)
                 hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)
             # else:
                 # print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))

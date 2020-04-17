@@ -13,6 +13,13 @@ if (ANDROID)
     target_link_libraries(${TARGET_NAME} android)
 endif()
 
+if (APPLE)
+    find_library(CoreFoundation CoreFoundation)
+    find_library(IOKit IOKit)
+    find_library(OpenGL OpenGL)
+    target_link_libraries(${TARGET_NAME} ${CoreFoundation} ${IOKit} ${OpenGL})
+endif ()
+
 target_zlib()
 target_nsight()
 target_json()
