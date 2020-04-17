@@ -47,6 +47,15 @@ Item {
                 color: "#FFFFFF"
             }
 
+            HifiStylesUit.RobotoRegular {
+                text: "Tivoli will reset to \"High\" when restarting!\nThe performance system needs redesigning."
+                Layout.maximumWidth: parent.width
+                Layout.topMargin: 10
+                height: 30
+                size: 16
+                color: "#B33A3A"
+            }
+
             ColumnLayout {
                 Layout.topMargin: 10
                 Layout.preferredWidth: parent.width
@@ -372,12 +381,12 @@ Item {
                     }
 
                     HifiStylesUit.RobotoRegular {
-                        text: "\n\n\n\nWarning - Sampling over 1.0 can dramatically lower your frame rate."
+                        text: "\n\n\n\n\nWarning - Sampling over 1.0 will\ndramatically lower your frame rate."
                         Layout.maximumWidth: parent.width
                         anchors.left: parent.left
                         anchors.top: parent.top
                         height: 30
-                        size: 12
+                        size: 16
                         color: "#B33A3A"
                     }
                 }
