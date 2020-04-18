@@ -13,7 +13,7 @@ stages:
 tivoli scripts:
     stage: dependencies
     image: node:lts
-    # extends: .production
+    extends: .production
     script:
         - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/tivoli-scripts
         - cd tivoli-scripts
