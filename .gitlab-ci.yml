@@ -4,22 +4,23 @@ stages:
     - package
     - deploy
 
-.production-trigger:
+.production:
     only:
         - /^[0-9]+?\.[0-9]+?\.[0-9]+?$/i
-
-.production:
-    extends: .production-trigger
     environment:
         name: production
 
-# TODO: should probably move pipeline to here
 tivoli scripts:
     stage: dependencies
-    image: python:latest
-    extends: .production
+    image: node:lts
+    # extends: .production
     script:
-        - python .gitlab/tivoli-scripts.py
+        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/tivoli-scripts
+        - cd tivoli-scripts
+        - yarn install
+        - yarn build
+        - mv dist/* ../scripts
+
     artifacts:
         expire_in: 1 days
         paths:
