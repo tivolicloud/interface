@@ -1,8 +1,8 @@
 Submodule qtwebengine contains modified content
-diff --git a/qtwebengine/src/core/stream_video_node.cpp b/qtwebengine/src/core/stream_video_node.cpp
+diff --git a/qtwebengine/src/core/compositor/stream_video_node.cpp b/qtwebengine/src/core/compositor/stream_video_node.cpp
 index 29922f86..baa39d3b 100644
---- a/qtwebengine/src/core/stream_video_node.cpp
-+++ b/qtwebengine/src/core/stream_video_node.cpp
+--- a/qtwebengine/src/core/compositor/stream_video_node.cpp
++++ b/qtwebengine/src/core/compositor/stream_video_node.cpp
 @@ -62,38 +62,45 @@ protected:
      const char *vertexShader() const override {
          // Keep in sync with cc::VertexShaderVideoTransform
@@ -74,10 +74,10 @@ index 29922f86..baa39d3b 100644
          if (m_target == ExternalTarget)
              return shaderExternal;
          else
-diff --git a/qtwebengine/src/core/yuv_video_node.cpp b/qtwebengine/src/core/yuv_video_node.cpp
+diff --git a/qtwebengine/src/core/compositor/yuv_video_node.cpp b/qtwebengine/src/core/compositor/yuv_video_node.cpp
 index 4a436d95..dc4b6ff9 100644
---- a/qtwebengine/src/core/yuv_video_node.cpp
-+++ b/qtwebengine/src/core/yuv_video_node.cpp
+--- a/qtwebengine/src/core/compositor/yuv_video_node.cpp
++++ b/qtwebengine/src/core/compositor/yuv_video_node.cpp
 @@ -59,39 +59,41 @@ public:
      YUVVideoMaterialShader(const gfx::ColorSpace &colorSpace)
      {

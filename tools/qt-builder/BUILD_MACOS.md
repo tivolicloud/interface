@@ -24,6 +24,7 @@ cp -R patches qt5
 cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/mac-web-video.patch
 
 cd ..
 ```
