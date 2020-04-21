@@ -24,10 +24,10 @@ interface macos:
         - mkdir -p build
         - cd build
 
+        # TODO: update cmake to use env vars
         - cmake
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
-          # TODO: update cmake to use env vars
-          -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR 
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
           -DOPENSSL_USE_STATIC_LIBS=$OPENSSL_USE_STATIC_LIBS
           -G Xcode ..
