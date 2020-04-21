@@ -205,7 +205,8 @@ namespace MenuOption {
     const QString SuppressShortTimings = "Suppress Timings Less than 10ms";
     const QString ThirdPerson = "Third Person Legacy";
     const QString ThreePointCalibration = "3 Point Calibration";
-   // TIVOLI const QString ThrottleFPSIfNotFocus = "Throttle FPS If Not Focus"; // FIXME - this value duplicated in Basic2DWindowOpenGLDisplayPlugin.cpp
+   // FIXME: this value duplicated in Basic2DWindowOpenGLDisplayPlugin.cpp
+   // const QString ThrottleFPSIfNotFocus = "Throttle FPS If Not Focus";
     const QString ToggleHipsFollowing = "Toggle Hips Following";
     const QString ToolWindow = "Tool Window";
     const QString TransmitterDrive = "Transmitter Drive";
@@ -220,7 +221,8 @@ namespace MenuOption {
     const QString DesktopTabletToToolbar = "Desktop Tablet Becomes Toolbar";
     const QString HMDTabletToToolbar = "HMD Tablet Becomes Toolbar";
     const QString Shadows = "Shadows";
-    const QString AntiAliasing = "Temporal Antialiasing (FXAA if disabled)";
+    // force disabled in PerformanceManager.cpp
+    // const QString AntiAliasing = "Temporal Antialiasing (FXAA if disabled)";
     const QString AmbientOcclusion = "Ambient Occlusion";
     const QString NotificationSounds = "play_notification_sounds";
     const QString NotificationSoundsSnapshot = "play_notification_sounds_snapshot";

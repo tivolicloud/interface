@@ -84,62 +84,68 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
     //     }
     // }
 
+    auto instance = RenderScriptingInterface::getInstance();
+
+    // antialiasing is extremely blurry in vr and the jitter is disorienting
+    // it's best to disable it until we can have high quality aa
+    instance->setAntialiasingEnabled(false);
+
     switch (preset) {
         case PerformancePreset::HIGH:
-            RenderScriptingInterface::getInstance()->setRenderMethod(isDeferredCapable ?
+            instance->setRenderMethod(isDeferredCapable ?
                 RenderScriptingInterface::RenderMethod::DEFERRED : 
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
-            RenderScriptingInterface::getInstance()->setShadowsEnabled(true);
-            RenderScriptingInterface::getInstance()->setCustomShadersEnabled(true);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
+            instance->setShadowsEnabled(true);
+            instance->setCustomShadersEnabled(true);
+            instance->setViewportResolutionScale(1.0);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_HIGH);
             
         break;
         case PerformancePreset::MID:
-            RenderScriptingInterface::getInstance()->setRenderMethod(isDeferredCapable ?
+            instance->setRenderMethod(isDeferredCapable ?
                 RenderScriptingInterface::RenderMethod::DEFERRED :
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
-            RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
-            RenderScriptingInterface::getInstance()->setCustomShadersEnabled(true);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
+            instance->setShadowsEnabled(false);
+            instance->setCustomShadersEnabled(true);
+            instance->setViewportResolutionScale(1.0);
             
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_MEDIUM);
 
         break;
         case PerformancePreset::LOW:
-            RenderScriptingInterface::getInstance()->setRenderMethod(
+            instance->setRenderMethod(
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
-            RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
-            RenderScriptingInterface::getInstance()->setCustomShadersEnabled(false);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(1.0);
-            //RenderScriptingInterface::getInstance()->setViewportResolutionScale(recommendedPpiScale);
+            instance->setShadowsEnabled(false);
+            instance->setCustomShadersEnabled(false);
+            instance->setViewportResolutionScale(1.0);
+            //instance->setViewportResolutionScale(recommendedPpiScale);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 
         break;
         case PerformancePreset::POTATO:
-            RenderScriptingInterface::getInstance()->setRenderMethod(
+            instance->setRenderMethod(
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
-            RenderScriptingInterface::getInstance()->setShadowsEnabled(false);
-            RenderScriptingInterface::getInstance()->setCustomShadersEnabled(false);
-            RenderScriptingInterface::getInstance()->setViewportResolutionScale(0.5);
+            instance->setShadowsEnabled(false);
+            instance->setCustomShadersEnabled(false);
+            instance->setViewportResolutionScale(0.5);
             
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 

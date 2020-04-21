@@ -137,17 +137,41 @@ void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
         _antialiasingEnabled = (enabled);
         _antialiasingEnabledSetting.set(enabled);
 
-        auto mainViewJitterCamConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<JitterSample>("RenderMainView.JitterCam");
-        auto mainViewAntialiasingConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<Antialiasing>("RenderMainView.Antialiasing");
-        if (mainViewJitterCamConfig && mainViewAntialiasingConfig) {
-            Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
+        auto instance = qApp->getRenderEngine()->getConfiguration();
+        
+        auto mainAa = instance->getConfig<Antialiasing>("RenderMainView.Antialiasing");
+        auto mainQAa = instance->getConfig("RenderMainView.Antialiasing");
+        auto mainJitter = instance->getConfig<JitterSample>("RenderMainView.JitterCam");
+
+        auto secondAa = instance->getConfig<Antialiasing>("SecondaryCameraJob.Antialiasing");
+        auto secondQAa = instance->getConfig("SecondaryCameraJob.Antialiasing");
+        auto secondJitter = instance->getConfig<JitterSample>("SecondaryCameraJob.JitterCam");
+
+        if (
+            mainAa && mainQAa && mainJitter &&
+            secondAa && secondQAa && secondJitter
+        ) {
+            // Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
             if (enabled) {
-                mainViewJitterCamConfig->play();
-                mainViewAntialiasingConfig->setDebugFXAA(false);
-            }
-            else {
-                mainViewJitterCamConfig->none();
-                mainViewAntialiasingConfig->setDebugFXAA(true);
+                mainAa->setDebugFXAA(false);
+                mainQAa->setProperty("blend", 0.25f);
+                mainQAa->setProperty("sharpen", 0.05f);
+                mainJitter->play();
+
+                secondAa->setDebugFXAA(false);
+                secondQAa->setProperty("blend", 0.25f);
+                secondQAa->setProperty("sharpen", 0.05f);
+                secondJitter->play();
+            } else {
+                mainAa->setDebugFXAA(true);
+                mainQAa->setProperty("blend", 1);
+                mainQAa->setProperty("sharpen", 0);
+                mainJitter->none();
+
+                secondAa->setDebugFXAA(true);
+                secondQAa->setProperty("blend", 1);
+                secondQAa->setProperty("sharpen", 0);
+                secondJitter->none();
             }
         }
     });
@@ -166,9 +190,7 @@ void RenderScriptingInterface::setCustomShadersEnabled(bool enabled) {
 void RenderScriptingInterface::forceCustomShadersEnabled(bool enabled) {
     _renderSettingLock.withWriteLock([&] {
         _customShadersEnabled = (enabled);
-        _antialiasingEnabledSetting.set(enabled);
-        Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
-     });
+    });
 }
 
 float RenderScriptingInterface::getViewportResolutionScale() const {
