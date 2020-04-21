@@ -57,7 +57,10 @@ function isCached(source) {
 		cachedHash = fs.readFileSync(filename, "utf8");
 	} catch (err) {}
 
-	if (cachedHash != currentHash) {
+	if (
+		cachedHash != currentHash ||
+		!fs.existsSync(path.resolve(__dirname, "../out"))
+	) {
 		fs.writeFileSync(filename, currentHash);
 		console.log("Writing JSDoc cache: " + filename);
 		return false;
