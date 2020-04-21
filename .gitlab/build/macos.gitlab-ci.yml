@@ -19,16 +19,14 @@ interface macos:
         OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
         OPENSSL_USE_STATIC_LIBS: "TRUE"
 
-        # OPENSSL_LIBRARIES: ${OPENSSL_ROOT_DIR}/lib/libcrypto.dylib;${OPENSSL_ROOT_DIR}/lib/libssl.dylib
-
     script:
         - mkdir -p build
         - cd build
 
-        - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR -OPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR -DOPENSSL_USE_STATIC_LIBS=TRUE ..
-        - make interface -j$(sysctl -n hw.logicalcpu)
+        - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR -OPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR -DOPENSSL_USE_STATIC_LIBS=TRUE -G Xcode ..
+        - cmake --build . --target interface --config $BUILD_TYPE
 
-        - cd interface/interface.app/Contents/Resources
+        - cd interface/Release/interface.app/Contents/Resources
         - echo "[Paths]" > qt.conf
         - echo "Plugins = PlugIns" >> qt.conf
         - echo "Imports = Resources/qml" >> qt.conf
@@ -37,7 +35,7 @@ interface macos:
     artifacts:
         expire_in: 1 day
         paths:
-            - build/interface/interface.app
+            - build/interface/Release/interface.app
 
 launcher macos:
     stage: package
@@ -56,13 +54,12 @@ launcher macos:
         - rm -rf launcher # just incase
         - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
         - mkdir -p launcher/interface
-        - mv build/interface/interface.app launcher/interface # interface.app is a folder
+        - mv build/interface/Release/interface.app launcher/interface # interface.app is a folder
 
         # TODO: this needs changing
         - cd launcher/.gitlab
         - yarn install
-        # needs CI_COMMIT_TAG
-        - node prepare.js
+        - node prepare.js # needs CI_COMMIT_TAG
         - cd ..
 
         - yarn install
