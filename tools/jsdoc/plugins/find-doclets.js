@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const crypto = require("crypto");
 
 const rootDir = path.resolve(__dirname, "../../../");
 
@@ -40,6 +41,32 @@ function getSourceFiles() {
 	return filePaths;
 }
 
+function isCached(source) {
+	if (process.env.JSDOC_IGNORE_CACHE) return false;
+	if (!process.env.CMAKE_BINARY_DIR) return false;
+
+	const filename = path.resolve(
+		process.env.CMAKE_BINARY_DIR,
+		"jsdoc_cache.txt",
+	);
+
+	let cachedHash = "";
+	const currentHash = crypto.createHash("sha1").update(source).digest("hex");
+
+	try {
+		cachedHash = fs.readFileSync(filename, "utf8");
+	} catch (err) {}
+
+	if (cachedHash != currentHash) {
+		fs.writeFileSync(filename, currentHash);
+		console.log("Writing JSDoc cache: " + filename);
+		return false;
+	} else {
+		console.log("Using JSDoc cache: " + filename);
+		return true;
+	}
+}
+
 exports.handlers = {
 	// find all jsdoc in c++ files
 	beforeParse: e => {
@@ -61,6 +88,7 @@ exports.handlers = {
 		}
 
 		console.log("Found " + docletsCount + " doclets in the source code");
+		if (isCached(e.source)) process.exit(0);
 	},
 
 	newDoclet: e => {
