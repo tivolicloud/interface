@@ -98,7 +98,12 @@ if (APPLE)
   message(STATUS "Detected OS X version = ${OSX_VERSION}")
   message(STATUS "OS X deployment target = ${CMAKE_OSX_DEPLOYMENT_TARGET}")
 
-  set(OSX_SDK "${OSX_VERSION}" CACHE STRING "OS X SDK version to look for inside Xcode bundle or at OSX_SDK_PATH")
+  if (NOT OSX_SDK)
+    set(OSX_SDK $ENV{OSX_SDK})  
+    if (NOT OSX_SDK)
+      set(OSX_SDK "${OSX_VERSION}" CACHE STRING "OS X SDK version to look for inside Xcode bundle or at OSX_SDK_PATH")
+    endif()
+  endif()
 
   # find the SDK path for the desired SDK
   find_path(
