@@ -15,6 +15,7 @@
 
 #include <QVariantMap>
 #include <QJsonObject>
+#include <QtGlobal>
 
 class DomainMetadata : public QObject {
 Q_OBJECT
@@ -36,6 +37,7 @@ public:
         static const QString DESCRIPTION;
         static const QString CAPACITY;
         static const QString RESTRICTION;
+        static const QString WHITELIST;
         static const QString MATURITY;
         static const QString HOSTS;
         static const QString TAGS;

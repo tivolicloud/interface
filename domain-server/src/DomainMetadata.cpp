@@ -32,6 +32,7 @@ const QString DomainMetadata::DESCRIPTORS = "descriptors";
 const QString DomainMetadata::Descriptors::DESCRIPTION = "description";
 const QString DomainMetadata::Descriptors::CAPACITY = "capacity"; // parsed from security
 const QString DomainMetadata::Descriptors::RESTRICTION = "restriction"; // parsed from ACL
+const QString DomainMetadata::Descriptors::WHITELIST = "whitelist"; // parsed from ACL
 const QString DomainMetadata::Descriptors::MATURITY = "maturity";
 const QString DomainMetadata::Descriptors::HOSTS = "hosts";
 const QString DomainMetadata::Descriptors::TAGS = "tags";
@@ -39,6 +40,7 @@ const QString DomainMetadata::Descriptors::TAGS = "tags";
 // { "description": String, // capped description
 //   "capacity": Number,
 //   "restriction": String, // enum of either open, hifi, or acl
+//   "whitelist": [ String ], // usernames who can connect when acl
 //   "maturity": String, // enum corresponding to ESRB ratings
 //   "hosts": [ String ], // capped list of usernames
 //   "tags": [ String ], // capped list of tags
@@ -135,8 +137,24 @@ void DomainMetadata::securityChanged(bool send) {
 
     state[Descriptors::RESTRICTION] = restriction;
 
+    // username list when acl
+    QList<QString> whitelist;
+
+    if (restriction == RESTRICTION_ACL) {
+        foreach(QString username, settingsManager.getAllNames()) {
+            NodePermissions perms = settingsManager.getPermissionsForName(username);
+
+            if (perms.can(NodePermissions::Permission::canConnectToDomain)) {
+                whitelist.append(username);
+            }
+        }
+    }
+
+    state[Descriptors::WHITELIST] = QVariant(whitelist);
+
 #if DEV_BUILD || PR_BUILD
     qDebug() << "Domain metadata restriction set:" << restriction;
+    qDebug() << "Domain metadata whitelist set:" << whitelist;
 #endif
 
     if (send) {
