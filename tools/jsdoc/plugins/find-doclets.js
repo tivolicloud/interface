@@ -46,7 +46,7 @@ function isCached(source) {
 	if (!process.env.CMAKE_BINARY_DIR) return false;
 
 	const filename = path.resolve(
-		process.env.CMAKE_BINARY_DIR,
+		process.env.CMAKE_BINARY_DIR.trim(),
 		"jsdoc_cache.txt",
 	);
 
