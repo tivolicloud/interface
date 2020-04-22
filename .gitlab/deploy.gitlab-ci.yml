@@ -21,7 +21,7 @@ pages:
         paths:
             - public
 
-deploy server:
+upload server:
     stage: deploy
     image: docker:latest
 
@@ -87,7 +87,7 @@ deploy server:
         - docker push registry.tivolicloud.com/tivolicloud/interface/server:latest
         - docker push registry.tivolicloud.com/tivolicloud/interface/ice:latest
 
-deploy interface:
+upload interface:
     stage: deploy
     image: node:lts
 
