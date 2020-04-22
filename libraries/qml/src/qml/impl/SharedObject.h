@@ -110,7 +110,7 @@ private:
 
     uint64_t _lastRenderTime { 0 };
     QSize _size { 100, 100 };
-    uint8_t _maxFps { 60 };
+    uint8_t _maxFps { 120 };
 
     bool _renderRequested { false };
     bool _syncRequested { false };

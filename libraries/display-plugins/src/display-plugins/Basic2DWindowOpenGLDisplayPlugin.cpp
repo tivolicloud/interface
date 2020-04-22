@@ -155,7 +155,7 @@ static const uint32_t MIN_THROTTLE_CHECK_FRAMES = 60;
 
 bool Basic2DWindowOpenGLDisplayPlugin::isThrottled() const {
 
-    return false; // TIVOLI early out since this seems to cause white orbs
+    return false; // FIXME: early out since this seems to cause white orbs
 
     //static auto lastCheck = presentCount();
     //// Don't access the menu API every single frame
