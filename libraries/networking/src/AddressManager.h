@@ -243,6 +243,9 @@ public:
     const QStack<QUrl>& getForwardStack() const { return _forwardStack; }
 
     QUrl getDomainURL() { return _domainURL; }
+    
+    QString getDomainLabel() { return _domainLabel; }
+    QString getDomainAuthor() { return _domainAuthor; }
 
 public slots:
     /**jsdoc
@@ -525,6 +528,9 @@ private:
 
     QUrl _domainURL;
     QUrl _lastVisitedURL;
+
+    QString _domainLabel;
+    QString _domainAuthor;
 
     QUuid _rootPlaceID;
     PositionGetter _positionGetter;

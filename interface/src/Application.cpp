@@ -7169,38 +7169,63 @@ void Application::hmdVisibleChanged(bool visible) {
 
 void Application::updateWindowTitle() const {
 
-    auto nodeList = DependencyManager::get<NodeList>();
-    auto accountManager = DependencyManager::get<AccountManager>();
-    auto isInErrorState = nodeList->getDomainHandler().isInErrorState();
+    const auto nodeList = DependencyManager::get<NodeList>();
+    const auto accountManager = DependencyManager::get<AccountManager>();
+    const auto addressManager = DependencyManager::get<AddressManager>();
+    const auto isInErrorState = nodeList->getDomainHandler().isInErrorState();
 
-    QString buildVersion = " - "
-        + (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? QString("Version") : QString("Build"))
-        + " " + applicationVersion();
+    const QString buildVersion = (
+        QString() +
+        (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? "" : "Build ") +
+        applicationVersion()
+    );
 
-    QString loginStatus = accountManager->isLoggedIn() ? "" : " (NOT LOGGED IN)";
+    const QString loginStatus = accountManager->isLoggedIn() ? "" : "Not logged in";
 
-    QString connectionStatus = isInErrorState ? " (ERROR CONNECTING)" :
-        nodeList->getDomainHandler().isConnected() ? "" : " (NOT CONNECTED)";
-    QString username = accountManager->getAccountInfo().getUsername();
+    const QString connectionStatus = 
+        isInErrorState ? 
+            "Error connecting" :
+            nodeList->getDomainHandler().isConnected() ? "" : "Not connected";
+
+    const QString username = accountManager->getAccountInfo().getUsername();
 
     setCrashAnnotation("username", username.toStdString());
 
-    QString currentPlaceName;
+    QString currentWorldName;
     if (isServerlessMode()) {
         if (isInErrorState) {
-            currentPlaceName = "serverless: " + nodeList->getDomainHandler().getErrorDomainURL().toString();
+            currentWorldName = nodeList->getDomainHandler().getErrorDomainURL().toString();
         } else {
-            currentPlaceName = "serverless: " + DependencyManager::get<AddressManager>()->getDomainURL().toString();
+            currentWorldName = addressManager->getDomainURL().toString();
         }
     } else {
-        currentPlaceName = DependencyManager::get<AddressManager>()->getDomainURL().host();
-        if (currentPlaceName.isEmpty()) {
-            currentPlaceName = nodeList->getDomainHandler().getHostname();
+        // currentPlaceName = addressManager->getDomainURL().host();
+        const QString worldName = addressManager->getDomainLabel();
+
+        if (worldName.isEmpty()) {
+            currentWorldName = nodeList->getDomainHandler().getHostname();
+        } else {
+            const QString worldAuthor = addressManager->getDomainAuthor();
+
+            currentWorldName = (
+                worldName + 
+                (!worldAuthor.isEmpty() ? " (" + worldAuthor + ")": "")
+            );
         }
     }
 
-    QString title = QString() + (!username.isEmpty() ? username + " @ " : QString())
-        + currentPlaceName + connectionStatus + loginStatus + buildVersion;
+    // Not connected, Not logged in - Maki @ Cutelab (Maki) - Tivoli Cloud VR 0.7.2
+
+    QStringList statusList = { connectionStatus, loginStatus };
+    statusList.removeAll(QString(""));
+    const QString status = statusList.join(",").trimmed();
+
+    const QString title = (
+        (status.isEmpty() ? "" : status + " - ") +
+        (username.isEmpty() ? "" : username + " @ ") + 
+        currentWorldName + " - " +
+        "Tivoli Cloud VR " + buildVersion
+    );
 
 #ifndef WIN32
     // crashes with vs2013/win32
