@@ -12,12 +12,11 @@ ENV HIFI_ASSIGNMENT_CLIENT_MESSAGES_MIXER_PORT=48004
 ENV HIFI_ASSIGNMENT_CLIENT_ENTITY_SCRIPT_SERVER_PORT=48005
 ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
-ENV LD_LIBRARY_PATH=/root/lib
-
 # RUN pacman -Syu --noconfirm curl pm2
 RUN \
 apt-get update -y && \
-apt-get install -y curl && \
+apt-get install -y curl glib2.0 libgl1-mesa-glx && \
+\
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs && \
 npm i -g pm2

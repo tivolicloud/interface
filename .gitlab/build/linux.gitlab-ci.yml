@@ -29,15 +29,10 @@ server linux:
 
         # debian 9 (stretch)
         - apt-get update -y
-        - apt-get install -y build-essential git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        - apt-get install -y build-essential gcc g++ cmake git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
         # for interface: libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
         - curl -sL https://deb.nodesource.com/setup_12.x | bash -
         - apt-get install -y nodejs
-        # g++ 6 and cmake are too old
-        - echo "deb http://deb.debian.org/debian testing main" >> /etc/apt/sources.list
-        - apt-get update -y
-        - apt-get install -y gcc g++ cmake
-        - apt-get autoremove -y
 
         # build
         - mkdir -p build
@@ -46,13 +41,8 @@ server linux:
         - make domain-server assignment-client oven ice-server -j$(nproc)
 
         # save shared libraries
-        - mkdir -p _lib-server _lib-ice
-
-        - ldd domain-server/domain-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
-        - ldd assignment-client/assignment-client | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
-        - ldd tools/oven/oven | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-server
-
-        - ldd ice-server/ice-server | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' _lib-ice
+        - cp ../docker/extract-so.py .
+        - python3 extract-so.py
 
     artifacts:
         expire_in: 1 day
