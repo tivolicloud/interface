@@ -13,6 +13,7 @@ import zipfile
 import tempfile
 import time
 import functools
+import math
 
 print = functools.partial(print, flush=True)
 
@@ -89,9 +90,17 @@ def hashFolder(folder):
 
 def downloadProgressHook(count, block_size, total_size):
     global start_time
+    global update_when_time
+
     if count == 0:
         start_time = time.time()
+        update_when_time = time.time()
         return
+
+    if time.time() < update_when_time:
+        return 
+    update_when_time = math.floor(time.time()) + 1     
+
     duration = time.time() - start_time
     progress_size = int(count * block_size)
     speed = progress_size / (1024 * 1024 * duration)
