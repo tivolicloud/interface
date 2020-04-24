@@ -73,7 +73,7 @@ endif()
             if issue.startswith("Debian GNU/Linux 9"): 
                 self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-debian-9.tar.gz'
 
-            if issue.startswith("Arch Linux"):
+            elif issue.startswith("Arch Linux"):
                 self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-arch-linux.tar.gz'
 
             else:
