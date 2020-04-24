@@ -42,9 +42,6 @@ cd ..
 ```bash
 cd qt5-install
 
-# if qmake isn't present in qt5-install/bin
-cp ../qt5-build/qtbase/bin/qmake bin
-
 # http://www.linuxfromscratch.org/blfs/view/stable-systemd/x/qtwebengine.html
 find . -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 

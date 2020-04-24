@@ -63,16 +63,17 @@ endif()
             self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-macos.tar.gz'
        
         elif system == 'Linux':
-            etcIssue = open("/etc/issue", "r").read().split(" ")
-            distro = etcIssue[0]
-            version = etcIssue[1]
+            issue = open("/etc/issue", "r").read()
 
             # currently doesn't work
             # if distro == "Ubuntu":           
             #     if version[0:2] == "18":
             #         self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz'
 
-            if distro == "Arch":
+            if issue.startswith("Debian GNU/Linux 9"): 
+                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-debian-9.tar.gz'
+
+            if issue.startswith("Arch Linux"):
                 self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-arch-linux.tar.gz'
 
             else:

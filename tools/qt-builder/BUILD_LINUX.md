@@ -1,6 +1,19 @@
 # Building Qt 5.14.1 for Linux
 
-## Install depenencies from [old readme](README.old.md)
+https://wiki.qt.io/Building_Qt_5_from_Git
+
+## Install depenencies
+
+### Debian 9 (Stretch)
+
+```bash
+grep '^deb ' /etc/apt/sources.list | perl -pe 's/deb /deb-src /' >> /etc/apt/sources.list
+apt-get update
+apt-get build-dep qt5-default
+apt-get install libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev gperf bison flex python git
+```
+
+### More at [old readme](README.old.md)
 
 ## Inside this folder (interface/tools/qt-builder)
 
@@ -40,9 +53,6 @@ cd ..
 ```bash
 cd qt5-install
 
-# if qmake isn't present in qt5-install/bin
-cp ../qt5-build/qtbase/bin/qmake bin
-
 # http://www.linuxfromscratch.org/blfs/view/stable-systemd/x/qtwebengine.html
 find . -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 
@@ -54,6 +64,7 @@ cd ..
 ### Archiving:
 
 ```bash
+tar -zcvf tivoli-qt5-install-5.14.1-debian-9.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.14.1-arch-linux.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz qt5-install
 ```
