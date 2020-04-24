@@ -98,8 +98,8 @@ endif()
         else:
             self.exe = os.path.join(self.path, 'vcpkg')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh') ]
-            # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
-            # self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
+            self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
+            self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
             self.hostTriplet = 'x64-linux'
 
         if self.args.android:
@@ -179,15 +179,18 @@ endif()
             downloadVcpkg = True
 
         if downloadVcpkg:
-            # if "HIFI_VCPKG_BOOTSTRAP" in os.environ:
+            if (
+                platform.system() == "Linux" and
+                open("/etc/issue", "r").read().startswith("Debian GNU/Linux 9")
+            ):
+                print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
+                hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
+            else:
                 print("Cloning vcpkg from github to {}".format(self.path))
                 hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
                 print("Bootstrapping vcpkg")
                 print(self.bootstrapEnv)
-                hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)
-            # else:
-                # print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
-                # hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
+                hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)      
 
         print("Replacing port files")
         portsPath = os.path.join(self.path, 'ports')
