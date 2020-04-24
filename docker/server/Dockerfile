@@ -1,4 +1,4 @@
-FROM archlinux:latest
+FROM debian:9
 
 ENV HIFI_DOMAIN_SERVER_HTTP_PORT=40100
 ENV HIFI_DOMAIN_SERVER_HTTPS_PORT=40101
@@ -14,7 +14,13 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
 ENV LD_LIBRARY_PATH=/root/lib
 
-RUN pacman -Syu --noconfirm curl pm2
+# RUN pacman -Syu --noconfirm curl pm2
+RUN \
+apt-get update -y && \
+apt-get install -y curl && \
+curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+apt-get install -y nodejs && \
+npm i -g pm2
 
 COPY dist/. /root
 

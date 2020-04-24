@@ -1,7 +1,6 @@
 server linux:
     stage: build
-    # image: ubuntu:18.04
-    image: archlinux:latest
+    image: debian:9
 
     extends: .production
 
@@ -24,21 +23,26 @@ server linux:
             - build/HIFI_VCPKG
 
     script:
-        # ubuntu 18.04
-        # - apt-get update -y
-        # - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
-        # ubuntu 18.04 for interface
-        # - apt-get install -y git curl unzip g++ cmake python3 python3-distutils nodejs libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
-        # - apt-get install -y npm
+        # arch linux
+        # - pacman -Syu --noconfirm
+        # - pacman -S --noconfirm base-devel git curl unzip gcc cmake python python-distutils-extra nodejs openssl double-conversion libpng harfbuzz mesa alsa-lib libxmu libxi freeglut jack libxrandr libudev0-shim zlib md4c
 
-        # system dependencies
-        - pacman -Syu --noconfirm
-        - pacman -S --noconfirm base-devel git curl unzip gcc cmake python python-distutils-extra nodejs openssl double-conversion libpng harfbuzz mesa alsa-lib libxmu libxi freeglut jack libxrandr libudev0-shim zlib md4c
+        # debian 9 (stretch)
+        - apt-get update -y
+        - apt-get install -y build-essential git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        # for interface: libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
+        - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+        - apt-get install -y nodejs
+        # g++ 6 and cmake are too old
+        - echo "deb http://deb.debian.org/debian testing main" >> /etc/apt/sources.list
+        - apt-get update -y
+        - apt-get install -y gcc g++ cmake
+        - apt-get autoremove -y
 
         # build
         - mkdir -p build
         - cd build
-        - cmake .. -DCMAKE_BUILD_TYPE=Release
+        - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
         - make domain-server assignment-client oven ice-server -j$(nproc)
 
         # save shared libraries
