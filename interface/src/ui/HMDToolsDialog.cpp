@@ -14,7 +14,6 @@
 #include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QFormLayout>
-#include <QGuiApplication>
 #include <QLabel>
 #include <QPushButton>
 #include <QString>
@@ -109,7 +108,8 @@ HMDToolsDialog::HMDToolsDialog(QWidget* parent) :
     });
 
     // keep track of changes to the number of screens
-    connect(QApplication::desktop(), &QDesktopWidget::screenCountChanged, this, &HMDToolsDialog::screenCountChanged);
+    connect(qApp, &Application::screenAdded, this, &HMDToolsDialog::screenCountChanged);
+    connect(qApp, &Application::screenRemoved, this, &HMDToolsDialog::screenCountChanged);
     
     updateUi();
 }
@@ -125,19 +125,18 @@ QString HMDToolsDialog::getDebugDetails() const {
     QString results;
 
     if (_hmdScreenNumber >= 0) {
-        results += "HMD Screen: " + QGuiApplication::screens()[_hmdScreenNumber]->name() + "\n";
+        results += "HMD Screen: " + Application::screens()[_hmdScreenNumber]->name() + "\n";
     } else {
         results += "HMD Screen Name: N/A\n";
     }
 
-    int desktopPrimaryScreenNumber = QApplication::desktop()->primaryScreen();
-    QScreen* desktopPrimaryScreen = QGuiApplication::screens()[desktopPrimaryScreenNumber];
+    QScreen* desktopPrimaryScreen = Application::primaryScreen();
     results += "Desktop's Primary Screen: " + desktopPrimaryScreen->name() + "\n";
 
-    results += "Application Primary Screen: " + QGuiApplication::primaryScreen()->name() + "\n";
+    results += "Application Primary Screen: " + Application::primaryScreen()->name() + "\n";
     QScreen* mainWindowScreen = qApp->getWindow()->windowHandle()->screen();
     results += "Application Main Window Screen: " + mainWindowScreen->name() + "\n";
-    results += "Total Screens: " + QString::number(QApplication::desktop()->screenCount()) + "\n";
+    results += "Total Screens: " + QString::number(Application::screens().length()) + "\n";
 
     return results;
 }
@@ -196,7 +195,7 @@ void HMDToolsDialog::hideEvent(QHideEvent* event) {
     centerCursorOnWidget(qApp->getWindow());
 }
 
-void HMDToolsDialog::screenCountChanged(int newCount) {
+void HMDToolsDialog::screenCountChanged(QScreen* screen) {
     int hmdScreenNumber = -1;
     auto displayPlugins = PluginManager::getInstance()->getDisplayPlugins();
     foreach(auto dp, displayPlugins) {
@@ -256,11 +255,11 @@ void HMDWindowWatcher::windowGeometryChanged(int arg) {
 void HMDWindowWatcher::windowScreenChanged(QScreen* screen) {
     // if we have more than one screen, and a known hmdScreen then try to 
     // keep our dialog off of the hmdScreen
-    if (QApplication::desktop()->screenCount() > 1) {
+    if (Application::screens().length() > 1) {
         int hmdScreenNumber = _hmdTools->_hmdScreenNumber;
         // we want to use a local variable here because we are not necesarily in HMD mode
         if (hmdScreenNumber >= 0) {
-            QScreen* hmdScreen = QGuiApplication::screens()[hmdScreenNumber];
+            QScreen* hmdScreen = Application::screens()[hmdScreenNumber];
             if (screen == hmdScreen) {
                 qDebug() << "HMD Tools: Whoa! What are you doing? You don't want to move me to the HMD Screen!";
         
@@ -283,8 +282,7 @@ void HMDWindowWatcher::windowScreenChanged(QScreen* screen) {
                     betterScreen = lastApplicationScreen;
                 } else {
                     // last, if we can't use the previous screen the use the primary desktop screen
-                    int desktopPrimaryScreenNumber = QApplication::desktop()->primaryScreen();
-                    QScreen* desktopPrimaryScreen = QGuiApplication::screens()[desktopPrimaryScreenNumber];
+                    QScreen* desktopPrimaryScreen = Application::primaryScreen();
                     betterScreen = desktopPrimaryScreen;
                 }
 

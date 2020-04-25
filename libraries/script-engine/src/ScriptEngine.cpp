@@ -2128,7 +2128,7 @@ void ScriptEngine::updateEntityScriptStatus(const EntityItemID& entityID, const 
 }
 
 QVariant ScriptEngine::cloneEntityScriptDetails(const EntityItemID& entityID) {
-    static const QVariant NULL_VARIANT { qVariantFromValue((QObject*)nullptr) };
+    static const QVariant NULL_VARIANT { QVariant::fromValue((QObject*)nullptr) };
     QVariantMap map;
     if (entityID.isNull()) {
         // TODO: find better way to report JS Error across thread/process boundaries

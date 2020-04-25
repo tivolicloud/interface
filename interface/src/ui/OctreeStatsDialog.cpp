@@ -423,6 +423,7 @@ void OctreeStatsDialog::showOctreeServersOfType(NodeType_t serverType) {
                                 OctreeSceneStats::ItemInfo& itemInfo = stats.getItemInfo(item);
                                 extraDetails << "<br/>" << itemInfo.caption << " " << stats.getItemValue(item);
                             }
+                            __attribute__((fallthrough));
                         } // fall through... since MOST has all of MORE
                         case MORE: {
                             QString totalString = locale.toString((uint)stats.getTotalElements());

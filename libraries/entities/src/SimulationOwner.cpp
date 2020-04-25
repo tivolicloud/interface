@@ -19,18 +19,20 @@
 // static
 const int SimulationOwner::NUM_BYTES_ENCODED = NUM_BYTES_RFC4122_UUID + 1;
 
-SimulationOwner::SimulationOwner() :
-        _id(),
-        _expiry(0),
-        _priority(0)
-{
-}
+SimulationOwner::SimulationOwner():
+    _id(),
+    _expiry(0),
+    _priority(0)
+{}
 
-SimulationOwner::SimulationOwner(const QUuid& id, uint8_t priority) :
-        _id(id),
-        _expiry(0),
-        _priority(priority)
-{
+SimulationOwner::SimulationOwner(const QUuid& id, uint8_t priority):
+    _id(id),
+    _expiry(0),
+    _priority(priority)
+{}
+
+SimulationOwner::SimulationOwner(const SimulationOwner& other) {
+    operator=(other);
 }
 
 QByteArray SimulationOwner::toByteArray() const {

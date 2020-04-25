@@ -505,7 +505,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     PerformanceTimer pt("change");
     std::unordered_set<EntityItemID> changedEntities;
     _changedEntitiesGuard.withWriteLock([&] { changedEntities.swap(_changedEntities); });
-    bool selectionPriority = false;
+    // bool selectionPriority = false;
 
     _renderablesToUpdate.clear();
     _priorityRenderablesToUpdate.clear();
@@ -513,23 +513,23 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     {   // build list of renderables and priority renderables. 
         PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
         for (const EntityItemID& entityId : changedEntities) {
-           quint16 t = 0; 
-           const EntityRendererPointer& renderable = renderableForEntityId(entityId);
-           if (getSceneIsReady()) 
-           {  // no priority optimization until everything's loaded
-               EntityItemPointer _entity = getEntity(entityId);
+            // quint16 t = 0; 
+            const EntityRendererPointer& renderable = renderableForEntityId(entityId);
+            if (getSceneIsReady()) 
+            {  // no priority optimization until everything's loaded
+                EntityItemPointer _entity = getEntity(entityId);
                
-               if ( !_entity || _entity->isDead()) continue;  
-               if ( !renderable ) continue;
+                if ( !_entity || _entity->isDead()) continue;  
+                if ( !renderable ) continue;
 
-               EntityPriority _entityPriority = _entity->getEntityPriority();
+                EntityPriority _entityPriority = _entity->getEntityPriority();
 
-               // Make sure avatar entities and shapes aren't somehow set to static
-               if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
-                   _entity->isPrimitiveShapeType() ) ) 
-               {
-                   _entityPriority = EntityPriority::AUTOMATIC;
-               }
+                // Make sure avatar entities and shapes aren't somehow set to static
+                if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
+                    _entity->isPrimitiveShapeType() ) ) 
+                {
+                    _entityPriority = EntityPriority::AUTOMATIC;
+                }
 
                 if (  _entityPriority == EntityPriority::PRIORITIZED ) 
                 {
@@ -543,11 +543,11 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 {
                         _staticRenderablesToUpdate.insert(renderable); 
                 }                 
-           }
-           else 
-           {
+            }
+            else 
+            {
                 _renderablesToUpdate.insert(renderable);
-           }
+            }
         }
     }
 
@@ -849,17 +849,16 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     auto scene = _viewState->getMain3DScene();
     render::Transaction transaction;
     
-    //// Since statics are generally not in the update loop, force an update pass for them here
+    // Since statics are generally not in the update loop, force an update pass for them here
     for (const auto& renderable : _staticRenderablesToUpdate) {
-      if (renderable) 
-      {
-          const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());//, _zoneCullSkipList);
-          //if (hasChanged || _isEditMode) 
-          //{
+        if (renderable) 
+        {
+            // const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());//, _zoneCullSkipList);
+            // if (hasChanged || _isEditMode) {
               renderable->updateInScene(scene, transaction);
               renderable->getEntity()->setNeedsRenderUpdate(true);
-          //}
-      }
+            // }
+        }
     }
 
     scene->enqueueTransaction(transaction);

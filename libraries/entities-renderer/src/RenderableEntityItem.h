@@ -38,7 +38,6 @@ public:
     virtual void emitScriptEvent(const QVariant& message) {}
     const EntityItemPointer& getEntity() const { return _entity; }
     const ItemID& getRenderItemID() const { return _renderItemID; }
-    const QUuid& getRenderItemEntityID() const { return _entity->getID() ; }
 
     const SharedSoundPointer& getCollisionSound() { return _collisionSound; }
     void setCollisionSound(const SharedSoundPointer& sound) { _collisionSound = sound; }

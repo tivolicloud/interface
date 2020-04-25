@@ -247,7 +247,7 @@ glm::uint32 scriptable::ScriptableMeshPart::fillAttribute(const QString& attribu
 QVector<glm::uint32> scriptable::ScriptableMeshPart::findNearbyPartVertexIndices(const glm::vec3& origin, float epsilon) const {
     QSet<glm::uint32> result;
     if (!isValid()) {
-        return result.toList().toVector();
+        return result.values().toVector();
     }
     auto mesh = getMeshPointer();
     auto offset = getFirstVertexIndex();
@@ -266,7 +266,7 @@ QVector<glm::uint32> scriptable::ScriptableMeshPart::findNearbyPartVertexIndices
             result << vertexIndex;
         }
     }
-    return result.toList().toVector();
+    return result.values().toVector();
 }
 
 scriptable::ScriptableMeshPartPointer scriptable::ScriptableMeshPart::cloneMeshPart() {
@@ -433,15 +433,18 @@ glm::uint32 scriptable::ScriptableMeshPart::getTopologyLength() const {
 
 QVector<glm::uint32> scriptable::ScriptableMeshPart::getFace(glm::uint32 faceIndex) const {
     switch (getTopology()) {
-    case graphics::Mesh::Topology::POINTS:
-    case graphics::Mesh::Topology::LINES:
-    case graphics::Mesh::Topology::TRIANGLES:
-    case graphics::Mesh::Topology::QUADS:
-        if (faceIndex < getNumFaces()) {
-            return getIndices().mid(faceIndex * getTopologyLength(), getTopologyLength());
-        }
-    default: return QVector<glm::uint32>();
+        case graphics::Mesh::Topology::POINTS:
+        case graphics::Mesh::Topology::LINES:
+        case graphics::Mesh::Topology::TRIANGLES:
+        case graphics::Mesh::Topology::QUADS:
+            if (faceIndex < getNumFaces()) {    
+                return getIndices().mid(faceIndex * getTopologyLength(), getTopologyLength());
+            }
+            break;
+        default:
+            break;
     }
+    return QVector<glm::uint32>();
 }
 
 QVariantMap scriptable::ScriptableMeshPart::getPartExtents() const {

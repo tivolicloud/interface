@@ -3199,7 +3199,7 @@ void DomainServer::addStaticAssignmentsToQueue() {
     auto sharedAssignments = _allAssignments.values();
 
     // sort the assignments to put the server/mixer assignments first
-    qSort(sharedAssignments.begin(), sharedAssignments.end(), [](SharedAssignmentPointer a, SharedAssignmentPointer b){
+    std::sort(sharedAssignments.begin(), sharedAssignments.end(), [](SharedAssignmentPointer a, SharedAssignmentPointer b){
         if (a->getType() == b->getType()) {
             return true;
         } else if (a->getType() != Assignment::AgentType && b->getType() != Assignment::AgentType) {

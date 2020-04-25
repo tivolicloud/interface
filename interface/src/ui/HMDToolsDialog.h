@@ -35,7 +35,7 @@ signals:
 
 public slots:
     void reject() override;
-    void screenCountChanged(int newCount);
+    void screenCountChanged(QScreen* screen);
 
 protected:
     virtual void closeEvent(QCloseEvent*) override; // Emits a 'closed' signal when this dialog is closed.

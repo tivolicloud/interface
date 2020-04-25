@@ -16,6 +16,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <algorithm>
 
 #include <Application.h>
 #include <OffscreenUi.h>
@@ -116,7 +117,7 @@ bool Bookmarks::sortOrder(QAction* a, QAction* b) {
 
 void Bookmarks::sortActions(Menu* menubar, MenuWrapper* menu) {
     QList<QAction*> actions = menu->actions();
-    qSort(actions.begin(), actions.end(), sortOrder);
+    std::sort(actions.begin(), actions.end(), sortOrder);
     for (QAction* action : menu->actions()) {
         menu->removeAction(action);
     }

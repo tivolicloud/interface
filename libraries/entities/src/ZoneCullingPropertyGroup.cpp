@@ -55,7 +55,7 @@ bool ZoneCullingPropertyGroup::appendToEditPacket(OctreePacketData* packetData,
                                             EntityPropertyFlags& propertiesDidntFit,
                                             int& propertyCount, 
                                             OctreeElement::AppendState& appendState) const {
-    bool successPropertyFits = true;
+    // bool successPropertyFits = true;
 
    /* APPEND_ENTITY_PROPERTY(PROP_BLOOM_INTENSITY, getBloomIntensity());
     APPEND_ENTITY_PROPERTY(PROP_BLOOM_THRESHOLD, getBloomThreshold());
@@ -68,8 +68,8 @@ bool ZoneCullingPropertyGroup::decodeFromEditPacket(EntityPropertyFlags& propert
                                                     const unsigned char*& dataAt,
                                                     int& processedBytes) {
     int bytesRead = 0;
-    bool overwriteLocalData = true;
-    bool somethingChanged = false;
+    // bool overwriteLocalData = true;
+    // bool somethingChanged = false;
 
    /* READ_ENTITY_PROPERTY(PROP_BLOOM_INTENSITY, float, setBloomIntensity);
     READ_ENTITY_PROPERTY(PROP_BLOOM_THRESHOLD, float, setBloomThreshold);
@@ -81,7 +81,7 @@ bool ZoneCullingPropertyGroup::decodeFromEditPacket(EntityPropertyFlags& propert
 
     processedBytes += bytesRead;
 
-    Q_UNUSED(somethingChanged);
+    // Q_UNUSED(somethingChanged);
 
     return true;
 }
@@ -135,7 +135,7 @@ void ZoneCullingPropertyGroup::appendSubclassData(OctreePacketData* packetData, 
                                             EntityPropertyFlags& propertiesDidntFit,
                                             int& propertyCount, 
                                             OctreeElement::AppendState& appendState) const {
-    bool successPropertyFits = true;
+    // bool successPropertyFits = true;
 
     /*APPEND_ENTITY_PROPERTY(PROP_BLOOM_INTENSITY, getBloomIntensity());
     APPEND_ENTITY_PROPERTY(PROP_BLOOM_THRESHOLD, getBloomThreshold());
@@ -147,7 +147,7 @@ int ZoneCullingPropertyGroup::readEntitySubclassDataFromBuffer(const unsigned ch
                                                          EntityPropertyFlags& propertyFlags, bool overwriteLocalData,
                                                          bool& somethingChanged) {
     int bytesRead = 0;
-    const unsigned char* dataAt = data;
+    // const unsigned char* dataAt = data;
 /*
     READ_ENTITY_PROPERTY(PROP_BLOOM_INTENSITY, float, setBloomIntensity);
     READ_ENTITY_PROPERTY(PROP_BLOOM_THRESHOLD, float, setBloomThreshold);

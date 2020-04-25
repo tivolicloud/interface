@@ -110,7 +110,7 @@ ShapeKey ImageEntityRenderer::getShapeKey() {
 }
 
 void ImageEntityRenderer::doRender(RenderArgs* args) {
-    const bool hasChanged = evaluateEntityZoneCullState(_entity);
+    // const bool hasChanged = evaluateEntityZoneCullState(_entity);
     NetworkTexturePointer texture;
     QRect subImage;
     glm::vec4 color;

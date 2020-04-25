@@ -1036,6 +1036,8 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _awayStateWhenFocusLostInVREnabled("awayStateWhenFocusLostInVREnabled", DEFAULT_AWAY_STATE_WHEN_FOCUS_LOST_IN_VR_ENABLED),
     _preferredCursor("preferredCursor", DEFAULT_CURSOR_NAME),
     _miniTabletEnabledSetting("miniTabletEnabled", DEFAULT_MINI_TABLET_ENABLED),
+    _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE),
+    _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), 
     _scaleMirror(1.0f),
     _mirrorYawOffset(0.0f),
     _raiseMirror(0.0f),
@@ -1043,8 +1045,6 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _lastNackTime(usecTimestampNow()),
     _lastSendDownstreamAudioStats(usecTimestampNow()),
     _notifiedPacketVersionMismatchThisDomain(false),
-    _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE),
-    _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), 
     _maxOctreePPS(maxOctreePacketsPerSecond.get()),
     _snapshotSound(nullptr),
     _sampleSound(nullptr)
@@ -1937,7 +1937,9 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     }
 
     QString scriptsSwitch = QString("--").append(SCRIPTS_SWITCH);
-    _defaultScriptsLocation = getCmdOption(argc, constArgv, scriptsSwitch.toStdString().c_str());
+    _defaultScriptsLocation.setPath(
+        getCmdOption(argc, constArgv, scriptsSwitch.toStdString().c_str())
+    );
 
     // Make sure we don't time out during slow operations at startup
     updateHeartbeat();
@@ -7005,7 +7007,7 @@ void Application::queryOctree(
             return;
         }
         // Create modified view that is a simple sphere.
-        bool interstitialModeEnabled = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
+        // bool interstitialModeEnabled = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
@@ -7047,7 +7049,7 @@ void Application::queryOctree(
     _octreeQuery.setReportInitialCompletion(isModifiedQuery);
 
 
-    auto menu = Menu::getInstance();
+    // auto menu = Menu::getInstance();
     auto treeRenderer = DependencyManager::get<EntityTreeRenderer>();
 
     auto nodeList = DependencyManager::get<NodeList>();
