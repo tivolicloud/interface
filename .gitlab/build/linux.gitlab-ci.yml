@@ -29,8 +29,11 @@ server linux:
 
         # debian 9 (stretch)
         - apt-get update -y
-        - apt-get install -y build-essential gcc g++ cmake git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
+        - apt-get install -y build-essential gcc g++ git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev
         # for interface: libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev
+        - curl -O https://cmake.org/files/v3.14/cmake-3.14.2-Linux-x86_64.sh
+        - chmod +x cmake-3.14.2-Linux-x86_64.sh
+        - ./cmake-3.14.2-Linux-x86_64.sh --prefix=/usr/local --skip-license
         - curl -sL https://deb.nodesource.com/setup_12.x | bash -
         - apt-get install -y nodejs
 
