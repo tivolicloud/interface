@@ -52,8 +52,9 @@ server linux:
         paths:
             - build/domain-server/domain-server
             - build/domain-server/resources
+            - build/domain-server/lib
             - build/assignment-client/assignment-client
             - build/tools/oven/oven
+
             - build/ice-server/ice-server
-            - build/_lib-server
-            - build/_lib-ice
+            - build/ice-server/lib

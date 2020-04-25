@@ -43,10 +43,12 @@ def saveLibraries(executable, outputPath):
 		print(name + " => " + path)
 	print("\n---\n")
 
-cleanFolder("_lib-server")
-saveLibraries("domain-server/domain-server", "_lib-server")
-saveLibraries("assignment-client/assignment-client", "_lib-server")
-saveLibraries("tools/oven/oven", "_lib-server")
+SERVER_LIB = "domain-server/lib"
+cleanFolder(SERVER_LIB)
+saveLibraries("domain-server/domain-server", SERVER_LIB)
+saveLibraries("assignment-client/assignment-client", SERVER_LIB)
+saveLibraries("tools/oven/oven", SERVER_LIB)
 
-cleanFolder("_lib-ice")
-saveLibraries("ice-server/ice-server", "_lib-ice")
+ICE_LIB = "ice-server/lib"
+cleanFolder(ICE_LIB)
+saveLibraries("ice-server/ice-server", ICE_LIB)

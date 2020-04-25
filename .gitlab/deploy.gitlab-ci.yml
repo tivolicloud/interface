@@ -46,10 +46,10 @@ upload server:
         - mkdir -p dist
 
         - cp ../../build/domain-server/domain-server dist/domain-server
-        - cp -r ../../build/domain-server/resources dist/resources
         - cp ../../build/assignment-client/assignment-client dist/assignment-client
         - cp ../../build/tools/oven/oven dist/oven
-        - cp -r ../../build/_lib-server dist/lib
+        - cp -r ../../build/domain-server/resources dist/resources
+        - cp -r ../../build/domain-server/lib dist/lib
         - cp ecosystem.config.js dist
 
         # build server image
@@ -67,7 +67,7 @@ upload server:
         - mkdir -p dist
 
         - cp ../../build/ice-server/ice-server dist/ice-server
-        - cp -r ../../build/_lib-ice dist/lib
+        - cp -r ../../build/ice-server/lib dist/lib
 
         # build ice image
         - docker build
