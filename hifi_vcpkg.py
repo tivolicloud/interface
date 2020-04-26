@@ -189,7 +189,6 @@ endif()
                 print("Cloning vcpkg from github to {}".format(self.path))
                 hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
                 print("Bootstrapping vcpkg")
-                print(self.bootstrapEnv)
                 hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)      
 
         print("Replacing port files")
