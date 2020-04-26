@@ -1,14 +1,8 @@
 //
 //  ExampleScriptPlugin.h
-//  plugins/KasenAPIExample/src
+//  plugins/examplePlugin/src
 //
-//  Created by Kasen IO on 2019.07.14 | realities.dev | kasenvr@gmail.com
-//  Copyright 2019 Kasen IO
-//
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
-//
-// Supporting file containing all QtScript specific integration.
+//  Supporting file containing all QtScript specific integration
 
 #ifndef EXAMPLE_SCRIPT_PLUGIN_H
 #define EXAMPLE_SCRIPT_PLUGIN_H

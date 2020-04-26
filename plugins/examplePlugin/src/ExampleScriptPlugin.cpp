@@ -1,14 +1,8 @@
 //
-//  KasenAPIExample.cpp
-//  plugins/KasenAPIExample/src
+//  ExampleScriptPlugin.cpp
+//  plugins/examplePlugin/src
 //
-//  Created by Kasen IO on 2019.07.14 | realities.dev | kasenvr@gmail.com
-//  Copyright 2019 Kasen IO
-//
-//  Distributed under the Apache License, Version 2.0.
-//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
-//
-// Example of prototyping new JS APIs by leveraging the existing plugin system.
+//  Example of prototyping new JS APIs by leveraging the existing plugin system
 
 #include "ExampleScriptPlugin.h"
 
@@ -25,11 +19,11 @@ namespace custom_api_example {
 
 QLoggingCategory logger{ "custom_api_example" };
 
-class KasenAPIExample : public example::ScriptPlugin {
+class ExamplePlugin : public example::ScriptPlugin {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "KasenAPIExample" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "ExamplePlugin" FILE "plugin.json")
 public:
-    KasenAPIExample() : example::ScriptPlugin("KasenAPIExample", "0.0.1") {
+    ExamplePlugin() : example::ScriptPlugin("ExamplePlugin", "1.0.0") {
         qCInfo(logger) << "plugin loaded" << qApp << toString() << QThread::currentThread(); 
     }
 
@@ -38,9 +32,9 @@ public slots:
      * Returns current microseconds (usecs) since Epoch. note: 1000usecs == 1ms
      * @example <caption>Measure current setTimeout accuracy.</caption>
      * var expected = 1000;
-     * var start = KasenAPIExample.now();
+     * var start = ExamplePlugin.now();
      * Script.setTimeout(function () {
-     *     var elapsed = (KasenAPIExample.now() - start)/1000;
+     *     var elapsed = (ExamplePlugin.now() - start)/1000;
      *     print("expected (ms):", expected, "actual (ms):", elapsed);
      * }, expected);
      */
@@ -51,7 +45,7 @@ public slots:
     /**jsdoc
      * Returns the available blendshape names for an avatar.
      * @example <caption>Get blendshape names</caption>
-     * print(JSON.stringify(KasenAPIExample.getBlendshapeNames(MyAvatar.sessionUUID)));
+     * print(JSON.stringify(ExamplePlugin.getBlendshapeNames(MyAvatar.sessionUUID)));
      */
     QStringList getBlendshapeNames(const QUuid& avatarID) const {
         QVector<QString> out;
@@ -68,7 +62,7 @@ public slots:
      * Returns a key-value object with active (non-zero) blendshapes.
      * eg: { JawOpen: 1.0, ... }
      * @example <caption>Get active blendshape map</caption>
-     * print(JSON.stringify(KasenAPIExample.getActiveBlendshapes(MyAvatar.sessionUUID)));
+     * print(JSON.stringify(ExamplePlugin.getActiveBlendshapes(MyAvatar.sessionUUID)));
      */
     QVariant getActiveBlendshapes(const QUuid& avatarID) const {
         if (auto head = getAvatarHead(avatarID)) {
@@ -136,4 +130,4 @@ private:
 
 const QLoggingCategory& example::logger{ custom_api_example::logger };
 
-#include "KasenAPIExample.moc"
+#include "ExampleScriptPlugin.moc"

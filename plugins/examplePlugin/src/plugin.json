@@ -1,13 +1,13 @@
 {
-    "name":"Kasen JS API Example",
+    "name": "Example Plugin",
     "version": 1,
     "package": {
-        "author": "Revofire",
-        "homepage": "www.realities.dev",
-        "version": "0.0.1",
+        "author": "Tivoli Cloud VR",
+        "homepage": "https://tivolicloud.com",
+        "version": "1.0.0",
         "engines": {
-          "hifi-interface": ">= 0.83.0",
-          "hifi-assignment-client": ">= 0.83.0"
+            "hifi-interface": ">= 0.7.2",
+            "hifi-assignment-client": ">= 0.7.2"
         },
         "config": {
             "client": true,
