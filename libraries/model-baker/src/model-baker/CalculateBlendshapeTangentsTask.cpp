@@ -38,7 +38,7 @@ void CalculateBlendshapeTangentsTask::run(const baker::BakeContextPointer& conte
 
             // Check if we already have tangents
             if (!tangentsIn.empty()) {
-                tangentsOut = tangentsIn.toStdVector();
+                tangentsOut = std::vector<glm::vec3>(tangentsIn.begin(), tangentsIn.end());
                 continue;
             }
 

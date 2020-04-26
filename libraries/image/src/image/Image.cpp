@@ -16,6 +16,10 @@ Image::Image(int width, int height, Format format) :
     }
 }
 
+Image::Image(const Image& other) {
+    operator=(other);
+}
+
 size_t Image::getByteCount() const {
     if (_format == Format_RGBAF) {
         return sizeof(FloatPixels::value_type) * _floatData.size();

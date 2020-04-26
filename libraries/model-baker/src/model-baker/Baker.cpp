@@ -41,7 +41,12 @@ namespace baker {
             auto& blendshapesPerMesh = output.edit3();
             blendshapesPerMesh.reserve(hfmModelIn->meshes.size());
             for (size_t i = 0; i < hfmModelIn->meshes.size(); i++) {
-                blendshapesPerMesh.push_back(hfmModelIn->meshes[i].blendshapes.toStdVector());
+                blendshapesPerMesh.push_back(
+                    std::vector<hfm::Blendshape>(
+                        hfmModelIn->meshes[i].blendshapes.begin(),
+                        hfmModelIn->meshes[i].blendshapes.end()
+                    )    
+                );
             }
             output.edit4() = hfmModelIn->joints;
             output.edit5() = hfmModelIn->shapes;
@@ -65,7 +70,10 @@ namespace baker {
 
             for (size_t i = 0; i < meshesIn.size(); i++) {
                 auto& mesh = meshesIn[i];
-                const auto verticesStd = mesh.vertices.toStdVector();
+                const auto verticesStd = std::vector<glm::vec3>(
+                    mesh.vertices.begin(),
+                    mesh.vertices.end()
+                );
                 indexedTrianglesMeshOut[i] = hfm::generateTriangleListMesh(verticesStd, mesh.parts);
             }
         }
@@ -93,8 +101,8 @@ namespace baker {
                     const auto& normals = safeGet(normalsPerBlendshape, j);
                     const auto& tangents = safeGet(tangentsPerBlendshape, j);
                     auto& blendshape = blendshapesOut[j];
-                    blendshape.normals = QVector<glm::vec3>::fromStdVector(normals);
-                    blendshape.tangents = QVector<glm::vec3>::fromStdVector(tangents);
+                    blendshape.normals = QVector<glm::vec3>(normals.begin(), normals.end());
+                    blendshape.tangents = QVector<glm::vec3>(tangents.begin(), tangents.end());
                 }
             }
         }
@@ -120,9 +128,18 @@ namespace baker {
                 auto& meshOut = meshesOut[i];
                 meshOut.triangleListMesh = triangleListMeshesIn[i];
                 meshOut._mesh = safeGet(graphicsMeshesIn, i);
-                meshOut.normals = QVector<glm::vec3>::fromStdVector(safeGet(normalsPerMeshIn, i));
-                meshOut.tangents = QVector<glm::vec3>::fromStdVector(safeGet(tangentsPerMeshIn, i));
-                meshOut.blendshapes = QVector<hfm::Blendshape>::fromStdVector(safeGet(blendshapesPerMeshIn, i));
+                meshOut.normals = QVector<glm::vec3>(
+                    safeGet(normalsPerMeshIn, i).begin(),
+                    safeGet(normalsPerMeshIn, i).end()
+                );
+                meshOut.tangents = QVector<glm::vec3>(
+                    safeGet(tangentsPerMeshIn, i).begin(),
+                    safeGet(tangentsPerMeshIn, i).end()
+                );
+                meshOut.blendshapes = QVector<hfm::Blendshape>(
+                    safeGet(blendshapesPerMeshIn, i).begin(),
+                    safeGet(blendshapesPerMeshIn, i).end()
+                );
             }
             output = meshesOut;
         }

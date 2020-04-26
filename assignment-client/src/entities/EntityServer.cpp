@@ -410,8 +410,8 @@ QString EntityServer::serverSubclassStats() {
 
     // display memory usage stats
     statsString += "<b>Entity Server Memory Statistics</b>\r\n";
-    statsString += QString().sprintf("EntityTreeElement size... %ld bytes\r\n", sizeof(EntityTreeElement));
-    statsString += QString().sprintf("       EntityItem size... %ld bytes\r\n", sizeof(EntityItem));
+    statsString += QString().asprintf("EntityTreeElement size... %ld bytes\r\n", sizeof(EntityTreeElement));
+    statsString += QString().asprintf("       EntityItem size... %ld bytes\r\n", sizeof(EntityItem));
     statsString += "\r\n\r\n";
 
     statsString += "<b>Entity Server Sending to Viewer Statistics</b>\r\n";

@@ -28,7 +28,7 @@ BatchLoader::BatchLoader(const QList<QUrl>& urls)
     : QObject(),
       _started(false),
       _finished(false),
-      _urls(urls.toSet()),
+      _urls(QSet<QUrl>(urls.begin(), urls.end())),
       _data(),
       _status() {
     qRegisterMetaType<QMap<QUrl, QString>>("QMap<QUrl, QString>");

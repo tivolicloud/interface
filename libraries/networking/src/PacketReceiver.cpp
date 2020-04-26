@@ -149,7 +149,7 @@ QMetaMethod PacketReceiver::matchingMethodForListener(PacketType type, QObject* 
 
     if (methodIndex < 0) {
         qCDebug(networking) << "PacketReceiver::registerListener expected a slot with one of the following signatures:"
-                 << possibleSignatures.toList() << "- but such a slot was not found."
+                 << possibleSignatures.values() << "- but such a slot was not found."
                  << "Could not complete listener registration for type" << type;
     }
 

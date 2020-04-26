@@ -443,7 +443,7 @@ void OctreeElement::printDebugDetails(const char* label) const {
     }
 
     QString resultString;
-    resultString.sprintf("%s - Voxel at corner=(%f,%f,%f) size=%f\n isLeaf=%s isDirty=%s shouldRender=%s\n children=", label,
+    resultString.asprintf("%s - Voxel at corner=(%f,%f,%f) size=%f\n isLeaf=%s isDirty=%s shouldRender=%s\n children=", label,
                          (double)_cube.getCorner().x, (double)_cube.getCorner().y, (double)_cube.getCorner().z,
                          (double)_cube.getScale(),
                          debug::valueOf(isLeaf()), debug::valueOf(isDirty()), debug::valueOf(getShouldRender()));

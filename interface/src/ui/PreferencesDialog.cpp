@@ -182,8 +182,8 @@ void setupPreferences() {
     //}
 
     {
-        auto getter = []()->bool { return DependencyManager::get<Keyboard>()->getPreferMalletsOverLasers() ? 1 : 0; };
-        auto setter = [](bool value) { return DependencyManager::get<Keyboard>()->setPreferMalletsOverLasers(false); };
+        // auto getter = []()->bool { return DependencyManager::get<Keyboard>()->getPreferMalletsOverLasers() ? 1 : 0; };
+        // auto setter = [](bool value) { return DependencyManager::get<Keyboard>()->setPreferMalletsOverLasers(false); };
         //auto preference = new RadioButtonsPreference(UI_CATEGORY, "Keyboard laser / mallets", getter, setter);
         //QStringList items;
         //items << "Lasers";// << "Mallets";

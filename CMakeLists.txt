@@ -318,7 +318,7 @@ endif()
 
 if (BUILD_CLIENT OR BUILD_SERVER)
   add_subdirectory(plugins)
-  add_subdirectory(server-console)
+  # add_subdirectory(server-console)
 endif()
 
 # BUILD_TOOLS option will be handled inside the tools's CMakeLists.txt because 'scribe' tool is required for build anyway

@@ -185,14 +185,14 @@ void outputBits(unsigned char byte, QDebug* continuedDebug) {
     QString resultString;
 
     if (isalnum(byte)) {
-        resultString.sprintf("[ %d (%c): ", byte, byte);
+        resultString.asprintf("[ %d (%c): ", byte, byte);
     } else {
-        resultString.sprintf("[ %d (0x%x): ", byte, byte);
+        resultString.asprintf("[ %d (0x%x): ", byte, byte);
     }
     debug << qPrintable(resultString);
     
     for (int i = 0; i < 8; i++) {
-        resultString.sprintf("%d", byte >> (7 - i) & 1);
+        resultString.asprintf("%d", byte >> (7 - i) & 1);
         debug << qPrintable(resultString);
     }
     debug << " ]";
