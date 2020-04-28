@@ -159,6 +159,16 @@ Menu::Menu() {
     // Edit > Refresh scene 
     addActionToQMenuAndActionHash(editMenu, MenuOption::RefreshScene, 0, qApp, SLOT(refreshScene()));
 
+    // Edit > Reload Avatar
+
+    auto reloadAvatarAction = addActionToQMenuAndActionHash(editMenu, MenuOption::ReloadAvatar);
+    connect(reloadAvatarAction, &QAction::triggered, [] {
+        auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
+        myAvatar->resetFullAvatarURL();
+        myAvatar->markIdentityDataChanged();
+        myAvatar->resetLastSent();
+        myAvatar->sendAvatarDataPacket(true);
+    });
     // Display menu ----------------------------------
     // FIXME - this is not yet matching Alan's spec because it doesn't have
     // menus for "2D"/"3D" - we need to add support for detecting the appropriate
