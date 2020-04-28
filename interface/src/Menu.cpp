@@ -342,11 +342,13 @@ Menu::Menu() {
 
     // Developer > Tivoli Options >>>
     MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
-    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
+
+    addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::StopRendering);
+   /* action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
                                                     qApp->getLoadCompleteEntityTreeSetting());
  
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
-        qApp->getForcedBypassPrioritySorting());
+        qApp->getForcedBypassPrioritySorting());*/
     
 
     //// Developer > Tivoli Options > Test Zone Culling (test)

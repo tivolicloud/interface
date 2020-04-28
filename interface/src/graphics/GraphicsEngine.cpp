@@ -107,6 +107,8 @@ void GraphicsEngine::render_runRenderFrame(RenderArgs* renderArgs) {
     PROFILE_RANGE(render, __FUNCTION__);
     PerformanceTimer perfTimer("render");
 
+
+    if (Menu::getInstance()->isOptionChecked(MenuOption::StopRendering)) return;
     // Make sure the WorldBox is in the scene
     // For the record, this one RenderItem is the first one we created and added to the scene.
     // We could move that code elsewhere but you know...
