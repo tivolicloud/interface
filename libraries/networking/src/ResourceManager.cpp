@@ -124,6 +124,8 @@ ResourceRequest* ResourceManager::createResourceRequest(
 
     ResourceRequest* request = nullptr;
 
+    qDebug() << "CREATE RESOURCE REQUEST " << normalizedURL;
+
     if (scheme == HIFI_URL_SCHEME_FILE || scheme == URL_SCHEME_QRC) {
         request = new FileResourceRequest(normalizedURL, isObservable, callerId, extra);
     } else if (scheme == HIFI_URL_SCHEME_HTTP || scheme == HIFI_URL_SCHEME_HTTPS || scheme == HIFI_URL_SCHEME_FTP) {
