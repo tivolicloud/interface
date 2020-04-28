@@ -168,7 +168,7 @@ def processCommand(line):
     global scribeDepCache
     glslangExec = args.tools_dir + '/glslangValidator'
     spirvCrossExec = args.tools_dir + '/spirv-cross'
-    spirvOptExec = args.tools_dir + '/spirv-opt'
+    spirvOptExec = args.tools_dir + '/spirv-tools/spirv-opt'
     params = line.split(';')
     dialect = params.pop(0)
     variant = params.pop(0)
