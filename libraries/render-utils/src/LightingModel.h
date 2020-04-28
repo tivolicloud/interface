@@ -205,6 +205,7 @@ public:
     void setAmbientOcclusion(bool enable) { enableAmbientOcclusion = enable; emit dirty();}
     bool isAmbientOcclusionEnabled() const { return enableAmbientOcclusion; }
     void setShadow(bool enable) { enableShadow = enable; emit dirty(); }
+    void setWireframe(bool enable) { enableWireframe = enable; emit dirty(); }
     bool isShadowEnabled() const { return enableShadow; }
 
 signals:
