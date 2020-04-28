@@ -233,6 +233,7 @@ namespace MenuOption {
     const QString HighlightTransitions = "Highlight Transitions";
     const QString CustomShaders = "Enable Custom Shaders";
     const QString EnableFlow = "Enable Dynamic Bone Flow";
+    const QString UseAvatarPlaceholders = "Use Avatar Placeholders";
     const QString ForceEverythingUnlit = "Force Everything Unlit";
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
     const QString BypassPrioritySorting = "Force Bypass Priority Sorting";

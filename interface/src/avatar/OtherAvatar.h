@@ -37,6 +37,7 @@ public:
     virtual void indicateLoadingStatus(LoadingStatus loadingStatus) override;
     void updateOrbPosition();
     void removeOrb();
+    void setOrbVisible(bool isVisible);
 
     void setSpaceIndex(int32_t index);
     int32_t getSpaceIndex() const { return _spaceIndex; }

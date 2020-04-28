@@ -309,16 +309,21 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
             if (!avatar->_isClientAvatar) {
                 avatar->setIsClientAvatar(true);
             }
+
+            if (_useAvatarPlaceholders) avatar->updateOrbPosition();
             // TODO: to help us scale to more avatars it would be nice to not have to poll this stuff every update
             if (avatar->getSkeletonModel()->isLoaded()) {
-                // remove the orb if it is there
-                avatar->removeOrb();
+                // hide the orb if it is there
+                if (!_useAvatarPlaceholders) avatar->setOrbVisible(false);
+                else avatar->setOrbVisible(true);
+
                 if (avatar->needsPhysicsUpdate()) {
                     _otherAvatarsToChangeInPhysics.insert(avatar);
                 }
-            } else {
+            } 
+            /*else {
                 avatar->updateOrbPosition();
-            }
+            }*/
 
             // for ALL avatars...
             if (_shouldRender) {
@@ -347,7 +352,8 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
                 if (_drawOtherAvatarSkeletons) {
                     avatar->debugJointData();
                 }
-                avatar->setEnableMeshVisible(!_drawOtherAvatarSkeletons);
+                avatar->setEnableMeshVisible(!_useAvatarPlaceholders);//!_drawOtherAvatarSkeletons);
+                //avatar->updateOrbPosition();
                 avatar->updateRenderItem(renderTransaction);
                 avatar->updateSpaceProxy(workloadTransaction);
                 avatar->setLastRenderUpdateTime(startTime);
@@ -412,7 +418,7 @@ AvatarSharedPointer AvatarManager::newSharedAvatar(const QUuid& sessionUUID) {
     auto otherAvatar = new OtherAvatar(qApp->thread());
     otherAvatar->setSessionUUID(sessionUUID);
     auto nodeList = DependencyManager::get<NodeList>();
-    if (nodeList && !nodeList->isIgnoringNode(sessionUUID)) {
+    if ( _useAvatarPlaceholders || (nodeList && !nodeList->isIgnoringNode(sessionUUID)))  {
         otherAvatar->createOrb();
     }
     return AvatarSharedPointer(otherAvatar, [](OtherAvatar* ptr) { ptr->deleteLater(); });

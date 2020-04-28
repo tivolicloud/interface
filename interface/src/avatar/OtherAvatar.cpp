@@ -61,6 +61,15 @@ void OtherAvatar::removeOrb() {
     }
 }
 
+void OtherAvatar::setOrbVisible(bool isVisible) {
+    if (!_otherAvatarOrbMeshPlaceholderID.isNull()) {
+        EntityItemProperties properties;
+        properties.setVisible(isVisible);
+        DependencyManager::get<EntityScriptingInterface>()->editEntity(_otherAvatarOrbMeshPlaceholderID, properties);
+    }
+}
+
+
 void OtherAvatar::updateOrbPosition() {
     if (!_otherAvatarOrbMeshPlaceholderID.isNull()) {
         EntityItemProperties properties;
@@ -72,14 +81,25 @@ void OtherAvatar::updateOrbPosition() {
 void OtherAvatar::createOrb() {
     if (_otherAvatarOrbMeshPlaceholderID.isNull()) {
         EntityItemProperties properties;
-        properties.setType(EntityTypes::Sphere);
+        // properties.setType(EntityTypes::Sphere);
+        properties.setType(EntityTypes::Image);
+        properties.setImageURL(PathUtils::resourcesUrl() + "icons/defaultNameCardUser.png");
+        properties.setEmissive(true);
+        properties.setBillboardMode(BillboardMode::FULL);
         properties.setAlpha(1.0f);
         properties.setColor(getLoadingOrbColor(_loadingStatus));
+        // TO DO: Consider having different versions of placeholders
+        // A generic everything is placeholder mode
+        // A loading error mode, and a loading-in-progress mode
+        // Loading Status are NoModel,
+        //      LoadModel,
+        //      LoadSuccess,
+        //      LoadFailure
         properties.setName("Loading Avatar " + getID().toString());
-        properties.setPrimitiveMode(PrimitiveMode::LINES);
-        properties.getPulse().setMin(0.5f);
-        properties.getPulse().setMax(1.0f);
-        properties.getPulse().setColorMode(PulseMode::IN_PHASE);
+        //properties.setPrimitiveMode(PrimitiveMode::LINES);
+        //properties.getPulse().setMin(0.5f);
+        //properties.getPulse().setMax(1.0f);
+        //properties.getPulse().setColorMode(PulseMode::IN_PHASE);
         properties.setIgnorePickIntersection(true);
 
         properties.setPosition(getHead()->getPosition());

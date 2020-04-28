@@ -271,6 +271,15 @@ public slots:
         _drawOtherAvatarSkeletons = isEnabled;
     }
 
+    /**jsdoc
+    * Use an image instead of rendering an avatar mesh.
+    * @function AvatarManager.setUseAvatarPlaceholders
+    * @param {boolean} enabled - <code>true</code> to use a placeholder instead of avatar mesh, <code>false</code> to hide.
+    */
+    void setUseAvatarPlaceholders(bool isEnabled) {
+        _useAvatarPlaceholders = isEnabled;
+    }
+
 protected:
     AvatarSharedPointer addAvatar(const QUuid& sessionUUID, const QWeakPointer<Node>& mixerWeakPointer) override;
     DetailedMotionState* createDetailedMotionState(OtherAvatarPointer avatar, int32_t jointIndex);
@@ -313,6 +322,7 @@ private:
 
     AvatarTransit::TransitConfig  _transitConfig;
     bool _drawOtherAvatarSkeletons { false };
+    bool _useAvatarPlaceholders { false };
 };
 
 #endif // hifi_AvatarManager_h

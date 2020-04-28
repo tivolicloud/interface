@@ -322,7 +322,15 @@ Menu::Menu() {
         
     });
 
-   
+    // Settings > Use Avatar Placeholders
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::UseAvatarPlaceholders, 0, false);
+    connect(action, &QAction::triggered, [action] {
+        auto avatarManager = DependencyManager::get<AvatarManager>();
+        avatarManager->setUseAvatarPlaceholders(action->isChecked());
+    });
+
+
+
     // Settings > Ask to Reset Settings
     addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::AskToResetSettings, 0, false);
 
