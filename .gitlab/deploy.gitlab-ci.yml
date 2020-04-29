@@ -28,7 +28,7 @@ upload server:
     extends: .deploy
 
     dependencies:
-        - server linux
+        - all linux
 
     variables:
         DOCKER_TLS_CERTDIR: ""
