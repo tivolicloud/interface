@@ -96,6 +96,7 @@ upload interface:
     dependencies:
         - launcher windows
         - launcher macos
+        - launcher linux
 
     script:
         - cd .gitlab

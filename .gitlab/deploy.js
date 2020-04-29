@@ -33,13 +33,21 @@ const spaces = new AWS.S3({
     endpoint: new AWS.Endpoint(config.region + ".digitaloceanspaces.com"),
 });
 
-const files = fs
-    .readdirSync(distPath)
-    .filter((filename) =>
-        ["exe", "dmg", "zip", "blockmap", "yml"].includes(
-            filename.split(".").pop().toLowerCase()
-        )
-    );
+const files = fs.readdirSync(distPath).filter((filename) =>
+    [
+        // windows
+        "exe",
+        // mac
+        "dmg",
+        "zip",
+        // linux
+        "appimage",
+        "pacman",
+        // all
+        "yml",
+        "blockmap",
+    ].includes(filename.split(".").pop().toLowerCase())
+);
 
 for (const fileName of files) {
     spaces.upload(
