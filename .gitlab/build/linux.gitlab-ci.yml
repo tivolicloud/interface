@@ -1,4 +1,4 @@
-server linux:
+all linux:
     stage: build
     image: debian:9
 
@@ -107,7 +107,7 @@ launcher linux:
     extends: .production
 
     dependencies:
-        - interface linux
+        - all linux
 
     script:
         # deps
