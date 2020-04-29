@@ -69,7 +69,7 @@ all linux:
         # libgl is a terrible name and causes problems
         # TODO: shared libraries should be something like libTivoliGl.so
 
-        - export LD_LIBRARY_PATH=/interface/build
+        - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build
         - ./squashfs-root/AppRun interface.AppDir/usr/bin/interface
           -executable=interface.AppDir/usr/bin/plugins/libhifiCodec.so
           -executable=interface.AppDir/usr/bin/plugins/libhifiSdl2.so
