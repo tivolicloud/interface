@@ -297,7 +297,7 @@ Menu::Menu() {
     
 
     // Settings > Use shaders (procedural materials)
-    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, false);
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, true);
     connect(action, &QAction::triggered, [action] {
 
         TextureCache::setCustomShadersEnabled(action->isChecked());
