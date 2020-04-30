@@ -111,7 +111,7 @@ launcher linux:
 
     script:
         # deps
-        - pacman -Syu --noconfirm git nodejs-lts-erbium npm yarn python
+        - pacman -Syu --noconfirm git nodejs-lts-erbium npm yarn python binutils
 
         - rm -rf launcher # just incase
         - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
@@ -135,4 +135,5 @@ launcher linux:
         paths:
             - launcher/dist/*.AppImage
             - launcher/dist/*.pacman
+            - launcher/dist/*.deb
             - launcher/dist/*.yml

@@ -43,6 +43,7 @@ const files = fs.readdirSync(distPath).filter((filename) =>
         // linux
         "appimage",
         "pacman",
+        "deb",
         // all
         "yml",
         "blockmap",
