@@ -218,7 +218,6 @@ ModelResource::ModelResource(const ModelResource& other) :
 }
 
 void ModelResource::downloadFinished(const QByteArray& data) {
-    qDebug() << "MODEL RESOURCE DOWNLOAD FINISHED " << _effectiveBaseURL;
     if (_effectiveBaseURL.fileName().toLower().endsWith(".fst")) {
         PROFILE_ASYNC_BEGIN(resource_parse_geometry, "ModelResource::downloadFinished", _url.toString(), { { "url", _url.toString() } });
 
