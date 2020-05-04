@@ -194,6 +194,8 @@ public:
     void setItemTransition(ItemID id, Index transitionId);
     void removeItemTransition(ItemID id);
 
+    size_t getTransactionQueueSize() { return _transactionQueue.size(); }
+
 protected:
 
     // Thread safe elements that can be accessed from anywhere
