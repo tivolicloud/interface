@@ -136,8 +136,13 @@ Rectangle {
                 readonly property string gatedIcon: "../../../icons/tablet-icons/mic-gate-i.svg";
 
                 id: image;
-                source: (pushToTalk && !pushingToTalk) ? pushToTalkIcon : muted ? mutedIcon :
-                    clipping ? clippingIcon : gated ? gatedIcon : unmutedIcon;
+                source: (
+                    (pushToTalk && !pushingToTalk) ? pushToTalkIcon : 
+                    muted ? mutedIcon :
+                    clipping ? clippingIcon :
+                    gated ? gatedIcon :
+                    unmutedIcon
+                );
 
                 width: 30;
                 height: 30;

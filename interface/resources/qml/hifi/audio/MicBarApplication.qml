@@ -168,8 +168,13 @@ Rectangle {
         Item {
             Image {
                 id: image;
-                source: (pushToTalk) ? pushToTalkIcon : muted ? mutedIcon :
-                    clipping ? clippingIcon : micBar.gated ? gatedIcon : unmutedIcon;
+                source: (
+                    (pushToTalk) ? pushToTalkIcon :
+                    muted ? mutedIcon :
+                    clipping ? clippingIcon :
+                    micBar.gated ? gatedIcon :
+                    unmutedIcon
+                );
                 width: 29;
                 height: 32;
                 anchors {
