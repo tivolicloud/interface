@@ -3,7 +3,6 @@
 //  interface/src
 //
 
-
 #include "RenderableShapeEntityItem.h"
 
 #include <glm/gtx/quaternion.hpp>
@@ -18,7 +17,7 @@
 using namespace render;
 using namespace render::entities;
 
-// Sphere entities should fit inside a cube entity of the same size, so a sphere that has dimensions 1x1x1 
+// Sphere entities should fit inside a cube entity of the same size, so a sphere that has dimensions 1x1x1
 // is a half unit sphere.  However, the geometry cache renders a UNIT sphere, so we need to scale down.
 static const float SPHERE_ENTITY_SCALE = 0.5f;
 
@@ -27,25 +26,25 @@ ShapeEntityRenderer::ShapeEntityRenderer(const EntityItemPointer& entity) : Pare
 }
 
 bool ShapeEntityRenderer::needsRenderUpdate() const {
-
-    if (_visible != wasPreviouslyVisible()) return true;
+    if (_visible != wasPreviouslyVisible())
+        return true;
 
     if (resultWithReadLock<bool>([&] {
-        auto mat = _materials.find("0");
-        if (mat != _materials.end() && mat->second.top().material && mat->second.top().material->isProcedural() &&
-            mat->second.top().material->isEnabled()) {
-            auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(mat->second.top().material);
-            if (procedural->isFading()) {
+            auto mat = _materials.find("0");
+            if (mat != _materials.end() && mat->second.top().material && mat->second.top().material->isProcedural() &&
+                mat->second.top().material->isEnabled()) {
+                auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(mat->second.top().material);
+                if (procedural->isFading()) {
+                    return true;
+                }
+            }
+
+            if (mat != _materials.end() && mat->second.shouldUpdate()) {
                 return true;
             }
-        }
 
-        if (mat != _materials.end() && mat->second.shouldUpdate()) {
-            return true;
-        }
-
-        return false;
-    })) {
+            return false;
+        })) {
         return true;
     }
 
@@ -53,8 +52,8 @@ bool ShapeEntityRenderer::needsRenderUpdate() const {
 }
 
 bool ShapeEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPointer& entity) const {
-
-    if (_visible != wasPreviouslyVisible()) return true;
+    if (_visible != wasPreviouslyVisible())
+        return true;
 
     if (_dimensions != entity->getScaledDimensions()) {
         return true;
@@ -67,34 +66,38 @@ bool ShapeEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPoin
     return false;
 }
 
-void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene, Transaction& transaction, const TypedEntityPointer& entity) {
+void ShapeEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene,
+                                                         Transaction& transaction,
+                                                         const TypedEntityPointer& entity) {
     withWriteLock([&] {
         _shape = entity->getShape();
         _pulseProperties = entity->getPulseProperties();
     });
 
     void* key = (void*)this;
-    AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this] () {
+    AbstractViewStateInterface::instance()->pushPostUpdateLambda(key, [this]() {
         withWriteLock([&] {
             auto entity = getEntity();
             _position = entity->getWorldPosition();
-            _dimensions = entity->getUnscaledDimensions(); // get unscaled to avoid scaling twice
+            _dimensions = entity->getUnscaledDimensions();  // get unscaled to avoid scaling twice
             _orientation = entity->getWorldOrientation();
             updateModelTransformAndBound();
-            _renderTransform = getModelTransform(); // contains parent scale, if this entity scales with its parent
+            _renderTransform = getModelTransform();  // contains parent scale, if this entity scales with its parent
             if (_shape == entity::Sphere) {
                 _renderTransform.postScale(SPHERE_ENTITY_SCALE);
             }
 
             _renderTransform.postScale(_dimensions);
-        });;
+        });
+        ;
     });
 }
 
 void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) {
     withReadLock([&] {
         auto mat = _materials.find("0");
-        if (mat != _materials.end() && mat->second.top().material && mat->second.top().material->isProcedural() && mat->second.top().material->isEnabled()) {
+        if (mat != _materials.end() && mat->second.top().material && mat->second.top().material->isProcedural() &&
+            mat->second.top().material->isEnabled()) {
             auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(mat->second.top().material);
             if (procedural->isFading()) {
                 procedural->setIsFading(Interpolate::calculateFadeRatio(procedural->getFadeStartTime()) < 1.0f);
@@ -120,11 +123,9 @@ void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoint
 
         auto userData = entity->getUserData();
         if (_proceduralData != userData) {
-            if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) {
-                _proceduralData = userData;
-                _material->setProceduralData(_proceduralData);
-                materialChanged = true;
-            }
+            _proceduralData = userData;
+            _material->setProceduralData(_proceduralData);
+            materialChanged = true;
         }
 
         if (materialChanged) {
@@ -159,19 +160,12 @@ bool ShapeEntityRenderer::isTransparent() const {
 }
 
 ShapeEntityRenderer::Pipeline ShapeEntityRenderer::getPipelineType(const graphics::MultiMaterial& materials) const {
-   
-    bool useCustomShaders = DependencyManager::get<TextureCache>()->isCustomShadersEnabled();
-    if (_entity->isLocalEntity()) useCustomShaders = true; // Always shaders for gizmos/selection outlines
-    if (!useCustomShaders) return Pipeline::MATERIAL;
-
     if (materials.top().material && materials.top().material->isProcedural() && materials.top().material->isReady()) {
         return Pipeline::PROCEDURAL;
     }
 
     graphics::MaterialKey drawMaterialKey = materials.getMaterialKey();
-    if (drawMaterialKey.isEmissive() || 
-        drawMaterialKey.isUnlit() || 
-        drawMaterialKey.isMetallic() || 
+    if (drawMaterialKey.isEmissive() || drawMaterialKey.isUnlit() || drawMaterialKey.isMetallic() ||
         drawMaterialKey.isScattering()) {
         return Pipeline::MATERIAL;
     }
@@ -211,8 +205,7 @@ ShapeKey ShapeEntityRenderer::getShapeKey() {
         if (drawMaterialKey.isLightMap()) {
             builder.withLightMap();
         }
-        if (drawMaterialKey.isUnlit() ||
-            DependencyManager::get<TextureCache>()->TextureCache::isEverythingUnlit()) {
+        if (drawMaterialKey.isUnlit()) {
             builder.withUnlit();
         }
         builder.withCullFaceMode(mat->second.getCullFaceMode());
@@ -229,17 +222,16 @@ Item::Bound ShapeEntityRenderer::getBound() {
         mat->second.top().material->isReady()) {
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(mat->second.top().material);
         if (procedural->hasVertexShader() && procedural->hasBoundOperator()) {
-           return procedural->getBound();
+            return procedural->getBound();
         }
     }
     return Parent::getBound();
 }
 
 void ShapeEntityRenderer::doRender(RenderArgs* args) {
-
     // Shapes just aren't playing well with zone culling.  Since it's a marginal performance
-    // win anyway, being so low-poly, we'll not 
-    // const bool hasChanged = evaluateEntityZoneCullState(_entity);
+    // win anyway, being so low-poly, we'll not
+    const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
     PerformanceTimer perfTimer("RenderableShapeEntityItem::render");
     Q_ASSERT(args->_batch);
@@ -257,7 +249,7 @@ void ShapeEntityRenderer::doRender(RenderArgs* args) {
         geometryShape = geometryCache->getShapeForEntityShape(_shape);
         primitiveMode = _primitiveMode;
         renderLayer = _renderLayer;
-        batch.setModelTransform(_renderTransform); // use a transform with scale, rotation, registration point and translation
+        batch.setModelTransform(_renderTransform);  // use a transform with scale, rotation, registration point and translation
         materials = _materials["0"];
         pipelineType = getPipelineType(materials);
         auto& schema = materials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
@@ -283,8 +275,11 @@ void ShapeEntityRenderer::doRender(RenderArgs* args) {
     } else if (pipelineType == Pipeline::SIMPLE) {
         // FIXME, support instanced multi-shape rendering using multidraw indirect
         outColor.a *= _isFading ? Interpolate::calculateFadeRatio(_fadeStartTime) : 1.0f;
-        render::ShapePipelinePointer pipeline = geometryCache->getShapePipelinePointer(outColor.a < 1.0f, false,
-            renderLayer != RenderLayer::WORLD || args->_renderMethod == Args::RenderMethod::FORWARD, materials.top().material->getCullFaceMode());
+        render::ShapePipelinePointer pipeline =
+            geometryCache->getShapePipelinePointer(outColor.a < 1.0f, false,
+                                                   renderLayer != RenderLayer::WORLD ||
+                                                       args->_renderMethod == Args::RenderMethod::FORWARD,
+                                                   materials.top().material->getCullFaceMode());
         if (render::ShapeKey(args->_globalShapeKey).isWireframe() || primitiveMode == PrimitiveMode::LINES) {
             geometryCache->renderWireShapeInstance(args, batch, geometryShape, outColor, pipeline);
         } else {
@@ -302,7 +297,7 @@ void ShapeEntityRenderer::doRender(RenderArgs* args) {
     args->_details._trianglesRendered += (int)triCount;
 }
 
-scriptable::ScriptableModelBase ShapeEntityRenderer::getScriptableModel()  {
+scriptable::ScriptableModelBase ShapeEntityRenderer::getScriptableModel() {
     scriptable::ScriptableModelBase result;
     auto geometryCache = DependencyManager::get<GeometryCache>();
     auto geometryShape = geometryCache->getShapeForEntityShape(_shape);
@@ -312,7 +307,8 @@ scriptable::ScriptableModelBase ShapeEntityRenderer::getScriptableModel()  {
         result.appendMaterials(_materials);
         auto materials = _materials.find("0");
         if (materials != _materials.end()) {
-            vertexColor = ColorUtils::tosRGBVec3(materials->second.getSchemaBuffer().get<graphics::MultiMaterial::Schema>()._albedo);
+            vertexColor =
+                ColorUtils::tosRGBVec3(materials->second.getSchemaBuffer().get<graphics::MultiMaterial::Schema>()._albedo);
         }
     }
     if (auto mesh = geometryCache->meshFromShape(geometryShape, vertexColor)) {

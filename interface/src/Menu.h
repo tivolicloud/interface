@@ -232,7 +232,9 @@ namespace MenuOption {
     const QString ForceCoarsePicking = "Force Coarse Picking";
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
-    const QString CustomShaders = "Enable Custom Shaders";
+    //const QString CustomShaders = "Enable Custom Shaders";
+    const QString MaterialProceduralShaders = "Enable Procedural Materials";
+
     const QString EnableFlow = "Enable Dynamic Bone Flow";
     const QString UseAvatarPlaceholders = "Use Avatar Placeholders";
     const QString ForceEverythingUnlit = "Force Everything Unlit";

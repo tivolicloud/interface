@@ -27,7 +27,10 @@ class Model;
 class MeshPartPayload {
 public:
     MeshPartPayload() = default;
-    MeshPartPayload(const std::shared_ptr<const graphics::Mesh>& mesh, int partIndex, graphics::MaterialPointer material, const uint64_t& created);
+    MeshPartPayload(const std::shared_ptr<const graphics::Mesh>& mesh,
+                    int partIndex,
+                    graphics::MaterialPointer material,
+                    const uint64_t& created);
     virtual ~MeshPartPayload() = default;
 
     typedef render::Payload<MeshPartPayload> Payload;
@@ -39,7 +42,7 @@ public:
 
     virtual void notifyLocationChanged() {}
     void updateTransform(const Transform& transform);
-    void updateTransformAndBound(const Transform& transform );
+    void updateTransformAndBound(const Transform& transform);
 
     // Render Item interface
     virtual render::ItemKey getKey() const;
@@ -55,7 +58,7 @@ public:
     // Payload resource cached values
     Transform _worldFromLocalTransform;
     int _partIndex = 0;
-    bool _hasColorAttrib { false };
+    bool _hasColorAttrib{ false };
 
     graphics::Box _localBound;
     mutable graphics::Box _worldBound;
@@ -74,22 +77,34 @@ public:
 
     void setCullWithParent(bool value) { _cullWithParent = value; }
 
+    static bool enableMaterialProceduralShaders;
+
 protected:
     render::ItemKey _itemKey{ render::ItemKey::Builder::opaqueShape().build() };
-    bool _cullWithParent { false };
+    bool _cullWithParent{ false };
     uint64_t _created;
 };
 
 namespace render {
-    template <> const ItemKey payloadGetKey(const MeshPartPayload::Pointer& payload);
-    template <> const Item::Bound payloadGetBound(const MeshPartPayload::Pointer& payload);
-    template <> const ShapeKey shapeGetShapeKey(const MeshPartPayload::Pointer& payload);
-    template <> void payloadRender(const MeshPartPayload::Pointer& payload, RenderArgs* args);
-}
+template <>
+const ItemKey payloadGetKey(const MeshPartPayload::Pointer& payload);
+template <>
+const Item::Bound payloadGetBound(const MeshPartPayload::Pointer& payload);
+template <>
+const ShapeKey shapeGetShapeKey(const MeshPartPayload::Pointer& payload);
+template <>
+void payloadRender(const MeshPartPayload::Pointer& payload, RenderArgs* args);
+}  // namespace render
 
 class ModelMeshPartPayload : public MeshPartPayload {
 public:
-    ModelMeshPartPayload(ModelPointer model, int meshIndex, int partIndex, int shapeIndex, const Transform& transform, const Transform& offsetTransform, const uint64_t& created);
+    ModelMeshPartPayload(ModelPointer model,
+                         int meshIndex,
+                         int partIndex,
+                         int shapeIndex,
+                         const Transform& transform,
+                         const Transform& offsetTransform,
+                         const uint64_t& created);
 
     typedef render::Payload<ModelMeshPartPayload> Payload;
     typedef Payload::DataPointer Pointer;
@@ -117,35 +132,43 @@ public:
 
     gpu::BufferPointer _clusterBuffer;
 
-    enum class ClusterBufferType { Matrices, DualQuaternions };
-    ClusterBufferType _clusterBufferType { ClusterBufferType::Matrices };
+    enum class ClusterBufferType
+    {
+        Matrices,
+        DualQuaternions
+    };
+    ClusterBufferType _clusterBufferType{ ClusterBufferType::Matrices };
 
     int _meshIndex;
     int _shapeID;
     uint32_t _deformerIndex;
 
     bool _isSkinned{ false };
-    bool _isBlendShaped { false };
-    bool _hasTangents { false };
+    bool _isBlendShaped{ false };
+    bool _hasTangents{ false };
 
-    void setBlendshapeBuffer(const std::unordered_map<int, gpu::BufferPointer>& blendshapeBuffers, const QVector<int>& blendedMeshSizes);
+    void setBlendshapeBuffer(const std::unordered_map<int, gpu::BufferPointer>& blendshapeBuffers,
+                             const QVector<int>& blendedMeshSizes);
 
 private:
     void initCache(const ModelPointer& model);
 
     gpu::BufferPointer _meshBlendshapeBuffer;
     int _meshNumVertices;
-    render::ShapeKey _shapeKey { render::ShapeKey::Builder::invalid() };
-    bool _prevUseDualQuaternionSkinning { false };
-    bool _cauterized { false };
-
+    render::ShapeKey _shapeKey{ render::ShapeKey::Builder::invalid() };
+    bool _prevUseDualQuaternionSkinning{ false };
+    bool _cauterized{ false };
 };
 
 namespace render {
-    template <> const ItemKey payloadGetKey(const ModelMeshPartPayload::Pointer& payload);
-    template <> const Item::Bound payloadGetBound(const ModelMeshPartPayload::Pointer& payload);
-    template <> const ShapeKey shapeGetShapeKey(const ModelMeshPartPayload::Pointer& payload);
-    template <> void payloadRender(const ModelMeshPartPayload::Pointer& payload, RenderArgs* args);
-}
+template <>
+const ItemKey payloadGetKey(const ModelMeshPartPayload::Pointer& payload);
+template <>
+const Item::Bound payloadGetBound(const ModelMeshPartPayload::Pointer& payload);
+template <>
+const ShapeKey shapeGetShapeKey(const ModelMeshPartPayload::Pointer& payload);
+template <>
+void payloadRender(const ModelMeshPartPayload::Pointer& payload, RenderArgs* args);
+}  // namespace render
 
-#endif // hifi_MeshPartPayload_h
+#endif  // hifi_MeshPartPayload_h

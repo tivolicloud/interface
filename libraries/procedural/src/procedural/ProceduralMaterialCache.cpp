@@ -15,8 +15,8 @@
 
 #include "Procedural.h"
 
-NetworkMaterialResource::NetworkMaterialResource(const QUrl& url) :
-    Resource(url) {}
+NetworkMaterialResource::NetworkMaterialResource(const QUrl& url) : Resource(url) {
+}
 
 void NetworkMaterialResource::downloadFinished(const QByteArray& data) {
     parsedMaterials.reset();
@@ -77,7 +77,8 @@ bool NetworkMaterialResource::parseJSONColor(const QJsonValue& array, glm::vec3&
  * @property {number} materialVersion=1 - The version of the material. <em>Currently not used.</em>
  * @property {Entities.Material|Entities.Material[]} materials - The details of the material or materials.
  */
-NetworkMaterialResource::ParsedMaterials NetworkMaterialResource::parseJSONMaterials(const QJsonDocument& materialJSON, const QUrl& baseUrl) {
+NetworkMaterialResource::ParsedMaterials NetworkMaterialResource::parseJSONMaterials(const QJsonDocument& materialJSON,
+                                                                                     const QUrl& baseUrl) {
     ParsedMaterials toReturn;
     if (!materialJSON.isNull() && materialJSON.isObject()) {
         QJsonObject materialJSONObject = materialJSON.object();
@@ -203,7 +204,9 @@ NetworkMaterialResource::ParsedMaterials NetworkMaterialResource::parseJSONMater
  * @property {ProceduralData} procedural - The definition of a procedural shader material.  <code>"hifi_shader_simple"</code> model only.
  */
 // Note: See MaterialEntityItem.h for default values used in practice.
-std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource::parseJSONMaterial(const QJsonObject& materialJSON, const QUrl& baseUrl) {
+std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource::parseJSONMaterial(
+    const QJsonObject& materialJSON,
+    const QUrl& baseUrl) {
     std::string name = "";
     std::shared_ptr<NetworkMaterial> networkMaterial;
 
@@ -277,7 +280,7 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
                 } else if (value.isDouble()) {
                     material->setMetallic(value.toDouble());
                 }
-           } else if (key == "opacityMapMode") {
+            } else if (key == "opacityMapMode") {
                 auto value = materialJSON.value(key);
                 if (value.isString()) {
                     auto valueString = value.toString();
@@ -290,7 +293,7 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
                         }
                     }
                 }
-           } else if (key == "opacityCutoff") {
+            } else if (key == "opacityCutoff") {
                 auto value = materialJSON.value(key);
                 if (value.isString() && value.toString() == FALLTHROUGH) {
                     material->setPropertyDoesFallthrough(graphics::MaterialKey::FlagBit::OPACITY_CUTOFF_VAL_BIT);
@@ -310,7 +313,7 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
                         }
                     }
                 }
-           } else if (key == "scattering") {
+            } else if (key == "scattering") {
                 auto value = materialJSON.value(key);
                 if (value.isString() && value.toString() == FALLTHROUGH) {
                     material->setPropertyDoesFallthrough(graphics::MaterialKey::FlagBit::SCATTERING_VAL_BIT);
@@ -336,7 +339,8 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
                     } else {
                         bool useAlphaChannel = false;
                         auto opacityMap = materialJSON.find("opacityMap");
-                        if (opacityMap != materialJSON.end() && opacityMap->isString() && opacityMap->toString() == valueString) {
+                        if (opacityMap != materialJSON.end() && opacityMap->isString() &&
+                            opacityMap->toString() == valueString) {
                             useAlphaChannel = true;
                         }
                         material->setAlbedoMap(baseUrl.resolved(valueString), useAlphaChannel);
@@ -547,17 +551,14 @@ QSharedPointer<Resource> MaterialCache::createResource(const QUrl& url) {
 }
 
 QSharedPointer<Resource> MaterialCache::createResourceCopy(const QSharedPointer<Resource>& resource) {
-    return QSharedPointer<Resource>(new NetworkMaterialResource(*resource.staticCast<NetworkMaterialResource>()), &Resource::deleter);
+    return QSharedPointer<Resource>(new NetworkMaterialResource(*resource.staticCast<NetworkMaterialResource>()),
+                                    &Resource::deleter);
 }
 
 NetworkMaterial::NetworkMaterial(const NetworkMaterial& m) :
-    Material(m),
-    _textures(m._textures),
-    _albedoTransform(m._albedoTransform),
-    _lightmapTransform(m._lightmapTransform),
-    _lightmapParams(m._lightmapParams),
-    _isOriginal(m._isOriginal)
-{}
+    Material(m), _textures(m._textures), _albedoTransform(m._albedoTransform), _lightmapTransform(m._lightmapTransform),
+    _lightmapParams(m._lightmapParams), _isOriginal(m._isOriginal) {
+}
 
 const QString NetworkMaterial::NO_TEXTURE = QString();
 
@@ -585,16 +586,18 @@ QUrl NetworkMaterial::getTextureUrl(const QUrl& baseUrl, const HFMTexture& textu
     }
 }
 
-graphics::TextureMapPointer NetworkMaterial::fetchTextureMap(const QUrl& baseUrl, const HFMTexture& hfmTexture,
-                                                             image::TextureUsage::Type type, MapChannel channel) {
-
+graphics::TextureMapPointer NetworkMaterial::fetchTextureMap(const QUrl& baseUrl,
+                                                             const HFMTexture& hfmTexture,
+                                                             image::TextureUsage::Type type,
+                                                             MapChannel channel) {
     if (baseUrl.isEmpty()) {
         return nullptr;
     }
 
     const auto url = getTextureUrl(baseUrl, hfmTexture);
-    const auto texture = DependencyManager::get<TextureCache>()->getTexture(url, type, hfmTexture.content, hfmTexture.maxNumPixels, hfmTexture.sourceChannel);
-    _textures[channel] = Texture { hfmTexture.name, texture };
+    const auto texture = DependencyManager::get<TextureCache>()->getTexture(url, type, hfmTexture.content,
+                                                                            hfmTexture.maxNumPixels, hfmTexture.sourceChannel);
+    _textures[channel] = Texture{ hfmTexture.name, texture };
 
     auto map = std::make_shared<graphics::TextureMap>();
     if (texture) {
@@ -605,7 +608,9 @@ graphics::TextureMapPointer NetworkMaterial::fetchTextureMap(const QUrl& baseUrl
     return map;
 }
 
-graphics::TextureMapPointer NetworkMaterial::fetchTextureMap(const QUrl& url, image::TextureUsage::Type type, MapChannel channel) {
+graphics::TextureMapPointer NetworkMaterial::fetchTextureMap(const QUrl& url,
+                                                             image::TextureUsage::Type type,
+                                                             MapChannel channel) {
     auto textureCache = DependencyManager::get<TextureCache>();
     if (textureCache && !url.isEmpty()) {
         auto texture = textureCache->getTexture(url, type);
@@ -630,21 +635,24 @@ void NetworkMaterial::setAlbedoMap(const QUrl& url, bool useAlphaChannel) {
 }
 
 void NetworkMaterial::setNormalMap(const QUrl& url, bool isBumpmap) {
-    auto map = fetchTextureMap(url, isBumpmap ? image::TextureUsage::BUMP_TEXTURE : image::TextureUsage::NORMAL_TEXTURE, MapChannel::NORMAL_MAP);
+    auto map = fetchTextureMap(url, isBumpmap ? image::TextureUsage::BUMP_TEXTURE : image::TextureUsage::NORMAL_TEXTURE,
+                               MapChannel::NORMAL_MAP);
     if (map) {
         setTextureMap(MapChannel::NORMAL_MAP, map);
     }
 }
 
 void NetworkMaterial::setRoughnessMap(const QUrl& url, bool isGloss) {
-    auto map = fetchTextureMap(url, isGloss ? image::TextureUsage::GLOSS_TEXTURE : image::TextureUsage::ROUGHNESS_TEXTURE, MapChannel::ROUGHNESS_MAP);
+    auto map = fetchTextureMap(url, isGloss ? image::TextureUsage::GLOSS_TEXTURE : image::TextureUsage::ROUGHNESS_TEXTURE,
+                               MapChannel::ROUGHNESS_MAP);
     if (map) {
         setTextureMap(MapChannel::ROUGHNESS_MAP, map);
     }
 }
 
 void NetworkMaterial::setMetallicMap(const QUrl& url, bool isSpecular) {
-    auto map = fetchTextureMap(url, isSpecular ? image::TextureUsage::SPECULAR_TEXTURE : image::TextureUsage::METALLIC_TEXTURE, MapChannel::METALLIC_MAP);
+    auto map = fetchTextureMap(url, isSpecular ? image::TextureUsage::SPECULAR_TEXTURE : image::TextureUsage::METALLIC_TEXTURE,
+                               MapChannel::METALLIC_MAP);
     if (map) {
         setTextureMap(MapChannel::METALLIC_MAP, map);
     }
@@ -681,11 +689,11 @@ void NetworkMaterial::setLightMap(const QUrl& url) {
 }
 
 NetworkMaterial::NetworkMaterial(const HFMMaterial& material, const QUrl& textureBaseUrl) :
-    graphics::Material(*material._material)
-{
+    graphics::Material(*material._material) {
     _name = material.name.toStdString();
     if (!material.albedoTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.albedoTexture, image::TextureUsage::ALBEDO_TEXTURE, MapChannel::ALBEDO_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.albedoTexture, image::TextureUsage::ALBEDO_TEXTURE,
+                                   MapChannel::ALBEDO_MAP);
         if (map) {
             _albedoTransform = material.albedoTexture.transform;
             map->setTextureTransform(_albedoTransform);
@@ -702,31 +710,36 @@ NetworkMaterial::NetworkMaterial(const HFMMaterial& material, const QUrl& textur
         setTextureMap(MapChannel::ALBEDO_MAP, map);
     }
 
-
     if (!material.normalTexture.filename.isEmpty()) {
-        auto type = (material.normalTexture.isBumpmap ? image::TextureUsage::BUMP_TEXTURE : image::TextureUsage::NORMAL_TEXTURE);
+        auto type =
+            (material.normalTexture.isBumpmap ? image::TextureUsage::BUMP_TEXTURE : image::TextureUsage::NORMAL_TEXTURE);
         auto map = fetchTextureMap(textureBaseUrl, material.normalTexture, type, MapChannel::NORMAL_MAP);
         setTextureMap(MapChannel::NORMAL_MAP, map);
     }
 
     if (!material.roughnessTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.roughnessTexture, image::TextureUsage::ROUGHNESS_TEXTURE, MapChannel::ROUGHNESS_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.roughnessTexture, image::TextureUsage::ROUGHNESS_TEXTURE,
+                                   MapChannel::ROUGHNESS_MAP);
         setTextureMap(MapChannel::ROUGHNESS_MAP, map);
     } else if (!material.glossTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.glossTexture, image::TextureUsage::GLOSS_TEXTURE, MapChannel::ROUGHNESS_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.glossTexture, image::TextureUsage::GLOSS_TEXTURE,
+                                   MapChannel::ROUGHNESS_MAP);
         setTextureMap(MapChannel::ROUGHNESS_MAP, map);
     }
 
     if (!material.metallicTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.metallicTexture, image::TextureUsage::METALLIC_TEXTURE, MapChannel::METALLIC_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.metallicTexture, image::TextureUsage::METALLIC_TEXTURE,
+                                   MapChannel::METALLIC_MAP);
         setTextureMap(MapChannel::METALLIC_MAP, map);
     } else if (!material.specularTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.specularTexture, image::TextureUsage::SPECULAR_TEXTURE, MapChannel::METALLIC_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.specularTexture, image::TextureUsage::SPECULAR_TEXTURE,
+                                   MapChannel::METALLIC_MAP);
         setTextureMap(MapChannel::METALLIC_MAP, map);
     }
 
     if (!material.occlusionTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.occlusionTexture, image::TextureUsage::OCCLUSION_TEXTURE, MapChannel::OCCLUSION_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.occlusionTexture, image::TextureUsage::OCCLUSION_TEXTURE,
+                                   MapChannel::OCCLUSION_MAP);
         if (map) {
             map->setTextureTransform(material.occlusionTexture.transform);
         }
@@ -734,17 +747,20 @@ NetworkMaterial::NetworkMaterial(const HFMMaterial& material, const QUrl& textur
     }
 
     if (!material.emissiveTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.emissiveTexture, image::TextureUsage::EMISSIVE_TEXTURE, MapChannel::EMISSIVE_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.emissiveTexture, image::TextureUsage::EMISSIVE_TEXTURE,
+                                   MapChannel::EMISSIVE_MAP);
         setTextureMap(MapChannel::EMISSIVE_MAP, map);
     }
 
     if (!material.scatteringTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.scatteringTexture, image::TextureUsage::SCATTERING_TEXTURE, MapChannel::SCATTERING_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.scatteringTexture, image::TextureUsage::SCATTERING_TEXTURE,
+                                   MapChannel::SCATTERING_MAP);
         setTextureMap(MapChannel::SCATTERING_MAP, map);
     }
 
     if (!material.lightmapTexture.filename.isEmpty()) {
-        auto map = fetchTextureMap(textureBaseUrl, material.lightmapTexture, image::TextureUsage::LIGHTMAP_TEXTURE, MapChannel::LIGHT_MAP);
+        auto map = fetchTextureMap(textureBaseUrl, material.lightmapTexture, image::TextureUsage::LIGHTMAP_TEXTURE,
+                                   MapChannel::LIGHT_MAP);
         if (map) {
             _lightmapTransform = material.lightmapTexture.transform;
             _lightmapParams = material.lightmapParams;
@@ -836,7 +852,8 @@ bool NetworkMaterial::isMissingTexture() {
         }
         // Failed texture downloads need to be considered as 'loaded'
         // or the object will never fade in
-        bool finished = texture->isFailed() || (texture->isLoaded() && texture->getGPUTexture() && texture->getGPUTexture()->isDefined());
+        bool finished =
+            texture->isFailed() || (texture->isLoaded() && texture->getGPUTexture() && texture->getGPUTexture()->isDefined());
         if (!finished) {
             return true;
         }

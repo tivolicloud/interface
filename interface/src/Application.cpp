@@ -5480,9 +5480,9 @@ void Application::loadSettings() {
 
     // If we launch with shaders disabled in settings, we still need to load and enable them once
     // before before disabling them, otherwise they require a restart if you switch them on
-    if (!menu->isOptionChecked(MenuOption::CustomShaders)) {
-        TextureCache::setWasLaunchedWithShadersDisabled(true);
-    } 
+    //if (!menu->isOptionChecked(MenuOption::CustomShaders)) {
+    //    TextureCache::setWasLaunchedWithShadersDisabled(true);
+    //} 
 
     // Setup the PerformanceManager which will enforce the several settings to match the Preset
     // On the first run, the Preset is evaluated from the 

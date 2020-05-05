@@ -100,7 +100,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
             instance->setShadowsEnabled(true);
-            instance->setCustomShadersEnabled(true);
+            // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_HIGH);
@@ -115,7 +115,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
             instance->setShadowsEnabled(false);
-            instance->setCustomShadersEnabled(true);
+            // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
             
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_MEDIUM);
@@ -129,7 +129,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
             instance->setShadowsEnabled(false);
-            instance->setCustomShadersEnabled(false);
+            // instance->setCustomShadersEnabled(false);
             instance->setViewportResolutionScale(1.0);
             //instance->setViewportResolutionScale(recommendedPpiScale);
 
@@ -144,7 +144,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
 
             instance->setShadowsEnabled(false);
-            instance->setCustomShadersEnabled(false);
+            // instance->setCustomShadersEnabled(false);
             instance->setViewportResolutionScale(0.5);
             
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);

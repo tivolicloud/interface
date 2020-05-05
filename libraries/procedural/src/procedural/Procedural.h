@@ -26,7 +26,6 @@
 using UniformLambdas = std::list<std::function<void(gpu::Batch& batch)>>;
 const size_t MAX_PROCEDURAL_TEXTURE_CHANNELS{ 4 };
 
-
 /**jsdoc
  * An object containing user-defined uniforms for communicating data to shaders.
  * @typedef {object} ProceduralUniforms
@@ -50,7 +49,7 @@ struct ProceduralData {
     void parse(const QJsonObject&);
 
     // Rendering object descriptions, from userData
-    uint8_t version { 0 };
+    uint8_t version{ 0 };
     QUrl fragmentShaderUrl;
     QUrl vertexShaderUrl;
     QJsonObject uniforms;
@@ -59,7 +58,8 @@ struct ProceduralData {
 
 class ProceduralProgramKey {
 public:
-    enum FlagBit {
+    enum FlagBit
+    {
         IS_TRANSPARENT = 0,
         IS_SKINNED,
         IS_SKINNED_DQ,
@@ -81,13 +81,13 @@ public:
     }
 };
 namespace std {
-    template <>
-    struct hash<ProceduralProgramKey> {
-        size_t operator()(const ProceduralProgramKey& key) const {
-            return std::hash<std::bitset<ProceduralProgramKey::FlagBit::NUM_FLAGS>>()(key._flags);
-        }
-    };
-}
+template <>
+struct hash<ProceduralProgramKey> {
+    size_t operator()(const ProceduralProgramKey& key) const {
+        return std::hash<std::bitset<ProceduralProgramKey::FlagBit::NUM_FLAGS>>()(key._flags);
+    }
+};
+}  // namespace std
 inline bool operator==(const ProceduralProgramKey& a, const ProceduralProgramKey& b) {
     return a._flags == b._flags;
 }
@@ -104,8 +104,12 @@ public:
 
     bool isReady() const;
     bool isEnabled() const { return _enabled; }
-    void prepare(gpu::Batch& batch, const glm::vec3& position, const glm::vec3& size, const glm::quat& orientation,
-                 const uint64_t& created, const ProceduralProgramKey key = ProceduralProgramKey());
+    void prepare(gpu::Batch& batch,
+                 const glm::vec3& position,
+                 const glm::vec3& size,
+                 const glm::quat& orientation,
+                 const uint64_t& created,
+                 const ProceduralProgramKey key = ProceduralProgramKey());
 
     glm::vec4 getColor(const glm::vec4& entityColor) const;
     uint64_t getFadeStartTime() const { return _fadeStartTime; }
@@ -124,21 +128,19 @@ public:
     gpu::Shader::Source _opaqueFragmentSource;
     gpu::Shader::Source _transparentFragmentSource;
 
-    gpu::StatePointer _opaqueState { std::make_shared<gpu::State>() };
-    gpu::StatePointer _transparentState { std::make_shared<gpu::State>() };
+    gpu::StatePointer _opaqueState{ std::make_shared<gpu::State>() };
+    gpu::StatePointer _transparentState{ std::make_shared<gpu::State>() };
 
     static std::function<void(gpu::StatePointer)> opaqueStencil;
     static std::function<void(gpu::StatePointer)> transparentStencil;
 
-    static bool isCustomShadersEnabled;
-
 protected:
     // DO NOT TOUCH
     // We have to pack these in a particular way to match the ProceduralCommon.slh
-    // layout.  
+    // layout.
     struct StandardInputs {
         vec4 date;
-        vec4 position; 
+        vec4 position;
         vec4 scale;
         float timeSinceLastCompile;
         float timeSinceFirstCompile;
@@ -161,22 +163,22 @@ protected:
     // Procedural metadata
     ProceduralData _data;
 
-    bool _enabled { false };
-    uint64_t _lastCompile { 0 };
-    uint64_t _firstCompile { 0 };
-    int32_t _frameCount { 0 };
+    bool _enabled{ false };
+    uint64_t _lastCompile{ 0 };
+    uint64_t _firstCompile{ 0 };
+    int32_t _frameCount{ 0 };
 
     // Rendering object descriptions
     QString _vertexShaderSource;
     QString _vertexShaderPath;
-    uint64_t _vertexShaderModified { 0 };
+    uint64_t _vertexShaderModified{ 0 };
     NetworkShaderPointer _networkVertexShader;
     QString _fragmentShaderSource;
     QString _fragmentShaderPath;
-    uint64_t _fragmentShaderModified { 0 };
+    uint64_t _fragmentShaderModified{ 0 };
     NetworkShaderPointer _networkFragmentShader;
-    bool _shaderDirty { true };
-    bool _uniformsDirty { true };
+    bool _shaderDirty{ true };
+    bool _uniformsDirty{ true };
 
     // Rendering objects
     UniformLambdas _uniforms;
@@ -196,13 +198,13 @@ protected:
 private:
     void setupUniforms();
 
-    mutable uint64_t _fadeStartTime { 0 };
-    mutable bool _hasStartedFade { false };
-    mutable bool _isFading { false };
-    bool _doesFade { true };
+    mutable uint64_t _fadeStartTime{ 0 };
+    mutable bool _hasStartedFade{ false };
+    mutable bool _isFading{ false };
+    bool _doesFade{ true };
     ProceduralProgramKey _prevKey;
 
-    std::function<AABox()> _boundOperator { nullptr };
+    std::function<AABox()> _boundOperator{ nullptr };
 
     mutable std::mutex _mutex;
 };
@@ -217,24 +219,23 @@ public:
     bool isProcedural() const override { return true; }
     bool isEnabled() const override { return _procedural.isEnabled(); }
     bool isReady() const override { return _procedural.isReady(); }
-
-    QString getProceduralString() const override { 
-        return _proceduralString; 
-    }
+    QString getProceduralString() const override { return _proceduralString; }
 
     void setProceduralData(const QString& data) {
-        if (!DependencyManager::get<TextureCache>()->isCustomShadersEnabled()) return;
         _proceduralString = data;
         _procedural.setProceduralData(ProceduralData::parse(data));
     }
-
     glm::vec4 getColor(const glm::vec4& color) const { return _procedural.getColor(color); }
     bool isFading() const { return _procedural.isFading(); }
     void setIsFading(bool isFading) { _procedural.setIsFading(isFading); }
     uint64_t getFadeStartTime() const { return _procedural.getFadeStartTime(); }
     bool hasVertexShader() const { return _procedural.hasVertexShader(); }
-    void prepare(gpu::Batch& batch, const glm::vec3& position, const glm::vec3& size, const glm::quat& orientation,
-                 const uint64_t& created, const ProceduralProgramKey key = ProceduralProgramKey()) {
+    void prepare(gpu::Batch& batch,
+                 const glm::vec3& position,
+                 const glm::vec3& size,
+                 const glm::quat& orientation,
+                 const uint64_t& created,
+                 const ProceduralProgramKey key = ProceduralProgramKey()) {
         _procedural.prepare(batch, position, size, orientation, created, key);
     }
 
@@ -250,4 +251,4 @@ private:
 };
 typedef std::shared_ptr<ProceduralMaterial> ProceduralMaterialPointer;
 
-}
+}  // namespace graphics

@@ -28,18 +28,17 @@
  * @property {boolean} ambientOcclusionEnabled - <code>true</code> if ambient occlusion is enabled, <code>false</code> if it's 
  *     disabled.
  * @property {boolean} antialiasingEnabled - <code>true</code> if anti-aliasing is enabled, <code>false</code> if it's disabled.
- * @property {boolean} customShadersEnabled -  <code>true</code> if custom shaders/procedural materials are enabled, <code>false</code> if it's disabled.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  */
-
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
     Q_PROPERTY(RenderMethod renderMethod READ getRenderMethod WRITE setRenderMethod NOTIFY settingsChanged)
     Q_PROPERTY(bool shadowsEnabled READ getShadowsEnabled WRITE setShadowsEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
+    Q_PROPERTY(
+        bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
     Q_PROPERTY(bool antialiasingEnabled READ getAntialiasingEnabled WRITE setAntialiasingEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(bool customShadersEnabled READ getCustomShadersEnabled WRITE setCustomShadersEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
+    Q_PROPERTY(
+        float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -62,13 +61,15 @@ public:
      * @typedef {number} Render.RenderMethod
      */
     // RenderMethod enum type
-    enum class RenderMethod {
+    enum class RenderMethod
+    {
         DEFERRED = render::Args::RenderMethod::DEFERRED,
         FORWARD = render::Args::RenderMethod::FORWARD,
     };
     Q_ENUM(RenderMethod)
-    static bool isValidRenderMethod(RenderMethod value) { return (value >= RenderMethod::DEFERRED && value <= RenderMethod::FORWARD); }
-
+    static bool isValidRenderMethod(RenderMethod value) {
+        return (value >= RenderMethod::DEFERRED && value <= RenderMethod::FORWARD);
+    }
 
     // Load Settings
     // Synchronize the runtime value to the actual setting
@@ -84,7 +85,6 @@ public slots:
      * @returns {object} The configuration for the rendering job.
      */
     QObject* getConfig(const QString& name) { return qApp->getRenderEngine()->getConfiguration()->getConfig(name); }
-
 
     /**jsdoc
      * Gets the render method being used.
@@ -115,7 +115,6 @@ public slots:
      * }
      */
     QStringList getRenderMethodNames() const;
-
 
     /**jsdoc
      * Gets whether or not shadows are enabled.
@@ -157,22 +156,7 @@ public slots:
      * @function Render.setAntialiasingEnabled
      * @param {boolean} enabled - <code>true</code> to enable anti-aliasing, <code>false</code> to disable.
      */
-
     void setAntialiasingEnabled(bool enabled);
-
-    /**jsdoc
-     * Gets whether or not custom shaders/procedural materials are enabled.
-     * @function Render.getCustomShadersEnabled
-     * @returns {boolean} <code>true</code> if custom shaders/procedural materials are enabled, <code>false</code> if it's disabled.
-     */
-    bool getCustomShadersEnabled() const;
-
-    /**jsdoc
-     * Sets whether or not custom shaders/procedural materials are enabled.
-     * @function Render.setCustomShadersEnabled
-     * @param {boolean} enabled - <code>true</code> to enable custom shaders/procedural materials, <code>false</code> to disable.
-     */
-    void setCustomShadersEnabled(bool enabled);
 
     /**jsdoc
      * Gets the view port resolution scale.
@@ -189,7 +173,7 @@ public slots:
     void setViewportResolutionScale(float resolutionScale);
 
 signals:
-    
+
     /**jsdoc
      * Triggered when one of the <code>Render</code> API's properties changes.
      * @function Render.settingsChanged
@@ -207,27 +191,25 @@ private:
     mutable ReadWriteLockable _renderSettingLock;
 
     // Runtime value of each settings
-    int  _renderMethod{ RENDER_FORWARD ? render::Args::RenderMethod::FORWARD : render::Args::RenderMethod::DEFERRED };
+    int _renderMethod{ RENDER_FORWARD ? render::Args::RenderMethod::FORWARD : render::Args::RenderMethod::DEFERRED };
     bool _shadowsEnabled{ true };
     bool _ambientOcclusionEnabled{ false };
     bool _antialiasingEnabled{ true };
-    bool _customShadersEnabled{ true };
-    float _viewportResolutionScale{ 5.0f };  // >1.0 is super sampled
+    float _viewportResolutionScale{ 1.0f };
 
     // Actual settings saved on disk
-    Setting::Handle<int> _renderMethodSetting { "renderMethod", RENDER_FORWARD ? render::Args::RenderMethod::FORWARD : render::Args::RenderMethod::DEFERRED };
-    Setting::Handle<bool> _shadowsEnabledSetting { "shadowsEnabled", true };
-    Setting::Handle<bool> _ambientOcclusionEnabledSetting { "ambientOcclusionEnabled", false };
-    Setting::Handle<bool> _antialiasingEnabledSetting { "antialiasingEnabled", true };
-    Setting::Handle<bool> _customShadersEnabledSetting { "customShadersEnabled", true };
-    Setting::Handle<float> _viewportResolutionScaleSetting { "viewportResolutionScale", 1.0f };
+    Setting::Handle<int> _renderMethodSetting{ "renderMethod", RENDER_FORWARD ? render::Args::RenderMethod::FORWARD
+                                                                              : render::Args::RenderMethod::DEFERRED };
+    Setting::Handle<bool> _shadowsEnabledSetting{ "shadowsEnabled", true };
+    Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", false };
+    Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", true };
+    Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", 1.0f };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
     void forceShadowsEnabled(bool enabled);
     void forceAmbientOcclusionEnabled(bool enabled);
     void forceAntialiasingEnabled(bool enabled);
-    void forceCustomShadersEnabled(bool enabled);
     void forceViewportResolutionScale(float scale);
 
     static std::once_flag registry_flag;

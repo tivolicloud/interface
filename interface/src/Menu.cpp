@@ -296,21 +296,21 @@ Menu::Menu() {
     addCheckableActionToQMenuAndActionHash(settingsMenu, "Developer Menu", 0, false, this, SLOT(toggleDeveloperMenus()));
     
 
-    // Settings > Use shaders (procedural materials)
-    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, true);
-    connect(action, &QAction::triggered, [action] {
+    //// Settings > Use shaders (procedural materials)
+    //action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::CustomShaders, 0, false);
+    //connect(action, &QAction::triggered, [action] {
 
-        TextureCache::setCustomShadersEnabled(action->isChecked());
+    //    TextureCache::setCustomShadersEnabled(action->isChecked());
 
-        // Refresh entire scene if custom shaders were disabled in settings at startup
-        if (TextureCache::wasLaunchedWithShadersDisabled()) {
-            TextureCache::setWasLaunchedWithShadersDisabled(false);
-            qApp->refreshScene();
-        }
-        else { // do a quick refresh of the shaders
-            ShaderCache::instance().refreshAll(); // only refresh the shader cache
-        }
-    });
+    //    // Refresh entire scene if custom shaders were disabled in settings at startup
+    //    if (TextureCache::wasLaunchedWithShadersDisabled()) {
+    //        TextureCache::setWasLaunchedWithShadersDisabled(false);
+    //        qApp->refreshScene();
+    //    }
+    //    else { // do a quick refresh of the shaders
+    //        ShaderCache::instance().refreshAll(); // only refresh the shader cache
+    //    }
+    //});
 
 
     // Settings > Enable Flow / Dynamic Bone
@@ -535,6 +535,11 @@ Menu::Menu() {
         addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::HighlightTransitions, 0, false,
             drawStatusConfig, SLOT(setShowFade(bool)));
     }
+
+    action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::MaterialProceduralShaders, 0, false);
+    connect(action, &QAction::triggered, [action] {
+        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+    });
 
     // Settings > Developer > Render > ForceUnlit
     action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceEverythingUnlit, 0, false);

@@ -10,7 +10,6 @@
 //
 #include "ProceduralSkybox.h"
 
-
 #include <gpu/Batch.h>
 #include <gpu/Context.h>
 #include <gpu/Shader.h>
@@ -27,8 +26,10 @@ ProceduralSkybox::ProceduralSkybox(uint64_t created) : graphics::Skybox(), _crea
     // Adjust the pipeline state for background using the stencil test
     // Must match PrepareStencil::STENCIL_BACKGROUND
     const int8_t STENCIL_BACKGROUND = 0;
-    _procedural._opaqueState->setStencilTest(true, 0xFF, gpu::State::StencilTest(STENCIL_BACKGROUND, 0xFF, gpu::EQUAL,
-        gpu::State::STENCIL_OP_KEEP, gpu::State::STENCIL_OP_KEEP, gpu::State::STENCIL_OP_KEEP));
+    _procedural._opaqueState->setStencilTest(true, 0xFF,
+                                             gpu::State::StencilTest(STENCIL_BACKGROUND, 0xFF, gpu::EQUAL,
+                                                                     gpu::State::STENCIL_OP_KEEP, gpu::State::STENCIL_OP_KEEP,
+                                                                     gpu::State::STENCIL_OP_KEEP));
     _procedural._opaqueState->setDepthTest(gpu::State::DepthTest(false));
 }
 
@@ -43,8 +44,8 @@ void ProceduralSkybox::clear() {
     Skybox::clear();
 }
 
-void ProceduralSkybox::render(gpu::Batch& batch, const ViewFrustum& frustum, bool forward) const {    
-    if (DependencyManager::get<TextureCache>()->isCustomShadersEnabled() && _procedural.isReady() ) {
+void ProceduralSkybox::render(gpu::Batch& batch, const ViewFrustum& frustum, bool forward) const {
+    if (_procedural.isReady()) {
         ProceduralSkybox::render(batch, frustum, (*this), forward);
     } else {
         Skybox::render(batch, frustum, forward);
@@ -59,11 +60,10 @@ void ProceduralSkybox::render(gpu::Batch& batch, const ViewFrustum& viewFrustum,
     viewFrustum.evalViewTransform(viewTransform);
     batch.setProjectionTransform(projMat);
     batch.setViewTransform(viewTransform);
-    batch.setModelTransform(Transform()); // only for Mac
+    batch.setModelTransform(Transform());  // only for Mac
 
     auto& procedural = skybox._procedural;
     procedural.prepare(batch, glm::vec3(0), glm::vec3(1), glm::quat(), skybox.getCreated());
     skybox.prepare(batch);
     batch.draw(gpu::TRIANGLE_STRIP, 4);
 }
-
