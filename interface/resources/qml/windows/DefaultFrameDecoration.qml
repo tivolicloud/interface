@@ -21,23 +21,23 @@ Decoration {
     id: root
 
     property int iconSize: hifi.dimensions.frameIconSize
-    frameMargin: 9
-    frameMarginLeft: frameMargin
-    frameMarginRight: frameMargin
+    frameMargin: 8
+    frameMarginLeft: 0 // frameMargin
+    frameMarginRight: 0 // frameMargin
     frameMarginTop: 2 * frameMargin + iconSize
-    frameMarginBottom: iconSize + 11
+    frameMarginBottom: frameMargin + iconSize
 
     onInflateDecorations: {
         if (!HMD.active) {
             return;
         }
-        root.frameMargin = 18
+        root.frameMargin = 16
         titleText.size = hifi.fontSizes.overlayTitle * 2
         root.iconSize = hifi.dimensions.frameIconSize * 2
     }
 
     onDeflateDecorations: {
-        root.frameMargin = 9
+        root.frameMargin = 8
         titleText.size = hifi.fontSizes.overlayTitle
         root.iconSize = hifi.dimensions.frameIconSize
     }
@@ -46,27 +46,27 @@ Decoration {
     Row {
         id: controlsRow
         anchors {
-            right: parent.right;
-            top: parent.top;
-            topMargin: root.frameMargin + 1  // Move down a little to visually align with the title
-            rightMargin: root.frameMarginRight;
+            right: parent.right
+            top: parent.top
+            topMargin: root.frameMargin
+            rightMargin: root.frameMargin
         }
         spacing: root.iconSize / 4
 
-        HiFiGlyphs {
-            // "Pin" button
-            visible: window.pinnable
-            text: window.pinned ? hifi.glyphs.pinInverted : hifi.glyphs.pin
-            color: pinClickArea.pressed ? hifi.colors.redHighlight : hifi.colors.white
-            size: root.iconSize
-            MouseArea {
-                id: pinClickArea
-                anchors.fill: parent
-                hoverEnabled: true
-                propagateComposedEvents: true
-                onClicked: window.pinned = !window.pinned;
-            }
-        }
+        // HiFiGlyphs {
+        //     // "Pin" button
+        //     visible: window.pinnable
+        //     text: window.pinned ? hifi.glyphs.pinInverted : hifi.glyphs.pin
+        //     color: pinClickArea.pressed ? hifi.colors.redHighlight : hifi.colors.white
+        //     size: root.iconSize
+        //     MouseArea {
+        //         id: pinClickArea
+        //         anchors.fill: parent
+        //         hoverEnabled: true
+        //         propagateComposedEvents: true
+        //         onClicked: window.pinned = !window.pinned;
+        //     }
+        // }
 
         HiFiGlyphs {
             // "Close" button
@@ -102,15 +102,15 @@ Decoration {
         size: hifi.fontSizes.overlayTitle
     }
 
-    DropShadow {
-        source: titleText
-        anchors.fill: titleText
-        horizontalOffset: 2
-        verticalOffset: 2
-        samples: 2
-        color: hifi.colors.baseGrayShadow60
-        visible: (desktop.gradientsSupported && window && window.focus)
-        cached: true
-    }
+    // DropShadow {
+    //     source: titleText
+    //     anchors.fill: titleText
+    //     horizontalOffset: 2
+    //     verticalOffset: 2
+    //     samples: 2
+    //     color: hifi.colors.baseGrayShadow60
+    //     visible: (desktop.gradientsSupported && window && window.focus)
+    //     cached: true
+    // }
 }
 
