@@ -2,11 +2,7 @@
 
 @font-face {
   font-family: "hifi-glyphs";
-  src:url("fonts/hifi-glyphs.eot");
-  src:url("fonts/hifi-glyphs.eot?#iefix") format("embedded-opentype"),
-    url("fonts/hifi-glyphs.woff") format("woff"),
-    url("fonts/hifi-glyphs.ttf") format("truetype"),
-    url("fonts/hifi-glyphs.svg#hifi-glyphs") format("svg");
+  src: url("fonts/hifi-glyphs.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 
@@ -146,10 +142,10 @@
 .icon-script-new:before {
   content: "\51";
 }
-.icon-hifi-forum:before {
+.icon-tivoli-forum:before {
   content: "\32";
 }
-.icon-hifi-logo-small:before {
+.icon-tivoli-logo-small:before {
   content: "\53";
 }
 .icon-placemark:before {
