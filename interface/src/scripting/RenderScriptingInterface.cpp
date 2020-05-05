@@ -117,6 +117,12 @@ void RenderScriptingInterface::forceAmbientOcclusionEnabled(bool enabled) {
             Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
             lightingModelConfig->setAmbientOcclusion(enabled);
         }
+
+        auto secondaryLightingModelConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<MakeLightingModel>("RenderSecondView.LightingModel");
+        if (secondaryLightingModelConfig) {
+            Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
+            secondaryLightingModelConfig->setAmbientOcclusion(enabled);
+        }
     });
 }
 

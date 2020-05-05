@@ -58,7 +58,22 @@ void ToneMapAndResample::setToneCurve(ToneCurve curve) {
 
 void ToneMapAndResample::configure(const Config& config) {
     setExposure(config.exposure);
-    setToneCurve((ToneCurve)config.curve);
+
+    // force secondary camera tonemapping to Gamma22 because
+    // scripts can change it and they cant access the ToneCurve enum
+    // `Render.getConfig("SecondaryCameraJob.ToneMapping").curve = 0`
+    // TODO: this needs a better fix
+    if (
+        config.parent() != nullptr && 
+        config.parent()->parent() != nullptr && 
+        config.parent()->parent()->parent() != nullptr &&
+        config.parent()->parent()->parent()->parent() != nullptr &&
+        config.parent()->parent()->parent()->parent()->objectName() == "RenderSecondView"
+    ) {
+        setToneCurve(ToneCurve::Gamma22);
+    } else {
+        setToneCurve((ToneCurve)config.curve);
+    }
 }
 
 void ToneMapAndResample::run(const RenderContextPointer& renderContext, const Input& input, Output& output) {
