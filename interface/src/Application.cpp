@@ -2792,7 +2792,7 @@ void Application::cleanupBeforeQuit() {
     // It does come at the expense of scripts not being able to shut down promptly.  TO DO
     // Look at the ScriptEngine shutdownScripting() function itself and see if there's a way to speed it up
 
-    //  DependencyManager::get<ScriptEngines>()->shutdownScripting(); // stop all currently running global scripts
+    DependencyManager::get<ScriptEngines>()->shutdownScripting(); // stop all currently running global scripts
 
     // These classes hold ScriptEnginePointers, so they must be destroyed before ScriptEngines
     // Must be done after shutdownScripting in case any scripts try to access these things
