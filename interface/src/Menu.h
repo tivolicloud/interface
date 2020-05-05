@@ -224,7 +224,7 @@ namespace MenuOption {
     const QString HMDTabletToToolbar = "HMD Tablet Becomes Toolbar";
     const QString Shadows = "Shadows";
     // force disabled in PerformanceManager.cpp
-    // const QString AntiAliasing = "Temporal Antialiasing (FXAA if disabled)";
+    const QString AntiAliasing = "Temporal Antialiasing (FXAA if disabled)";
     const QString AmbientOcclusion = "Ambient Occlusion";
     const QString NotificationSounds = "play_notification_sounds";
     const QString NotificationSoundsSnapshot = "play_notification_sounds_snapshot";
@@ -233,7 +233,7 @@ namespace MenuOption {
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
     //const QString CustomShaders = "Enable Custom Shaders";
-    const QString MaterialProceduralShaders = "Enable Procedural Materials";
+    const QString MaterialProceduralShaders = "Custom Shaders on Mesh";
 
     const QString EnableFlow = "Enable Dynamic Bone Flow";
     const QString UseAvatarPlaceholders = "Use Avatar Placeholders";

@@ -312,6 +312,10 @@ Menu::Menu() {
     //    }
     //});
 
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, false);
+    connect(action, &QAction::triggered, [action] { MeshPartPayload::enableMaterialProceduralShaders = action->isChecked(); });
+
+
 
     // Settings > Enable Flow / Dynamic Bone
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::EnableFlow, 0, true);
@@ -536,10 +540,6 @@ Menu::Menu() {
             drawStatusConfig, SLOT(setShowFade(bool)));
     }
 
-    action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::MaterialProceduralShaders, 0, false);
-    connect(action, &QAction::triggered, [action] {
-        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
-    });
 
     // Settings > Developer > Render > ForceUnlit
     action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceEverythingUnlit, 0, false);
