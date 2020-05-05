@@ -56,7 +56,7 @@ Decoration {
         anchors.verticalCenter: parent.verticalCenter
         width: root.spacerWidth
         height: decoration.height - 12
-        color: "gray";
+        color: Qt.rgba(1,1,1,0.2)
         radius: root.spacerRadius
     }
 
@@ -67,7 +67,7 @@ Decoration {
         anchors.verticalCenter: parent.verticalCenter
         width: root.spacerWidth
         height: decoration.height - 12
-        color: "gray";
+        color: Qt.rgba(1,1,1,0.2)
         radius: root.spacerRadius
     }
 
@@ -78,7 +78,7 @@ Decoration {
         anchors.horizontalCenter: parent.horizontalCenter
         height: root.spacerWidth
         width: decoration.width - 12
-        color: "gray";
+        color: Qt.rgba(1,1,1,0.2)
         radius: root.spacerRadius
     }
 
@@ -89,7 +89,7 @@ Decoration {
         anchors.horizontalCenter: parent.horizontalCenter
         height: root.spacerWidth
         width: decoration.width - 12
-        color: "gray";
+        color: Qt.rgba(1,1,1,0.2)
         radius: root.spacerRadius
     }
 }

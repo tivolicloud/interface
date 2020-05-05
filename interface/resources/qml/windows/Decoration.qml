@@ -33,11 +33,11 @@ Rectangle {
         bottomMargin: -frameMarginBottom
     }
     anchors.fill: parent
-    color: hifi.colors.baseGrayHighlight40
-    border {
-        width: hifi.dimensions.borderWidth
-        color: hifi.colors.faintGray50
-    }
+    color: "#c01d1f21" // 75% opacity
+    // border {
+    //     width: hifi.dimensions.borderWidth
+    //     color: hifi.colors.faintGray50
+    // }
     radius: hifi.dimensions.borderRadius
 
     // Enable dragging of the window,

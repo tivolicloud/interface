@@ -132,7 +132,7 @@ QtObject {
 
     readonly property QtObject dimensions: QtObject {
         readonly property bool largeScreen: Screen.width >= 1920 && Screen.height >= 1080
-        readonly property real borderRadius: largeScreen ? 7.5 : 5.0
+        readonly property real borderRadius: largeScreen ? 8 : 4
         readonly property real borderWidth: largeScreen ? 2 : 1
         readonly property vector2d contentMargin: Qt.vector2d(21, 21)
         readonly property vector2d contentSpacing: Qt.vector2d(11, 14)

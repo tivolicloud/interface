@@ -65,9 +65,13 @@ Item {
         visible: gradientsSupported && window && window.focus && window.content.visible
         gradient: Gradient {
             // GradientStop position 0.5 is at full circumference of circle that fits inside the square.
-            GradientStop { position: 0.0; color: "#ff000000" }    // black, 100% opacity
-            GradientStop { position: 0.333; color: "#1f000000" }  // black, 12% opacity
-            GradientStop { position: 0.5; color: "#00000000" }    // black, 0% opacity
+            // GradientStop { position: 0.0; color: "#ff000000" }    // black, 100% opacity
+            // GradientStop { position: 0.333; color: "#1f000000" }  // black, 12% opacity
+            // GradientStop { position: 0.5; color: "#00000000" }    // black, 0% opacity
+            // GradientStop { position: 1.0; color: "#00000000" }
+
+            // the background behind the frame? should be transparent
+            GradientStop { position: 0.0; color: "#00000000" }
             GradientStop { position: 1.0; color: "#00000000" }
         }
         cached: true

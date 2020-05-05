@@ -23,7 +23,6 @@ Window {
     // Disable this window from being able to call 'desktop.raise() and desktop.showDesktop'
     activator: Item {}
     property bool horizontal: true
-    property real buttonSize: 50;
 
     property alias settings: settings
 
@@ -74,7 +73,7 @@ Window {
         Row {
             id: row
             visible: window.horizontal
-            spacing: 6
+            spacing: 8
             Repeater {
                 model: buttonModel
                 delegate: buttonComponent
@@ -84,7 +83,7 @@ Window {
         Column {
             id: column
             visible: !window.horizontal 
-            spacing: 6
+            spacing: 8
             Repeater {
                 model: buttonModel
                 delegate: buttonComponent
