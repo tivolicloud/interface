@@ -54,10 +54,20 @@ void RenderScriptingInterface::forceRenderMethod(RenderMethod renderMethod) {
         _renderMethod = (int)renderMethod;
         _renderMethodSetting.set((int)renderMethod);
 
-        auto config = dynamic_cast<render::SwitchConfig*>(qApp->getRenderEngine()->getConfiguration()->getConfig("RenderMainView.DeferredForwardSwitch"));
-        if (config) {
-            config->setBranch((int)renderMethod);
-        }
+        auto config = dynamic_cast<render::SwitchConfig*>(
+            qApp->getRenderEngine()->getConfiguration()->getConfig(
+                "RenderMainView.DeferredForwardSwitch"
+            )
+        );
+        if (config) config->setBranch((int)renderMethod);
+
+        auto secondaryConfig = dynamic_cast<render::SwitchConfig*>(
+            qApp->getRenderEngine()->getConfiguration()->getConfig(
+                "RenderSecondView.DeferredForwardSwitch"
+            )
+        );
+        if (secondaryConfig) secondaryConfig->setBranch((int)renderMethod);
+
     });
 }
 
@@ -118,6 +128,12 @@ void RenderScriptingInterface::forceAmbientOcclusionEnabled(bool enabled) {
             Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
             lightingModelConfig->setAmbientOcclusion(enabled);
         }
+
+        auto secondaryLightingModelConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<MakeLightingModel>("RenderSecondView.LightingModel");
+        if (secondaryLightingModelConfig) {
+            Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
+            secondaryLightingModelConfig->setAmbientOcclusion(enabled);
+        }
     });
 }
 
@@ -143,9 +159,9 @@ void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
         auto mainQAa = instance->getConfig("RenderMainView.Antialiasing");
         auto mainJitter = instance->getConfig<JitterSample>("RenderMainView.JitterCam");
 
-        auto secondAa = instance->getConfig<Antialiasing>("SecondaryCameraJob.Antialiasing");
-        auto secondQAa = instance->getConfig("SecondaryCameraJob.Antialiasing");
-        auto secondJitter = instance->getConfig<JitterSample>("SecondaryCameraJob.JitterCam");
+        auto secondAa = instance->getConfig<Antialiasing>("RenderSecondView.Antialiasing");
+        auto secondQAa = instance->getConfig("RenderSecondView.Antialiasing");
+        auto secondJitter = instance->getConfig<JitterSample>("RenderSecondView.JitterCam");
 
         if (
             mainAa && mainQAa && mainJitter &&
