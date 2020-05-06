@@ -23,10 +23,11 @@
 
 #include "RenderPipelines.h"
 
-// static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
-// static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
-
+#ifdef Q_OS_MAC
 bool MeshPartPayload::enableMaterialProceduralShaders = false;
+#else
+bool MeshPartPayload::enableMaterialProceduralShaders = true;
+#endif
 
 using namespace render;
 
@@ -198,9 +199,7 @@ void MeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders)) {  // && ENABLE_MATERIAL_PROCEDURAL_SHADERS)) {
-            return;
-        }
+        if (enableMaterialProceduralShaders == false) return;
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
         auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
         glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);
@@ -497,9 +496,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders)) {
-            return;
-        }
+        if (enableMaterialProceduralShaders == false) return;
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
         auto& schema = _drawMaterials.getSchemaBuffer().get<graphics::MultiMaterial::Schema>();
         glm::vec4 outColor = glm::vec4(ColorUtils::tosRGBVec3(schema._albedo), schema._opacity);

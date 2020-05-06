@@ -233,7 +233,7 @@ namespace MenuOption {
     const QString ComputeBlendshapes = "Compute Blendshapes";
     const QString HighlightTransitions = "Highlight Transitions";
     //const QString CustomShaders = "Enable Custom Shaders";
-    const QString MaterialProceduralShaders = "Custom Shaders on Mesh";
+    const QString MaterialProceduralShaders = "Custom Shaders on Models";
 
     const QString EnableFlow = "Enable Dynamic Bone Flow";
     const QString UseAvatarPlaceholders = "Use Avatar Placeholders";

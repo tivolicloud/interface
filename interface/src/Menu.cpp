@@ -312,10 +312,14 @@ Menu::Menu() {
     //    }
     //});
 
+    #ifdef Q_OS_MAC
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, false);
-    connect(action, &QAction::triggered, [action] { MeshPartPayload::enableMaterialProceduralShaders = action->isChecked(); });
-
-
+    #else
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, true);
+    #endif
+    connect(action, &QAction::triggered, [action] {
+        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+    });
 
     // Settings > Enable Flow / Dynamic Bone
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::EnableFlow, 0, true);

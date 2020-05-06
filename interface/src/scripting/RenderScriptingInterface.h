@@ -191,19 +191,22 @@ private:
     mutable ReadWriteLockable _renderSettingLock;
 
     // Runtime value of each settings
-    int _renderMethod{ RENDER_FORWARD ? render::Args::RenderMethod::FORWARD : render::Args::RenderMethod::DEFERRED };
+    int _renderMethod{
+        RENDER_FORWARD ?
+        render::Args::RenderMethod::FORWARD :
+        render::Args::RenderMethod::DEFERRED
+    };
     bool _shadowsEnabled{ true };
-    bool _ambientOcclusionEnabled{ false };
-    bool _antialiasingEnabled{ true };
+    bool _ambientOcclusionEnabled{ true };
+    bool _antialiasingEnabled{ false };
     float _viewportResolutionScale{ 1.0f };
 
     // Actual settings saved on disk
-    Setting::Handle<int> _renderMethodSetting{ "renderMethod", RENDER_FORWARD ? render::Args::RenderMethod::FORWARD
-                                                                              : render::Args::RenderMethod::DEFERRED };
-    Setting::Handle<bool> _shadowsEnabledSetting{ "shadowsEnabled", true };
-    Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", false };
-    Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", true };
-    Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", 1.0f };
+    Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
+    Setting::Handle<bool> _shadowsEnabledSetting{ "shadowsEnabled", _shadowsEnabled };
+    Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", _ambientOcclusionEnabled };
+    Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", _antialiasingEnabled };
+    Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
