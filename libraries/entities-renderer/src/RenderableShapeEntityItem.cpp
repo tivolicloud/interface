@@ -231,7 +231,7 @@ Item::Bound ShapeEntityRenderer::getBound() {
 void ShapeEntityRenderer::doRender(RenderArgs* args) {
     // Shapes just aren't playing well with zone culling.  Since it's a marginal performance
     // win anyway, being so low-poly, we'll not
-    const bool hasChanged = evaluateEntityZoneCullState(_entity);
+    // const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
     PerformanceTimer perfTimer("RenderableShapeEntityItem::render");
     Q_ASSERT(args->_batch);
