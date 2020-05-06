@@ -22,11 +22,13 @@
 #include "DeferredLightingEffect.h"
 
 #include "RenderPipelines.h"
+#include "MeshPartPayload.h"
 
 // static const QString ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING { "HIFI_ENABLE_MATERIAL_PROCEDURAL_SHADERS" };
 // static bool ENABLE_MATERIAL_PROCEDURAL_SHADERS = QProcessEnvironment::systemEnvironment().contains(ENABLE_MATERIAL_PROCEDURAL_SHADERS_STRING);
 
 bool MeshPartPayload::enableMaterialProceduralShaders = false;
+bool MeshPartPayload::sceneIsReady = false;
 
 using namespace render;
 
@@ -498,6 +500,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) {
         if (!(enableMaterialProceduralShaders)) {
+            // TODO: Caitlyn - Check if ETR-> if (getSceneIsReady())  before rendering shaders otherwise we get crazy video buffer deformations
             return;
         }
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
