@@ -18,7 +18,9 @@ RenderScriptingInterface* RenderScriptingInterface::getInstance() {
 std::once_flag RenderScriptingInterface::registry_flag;
 
 RenderScriptingInterface::RenderScriptingInterface() {
-    std::call_once(registry_flag, [] { qmlRegisterType<RenderScriptingInterface>("RenderEnums", 1, 0, "RenderEnums"); });
+    std::call_once(registry_flag, [] {
+        qmlRegisterType<RenderScriptingInterface>("RenderEnums", 1, 0, "RenderEnums");
+    });
 }
 
 void RenderScriptingInterface::loadSettings() {
@@ -52,10 +54,19 @@ void RenderScriptingInterface::forceRenderMethod(RenderMethod renderMethod) {
         _renderMethodSetting.set((int)renderMethod);
 
         auto config = dynamic_cast<render::SwitchConfig*>(
-            qApp->getRenderEngine()->getConfiguration()->getConfig("RenderMainView.DeferredForwardSwitch"));
-        if (config) {
-            config->setBranch((int)renderMethod);
-        }
+            qApp->getRenderEngine()->getConfiguration()->getConfig(
+                "RenderMainView.DeferredForwardSwitch"
+            )
+        );
+        if (config) config->setBranch((int)renderMethod);
+
+        auto secondaryConfig = dynamic_cast<render::SwitchConfig*>(
+            qApp->getRenderEngine()->getConfiguration()->getConfig(
+                "RenderSecondView.DeferredForwardSwitch"
+            )
+        );
+        if (secondaryConfig) secondaryConfig->setBranch((int)renderMethod);
+
     });
 }
 
@@ -111,14 +122,19 @@ void RenderScriptingInterface::forceAmbientOcclusionEnabled(bool enabled) {
         _ambientOcclusionEnabled = (enabled);
         _ambientOcclusionEnabledSetting.set(enabled);
 
-        auto lightingModelConfig =
-            qApp->getRenderEngine()->getConfiguration()->getConfig<MakeLightingModel>("RenderMainView.LightingModel");
+        auto config = qApp->getRenderEngine()->getConfiguration();
+
+        auto lightingModelConfig = config->getConfig<MakeLightingModel>(
+            "RenderMainView.LightingModel"
+        );
         if (lightingModelConfig) {
             Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
             lightingModelConfig->setAmbientOcclusion(enabled);
         }
 
-        auto secondaryLightingModelConfig = qApp->getRenderEngine()->getConfiguration()->getConfig<MakeLightingModel>("RenderSecondView.LightingModel");
+        auto secondaryLightingModelConfig = config->getConfig<MakeLightingModel>(
+            "RenderSecondView.LightingModel"
+        );
         if (secondaryLightingModelConfig) {
             Menu::getInstance()->setIsOptionChecked(MenuOption::AmbientOcclusion, enabled);
             secondaryLightingModelConfig->setAmbientOcclusion(enabled);
@@ -142,18 +158,41 @@ void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
         _antialiasingEnabled = (enabled);
         _antialiasingEnabledSetting.set(enabled);
 
-        auto mainViewJitterCamConfig =
-            qApp->getRenderEngine()->getConfiguration()->getConfig<JitterSample>("RenderMainView.JitterCam");
-        auto mainViewAntialiasingConfig =
-            qApp->getRenderEngine()->getConfiguration()->getConfig<Antialiasing>("RenderMainView.Antialiasing");
-        if (mainViewJitterCamConfig && mainViewAntialiasingConfig) {
-            Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
+        auto instance = qApp->getRenderEngine()->getConfiguration();
+        
+        auto mainAa = instance->getConfig<Antialiasing>("RenderMainView.Antialiasing");
+        auto mainQAa = instance->getConfig("RenderMainView.Antialiasing");
+        auto mainJitter = instance->getConfig<JitterSample>("RenderMainView.JitterCam");
+
+        auto secondAa = instance->getConfig<Antialiasing>("RenderSecondView.Antialiasing");
+        auto secondQAa = instance->getConfig("RenderSecondView.Antialiasing");
+        auto secondJitter = instance->getConfig<JitterSample>("RenderSecondView.JitterCam");
+
+        if (
+            mainAa && mainQAa && mainJitter &&
+            secondAa && secondQAa && secondJitter
+        ) {
+            // Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
             if (enabled) {
-                mainViewJitterCamConfig->play();
-                mainViewAntialiasingConfig->setDebugFXAA(false);
+                mainAa->setDebugFXAA(false);
+                mainQAa->setProperty("blend", 0.25f);
+                mainQAa->setProperty("sharpen", 0.05f);
+                mainJitter->play();
+
+                secondAa->setDebugFXAA(false);
+                secondQAa->setProperty("blend", 0.25f);
+                secondQAa->setProperty("sharpen", 0.05f);
+                secondJitter->play();
             } else {
-                mainViewJitterCamConfig->none();
-                mainViewAntialiasingConfig->setDebugFXAA(true);
+                mainAa->setDebugFXAA(true);
+                mainQAa->setProperty("blend", 1);
+                mainQAa->setProperty("sharpen", 0);
+                mainJitter->none();
+
+                secondAa->setDebugFXAA(true);
+                secondQAa->setProperty("blend", 1);
+                secondQAa->setProperty("sharpen", 0);
+                secondJitter->none();
             }
         }
     });
