@@ -706,6 +706,8 @@ function startup() {
     ui = new AppUi({
         buttonName: "Snap",
         sortOrder: 5,
+        iconOverride: "icons/tablet-icons/snap.svg",
+        iconBackgroundColor: "#3f51b5", // indigo 500
         home: Script.resolvePath("html/SnapshotReview.html"),
         onOpened: fillImageDataFromPrevious,
         onMessage: onMessage

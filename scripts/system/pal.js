@@ -887,6 +887,8 @@ function startup() {
         buttonName: "People",
         sortOrder: 7,
         home: "hifi/Pal.qml",
+        iconOverride: "icons/tablet-icons/people.svg",
+        iconBackgroundColor: "#2196f3", // blue 500
         onOpened: palOpened,
         onClosed: off,
         onMessage: fromQml,

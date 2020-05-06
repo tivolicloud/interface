@@ -31,8 +31,12 @@ function AppUi(properties) {
      */
     var that = this;
     function defaultButton(name, suffix) {
-        var base = that[name] || (that.buttonPrefix + suffix);
-        that[name] = (base.indexOf('/') >= 0) ? base : (that.graphicsDirectory + base); // poor man's merge
+        if (that.iconOverride != null) {
+            that[name] = that.iconOverride;
+        } else {
+            var base = that[name] || (that.buttonPrefix + suffix);
+            that[name] = (base.indexOf('/') >= 0) ? base : (that.graphicsDirectory + base); // poor man's merge
+        }
     }
 
     // Defaults:
@@ -275,6 +279,11 @@ function AppUi(properties) {
         activeIcon: that.activeButton,
         text: that.buttonName
     };
+    if (that.iconBackgroundColor != null)
+        buttonOptions.backgroundColor = that.iconBackgroundColor;
+    if (that.iconPadding != null)
+        buttonOptions.iconPadding = that.iconPadding;
+
     // `TabletScriptingInterface` looks for the presence of a `sortOrder` key.
     // What it SHOULD do is look to see if the value inside that key is defined.
     // To get around the current code, we do this instead.

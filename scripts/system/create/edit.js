@@ -331,7 +331,8 @@
             icon: hasRezPermissions
                 ? CREATE_ENABLED_ICON
                 : CREATE_DISABLED_ICON,
-            captionColor: hasRezPermissions ? "#ffffff" : "#888888"
+            captionColor: hasRezPermissions ? "#ffffff" : "#888888",
+            backgroundColor: hasRezPermissions ? "#ff9800" : "#1d1f21" // orange 500
         });
 
         if (!hasRezPermissions && isActive) {
@@ -962,7 +963,8 @@
             activeButton = tablet.addButton({
                 captionColor: hasRezPermissions ? "#ffffff" : "#888888",
                 icon: createButtonIconRsrc,
-                activeIcon: "icons/tablet-icons/edit-a.svg",
+                // activeIcon: "icons/tablet-icons/edit-a.svg",
+                backgroundColor: hasRezPermissions ? "#ff9800" : "#1d1f21", // orange 500
                 text: "Create",
                 sortOrder: 10
             });

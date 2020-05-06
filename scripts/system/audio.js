@@ -18,17 +18,21 @@ var HOME_BUTTON_TEXTURE = "http://hifi-content.s3.amazonaws.com/alan/dev/tablet-
 var AUDIO_QML_SOURCE = "hifi/audio/Audio.qml";
 
 var MUTE_ICONS = {
-    icon: "icons/tablet-icons/mic-mute-i.svg",
-    activeIcon: "icons/tablet-icons/mic-mute-a.svg"
+    icon: "icons/tablet-icons/mic-mute.svg",
+    backgroundColor: "#f44336" // red 500
+    // icon: "icons/tablet-icons/mic-mute-i.svg",
+    // activeIcon: "icons/tablet-icons/mic-mute-a.svg"
 };
 
 var UNMUTE_ICONS = {
     icon: "icons/tablet-icons/mic-unmute-i.svg",
-    activeIcon: "icons/tablet-icons/mic-unmute-a.svg"
+    backgroundColor: "#1d1f21"
+    // activeIcon: "icons/tablet-icons/mic-unmute-a.svg",
 };
 var PTT_ICONS = {
     icon: "icons/tablet-icons/mic-ptt-i.svg",
-    activeIcon: "icons/tablet-icons/mic-ptt-a.svg"
+    backgroundColor: "#1d1f21"
+    // activeIcon: "icons/tablet-icons/mic-ptt-a.svg"
 };
 
 function onMuteToggled() {
@@ -64,7 +68,7 @@ function onScreenChanged(type, url) {
 var tablet = Tablet.getTablet("com.highfidelity.interface.tablet.system");
 var button = tablet.addButton({
     icon: Audio.pushToTalk ? PTT_ICONS.icon : Audio.muted ? MUTE_ICONS.icon : UNMUTE_ICONS.icon,
-    activeIcon: Audio.pushToTalk ? PTT_ICONS.activeIcon : Audio.muted ? MUTE_ICONS.activeIcon : UNMUTE_ICONS.activeIcon,
+    // activeIcon: Audio.pushToTalk ? PTT_ICONS.activeIcon : Audio.muted ? MUTE_ICONS.activeIcon : UNMUTE_ICONS.activeIcon,
     text: TABLET_BUTTON_NAME,
     sortOrder: 1
 });

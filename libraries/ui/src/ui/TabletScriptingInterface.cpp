@@ -1024,13 +1024,17 @@ static int s_stableOrder = 1;
  * @property {string} hoverIcon - The url of the button icon displayed when the button is hovered and not active.
  * @property {string} activeIcon - The url of the button icon displayed when the button is active.
  * @property {string} activeHoverIcon - The url of the button icon displayed when the button is hovered and active.
+ * @property {number} iconPadding=8 - The padding of the icon inside the button.
+ *
  * @property {string} text - The button caption.
  * @property {string} hoverText - The button caption when the button is hovered and not active.
  * @property {string} activeText - The button caption when the button is active.
  * @property {string} activeHoverText - The button caption when the button is hovered and active.
+ * 
  * @comment {string} defaultCaptionColor="#ffffff" - Internal property.
  * @property {string} captionColor="#ffffff" - The color of the button caption.
- 
+ * @property {string} backgroundColor="#1d1f21" - The background color of the button.
+ *
  * @property {boolean} isActive=false - <code>true</code> if the button is active, <code>false</code> if it isn't.
  * @property {boolean} isEntered - <code>true</code> if the button is being hovered, <code>false</code> if it isn't.
  * @property {boolean} buttonEnabled=true - <code>true</code> if the button is enabled, <code>false</code> if it is disabled.

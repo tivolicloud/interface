@@ -46,8 +46,9 @@ var activeTimer = false; // Used to cancel active timer if a user plays an anima
 var activeEmote = false; // To keep track of the currently playing emote
 
 button = tablet.addButton({
-    icon: "icons/tablet-icons/emote-i.svg",
-    activeIcon: "icons/tablet-icons/emote-a.svg",
+    icon: "icons/tablet-icons/emote.svg",
+    // activeIcon: "icons/tablet-icons/emote.svg",
+    backgroundColor: "#4caf50", // green 500
     text: EMOTE_LABEL,
     sortOrder: EMOTE_APP_SORT_ORDER
 });

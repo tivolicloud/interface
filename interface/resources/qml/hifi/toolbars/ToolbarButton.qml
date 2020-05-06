@@ -1,13 +1,20 @@
 import QtQuick 2.5
+import QtGraphicalEffects 1.12
 
-StateImage {
+Item {
     id: button
+
+    readonly property int size: 48
+    width: size
+    height: size + 16 // text underneath
 
     // NOTE: These properties form part of the "TabletButtonProxy.ButtonProperties" type.
     // Keep the type's JSDoc up to date with any changes.
+    // "libraries/ui/src/ui/TabletScriptingInterface.cpp"
 
     property color defaultCaptionColor: "#ffffff"
     property color captionColor: defaultCaptionColor
+    property color backgroundColor: "#1d1f21"
 
     property bool buttonEnabled: true
     property bool isActive: false
@@ -27,6 +34,7 @@ StateImage {
     property string hoverIcon: button.icon
     property string activeIcon: button.icon
     property string activeHoverIcon: button.activeIcon
+    property int iconPadding: 8
 
     property int sortOrder: 100
     property int stableOrder: 0
@@ -90,25 +98,72 @@ StateImage {
         }
     }
 
-    Image {
-        id: icon
-        width: 28
-        height: 28
-        anchors.bottom: caption.top
-        anchors.bottomMargin: 0
-        anchors.horizontalCenter: parent.horizontalCenter
-        fillMode: Image.Stretch
-        source: urlHelper(button.isActive ? (button.isEntered ? button.activeHoverIcon : button.activeIcon) : (button.isEntered ? button.hoverIcon : button.icon))
+    // rounded icon mask
+    Rectangle {
+        id: roundedIconMask
+        width: button.size
+        height: button.size
+        radius: 4
+        visible: false
     }
 
+    // icon background
+    Rectangle {
+        width: button.size - (!button.isActive ? 0 : 8)
+        height: button.size - (!button.isActive ? 0 : 8)
+        anchors.top: parent.top
+        anchors.topMargin: 0 + (!button.isActive ? 0 : 4)
+        anchors.horizontalCenter: parent.horizontalCenter
+        
+        color: button.backgroundColor
+
+        layer.enabled: true
+        layer.effect: OpacityMask {
+            maskSource: roundedIconMask
+        }
+    }
+
+    readonly property int iconSize: size - (iconPadding * 2) 
+
+    // icon image
+    Image {
+        id: icon
+        width: button.iconSize - (!button.isActive ? 0 : 8)
+        height: button.iconSize - (!button.isActive ? 0 : 8)
+        anchors.top: parent.top
+        anchors.topMargin: button.iconPadding + (!button.isActive ? 0 : 4)
+        anchors.horizontalCenter: parent.horizontalCenter
+        
+        smooth: true
+        fillMode: Image.PreserveAspectFit
+        source: urlHelper(
+            button.isActive ? 
+            (button.isEntered ? button.activeHoverIcon : button.activeIcon) :
+            (button.isEntered ? button.hoverIcon : button.icon)
+        )
+        // svg antialiasing fix
+        sourceSize.width: button.iconSize
+        sourceSize.height: button.iconSize
+
+        layer.enabled: iconPadding <= 0
+        layer.effect: OpacityMask {
+            maskSource: roundedIconMask
+        }
+    }
+
+    // caption
     Text {
         id: caption
-        color: button.isActive ? "#000000" : captionColor
-        text: button.isActive ? (button.isEntered ? button.activeHoverText : button.activeText) : (button.isEntered ? button.hoverText : button.text)
+        color: button.isActive ? "#fff" : captionColor
+        text: (
+            button.isActive ?
+            (button.isEntered ? button.activeHoverText : button.activeText) :
+            (button.isEntered ? button.hoverText : button.text)
+        )
         font.bold: false
-        font.pixelSize: 9
+        font.pixelSize: 11
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
     }
