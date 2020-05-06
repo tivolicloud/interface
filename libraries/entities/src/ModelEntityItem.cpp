@@ -772,7 +772,7 @@ void ModelEntityItem::setBlendshapeCoefficients(const QString& blendshapeCoeffic
     QJsonParseError error;
     QJsonDocument newCoefficientsJSON = QJsonDocument::fromJson(blendshapeCoefficients.toUtf8(), &error);
     if (error.error != QJsonParseError::NoError) {
-        qWarning() << "Could not evaluate blendshapeCoefficients property value:" << newCoefficientsJSON;
+      //qWarning() << "Could not evaluate blendshapeCoefficients property value:" << newCoefficientsJSON;
         return;
     }
 
