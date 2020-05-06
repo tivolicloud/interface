@@ -1,3 +1,6 @@
+<h2 style="text-align: center; margin-top: -1em;">JavaScript API Reference</h2>
+<h3 style="text-align: center; margin-top: 0; font-weight: 400;">Version {{ version }}</h3>
+
 The Tivoli Cloud JavaScript API lets content creators and developers create new experiences and transform virtual worlds within the Tivoli Cloud metaverse. With it, you can build great content, customize avatars, play audio and so much more.
 
 You are most likely to interact with these APIs:

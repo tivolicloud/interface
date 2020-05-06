@@ -829,9 +829,15 @@ exports.publish = function(taffyData, opts, tutorials) {
 	var files = find({ kind: "file" });
 	var packages = find({ kind: "package" });
 
+	// add release number to readme
+	opts.readme = opts.readme.replace(
+		/{{\s*?version\s*?}}/gi,
+		process.env.BUILD_VERSION || "unknown",
+	);
+
 	generate(
 		"",
-		"Tivoli Cloud VR JavaScript API Reference",
+		"Tivoli Cloud VR",
 		packages
 			.concat([
 				{
