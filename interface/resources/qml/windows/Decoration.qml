@@ -33,7 +33,7 @@ Rectangle {
         bottomMargin: -frameMarginBottom
     }
     anchors.fill: parent
-    color: "#c01d1f21" // 75% opacity
+    color: Qt.rgba(29/255,31/255,33/255, 0.9)
     // border {
     //     width: hifi.dimensions.borderWidth
     //     color: hifi.colors.faintGray50

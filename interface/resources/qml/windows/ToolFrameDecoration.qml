@@ -22,42 +22,45 @@ Decoration {
     property bool verticalSpacers: false
 
     // Dialog frame
-    property int spacerWidth: 8
-    property int spacerRadius: 4
-    property int spacerMargin: 12
-    frameMargin: 6
-    frameMarginLeft: frameMargin + (horizontalSpacers ? spacerMargin : 0)
-    frameMarginRight: frameMargin + (horizontalSpacers ? spacerMargin : 0)
-    frameMarginTop: frameMargin + (verticalSpacers ? spacerMargin : 0)
-    frameMarginBottom: frameMargin + (verticalSpacers ? spacerMargin : 0)
-    radius: hifi.dimensions.borderRadius / 2
+    frameMargin: 8 // margin around buttons
+    property int handleWidth: 8
+    property int handleRadius: 4
+    property int handleMargin: handleWidth + 4 // margin inwards from handles 
 
-    onInflateDecorations: {
-        if (!HMD.active) {
-            return;
-        }
-        root.frameMargin = 18
-        root.spacerWidth = 16
-        root.spacerRadius = 8
-        root.spacerMargin = 8
-    }
+    frameMarginLeft: frameMargin + (horizontalSpacers ? handleMargin : 0)
+    frameMarginRight: frameMargin + (horizontalSpacers ? handleMargin : 0)
+    frameMarginTop: frameMargin + (verticalSpacers ? handleMargin : 0)
+    frameMarginBottom: frameMargin + (verticalSpacers ? handleMargin : 0)
+    radius: hifi.dimensions.borderRadius
 
-    onDeflateDecorations: {
-        root.frameMargin = 6
-        root.spacerWidth = 8
-        root.spacerRadius = 4
-        root.spacerMargin = 12
-    }
+    readonly property color handleColor: Qt.rgba(0.6,0.6,0.6,0.6)
+
+    // onInflateDecorations: {
+    //     if (!HMD.active) {
+    //         return;
+    //     }
+    //     root.frameMargin = 18
+    //     root.spacerWidth = 16
+    //     root.spacerRadius = 8
+    //     root.spacerMargin = 8
+    // }
+
+    // onDeflateDecorations: {
+    //     root.frameMargin = 6
+    //     root.spacerWidth = 8
+    //     root.spacerRadius = 4
+    //     root.spacerMargin = 12
+    // }
 
     Rectangle {
         visible: horizontalSpacers
         anchors.left: parent.left
         anchors.leftMargin: 6
         anchors.verticalCenter: parent.verticalCenter
-        width: root.spacerWidth
+        width: root.handleWidth
         height: decoration.height - 12
-        color: Qt.rgba(1,1,1,0.2)
-        radius: root.spacerRadius
+        color: root.handleColor
+        radius: root.handleRadius
     }
 
     Rectangle {
@@ -65,10 +68,10 @@ Decoration {
         anchors.right: parent.right
         anchors.rightMargin: 6
         anchors.verticalCenter: parent.verticalCenter
-        width: root.spacerWidth
+        width: root.handleWidth
         height: decoration.height - 12
-        color: Qt.rgba(1,1,1,0.2)
-        radius: root.spacerRadius
+        color: root.handleColor
+        radius: root.handleRadius
     }
 
     Rectangle {
@@ -76,10 +79,10 @@ Decoration {
         anchors.top: parent.top
         anchors.topMargin: 6
         anchors.horizontalCenter: parent.horizontalCenter
-        height: root.spacerWidth
+        height: root.handleWidth
         width: decoration.width - 12
-        color: Qt.rgba(1,1,1,0.2)
-        radius: root.spacerRadius
+        color: root.handleColor
+        radius: root.handleRadius
     }
 
     Rectangle {
@@ -87,10 +90,10 @@ Decoration {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
         anchors.horizontalCenter: parent.horizontalCenter
-        height: root.spacerWidth
+        height: root.handleWidth
         width: decoration.width - 12
-        color: Qt.rgba(1,1,1,0.2)
-        radius: root.spacerRadius
+        color: root.handleColor
+        radius: root.handleRadius
     }
 }
 
