@@ -53,6 +53,9 @@ OriginalDesktop.Desktop {
         if (toolbar.settings.desktopHeight > 100 && desktop.height !== toolbar.settings.desktopHeight) {
             toolbarY += desktop.height - toolbar.settings.desktopHeight
         }
+        
+        // // force toolbar to top of screen
+        // toolbar.y = 16
 
         toolbar.y = toolbarY
         toolbar.settings.y = toolbarY
