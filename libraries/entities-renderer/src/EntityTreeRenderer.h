@@ -24,6 +24,7 @@
 #include <OctreeProcessor.h>
 #include <render/Forward.h>
 #include <workload/Space.h>
+#include "MeshPartPayload.h"
 
 class AbstractScriptingServicesInterface;
 class AbstractViewStateInterface;
@@ -68,7 +69,7 @@ public:
     void clearEntitySelections() { _currentlySelectedEntities.clear(); }
 
     void updateStaticEntities(bool value) { _updateStaticEntities = value; }
-    void setSceneIsReady(bool value) { _sceneIsReady = value; }
+    void setSceneIsReady(bool value) {  _sceneIsReady = value; }  
     bool getSceneIsReady() { return _sceneIsReady; }
 
     void setIsEditMode(bool modeState) { _isEditMode = modeState; }
