@@ -7222,7 +7222,7 @@ void Application::updateWindowTitle() const {
 
     QStringList statusList = { connectionStatus, loginStatus };
     statusList.removeAll(QString(""));
-    const QString status = statusList.join(",").trimmed();
+    const QString status = statusList.join(", ").trimmed();
 
     const QString title = (
         (status.isEmpty() ? "" : status + " - ") +
