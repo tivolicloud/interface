@@ -24,6 +24,7 @@
 #include <OctreeProcessor.h>
 #include <render/Forward.h>
 #include <workload/Space.h>
+#include "MeshPartPayload.h"
 
 class AbstractScriptingServicesInterface;
 class AbstractViewStateInterface;

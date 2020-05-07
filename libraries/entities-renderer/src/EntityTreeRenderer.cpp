@@ -406,6 +406,7 @@ void EntityTreeRenderer::init() {
 void EntityTreeRenderer::connectedToDomain() {
 
     setSceneIsReady(false);
+    MeshPartPayload::sceneIsReady = false;
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
@@ -592,7 +593,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             class SortableRenderer : public PrioritySortUtil::Sortable {
             public:
                 SortableRenderer(const EntityRendererPointer& renderer) : _renderer(renderer) {}
-                glm::vec3 getPosition() const override { return _renderer->getEntity()->getWorldPosition(); }
+                glm::vec3 getPosition() const override { 
+                    if (!_renderer) return glm::vec3(0.0f, 0.0f, 0.0f);  // HACK: prevent a crash by returning 0,0,0 but this is probably not a good solution
+                    return _renderer->getEntity()->getWorldPosition(); 
+                }
                 float getRadius() const override { return 0.5f * _renderer->getEntity()->getQueryAACube().getScale(); }
                 uint64_t getTimestamp() const override { return _renderer->getUpdateTime(); }
                 EntityRendererPointer getRenderer() const { return _renderer; }
@@ -610,7 +614,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 PROFILE_RANGE_EX(simulation_physics, "BuildSortedRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
                 for (const auto& renderable : _renderablesToUpdate) {
                     assert(renderable);   // only valid renderables are added to _renderablesToUpdate
-                        sortedRenderables.push(SortableRenderer(renderable));
+                    if (renderable) sortedRenderables.push(SortableRenderer(renderable));
                 }
             }
             {
@@ -645,6 +649,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
             }
         }
+        MeshPartPayload::sceneIsReady = true;
     }        
 }
 
@@ -673,7 +678,7 @@ void EntityTreeRenderer::update(bool simulate) {
             PROFILE_RANGE(simulation_physics, "Scene");
             PerformanceTimer sceneTimer("scene");
             auto scene = _viewState->getMain3DScene();
-            if (scene->getTransactionQueueSize() > 0) {
+            if (scene) { // ->getTransactionQueueSize() > 0) {
                 render::Transaction transaction;
                 addPendingEntities(scene, transaction);
                 updateChangedEntities(scene, transaction);

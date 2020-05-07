@@ -77,7 +77,8 @@ public:
 
     void setCullWithParent(bool value) { _cullWithParent = value; }
 
-    static bool enableMaterialProceduralShaders;
+    static bool enableMaterialProceduralShaders; // set from menu/settings
+    static bool sceneIsReady; // set from entity tree renderer
 
 protected:
     render::ItemKey _itemKey{ render::ItemKey::Builder::opaqueShape().build() };
