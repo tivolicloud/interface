@@ -189,14 +189,14 @@ Menu::Menu() {
     // View > First Person
     auto firstPersonAction = cameraModeGroup->addAction(addCheckableActionToQMenuAndActionHash(
                                    viewMenu, MenuOption::FirstPersonLookAt, 0,
-                                   true, qApp, SLOT(cameraMenuChanged())));
+                                   false, qApp, SLOT(cameraMenuChanged())));
 
     firstPersonAction->setProperty(EXCLUSION_GROUP_KEY, QVariant::fromValue(cameraModeGroup));
 
     // View > Look At
     auto lookAtAction = cameraModeGroup->addAction(addCheckableActionToQMenuAndActionHash(
                                    viewMenu, MenuOption::LookAtCamera, 0,
-                                   false, qApp, SLOT(cameraMenuChanged())));
+                                   true, qApp, SLOT(cameraMenuChanged())));
 
     lookAtAction->setProperty(EXCLUSION_GROUP_KEY, QVariant::fromValue(cameraModeGroup));
 
