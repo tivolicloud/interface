@@ -66,7 +66,7 @@ void EarthSunModel::updateSurfaceToEye() const {
 
 void EarthSunModel::updateSun() const {
     // Longitude is along Y axis but - from east to west
-    Mat4d rotSunLon;
+    // Mat4d rotSunLon;
 
     Mat4d rotSun = evalWorldToGeoLocationMat(_sunLongitude, _sunLatitude, _earthRadius, _scale);
     rotSun = glm::inverse(rotSun);
