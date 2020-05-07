@@ -4504,9 +4504,9 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 }
                 break;
 
-            case Qt::Key_Asterisk:
-                Menu::getInstance()->triggerOption(MenuOption::DefaultSkybox);
-                break;
+            // case Qt::Key_Asterisk:
+            //     Menu::getInstance()->triggerOption(MenuOption::DefaultSkybox);
+            //     break;
 
             case Qt::Key_M:
                 if (isControlOrCommand) {
