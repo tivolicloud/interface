@@ -679,7 +679,7 @@ void EntityTreeRenderer::update(bool simulate) {
             PROFILE_RANGE(simulation_physics, "Scene");
             PerformanceTimer sceneTimer("scene");
             auto scene = _viewState->getMain3DScene();
-            if (scene->getTransactionQueueSize() > 0) {
+            if (scene) {  //->getTransactionQueueSize() > 0) {
                 render::Transaction transaction;
                 addPendingEntities(scene, transaction);
                 updateChangedEntities(scene, transaction);
