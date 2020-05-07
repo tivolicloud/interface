@@ -752,7 +752,7 @@ public:
      * Overrides a specific animation role.
      * <p>Each avatar has an avatar-animation.json file that defines a set of animation roles. Animation roles map to easily 
      * understandable actions that the avatar can perform, such as <code>"idleStand"</code>, <code>"idleTalk"</code>, or 
-     * <code>"walkFwd"</code>. To get the full list of roles, use {@ link MyAvatar.getAnimationRoles}.
+     * <code>"walkFwd"</code>. To get the full list of roles, use {@link MyAvatar.getAnimationRoles}.
      * For each role, the avatar-animation.json defines when the animation is used, the animation clip (glTF or FBX) used, and 
      * how animations are blended together with procedural data (such as look at vectors, hand sensors etc.).
      * <code>overrideRoleAnimation()</code> is used to change the animation clip (glTF or FBX) associated with a specified 
