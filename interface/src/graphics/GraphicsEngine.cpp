@@ -56,7 +56,8 @@ void GraphicsEngine::initializeGPU(GLWidget* glwidget) {
     glwidget->makeCurrent();
     _gpuContext = std::make_shared<gpu::Context>();
 
-#ifndef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(DISABLE_PROCEDURAL_DEFAULT_SKYBOX)
+#else
     _gpuContext->pushProgramsToSync(shader::allPrograms(), [this] {
         _programsCompiled.store(true);
     }, 1);
@@ -259,10 +260,10 @@ void GraphicsEngine::render_performFrame() {
         gpu::doInBatch("splashFrame", _gpuContext, [&](gpu::Batch& batch) {
             batch.setFramebuffer(finalFramebuffer);
             batch.enableSkybox(true);
-            batch.enableStereo(false);// CPM SPECTATOR CAMERA isStereo);
+            batch.enableStereo(isStereo);
             batch.clearDepthStencilFramebuffer(1.0, 0);
             batch.setViewportTransform({ 0, 0, finalFramebuffer->getSize() });
-            _splashScreen->render(batch, viewFrustum, renderArgs._renderMethod == RenderArgs::RenderMethod::DEFERRED); // CPM SPECTATOR CAMERA 
+            _splashScreen->render(batch, viewFrustum, renderArgs._renderMethod == RenderArgs::RenderMethod::FORWARD);
         });
     } else {
         {

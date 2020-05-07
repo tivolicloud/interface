@@ -1,0 +1,9 @@
+{
+    "compressed": {
+        "COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT": "aurorasky_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT.ktx",
+        "COMPRESSED_SRGB8_ETC2": "aurorasky_COMPRESSED_SRGB8_ETC2.ktx"
+    },
+    "original": "aurorasky.png",
+    "uncompressed": "aurorasky.ktx",
+    "version": 1
+}

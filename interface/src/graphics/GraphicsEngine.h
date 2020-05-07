@@ -22,6 +22,10 @@
 
 #include "FrameTimingsScriptingInterface.h"
 
+// disabled for now until we can make a better default skybox shader
+// i'm not entirely sure if this is the right fix but this might help
+// https://git.tivolicloud.com/tivolicloud/interface/-/commit/0a80c166864c0b4fe4faacb2d2c0d9acad609d5c
+#define DISABLE_PROCEDURAL_DEFAULT_SKYBOX
 
 struct AppRenderArgs {
     render::Args _renderArgs;
@@ -86,10 +90,10 @@ protected:
     FrameTimingsScriptingInterface _frameTimingsScriptingInterface;
 
     std::shared_ptr<ProceduralSkybox> _splashScreen { std::make_shared<ProceduralSkybox>() };
-#ifndef Q_OS_ANDROID
-    std::atomic<bool> _programsCompiled { false };
-#else
+#if defined(Q_OS_ANDROID) || defined(DISABLE_PROCEDURAL_DEFAULT_SKYBOX)
     std::atomic<bool> _programsCompiled { true };
+#else
+    std::atomic<bool> _programsCompiled { false };
 #endif
 
     friend class Application;
