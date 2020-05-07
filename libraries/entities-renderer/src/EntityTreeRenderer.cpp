@@ -547,7 +547,6 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
             else 
             {
-                MeshPartPayload::sceneIsReady = false;
                 _renderablesToUpdate.insert(renderable);
             }
         }

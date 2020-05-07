@@ -499,8 +499,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     if (!_drawMaterials.empty() && _drawMaterials.top().material && _drawMaterials.top().material->isProcedural() &&
         _drawMaterials.top().material->isReady()) {
-        if (!(enableMaterialProceduralShaders)) {
-            // TODO: Caitlyn - Check if ETR-> if (getSceneIsReady())  before rendering shaders otherwise we get crazy video buffer deformations
+        if (enableMaterialProceduralShaders == false || !sceneIsReady) {
             return;
         }
         auto procedural = std::static_pointer_cast<graphics::ProceduralMaterial>(_drawMaterials.top().material);
