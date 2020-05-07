@@ -140,8 +140,6 @@ void AvatarData::randomizeDefaultFullAvatarModelUrl() {
         QString::number(usecTimestampNow()) +
         ".fst"
     );
-
-    qCDebug(avatars) << "MAKI new default: "<<_defaultFullAvatarModelUrl.toString();
 }
 
 const QUrl& AvatarData::defaultFullAvatarModelUrl() {
