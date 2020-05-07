@@ -3198,7 +3198,7 @@
                     }
                 } else if (data.action === "reloadModel") {
                     if (selectionManager.hasSelection()) {
-                        var timestamp = Math.floor(Date.now() / 1000);
+                        var timestamp = Math.floor(Date.now());
                         
                         function parseQuery(queryStr) {
                             var query = {};
@@ -3236,9 +3236,11 @@
                             i < selectionManager.selections.length;
                             i++
                         ) {
-                            properties = selectionManager.savedProperties[
-                                selectionManager.selections[i]
-                            ];
+                            var entityId = selectionManager.selections[i];
+                            var properties = Entities.getEntityProperties(
+                                entityId,
+                                ["modelURL"]
+                            );
 
                             var newUrl;
                             var url = properties.modelURL.split("?");
@@ -3261,7 +3263,7 @@
                             }
 
                             Entities.editEntity(
-                                selectionManager.selections[i],
+                                entityId,
                                 { modelURL: newUrl }
                             );
                             
