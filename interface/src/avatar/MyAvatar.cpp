@@ -1294,9 +1294,11 @@ void MyAvatar::saveData() {
     // (so the overrideURL is not valid), or it was overridden _and_ we specified
     // --replaceAvatarURL (so _saveAvatarOverrideUrl is true)
     if (qApp->getSaveAvatarOverrideUrl() || !qApp->getAvatarOverrideUrl().isValid() ) {
-        _fullAvatarURLSetting.set(_fullAvatarURLFromPreferences == AvatarData::defaultFullAvatarModelUrl() ?
-                                  "" :
-                                  _fullAvatarURLFromPreferences.toString());
+        _fullAvatarURLSetting.set(
+            _fullAvatarURLFromPreferences == AvatarData::defaultFullAvatarModelUrl() ?
+            AvatarData::defaultFullAvatarModelUrl() :
+            _fullAvatarURLFromPreferences.toString()
+        );
     }
 
     _fullAvatarModelNameSetting.set(_fullAvatarModelName);
@@ -2591,6 +2593,18 @@ void MyAvatar::resetFullAvatarURL() {
     auto lastAvatarName = getFullAvatarModelName();
     useFullAvatarURL(QUrl());
     useFullAvatarURL(lastAvatarURL, lastAvatarName);
+}
+
+void MyAvatar::randomizeDefaultAvatar() {
+    bool isDefault = getSkeletonModelURL() == Avatar::defaultFullAvatarModelUrl();
+    Avatar::randomizeDefaultFullAvatarModelUrl();
+    // reload if currently default
+    if (isDefault) {
+        useFullAvatarURL(
+            Avatar::defaultFullAvatarModelUrl(),
+            DEFAULT_FULL_AVATAR_MODEL_NAME
+        ); 
+    }
 }
 
 void MyAvatar::useFullAvatarURL(const QUrl& fullAvatarURL, const QString& modelName) {

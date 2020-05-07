@@ -1333,6 +1333,13 @@ public:
     Q_INVOKABLE float getIKErrorOnLastSolve() const;
 
     /**jsdoc
+     * Randomizes the colors of the default avatar.
+     * <code>MyAvatar.useFullAvatarURL("", "")</code> will set you back.
+     * @function MyAvatar.randomizeDefaultAvatar
+     */
+    Q_INVOKABLE void randomizeDefaultAvatar();
+   
+    /**jsdoc
      * Changes the user's avatar and associated descriptive name.
      * @function MyAvatar.useFullAvatarURL
      * @param {string} fullAvatarURL - The URL of the avatar's <code>.fst</code> file.

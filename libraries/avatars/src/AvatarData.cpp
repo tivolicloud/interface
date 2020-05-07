@@ -40,6 +40,7 @@
 #include <Profile.h>
 #include <VariantMapToScriptValue.h>
 #include <BitVectorHelpers.h>
+#include <NetworkingConstants.h>
 
 #include "AvatarLogging.h"
 #include "AvatarTraits.h"
@@ -125,11 +126,30 @@ AvatarData::~AvatarData() {
 
 // We cannot have a file-level variable (const or otherwise) in the AvatarInfo if it uses PathUtils, because that references Application, which will not yet initialized.
 // Thus we have a static class getter, referencing a static class var.
-QUrl AvatarData::_defaultFullAvatarModelUrl = {}; // In C++, if this initialization were in the AvatarInfo, every file would have it's own copy, even for class vars.
+
+// In C++, if this initialization were in the AvatarInfo, every file would have it's own copy, even for class vars.
+QUrl AvatarData::_defaultFullAvatarModelUrl = {}; 
+
+void AvatarData::randomizeDefaultFullAvatarModelUrl() {
+    // TODO: this shouldnt have to live on the metaverse.
+    // the idea is that the default avatar is random for each person.
+    // on the server, it will set the albedo in the fst for the top and hair
+    _defaultFullAvatarModelUrl = NetworkingConstants::METAVERSE_SERVER_URL();
+    _defaultFullAvatarModelUrl.setPath(
+        "/api/lynden/" +
+        QString::number(usecTimestampNow()) +
+        ".fst"
+    );
+
+    qCDebug(avatars) << "MAKI new default: "<<_defaultFullAvatarModelUrl.toString();
+}
+
 const QUrl& AvatarData::defaultFullAvatarModelUrl() {
     if (_defaultFullAvatarModelUrl.isEmpty()) {
-        _defaultFullAvatarModelUrl = PathUtils::resourcesUrl("/meshes/defaultAvatar_full.fst");
+        // _defaultFullAvatarModelUrl = PathUtils::resourcesUrl("/meshes/lynden/lynden.fst");
+        randomizeDefaultFullAvatarModelUrl();
     }
+
     return _defaultFullAvatarModelUrl;
 }
 

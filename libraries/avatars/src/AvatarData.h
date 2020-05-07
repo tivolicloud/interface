@@ -605,6 +605,7 @@ public:
     AvatarData();
     virtual ~AvatarData();
 
+    static void randomizeDefaultFullAvatarModelUrl();
     static const QUrl& defaultFullAvatarModelUrl();
 
     const QUuid getSessionUUID() const { return getID(); }
