@@ -3245,6 +3245,14 @@
 
                             if (url.length > 1) {
                                 var query = parseQuery(url[1]);
+                                var queryKeys = Object.keys(query);
+                                
+                                for (var i=0; i<queryKeys.length; i++) {
+                                    var key = queryKeys[i];
+                                    if (parseInt(key) + "" == "NaN") continue;
+                                    // if (query[key] != "") continue;
+                                    delete query[key];
+                                }
                                 query[timestamp] = "";
 
                                 newUrl = url[0] + renderQuery(query);
