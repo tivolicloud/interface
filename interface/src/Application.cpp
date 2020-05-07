@@ -4489,10 +4489,12 @@ void Application::keyPressEvent(QKeyEvent* event) {
             case Qt::Key_L:
                 if (isShifted && isControlOrCommand) {
                     Menu::getInstance()->triggerOption(MenuOption::Log);
-                } else if (isControlOrCommand) {
-                    auto dialogsManager = DependencyManager::get<DialogsManager>();
-                    dialogsManager->toggleAddressBar();
                 }
+                // TODO: remove old goto first
+                // } else if (isControlOrCommand) {
+                //     auto dialogsManager = DependencyManager::get<DialogsManager>();
+                //     dialogsManager->toggleAddressBar();
+                // }
                 break;
 
             case Qt::Key_R:
