@@ -26,7 +26,7 @@ namespace NetworkingConstants {
     // at https://staging.highfidelity.com/user/tokens/new?for_domain_server=true
 
     const QUrl METAVERSE_SERVER_URL_STABLE { "https://alpha.tivolicloud.com" };
-    const QUrl METAVERSE_SERVER_URL_STAGING { "https://staging.highfidelity.com" };
+    const QUrl METAVERSE_SERVER_URL_STAGING { "https://alpha.tivolicloud.com" }; // staging not ready yet
     QUrl METAVERSE_SERVER_URL();
 }
 
