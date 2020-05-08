@@ -107,6 +107,23 @@ Item {
         visible: false
     }
 
+    // isactive background
+    Rectangle {
+        width: button.size
+        height: button.size
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.horizontalCenter: parent.horizontalCenter
+        
+        color: Qt.rgba(0.6,0.6,0.6,0.6) // same as toolframedecoration handlecolor
+        visible: isActive
+
+        layer.enabled: true
+        layer.effect: OpacityMask {
+            maskSource: roundedIconMask
+        }
+    }
+
     // icon background
     Rectangle {
         width: button.size - (!button.isActive ? 0 : 8)
