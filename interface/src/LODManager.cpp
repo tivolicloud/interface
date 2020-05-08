@@ -23,6 +23,11 @@ Setting::Handle<int> desktopWorldDetailQuality("desktopWorldDetailQuality", (int
 Setting::Handle<int> hmdWorldDetailQuality("hmdWorldDetailQuality", (int)DEFAULT_WORLD_DETAIL_QUALITY);
 
 LODManager::LODManager() {
+    // set lod manager to manual since automatic will often
+    // cull everything away which is very problematic for end ux
+    // lod needs to be fixed before we can use it again
+    setAutomaticLODAdjust(false);
+    setVisibilityDistance(DEFAULT_VISIBILITY_DISTANCE_FOR_UNIT_ELEMENT);
 }
 
 // We use a "time-weighted running average" of the maxRenderTime and compare it against min/max thresholds
