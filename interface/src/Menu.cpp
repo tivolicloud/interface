@@ -312,13 +312,27 @@ Menu::Menu() {
     //    }
     //});
 
+    // force procedural shaders enabled on windows and disabled on mac (it crashes)
+    // shaders are part of the experience so they shouldn't really be togglable
+    // however malitious/slow user shaders is a problem so lets allow disabling 
     #ifdef Q_OS_MAC
-    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, false);
+    #define ENABLE_MATERIAL_PROCEDURAL_SHADERS false
     #else
-    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::MaterialProceduralShaders, 0, true);
+    #define ENABLE_MATERIAL_PROCEDURAL_SHADERS true
     #endif
-    connect(action, &QAction::triggered, [action] {
-        MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+    action = addCheckableActionToQMenuAndActionHash(
+        settingsMenu, MenuOption::MaterialProceduralShaders, 0,
+        ENABLE_MATERIAL_PROCEDURAL_SHADERS
+    );
+    action->setEnabled(false);
+    connect(action, &QAction::triggered, [action] {       
+        if (action->isEnabled() == false) {
+            action->setEnabled(true);
+            action->setChecked(ENABLE_MATERIAL_PROCEDURAL_SHADERS);
+            MeshPartPayload::enableMaterialProceduralShaders = ENABLE_MATERIAL_PROCEDURAL_SHADERS;
+        } else {
+            MeshPartPayload::enableMaterialProceduralShaders = action->isChecked();
+        }
     });
 
     // Settings > Enable Flow / Dynamic Bone
