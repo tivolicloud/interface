@@ -3026,7 +3026,7 @@ private:
     Setting::Handle<bool> _flyingHMDSetting;
     Setting::Handle<int> _movementReferenceSetting;
     Setting::Handle<int> _avatarEntityCountSetting;
-    Setting::Handle<bool> _allowTeleportingSetting { "allowTeleporting", true };
+    Setting::Handle<bool> _allowTeleportingSetting { "allowTeleporting", false };
     Setting::Handle<float> _driveGear1Setting;
     Setting::Handle<float> _driveGear2Setting;
     Setting::Handle<float> _driveGear3Setting;

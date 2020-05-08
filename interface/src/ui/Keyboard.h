@@ -180,7 +180,7 @@ private:
     mutable ReadWriteLockable _preferMalletsOverLasersSettingLock;
     mutable ReadWriteLockable _ignoreItemsLock;
 
-    Setting::Handle<bool> _use3DKeyboard { "use3DKeyboard", true };
+    Setting::Handle<bool> _use3DKeyboard { "use3DKeyboard", false };
 
     QString _typedCharacters;
     TextDisplay _textDisplay;
