@@ -1334,7 +1334,7 @@ public:
 
     /**jsdoc
      * Randomizes the colors of the default avatar.
-     * <code>MyAvatar.useFullAvatarURL("", "")</code> will set you back.
+     * <code>MyAvatar.useFullAvatarURL("", "Default")</code> will set you back.
      * @function MyAvatar.randomizeDefaultAvatar
      */
     Q_INVOKABLE void randomizeDefaultAvatar();

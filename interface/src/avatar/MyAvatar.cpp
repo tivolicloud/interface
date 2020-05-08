@@ -2596,10 +2596,16 @@ void MyAvatar::resetFullAvatarURL() {
 }
 
 void MyAvatar::randomizeDefaultAvatar() {
-    bool isDefault = getSkeletonModelURL() == Avatar::defaultFullAvatarModelUrl();
+    bool isDefault = (
+        getSkeletonModelURL() == Avatar::defaultFullAvatarModelUrl() ||
+        getSkeletonModelURL().isEmpty() ||
+        getFullAvatarModelName() == "Default"
+    );
+
     Avatar::randomizeDefaultFullAvatarModelUrl();
-    // reload if currently default
+    
     if (isDefault) {
+        // reload if currently default
         useFullAvatarURL(
             Avatar::defaultFullAvatarModelUrl(),
             DEFAULT_FULL_AVATAR_MODEL_NAME
