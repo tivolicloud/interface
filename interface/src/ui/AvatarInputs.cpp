@@ -19,7 +19,7 @@
 static AvatarInputs* INSTANCE{ nullptr };
 
 Setting::Handle<bool> showAudioToolsSetting { QStringList { "AvatarInputs", "showAudioTools" }, true };
-Setting::Handle<bool> showBubbleToolsSetting{ QStringList { "AvatarInputs", "showBubbleTools" }, true };
+Setting::Handle<bool> showBubbleToolsSetting{ QStringList { "AvatarInputs", "showBubbleTools" }, false };
 
 AvatarInputs* AvatarInputs::getInstance() {
     if (!INSTANCE) {
@@ -30,8 +30,11 @@ AvatarInputs* AvatarInputs::getInstance() {
 }
 
 AvatarInputs::AvatarInputs(QObject* parent) : QObject(parent) {
+    showBubbleToolsSetting.set(false); // force disable for now
+
     _showAudioTools = showAudioToolsSetting.get();
     _showBubbleTools = showBubbleToolsSetting.get();
+
     auto nodeList = DependencyManager::get<NodeList>();
     auto usersScriptingInterface = DependencyManager::get<UsersScriptingInterface>();
     connect(nodeList.data(), &NodeList::ignoreRadiusEnabledChanged, this, &AvatarInputs::ignoreRadiusEnabledChanged);
