@@ -205,7 +205,7 @@ private:
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
     Setting::Handle<bool> _shadowsEnabledSetting{ "shadowsEnabled", _shadowsEnabled };
     Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", _ambientOcclusionEnabled };
-    Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", _antialiasingEnabled };
+    // Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", _antialiasingEnabled };
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
 
     // Force assign both setting AND runtime value to the parameter value

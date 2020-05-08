@@ -86,10 +86,6 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
 
     auto instance = RenderScriptingInterface::getInstance();
 
-    // antialiasing is extremely blurry in vr and the jitter is disorienting
-    // it's best to disable it until we can have high quality aa
-    instance->setAntialiasingEnabled(false);
-
     switch (preset) {
         case PerformancePreset::HIGH:
             instance->setRenderMethod(isDeferredCapable ?
