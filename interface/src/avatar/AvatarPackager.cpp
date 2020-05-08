@@ -44,8 +44,8 @@ AvatarPackager::AvatarPackager() {
 
     recentProjectsFromVariantList(_recentProjectsSetting.get());
 
-    QDir defaultProjectsDir(AvatarProject::getDefaultProjectsPath());
-    defaultProjectsDir.mkpath(".");
+    // QDir defaultProjectsDir(AvatarProject::getDefaultProjectsPath());
+    // defaultProjectsDir.mkpath(".");
 }
 
 bool AvatarPackager::open() {
