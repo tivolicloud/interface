@@ -324,6 +324,8 @@ Menu::Menu() {
         settingsMenu, MenuOption::MaterialProceduralShaders, 0,
         ENABLE_MATERIAL_PROCEDURAL_SHADERS
     );
+    // TODO: this is not a good solution because it doesn't get triggered if
+    // it's already been written to Interface.json
     action->setEnabled(false);
     connect(action, &QAction::triggered, [action] {       
         if (action->isEnabled() == false) {
