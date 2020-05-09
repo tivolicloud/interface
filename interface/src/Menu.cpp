@@ -872,8 +872,8 @@ Menu::Menu() {
         QDesktopServices::openUrl(QUrl("https://alpha.tivolicloud.com/discord"));
     });
 
-    // Help > Online Script Reference
-    action = addActionToQMenuAndActionHash(helpMenu, "Online Script Reference");
+    // Help > JavaScript API Reference
+    action = addActionToQMenuAndActionHash(helpMenu, "JavaScript API Reference");
     connect(action, &QAction::triggered, qApp, [] {
         QDesktopServices::openUrl(QUrl("https://apidocs.tivolicloud.com/"));
     });
@@ -888,10 +888,10 @@ Menu::Menu() {
         QDesktopServices::openUrl(QUrl("https://docs.tivolicloud.com/changelog/"));
     });
 
-    // Help > Report a Bug!
-    action = addActionToQMenuAndActionHash(helpMenu, "Report a Bug!");
+    // Help > Report a bug!
+    action = addActionToQMenuAndActionHash(helpMenu, "Report a bug!");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("mailto:support@tivolicloud.com"));
+        QDesktopServices::openUrl(QUrl("https://git.tivolicloud.com/tivolicloud/issues"));
     });
 }
 
