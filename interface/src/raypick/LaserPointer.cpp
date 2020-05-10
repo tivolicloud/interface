@@ -169,17 +169,16 @@ void LaserPointer::RenderState::update(const glm::vec3& origin, const glm::vec3&
     if (!getPathID().isNull()) {
         EntityItemProperties properties;
         QVector<glm::vec3> points;
-        // float lineLength = glm::length((end-origin)) / 1000.0f;
-        points.append((end - origin) * 0.15f);
-        points.append((end - origin) * 0.75f);
+        points.append(glm::vec3(0.0f));
+        points.append(end - origin);
         properties.setPosition(origin);
         properties.setLinePoints(points);
         properties.setVisible(true);
         properties.setIgnorePickIntersection(doesPathIgnorePicks());
         QVector<float> widths;
         float width = getLineWidth() * parentScale;
-        widths.append(width * 0.35f);
-        widths.append(width * 0.015f);
+        widths.append(width);
+        widths.append(width);
         properties.setStrokeWidths(widths);
         DependencyManager::get<EntityScriptingInterface>()->editEntity(getPathID(), properties);
     }
