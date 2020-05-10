@@ -1,5 +1,6 @@
 module stylesUit
 RobotoMonoRegular 1.0 RobotoMonoRegular.qml
+RobotoCondensedRegular 1.0 RobotoCondensedRegular.qml
 ButtonLabel 1.0 ButtonLabel.qml
 HifiConstants 1.0 HifiConstants.qml
 HiFiGlyphs 1.0 HiFiGlyphs.qml

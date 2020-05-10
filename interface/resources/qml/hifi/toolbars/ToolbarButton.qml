@@ -220,8 +220,8 @@ Item {
             (button.isEntered ? button.activeHoverText : button.activeText) :
             (button.isEntered ? button.hoverText : button.text)
         )
-        font.bold: false
-        font.pixelSize: isTablet ? 20: 11
+        font.family: "Roboto Condensed"
+        font.pixelSize: isTablet ? 22 : 12
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
