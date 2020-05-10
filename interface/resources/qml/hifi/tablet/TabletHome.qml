@@ -8,6 +8,7 @@ import TabletScriptingInterface 1.0
 import "."
 import stylesUit 1.0 as HifiStylesUit
 import "../audio" as HifiAudio
+import "../toolbars" as HifiToolbars
 
 Item {
     id: tablet
@@ -256,8 +257,9 @@ Item {
 
                             property var proxy: modelData
 
-                            TabletButton {
-                                id: tabletButton
+                            HifiToolbars.ToolbarButton {
+                                id: tabletButton                                
+                                isTablet: true
 
                                 // Temporarily disable magnification
                                 // scale: wrapper.hovered ? 1.25 : wrapper.containsMouse ? 0.75 : 1.0
