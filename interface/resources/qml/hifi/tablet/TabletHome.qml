@@ -20,6 +20,12 @@ Item {
     focus: true
 
     Rectangle {
+        id: background
+        anchors.fill: parent
+        color: "#000"
+    }
+
+    Rectangle {
         id: bgTopBar
         height: 90
 
@@ -29,22 +35,14 @@ Item {
             right: parent.right
         }
 
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: "#2b2b2b"
-            }
-
-            GradientStop {
-                position: 1
-                color: "#1e1e1e"
-            }
-        }
+        color: "#000"
 
         HifiAudio.MicBarApplication {
+            scale: 1.5
             anchors {
                 left: parent.left
                 leftMargin: 30
+                // looks bad because muted appears underneath
                 verticalCenter: parent.verticalCenter
             }
         }
@@ -91,8 +89,8 @@ Item {
                     anchors.right: parent.right
                     font.capitalization: Font.AllUppercase
                     font.pixelSize: 12
-                    font.family: "Rawline"
-                    color: "#afafaf"
+                    font.family: "Roboto"
+                    color: "#fff"
                 }
             }
 
@@ -117,8 +115,8 @@ Item {
                     id: clockTime
                     font.bold: false
                     font.pixelSize: 36
-                    font.family: "Rawline"
-                    color: "#afafaf"
+                    font.family: "Roboto"
+                    color: "#fff"
                 }
             }
 
@@ -139,8 +137,8 @@ Item {
                     horizontalAlignment: Text.AlignRight
                     Layout.alignment: Qt.AlignRight
                     font.pixelSize: 18
-                    font.family: "Rawline"
-                    color: "#afafaf"
+                    font.family: "Roboto"
+                    color: "#fff"
                 }
                 TextMetrics {
                     id: loginTextMetrics
@@ -165,21 +163,13 @@ Item {
 
     Rectangle {
         id: bgMain
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: "#2b2b2b"
-            }
-
-            GradientStop {
-                position: 1
-                color: "#0f212e"
-            }
-        }
+        color: "#1d1f21"
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: bgTopBar.bottom
+
+        radius: 16
 
         SwipeView {
             id: swipeView

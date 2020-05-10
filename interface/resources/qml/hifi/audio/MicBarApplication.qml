@@ -61,10 +61,12 @@ Rectangle {
     property bool standalone: false;
     property var dragTarget: null;
 
-    width: 44;
-    height: 44;
+    property real scale: 1;
 
-    radius: 5;
+    width: 44 * scale;
+    height: 44 * scale;
+
+    radius: 4 * scale;
     opacity: 0.7;
 
     onLevelChanged: {
@@ -100,10 +102,10 @@ Rectangle {
     // borders are painted over fill, so reduce the fill to fit inside the border
     Rectangle {
         color: standalone ? colors.fill : "#00000000";
-        width: 40;
-        height: 40;
+        width: 40 * micBar.scale;
+        height: 40 * micBar.scale;
 
-        radius: 5;
+        radius: micBar.radius;
 
         anchors {
             verticalCenter: parent.verticalCenter;
@@ -162,8 +164,8 @@ Rectangle {
             top: parent.top;
         }
 
-        width: 40;
-        height: 40;
+        width: 40 * micBar.scale;
+        height: 40 * micBar.scale;
 
         Item {
             Image {
@@ -175,13 +177,17 @@ Rectangle {
                     micBar.gated ? gatedIcon :
                     unmutedIcon
                 );
-                width: 29;
-                height: 32;
+                width: 29 * micBar.scale;
+                height: 32 * micBar.scale;
                 anchors {
                     left: parent.left;
                     top: parent.top;
                     topMargin: 5;
                 }
+                // svg antialiasing fix
+                sourceSize.width: 32 * micBar.scale;
+                sourceSize.height: 32 * micBar.scale;
+                smooth: true
             }
 
             ColorOverlay {
@@ -201,7 +207,7 @@ Rectangle {
         anchors {
             left: parent.left;
             top: icon.bottom;
-            topMargin: 2;
+            topMargin: 2 * micBar.scale;
         }
 
         width: parent.width;
@@ -223,7 +229,7 @@ Rectangle {
             color: pushToTalk ? (pushingToTalk ? colors.unmutedColor : colors.mutedColor) : (level >= userSpeakingLevel && muted) ? colors.mutedColor : colors.unmutedColor;
             font.bold: true
 
-            size: 12;
+            size: 12 * micBar.scale;
         }
     }
 
@@ -232,17 +238,17 @@ Rectangle {
 
         anchors {
             right: parent.right;
-            rightMargin: 7;
+            rightMargin: 7 * micBar.scale;
             top: parent.top
-            topMargin: 5
+            topMargin: 5 * micBar.scale;
         }
 
-        width: 8;
-        height: 32;
+        width: 8 * micBar.scale;
+        height: 32 * micBar.scale;
 
         Rectangle { // base
             id: baseBar
-            radius: 4;
+            radius: micBar.radius;
             anchors { fill: parent }
             color: colors.gutter;
         }
@@ -252,7 +258,7 @@ Rectangle {
             visible: (!(pushToTalk && !pushingToTalk))
             height: parent.height * level;
             width: parent.width;
-            radius: 5;
+            radius: micBar.radius;
             anchors {
                 bottom: parent.bottom;
                 bottomMargin: 0;
