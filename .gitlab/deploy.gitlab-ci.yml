@@ -87,9 +87,9 @@ upload server:
         - docker push registry.tivolicloud.com/tivolicloud/interface/server:latest
         - docker push registry.tivolicloud.com/tivolicloud/interface/ice:latest
 
-upload interface:
+upload launcher:
     stage: deploy
-    image: node:lts
+    image: google/cloud-sdk:alpine
 
     extends: .deploy
 
@@ -99,8 +99,13 @@ upload interface:
         - launcher linux
 
     script:
-        - cd .gitlab
-        - yarn install
-        - ls ../launcher/dist
-        # needs DO_KEY_ID, DO_SECRET_KEY
-        - node deploy.js ../launcher/dist
+        - echo $GCP_AUTH_JSON | base64 -d > /tmp/gcp-auth.json
+        - gcloud auth activate-service-account --key-file /tmp/gcp-auth.json
+        - gsutil cp
+          *.exe
+          *.dmg *.zip
+          *.AppImage *.deb *.pacman
+          *.yml *.blockmap
+          gs://tivolicloud-cdn/releases
+        - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
+          --path "/releases/*"
