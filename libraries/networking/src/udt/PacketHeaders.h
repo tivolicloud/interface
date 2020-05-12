@@ -212,7 +212,7 @@ using PacketType = PacketTypeEnum::Value;
 
 const int NUM_BYTES_MD5_HASH = 16;
 
-typedef char PacketVersion;
+typedef uint8_t PacketVersion;
 
 PacketVersion versionForPacketType(PacketType packetType);
 QByteArray protocolVersionsSignature(); /// returns a unqiue signature for all the current protocols
@@ -277,10 +277,10 @@ enum class EntityVersion : PacketVersion {
     ShadowBiasAndDistance,
     TextEntityFonts,
     ScriptServerKinematicMotion,
-    ZoneCullingMode=84,  // TIVOLI new
-    CustomTags=85, // TIVOLI tagging
-    EntityPriority = 86, // TIVOLI tagging
-    ModelBlendshapes,
+    ZoneCullingMode, // caitlyn
+    CustomTags, // caitlyn
+    EntityPriority, // caitlyn
+    ModelBlendshapes, // hifiexperiments
 
     // Add new versions above here
     NUM_PACKET_TYPE,
