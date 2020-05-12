@@ -101,11 +101,14 @@ upload launcher:
     script:
         - echo $GCP_AUTH_JSON | base64 -d > /tmp/gcp-auth.json
         - gcloud auth activate-service-account --key-file /tmp/gcp-auth.json
+
+        - cd launcher/dist
         - gsutil cp
           *.exe
           *.dmg *.zip
           *.AppImage *.deb *.pacman
           *.yml *.blockmap
           gs://tivolicloud-cdn/releases
+
         - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
           --path "/releases/*"
