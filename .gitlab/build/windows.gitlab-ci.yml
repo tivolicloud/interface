@@ -57,7 +57,8 @@ launcher windows:
         - interface windows
 
     variables:
-        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.p12
+        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.pfx
+        # CSC_KEY_PASSWORD
 
     script:
         # - Remove-Item -Recurse -Force -ErrorAction Ignore launcher # just incase
