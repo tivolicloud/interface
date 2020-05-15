@@ -260,7 +260,7 @@ void TestRunnerDesktop::runInstaller() {
     script.write("#!/bin/sh\n\n");
     script.write("VOLUME=`hdiutil attach \"$1\" | grep Volumes | awk '{print $3}'`\n");
     
-    QString folderName {"Tivoli Cloud"};
+    QString folderName {"Tivoli Cloud VR"};
     if (!_runLatest->isChecked()) {
         folderName += QString(" - ") + getPRNumberFromURL(_url->text());
     }
