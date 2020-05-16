@@ -1,42 +1,32 @@
-~~High Fidelity (hifi) is an early-stage technology lab experimenting with Virtual Worlds and VR.~~
+# Tivoli Cloud Vr
+Tivoli Cloud Vr (Tivoli) is a massive online social platform for virtual reality and desktop.
 
-~~This repository contains the source to many of the components in our~~
-~~alpha-stage virtual world. The project embraces distributed development.~~
-~~If you find a small bug and have a fix, pull requests are welcome.~~
+This repository contains all components needed to build our interface as well as servers.
+You will find compiling support for several operating systems and architectures.
 
-~~We're hiring! We're looking for skilled developers;~~
-~~send your resume to hiring@highfidelity.com~~
+## Documentation
+Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.com), if something is missing, please suggest it via a new item on our [gitlab](https://git.tivolicloud.com/tivolicloud/issues/-/issues) or [roadmap](https://roadmap.tivolicloud.com/).
 
-~~##### Chat with us~~
-~~Come chat with us in [our Gitter](https://gitter.im/highfidelity/hifi) if you have any questions or just want to say hi!~~
+The JavaScript Documentation can be found under [apidocs.tivolicloud.com](https://apidocs.tivolicloud.com/).
 
-~~Documentation~~
-=========
-~~Documentation is available at [docs.highfidelity.com](https://docs.highfidelity.com), if something is missing, please suggest it via a new job on Worklist (add to the hifi-docs project).~~
+There is also detailed [documentation on our coding standards](howtos/CODING_STANDARD.md).
 
-~~There is also detailed [documentation on our coding standards](CODING_STANDARD.md).~~
+## License
+Built atop HFVRP copyright 2019 High Fidelity, Inc. under Apache 2.0
+See http://www.apache.org/licenses/LICENSE-2.0.html and [license](tivoli-agpl3-header.txt)
 
-~~Contributor License Agreement (CLA)~~
-=========
-~~Technology companies frequently receive and use code from contributors outside the company's development team. Outside code can be a tremendous resource, but it also carries responsibility. Best practice for accepting outside contributions consists of an Apache-type Contributor License Agreement (CLA). We have modeled the High Fidelity CLA after the CLA that Google presents to developers for contributions to their projects. This CLA does not transfer ownership of code, instead simply granting a non-exclusive right for High Fidelity to use the code you’ve contributed. In that regard, you should be sure you have permission if the work relates to or uses the resources of a company that you work for. You will be asked to sign our CLA when you create your first PR or when the CLA is updated. You can also [review it here](https://gist.githubusercontent.com/hifi-gustavo/fef8f06a8233d42a0040d45c3efb97a9/raw/9981827eb94f0b18666083670b6f6a02929fb402/High%2520Fidelity%2520CLA). We sincerely appreciate your contribution and efforts toward the success of the platform.~~
+## Building
+All information required to build is found in the [build guide](howtos/BUILD.md).
 
-~~Build Instructions~~
-=========
-~~All information required to build is found in the [build guide](BUILD.md).~~
+## Running the interface
+You can run the the interface with the following:
+```
+interface.exe --tokens [current access token]
+```
+The current access token is only needed, if you want to log in with your Tivoli Account.
+You can find it under the developer options in the launcher.
 
-~~Running Interface~~
-===
-~~When you launch interface, you will automatically connect to our default domain: "root.highfidelity.io".~~
-
-~~If you don't see anything, make sure your preferences are pointing to~~
-~~root.highfidelity.io (set your domain via Cmnd+D/Cntrl+D). If you still have no luck,~~
-~~it's possible our servers are down. If you're experiencing a major bug, let us know by~~
-~~adding an issue to this repository. Include details about your computer and how to~~
-~~reproduce the bug in your issue.~~
-
-~~To move around in-world, use the arrow keys (and Shift + up/down to fly up or~~
-~~down) or W A S D, and E or C to fly up/down. All of the other possible options~~
-~~and features are available via menus in the Interface application.~~
+You can also point the interface path to your custom build location there. Then you can use the launcher to start the interface with your account.
 
 ~~Running your own servers~~
 ========

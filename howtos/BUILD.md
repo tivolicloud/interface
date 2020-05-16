@@ -34,7 +34,7 @@ These are not placed in your normal build tree when doing an out of source build
 
 #### CMake
 
-Hifi uses CMake to generate build files and project files for your platform.
+Tivoli uses CMake to generate build files and project files for your platform.
 
 #### Qt
 CMake will download Qt 5.12.3 using vcpkg.  
@@ -47,6 +47,11 @@ This can either be entered directly into your shell session before you build or 
     export QT_CMAKE_PREFIX_PATH=/usr/local/Cellar/qt5/5.12.3/lib/cmake
     export QT_CMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
 
+You can also use 
+    export HIFI_QT_BASE=/path/to/directory
+to set your complete QT path.
+
+*Note: Keep in mind that exporting environmental variables works on every commandline tool differently. Please have a look at the documentation of your terminal.*
 #### Vcpkg
 
 Hifi uses vcpkg to download and build dependencies.

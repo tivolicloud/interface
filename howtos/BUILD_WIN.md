@@ -1,5 +1,5 @@
-This is a stand-alone guide for creating your first High Fidelity build for Windows 64-bit.  
-## Building High Fidelity
+This is a stand-alone guide for creating your first Tivoli Cloud VR build for Windows 64-bit.  
+## Building Tivoli Cloud VR
 Note: We are now using Visual Studio 2017 or 2019 and Qt 5.12.3.  
 If you are upgrading from previous versions, do a clean uninstall of those versions before going through this guide.  
 
@@ -37,7 +37,7 @@ Download and install the latest version of CMake 3.15.
 Download the file named win64-x64 Installer from the [CMake Website](https://cmake.org/download/). You can access the installer on this [3.15 Version page](https://cmake.org/files/v3.15/). During installation, make sure to check "Add CMake to system PATH for all users" when prompted.
 
 ### Step 3. Create VCPKG environment variable
-In the next step, you will use CMake to build High Fidelity. By default, the CMake process builds dependency files in Windows' `%TEMP%` directory, which is periodically cleared by the operating system. To prevent you from having to re-build the dependencies in the event that Windows clears that directory, we recommend that you create a `TIVOLI_VCPKG_BASE` environment variable linked to a directory somewhere on your machine. That directory will contain all dependency files until you manually remove them.
+In the next step, you will use CMake to build Tivoli Cloud VR. By default, the CMake process builds dependency files in Windows' `%TEMP%` directory, which is periodically cleared by the operating system. To prevent you from having to re-build the dependencies in the event that Windows clears that directory, we recommend that you create a `TIVOLI_VCPKG_BASE` environment variable linked to a directory somewhere on your machine. That directory will contain all dependency files until you manually remove them.
 
 To create this variable:
 * Naviagte to 'Edit the System Environment Variables' Through the start menu.
@@ -88,7 +88,7 @@ Restart Visual Studio again.
 
 In Visual Studio, right+click "interface" under the Apps folder in Solution Explorer and select "Set as Startup Project". Run from the menu bar `Debug > Start Debugging`.
 
-Now, you should have a full build of High Fidelity and be able to run the Interface using Visual Studio. Please check our [Docs](https://wiki.highfidelity.com/wiki/Main_Page) for more information regarding the programming workflow.
+Now, you should have a full build of Tivoli Cloud VR and be able to run the Interface using Visual Studio. Please check our [Docs](https://docs.tivolicloud.com/) for more information regarding the programming workflow.
 
 Note: You can also run Interface by launching it from command line or File Explorer from `%HIFI_DIR%\build\interface\Release\interface.exe`
 
@@ -97,7 +97,7 @@ Note: You can also run Interface by launching it from command line or File Explo
 For any problems after Step #6, first try this:  
 * Delete your locally cloned copy of the highfidelity repository  
 * Restart your computer  
-* Redownload the [repository](https://github.com/highfidelity/hifi)  
+* Redownload the [repository](https://git.tivolicloud.com/tivolicloud/interface)  
 * Restart directions from Step #6  
 
 #### CMake gives you the same error message repeatedly after the build fails
