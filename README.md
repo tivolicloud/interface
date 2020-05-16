@@ -1,4 +1,6 @@
-# Tivoli Cloud VR
+<img height="150" src="https://alpha.tivolicloud.com/assets/logo-dark.svg" alt="Tivoli Cloud VR"/>
+
+## https://tivolicloud.com
 
 Tivoli Cloud VR (Tivoli) is a massive online social platform for virtual reality and desktop.
 
@@ -7,11 +9,13 @@ You will find compiling support for several operating systems and architectures.
 
 ## Documentation
 
-Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.com), if something is missing, please suggest it on our [git issues](https://git.tivolicloud.com/tivolicloud/issues/-/issues) or [roadmap](https://roadmap.tivolicloud.com).
+Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.com), if something is missing, please suggest it on our [git issues](https://git.tivolicloud.com/tivolicloud/issues/-/issues) or on [roadmap.tivolicloud.com](https://roadmap.tivolicloud.com).
 
 The JavaScript API reference can be found under [https://apidocs.tivolicloud.com](https://apidocs.tivolicloud.com).
 
-There is also detailed [documentation on our coding standards](howtos/CODING_STANDARD.md).
+We have a [Discord server](https://alpha.tivolicloud.com/discord) where you can always ask for help.
+
+There is also detailed documentation on [our coding standards](howtos/CODING_STANDARD.md).
 
 ## License
 
@@ -30,12 +34,14 @@ You can run the interface using the launcher available at: https://alpha.tivolic
 If you're using a self-compiled version, you can set the build location in the launcher under the developer menu.
 
 If you want to run Tivoli without the launcher, run:
-```
+
+```bash
 interface.exe --tokens [current access token]
 ```
-You can find your access token in the launcher's developer menu. Please don't share it and keep it safe! 
 
-## Running your own server 
+You can find your access token in the launcher's developer menu. Please don't share it and keep it safe!
+
+## Running your own server
 
 The server is available on Docker hub: https://hub.docker.com/r/tivolicloud/server
 
