@@ -1092,7 +1092,10 @@ void DomainServer::processListRequestPacket(QSharedPointer<ReceivedMessage> mess
     }
 
     // guard against patched agents asking to hear about other agents
-    auto safeInterestSet = nodeRequestData.interestList.toSet();
+    auto safeInterestSet = QSet<NodeType_t>(
+        nodeRequestData.interestList.begin(),
+        nodeRequestData.interestList.end()
+    );
     if (sendingNode->getType() == NodeType::Agent) {
         safeInterestSet.remove(NodeType::Agent);
     }
