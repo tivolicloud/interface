@@ -689,6 +689,9 @@ void DomainServer::setupNodeListAndAssignments() {
     static const QString ENABLE_PACKET_AUTHENTICATION = "metaverse.enable_packet_verification";
 
     QVariant localPortValue = _settingsManager.valueOrDefaultValueForKeyPath(CUSTOM_LOCAL_PORT_OPTION);
+    // TODO: if env HIFI_DOMAIN_SERVER_PORT, set new local port value
+    // then remove workaround in docker/server/ecosystem.config.js
+    // ...which should also be replaced sometime
     int domainServerPort = localPortValue.toInt();
 
     int domainServerDTLSPort = INVALID_PORT;
@@ -713,6 +716,8 @@ void DomainServer::setupNodeListAndAssignments() {
     populateStaticScriptedAssignmentsFromSettings();
 
     auto nodeList = DependencyManager::set<LimitedNodeList>(domainServerPort, domainServerDTLSPort);
+    qDebug() << "MAKI domainserverport: "<<domainServerPort;
+    qDebug() << "MAKI domainserverport2: "<<nodeList->getSocketLocalPort();
 
     // no matter the local port, save it to shared mem so that local assignment clients can ask what it is
     nodeList->putLocalPortIntoSharedMemory(DOMAIN_SERVER_LOCAL_PORT_SMEM_KEY, this, nodeList->getSocketLocalPort());
