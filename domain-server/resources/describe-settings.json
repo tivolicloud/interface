@@ -27,7 +27,7 @@
           "options": [
             {
               "value": "full",
-              "label": "Full: update both the IP address and port to reach my server"
+              "label": "Full: automatic connection establishment using ICE protocol"
             },
             {
               "value": "ip",
