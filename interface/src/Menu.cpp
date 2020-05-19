@@ -187,23 +187,32 @@ Menu::Menu() {
     cameraModeGroup->setExclusive(true);
 
     // View > First Person
-    auto firstPersonAction = cameraModeGroup->addAction(addCheckableActionToQMenuAndActionHash(
-                                   viewMenu, MenuOption::FirstPersonLookAt, 0,
-                                   false, qApp, SLOT(cameraMenuChanged())));
+    auto firstPersonAction = cameraModeGroup->addAction(
+        addCheckableActionToQMenuAndActionHash(
+            viewMenu, MenuOption::FirstPersonLookAt, Qt::Key_1,
+            false, qApp, SLOT(cameraMenuChanged())
+        )
+    );
 
     firstPersonAction->setProperty(EXCLUSION_GROUP_KEY, QVariant::fromValue(cameraModeGroup));
 
     // View > Look At
-    auto lookAtAction = cameraModeGroup->addAction(addCheckableActionToQMenuAndActionHash(
-                                   viewMenu, MenuOption::LookAtCamera, 0,
-                                   true, qApp, SLOT(cameraMenuChanged())));
+    auto lookAtAction = cameraModeGroup->addAction(
+        addCheckableActionToQMenuAndActionHash(
+            viewMenu, MenuOption::LookAtCamera, Qt::Key_3,
+            true, qApp, SLOT(cameraMenuChanged())
+        )
+    );
 
     lookAtAction->setProperty(EXCLUSION_GROUP_KEY, QVariant::fromValue(cameraModeGroup));
 
     // View > Selfie
-    auto selfieAction = cameraModeGroup->addAction(addCheckableActionToQMenuAndActionHash(
-        viewMenu, MenuOption::SelfieCamera, 0,
-        false, qApp, SLOT(cameraMenuChanged())));
+    auto selfieAction = cameraModeGroup->addAction(
+        addCheckableActionToQMenuAndActionHash(
+            viewMenu, MenuOption::SelfieCamera, Qt::Key_2,
+            false, qApp, SLOT(cameraMenuChanged())
+        )
+    );
 
     selfieAction->setProperty(EXCLUSION_GROUP_KEY, QVariant::fromValue(cameraModeGroup));
 
@@ -462,7 +471,7 @@ Menu::Menu() {
         RenderScriptingInterface::getInstance(), SLOT(setAmbientOcclusionEnabled(bool)));
 
     addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::WorldAxes);
-    // addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::DefaultSkybox, 0, true);
+    // addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::DefaultSkybox, Qt::Key_Asterisk, true);
 
     // Developer > Render > Throttle FPS If Not Focus
     // addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ThrottleFPSIfNotFocus, 0, true);
@@ -719,7 +728,9 @@ Menu::Menu() {
     addActionToQMenuAndActionHash(timingMenu, MenuOption::RunTimingTests, 0, qApp, SLOT(runTests()));
     addCheckableActionToQMenuAndActionHash(timingMenu, MenuOption::PipelineWarnings);
     addCheckableActionToQMenuAndActionHash(timingMenu, MenuOption::LogExtraTimings);
-    addCheckableActionToQMenuAndActionHash(timingMenu, MenuOption::SuppressShortTimings);
+    addCheckableActionToQMenuAndActionHash(timingMenu, MenuOption::SuppressShortTimings
+        // Qt::Key_S, isShifted && isControlOrCommand && !isOption
+    );
 
 
     // Developer > Audio >>>
@@ -815,7 +826,7 @@ Menu::Menu() {
     
 
     // Developer > Show Statistics
-    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, 0, true);
+    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, Qt::Key_Slash, true);
 
     // Developer > Show Animation Statistics
     addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::AnimStats);

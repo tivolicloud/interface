@@ -4417,21 +4417,6 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 }
                 break;
 
-            case Qt::Key_1: {
-                Menu* menu = Menu::getInstance();
-                menu->triggerOption(MenuOption::FirstPersonLookAt);
-                break;
-            }
-            case Qt::Key_2: {
-                Menu* menu = Menu::getInstance();
-                menu->triggerOption(MenuOption::SelfieCamera);
-                break;
-            }
-            case Qt::Key_3: {
-                Menu* menu = Menu::getInstance();
-                menu->triggerOption(MenuOption::LookAtCamera);
-                break;
-            }
             case Qt::Key_4:
             case Qt::Key_5:
             case Qt::Key_6:
@@ -4488,11 +4473,8 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 break;
 
             case Qt::Key_L:
-                if (isShifted && isControlOrCommand) {
-                    Menu::getInstance()->triggerOption(MenuOption::Log);
-                }
                 // TODO: remove old goto first
-                // } else if (isControlOrCommand) {
+                // if (isControlOrCommand) {
                 //     auto dialogsManager = DependencyManager::get<DialogsManager>();
                 //     dialogsManager->toggleAddressBar();
                 // }
@@ -4505,10 +4487,6 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 }
                 break;
 
-            // case Qt::Key_Asterisk:
-            //     Menu::getInstance()->triggerOption(MenuOption::DefaultSkybox);
-            //     break;
-
             case Qt::Key_M:
                 if (isControlOrCommand) {
                     auto audioClient = DependencyManager::get<AudioClient>();
@@ -4517,12 +4495,6 @@ void Application::keyPressEvent(QKeyEvent* event) {
                     if (audioScriptingInterface && audioScriptingInterface->getPTT()) {
                        audioScriptingInterface->setPushingToTalk(!audioClient->isMuted());
                     }
-                }
-                break;
-
-            case Qt::Key_S:
-                if (isShifted && isControlOrCommand && !isOption) {
-                    Menu::getInstance()->triggerOption(MenuOption::SuppressShortTimings);
                 }
                 break;
 
@@ -4544,15 +4516,7 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 }
                 break;
             }
-
-            case Qt::Key_Backslash:
-                Menu::getInstance()->triggerOption(MenuOption::Chat);
-                break;
-
-            case Qt::Key_Slash:
-                Menu::getInstance()->triggerOption(MenuOption::Stats);
-                break;
-
+            
             case Qt::Key_Plus: {
                 if (isControlOrCommand && event->modifiers().testFlag(Qt::KeypadModifier)) {
                     auto& cursorManager = Cursor::Manager::instance();
