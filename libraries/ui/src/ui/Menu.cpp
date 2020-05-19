@@ -138,10 +138,12 @@ QAction* Menu::addActionToQMenuAndActionHash(MenuWrapper* destinationMenu,
         } else {
             action = destinationMenu->addAction(actionName);
             action->setShortcut(shortcut);
+            action->setShortcutVisibleInContextMenu(true);
         }
     } else {
         action = new QAction(actionName, destinationMenu);
         action->setShortcut(shortcut);
+        action->setShortcutVisibleInContextMenu(true);
         destinationMenu->insertAction(actionBefore, action);
 
         if (receiver && member) {
@@ -179,6 +181,7 @@ QAction* Menu::addActionToQMenuAndActionHash(MenuWrapper* destinationMenu,
 
     if (shortcut != 0) {
         action->setShortcut(shortcut);
+        action->setShortcutVisibleInContextMenu(true);
     }
 
     if (role != QAction::NoRole) {
