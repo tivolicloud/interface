@@ -63,11 +63,11 @@ void MainWindow::restoreGeometry() {
     // Did not use setGeometry() on purpose,
     // see http://doc.qt.io/qt-5/qsettings.html#restoring-the-state-of-a-gui-application
 
-#if defined(Q_OS_MAC)
-    const float intialWindowScale = 0.8f;
-#else
+// #if defined(Q_OS_MAC)
+//     const float intialWindowScale = 0.8f;
+// #else
     const float intialWindowScale = 1.0f;
-#endif
+// #endif
 
     const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
     const QSize windowSize = screen.size() * intialWindowScale;
