@@ -54,7 +54,6 @@
 #include "DomainServerNodeData.h"
 #include "EntitiesBackupHandler.h"
 #include "NodeConnectionData.h"
-#include "DomainPrometheusExporter.h"
 
 #include <Gzip.h>
 
@@ -2252,8 +2251,6 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             return forwardMetaverseAPIRequest(connection, "/api/v1/domains/" + id, "", {}, {}, false);
         } else if (url.path() == URI_API_PLACES) {
             return forwardMetaverseAPIRequest(connection, "/api/v1/user/places", "");
-        } else if (url.path() == "/metrics") {
-            return DomainPrometheusExporter::handleRequest(connection);
         } else {
             // check if this is for json stats for a node
             const QString NODE_JSON_REGEX_STRING = QString("\\%1\\/(%2).json\\/?$").arg(URI_NODES).arg(UUID_REGEX_STRING);
