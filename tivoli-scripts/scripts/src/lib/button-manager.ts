@@ -203,6 +203,11 @@ class ButtonManager {
 					this.lockControls(true);
 					HMD.closeTablet();
 				} else {
+					// close all other window panels first
+					for (const panel of this.panels) {
+						panel.window.setVisible(false);
+					}
+
 					panel.window.setSize(this.getOptimalWindowSize() as Vec2);
 					panel.window.setPosition(
 						this.getOptimalWindowPosition() as Vec2,
