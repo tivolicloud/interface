@@ -99,8 +99,7 @@ upload launcher:
         - launcher linux
 
     script:
-        - echo $GCP_AUTH_JSON | base64 -d > /tmp/gcp-auth.json
-        - gcloud auth activate-service-account --key-file /tmp/gcp-auth.json
+        - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON
 
         - cd launcher/dist
         - gsutil cp
