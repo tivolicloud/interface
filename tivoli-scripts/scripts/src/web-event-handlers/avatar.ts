@@ -53,9 +53,11 @@ class AvatarHandler extends WebEventHandler {
 				break;
 			case "useDefault":
 				MyAvatar.randomizeDefaultAvatar();
-				MyAvatar.useFullAvatarURL("", "Default");
+
+				const defaultAvatarUrl = MyAvatar.getDefaultFullAvatarURL();
+				MyAvatar.useFullAvatarURL(defaultAvatarUrl, "Default");
 				MyAvatar.scale = 1;
-				this.emitEvent("getAvatarURL", data.value);
+				this.emitEvent("getAvatarURL", defaultAvatarUrl);
 				this.setAvatarBookmarkName("");
 				break;
 

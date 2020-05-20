@@ -86,6 +86,7 @@ declare namespace MyAvatar {
 	var allowTeleporting: boolean;
 
 	// methods
+	function getDefaultFullAvatarURL(): string;
 	function getFullAvatarModelName(): string;
 	function getFullAvatarURLFromPreferences(): string;
 	function randomizeDefaultAvatar(): void;

@@ -2613,6 +2613,10 @@ void MyAvatar::randomizeDefaultAvatar() {
     }
 }
 
+QUrl MyAvatar::getDefaultFullAvatarURL() {
+    return Avatar::defaultFullAvatarModelUrl();
+}
+
 void MyAvatar::useFullAvatarURL(const QUrl& fullAvatarURL, const QString& modelName) {
 
     if (QThread::currentThread() != thread()) {

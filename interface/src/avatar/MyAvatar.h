@@ -1334,10 +1334,17 @@ public:
 
     /**jsdoc
      * Randomizes the colors of the default avatar.
-     * <code>MyAvatar.useFullAvatarURL("", "Default")</code> will set you back.
+     * <code>MyAvatar.useFullAvatarURL(MyAvatar.getDefaultFullAvatarURL(), "Default")</code> will set you back.
      * @function MyAvatar.randomizeDefaultAvatar
      */
     Q_INVOKABLE void randomizeDefaultAvatar();
+    
+    /**jsdoc
+     * Returns the URL for the default avatar.
+     * <code>MyAvatar.useFullAvatarURL(MyAvatar.getDefaultFullAvatarURL(), "Default")</code> will set you back.
+     * @function MyAvatar.getDefaultFullAvatarURL
+     */
+    Q_INVOKABLE QUrl getDefaultFullAvatarURL();
    
     /**jsdoc
      * Changes the user's avatar and associated descriptive name.
