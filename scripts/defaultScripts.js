@@ -27,24 +27,19 @@
 
 	"system/controllers/controllerScripts.js",
 	// "system/interstitialPage.js"
-
-	"tivoli.js"
 ].forEach(function(script) {
 	Script.include("file:///~/" + script);
 });
 
-// // loaded scripts
-// [
-// 	// tivoli.js is added to scripts in build pipeline after "interface" and
-// 	// "tivoli-scripts" are both built. compile tivoli.js manually if you want
-// 	// to develop for it.
-// 	"tivoli.js"
-// ].forEach(function(script) {
-// 	var runningScripts = ScriptDiscoveryService.getRunning();
+// loaded scripts
+[
+	"tivoli.js"
+].forEach(function(script) {
+	var runningScripts = ScriptDiscoveryService.getRunning();
 
-// 	for (var i = 0; i < runningScripts.length; i++) {
-// 		if (runningScripts[i].name == script) return;
-// 	}
+	for (var i = 0; i < runningScripts.length; i++) {
+		if (runningScripts[i].name == script) return;
+	}
 
-// 	ScriptDiscoveryService.loadScript("file:///~/" + script);
-// });
+	ScriptDiscoveryService.loadScript("file:///~/" + script);
+});
