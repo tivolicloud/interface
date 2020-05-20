@@ -832,7 +832,7 @@ exports.publish = function(taffyData, opts, tutorials) {
 	// add release number to readme
 	opts.readme = opts.readme.replace(
 		/{{\s*?version\s*?}}/gi,
-		process.env.BUILD_VERSION || "unknown",
+		process.env.RELEASE_NUMBER || "unknown",
 	);
 
 	generate(
