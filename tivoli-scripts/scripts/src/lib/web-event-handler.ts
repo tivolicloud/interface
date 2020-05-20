@@ -9,7 +9,11 @@ class WebEventHandler {
 
 	private panel: PanelPair;
 
-	constructor(public uuid: string, public button: ButtonData) {
+	constructor(
+		public uuid: string,
+		public button: ButtonData,
+		public otherButtons: ButtonData[],
+	) {
 		this.panel = button.panel;
 	}
 
@@ -30,18 +34,6 @@ class WebEventHandler {
 			case "close":
 				this.button.close();
 				break;
-
-			// case "getFirstTime":
-			// 	this.emitEvent(
-			// 		"getFirstTime",
-			// 		Settings.getValue("com.tivolicloud.firstTime", true),
-			// 	);
-			// 	break;
-
-			// case "setFirstTime":
-			// 	Settings.setValue("com.tivolicloud.firstTime", data.value);
-			// 	this.emitEvent("getFirstTime", data.value);
-			// 	break;
 		}
 
 		this.handleEvent(data);

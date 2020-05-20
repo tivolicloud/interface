@@ -4,8 +4,8 @@ class ExploreHandler extends WebEventHandler {
 	canGoBack = false;
 	canGoForward = false;
 
-	constructor(uuid: string, button: ButtonData) {
-		super(uuid, button);
+	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {
+		super(uuid, button, otherButtons);
 
 		this.signalManager.connect(
 			Window.location.goBackPossible,

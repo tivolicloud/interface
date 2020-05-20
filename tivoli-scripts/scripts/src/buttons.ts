@@ -23,6 +23,11 @@ class Buttons {
 		// 	console.log("clicked");
 		// });
 
+		// TODO: the web event handling system doesn't let you share handlers
+		// right now the market button uses the AvatarHandler and on the
+		// frontend, it does emit("explore", "[avatar handler key]")
+		// its confusing and weird and needs redesigning
+
 		// avatar
 		const avatar = this.buttonManager.addWebButton(
 			"Avatar",

@@ -1,8 +1,8 @@
 /// <reference path="../lib/web-event-handler.ts" />
 
 class AvatarHandler extends WebEventHandler {
-	constructor(uuid: string, button: ButtonData) {
-		super(uuid, button);
+	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {
+		super(uuid, button, otherButtons);
 
 		this.signalManager.connect(MyAvatar.collisionsEnabledChanged, () => {
 			this.emitEvent(
@@ -126,6 +126,19 @@ class AvatarHandler extends WebEventHandler {
 			case "setAvatarBookmarkName":
 				this.setAvatarBookmarkName(data.value);
 				break;
+
+			// other
+			case "openMarket":
+				for (const button of this.otherButtons) {
+					if (
+						button.button.getProperties().text.toLowerCase() ==
+						"market"
+					) {
+						this.button.close();
+						button.open();
+						break;
+					}
+				}
 		}
 	}
 }

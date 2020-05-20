@@ -14,7 +14,7 @@ interface ButtonData {
 
 class ButtonManager {
 	// for cleanup
-	private buttons: TabletButtonProxy[] = [];
+	private buttons: ButtonData[] = [];
 	private handlers: WebEventHandler[] = [];
 	private panels: PanelPair[] = [];
 
@@ -270,6 +270,7 @@ class ButtonManager {
 		const handler = new handlerClass(
 			"com.tivolicloud.defaultScripts." + name.toLowerCase(),
 			buttonData,
+			this.buttons,
 		);
 
 		this.handlers.push(handler); // for cleanup
@@ -338,8 +339,8 @@ class ButtonManager {
 			);
 		}
 
-		this.buttons.push(button);
-		return { button, panel, open, close };
+		this.buttons.push(buttonData);
+		return buttonData;
 	}
 
 	addUselessButton(name: string, icon: string, onButtonClicked = () => {}) {
@@ -351,13 +352,18 @@ class ButtonManager {
 
 		this.signalManager.connect(button.clicked, onButtonClicked);
 
-		this.buttons.push(button);
+		this.buttons.push({
+			button,
+			panel: null,
+			open: () => {},
+			close: () => {},
+		});
 		return button;
 	}
 
 	cleanup() {
 		for (let button of this.buttons) {
-			this.tablet.removeButton(button);
+			this.tablet.removeButton(button.button);
 		}
 
 		for (let panel of this.panels) {

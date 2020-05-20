@@ -176,12 +176,16 @@ export class AvatarComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	openRecommendedAvatars() {
-		this.dialog.open(RecommendedAvatarsComponent, {
-			width: "90vw",
-			maxWidth: "90vw",
-			maxHeight: "90vh",
-		});
+	// openRecommendedAvatars() {
+	// 	this.dialog.open(RecommendedAvatarsComponent, {
+	// 		width: "90vw",
+	// 		maxWidth: "90vw",
+	// 		maxHeight: "90vh",
+	// 	});
+	// }
+
+	openMarket() {
+		this.scriptService.emitEvent("avatar", "openMarket");
 	}
 
 	onUseDefault() {
