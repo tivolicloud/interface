@@ -1,3 +1,6 @@
+# windows might fail if trying to clean up files that have a long path name
+# set `git config --system core.longpaths true` on the build machine to fix
+
 interface windows:
     stage: build
     tags:
@@ -54,7 +57,7 @@ launcher windows:
         - interface windows
 
     variables:
-        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.pfx
+        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.ci.p12
         # CSC_KEY_PASSWORD
 
     script:

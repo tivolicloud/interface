@@ -4,6 +4,7 @@
 .deploy:
     extends: .production
     when: manual
+    allow_failure: false
 
 pages:
     stage: deploy
