@@ -1,0 +1,19 @@
+.product {
+	.thumbnail {
+		height: 150px;
+		background-image: url(https://cdn.discordapp.com/attachments/492007587429220373/712377806041907220/f837af4fd1671ab02a72de56de316cf6.png);
+	}
+
+	.content {
+		padding: 1rem;
+
+		h2,
+		h3,
+		h4 {
+			margin: 0;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+	}
+}

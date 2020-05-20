@@ -184,8 +184,9 @@ endif ()
 
 
 if (BUILD_TOOLS AND NPM_EXECUTABLE)
-  # require JSDoc to be build before interface is deployed
+  # require JSDoc and Tivoli scripts to be build before interface is deployed
   add_dependencies(resources jsdoc)
+  add_dependencies(resources tivoli-scripts)
 endif()
 
 add_dependencies(${TARGET_NAME} resources)
@@ -336,6 +337,11 @@ if (APPLE)
       "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json"
       "${RESOURCES_DEV_DIR}/jsdoc/doclets.json"
 
+    # copy Tivoli scripts into scripts folder
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+      "${CMAKE_SOURCE_DIR}/tivoli-scripts/dist"
+      "${RESOURCES_DEV_DIR}/scripts/."
+
     # copy the resources files beside the executable
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
       "${RESOURCES_RCC}"
@@ -395,6 +401,11 @@ else()
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
       "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json"
       "${INTERFACE_EXEC_DIR}/jsdoc/doclets.json"
+
+    # copy Tivoli scripts into scripts folder
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+      "${CMAKE_SOURCE_DIR}/tivoli-scripts/dist"
+      "${INTERFACE_EXEC_DIR}/scripts/."
   )
 
   # link target to external libraries

@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"files": "copyfiles -u 1 src/assets/**/* ../dist/tivoli",
+		"minify": "terser --config-file terser.json ../dist/tivoli.js -o ../dist/tivoli.js",
+		"build": "npm run files && tsc",
+		"start": "npm run files && tsc -w"
+	},
+	"dependencies": {
+		"copyfiles": "^2.1.1",
+		"rimraf": "^3.0.0",
+		"terser": "^4.6.2",
+		"typescript": "^3.7.2"
+	}
+}

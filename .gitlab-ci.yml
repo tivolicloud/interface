@@ -1,5 +1,4 @@
 stages:
-    - dependencies
     - build
     - package
     - deploy
@@ -9,23 +8,6 @@ stages:
         - /^[0-9]+?\.[0-9]+?\.[0-9]+?$/i
     environment:
         name: production
-
-tivoli scripts:
-    stage: dependencies
-    image: node:lts
-    extends: .production
-    script:
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/tivoli-scripts
-        - cd tivoli-scripts
-        - yarn install
-        - yarn build
-        - mv dist/* ../scripts
-
-    artifacts:
-        expire_in: 1 days
-        paths:
-            - scripts/tivoli/
-            - scripts/tivoli.js
 
 include:
     - local: .gitlab/build/linux.gitlab-ci.yml

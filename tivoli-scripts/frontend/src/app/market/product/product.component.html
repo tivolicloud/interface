@@ -1,0 +1,99 @@
+<div class="container">
+	<div class="row">
+		<div class="col-12">
+			<h1 class="title" style="margin-bottom: 0;">{{ product.name }}</h1>
+			<h2 style="margin-top: 0;">
+				Created by <b>{{ product.author }}</b>
+			</h2>
+		</div>
+		<div class="col-md-6 col-lg-8">
+			<app-media [media]="product.images"></app-media>
+		</div>
+		<div class="col-md-6 col-lg-4 sidebar">
+			<h1 style="font-weight: 500; margin: 0;">
+				{{
+					product.price <= 0
+						? "Free!"
+						: "$" + product.price.toFixed(2)
+				}}
+			</h1>
+			<p
+				style="
+					margin-top: 8px;
+					overflow: hidden;
+					height: 130px;
+					display: -webkit-box;
+					-webkit-line-clamp: 6;
+					-webkit-box-orient: vertical;
+				"
+			>
+				{{ product.description }}
+			</p>
+
+			<span style="flex-grow: 1;"></span>
+
+			<button
+				mdc-button
+				unelevated
+				class="install"
+				(click)="onUseNow(useNowMenu)"
+			>
+				Use now!
+				<div mdcMenuSurfaceAnchor #useNowAnchor></div>
+			</button>
+			<mdc-menu
+				#useNowMenu
+				[anchorElement]="useNowAnchor"
+				class="version-menu"
+			>
+				<mdc-list>
+					<mdc-list-item
+						*ngFor="let version of versions"
+						(click)="wearAvatar(version.url)"
+					>
+						<div
+							class="image"
+							[style.backgroundImage]="
+								'url(' + version.image + ')'
+							"
+						></div>
+						{{ version.name }}
+					</mdc-list-item>
+				</mdc-list>
+			</mdc-menu>
+
+			<div style="margin-top: 8px;">
+				<button mdc-button outlined style="min-width: 0;">
+					<mdc-icon style="margin: 0;">favorite</mdc-icon>
+				</button>
+				<span style="margin-right: 8px;"></span>
+				<button mdc-button outlined>
+					<mdc-icon>share</mdc-icon> Share
+				</button>
+			</div>
+			<br />
+			<table style="width: 70%;">
+				<tr>
+					<td><b>Type</b></td>
+					<td style="text-transform: capitalize;">
+						{{ product.type }}
+					</td>
+				</tr>
+				<tr>
+					<td><b>File size</b></td>
+					<td>{{ product.fileSize }} MB</td>
+				</tr>
+				<tr>
+					<td><b>Added</b></td>
+					<td>{{ product.added | date }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-8">
+			<br />
+			<hr />
+			<p style="opacity: 0.5; margin-top: 0;">Description</p>
+			{{ product.description }}
+		</div>
+	</div>
+</div>

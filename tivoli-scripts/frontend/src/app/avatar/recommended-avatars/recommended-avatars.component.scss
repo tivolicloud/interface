@@ -1,0 +1,44 @@
+@mixin overlayBg($url, $overlay) {
+	background-image: linear-gradient(0deg, $overlay, $overlay), $url;
+}
+
+.primary-button {
+	font-size: 2em;
+	padding: 24px 0;
+	width: 100%;
+	color: #fff;
+	margin: 16px 0;
+
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.avatars {
+	.avatar {
+		width: calc(50% - 8px);
+		display: inline-block;
+		margin-bottom: 16px;
+		cursor: pointer;
+
+		.image {
+			height: 120px;
+			margin-bottom: 8px;
+			border-radius: 8px;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+	}
+
+	.avatar:hover {
+		transform: scale(0.95);
+	}
+
+	.avatar:nth-child(odd) {
+		margin-right: 8px;
+	}
+	.avatar:nth-child(even) {
+		margin-left: 8px;
+	}
+}

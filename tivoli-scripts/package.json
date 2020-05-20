@@ -1,0 +1,16 @@
+{
+	"scripts": {
+		"deps:scripts": "cd scripts && yarn install --no-progress",
+		"deps:frontend": "cd frontend && yarn install --no-progress",
+		"deps": "npm i --no-progress && npm run deps:scripts && npm run deps:frontend",
+		"build:scripts": "cd scripts && npm run build",
+		"build:frontend": "cd frontend && npm run build",
+		"build": "npm run build:scripts && npm run build:frontend",
+		"build:hashed": "node build-hashed.js"
+	},
+	"devDependencies": {
+		"folder-hash": "^3.3.1",
+		"npm": "^6.14.5",
+		"yarn": "^1.22.4"
+	}
+}

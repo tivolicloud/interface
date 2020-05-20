@@ -1,0 +1,25 @@
+<div class="app">
+	<app-sidebar></app-sidebar>
+	<div class="content" *ngIf="currentProduct">
+		<mdc-top-app-bar class="go-back">
+			<mdc-top-app-bar-row>
+				<mdc-top-app-bar-section>
+					<button mdcTopAppBarNavIcon (click)="selectProduct(null)">
+						<mdc-icon>arrow_back</mdc-icon>
+					</button>
+					<h1
+						mdcTopAppBarTitle
+						style="cursor: pointer;"
+						(click)="selectProduct(null)"
+					>
+						Go back
+					</h1>
+				</mdc-top-app-bar-section>
+			</mdc-top-app-bar-row>
+		</mdc-top-app-bar>
+		<app-product [product]="currentProduct"></app-product>
+	</div>
+	<div class="content" *ngIf="!currentProduct">
+		<app-products [products]="marketProducts"></app-products>
+	</div>
+</div>

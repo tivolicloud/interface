@@ -1,0 +1,254 @@
+.explore {
+	display: flex;
+	flex-direction: row;
+
+	.domains {
+		flex-grow: 1;
+		overflow: hidden;
+		height: 100vh;
+		position: relative;
+
+		::ng-deep .mat-tab-label {
+			min-width: 0;
+			// padding: 0 24px;
+		}
+
+		.domain-list {
+			$zoom: 0.85;
+
+			zoom: $zoom;
+			padding: 8px;
+			overflow: auto;
+			height: calc(
+				#{100vh * 1 / $zoom} - #{48px * 2.75}
+			); // 48px from .current-domain. not sure why * 2.75 but needs redesinging
+
+			app-domain-card {
+				// width: calc(100% / 4 - 16px);
+				width: calc(100% / 4);
+				display: inline-block;
+				padding: 8px;
+
+				&:hover {
+					//transform: translateY(-4px);
+				}
+			}
+
+			// @for $i from 12 through 2 {
+			// 	@media screen and (max-width: 300px * $zoom * $i) {
+			// 		app-domain-card {
+			// 			$width: 100% / ($i - 1);
+			// 			width: calc(#{$width} - 16px);
+			// 		}
+			// 	}
+			// }
+		}
+
+		.domain-buttons {
+			position: absolute;
+			margin: auto;
+			top: 6px;
+			right: 12px;
+			height: 32px;
+			z-index: 10;
+
+			mat-form-field {
+				margin-top: -6px;
+				width: 300px;
+			}
+
+			button {
+				vertical-align: top;
+
+				&.icon-button {
+					min-width: 32px;
+					padding: 0;
+					margin-left: 8px;
+				}
+			}
+
+			// https://stackoverflow.com/questions/54760371/how-to-change-height-in-mat-form-field
+			::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+				padding: 0.4em 0px !important;
+			}
+
+			::ng-deep .mat-form-field-label-wrapper {
+				top: -1.2em;
+				margin-left: 4px;
+			}
+
+			::ng-deep .mat-form-field-infix {
+				top: -0.2em;
+				margin-left: 4px;
+			}
+
+			::ng-deep
+				.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+				.mat-form-field-label {
+				transform: translateY(-1.1em) scale(0.75);
+				width: 133.33333%;
+			}
+		}
+
+		.current-domain {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 48px;
+			z-index: 999;
+
+			background: #fff;
+			border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.subtitle {
+				color: rgba(0, 0, 0, 0.54);
+				font-size: 0.8em;
+				margin: 0;
+				margin-left: 8px;
+			}
+
+			> * {
+				> * {
+					margin: 0;
+				}
+			}
+
+			.thumbnail {
+				width: 80px;
+				height: 100%;
+
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+			}
+
+			.name {
+				padding-left: 10px;
+				max-width: 400px;
+
+				* {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+			}
+
+			.people {
+				padding-left: 40px;
+				//text-align: center;
+			}
+
+			.buttons {
+				margin-right: 16px;
+
+				.like-button {
+					min-width: 0px;
+					padding: 0 4px;
+					margin-right: -4px;
+					opacity: 0.6;
+					line-height: 16px;
+					font-size: 1em;
+
+					&.active {
+						color: #f44336;
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+
+	.friends {
+		min-width: calc(250px - 24px);
+		padding: 12px;
+		height: 100vh;
+		background: #1d1f21;
+		color: #fff;
+
+		h2 {
+			display: flex;
+			align-items: center;
+			white-space: nowrap;
+			text-align: center;
+			margin-bottom: 6px;
+
+			mat-icon {
+				margin-right: 8px;
+			}
+		}
+
+		.domain-friends {
+			background: rgba(#fff, 0.1);
+			padding: 12px;
+			border-radius: 4px;
+			margin-bottom: 12px;
+
+			h3 {
+				display: flex;
+				align-items: center;
+				margin-top: -3px;
+				margin-bottom: 6px;
+
+				mat-icon {
+					margin-right: 4px;
+				}
+			}
+
+			.friend {
+				display: flex;
+				align-items: center;
+				margin-top: 8px;
+				cursor: pointer;
+
+				.avatar {
+					width: 32px;
+					height: 32px;
+					//background-size: cover;
+					//background-position: center;
+					//background-repeat: no-repeat;
+					margin-right: 8px;
+					//border-radius: 50%;
+					//position: relative;
+
+					// .status {
+					// 	position: absolute;
+					// 	bottom: 0;
+					// 	right: 0;
+					// 	width: 10px;
+					// 	height: 10px;
+					// 	background: #4caf50;
+					// 	border-radius: 50%;
+					// 	mix-blend-mode: subtract;
+					// }
+				}
+
+				.info {
+					display: flex;
+					flex-direction: column;
+
+					.name,
+					.location {
+						margin: 0;
+						flex-grow: 1;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						overflow: hidden;
+					}
+
+					// .name {
+					// 	font-weight: 500;
+					// }
+
+					// .location {
+					// 	opacity: 0.6;
+					// }
+				}
+			}
+		}
+	}
+}

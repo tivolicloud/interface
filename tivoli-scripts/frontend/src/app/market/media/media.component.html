@@ -1,0 +1,22 @@
+<div class="media">
+	<div
+		class="current"
+		[style.backgroundImage]="'url(' + media[current] + ')'"
+	>
+		<div class="arrow left" (click)="previous()">
+			<mdc-icon>arrow_left</mdc-icon>
+		</div>
+		<div class="arrow right" (click)="next()">
+			<mdc-icon>arrow_right</mdc-icon>
+		</div>
+	</div>
+	<div class="strip">
+		<div
+			class="thumbnail"
+			*ngFor="let url of media; let i = index"
+			[style.backgroundImage]="'url(' + url + ')'"
+			(click)="changeCurrent(i)"
+			[class.selected]="i == current"
+		></div>
+	</div>
+</div>

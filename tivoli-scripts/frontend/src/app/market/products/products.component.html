@@ -1,0 +1,57 @@
+<div class="container">
+	<!-- <h1>Avatars</h1> -->
+	<div class="row" style="padding: 4px;">
+		<div
+			class="col-md-4 col-lg-3"
+			style="padding: 8px;"
+			*ngFor="let product of products"
+		>
+			<mdc-card
+				class="product"
+				[routerLink]="'/market/' + product.id"
+				queryParamsHandling="preserve"
+			>
+				<mdc-card-primary-action>
+					<mdc-card-media
+						class="thumbnail"
+						[style.backgroundImage]="
+							'url(' + product.images[0] + ')'
+						"
+					></mdc-card-media>
+					<div class="content" style="display: flex;">
+						<mdc-icon>accessibility_new</mdc-icon>
+						<div
+							style="
+								margin-left: 4px;
+								margin-top: -4px;
+								flex-grow: 1;
+							"
+						>
+							<h3>
+								{{ product.name }}
+							</h3>
+							<h4
+								style="
+									opacity: 0.7;
+									display: flex;
+									width: 100%;
+								"
+							>
+								<span style="flex-grow: 1;">{{
+									product.author
+								}}</span>
+								<span>
+									{{
+										product.price <= 0
+											? "Free!"
+											: "$" + product.price.toFixed(2)
+									}}
+								</span>
+							</h4>
+						</div>
+					</div>
+				</mdc-card-primary-action>
+			</mdc-card>
+		</div>
+	</div>
+</div>

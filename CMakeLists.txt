@@ -324,6 +324,8 @@ endif()
 # BUILD_TOOLS option will be handled inside the tools's CMakeLists.txt because 'scribe' tool is required for build anyway
 add_subdirectory(tools)
 
+add_subdirectory(tivoli-scripts)
+
 endif()
 
 if (BUILD_TESTS)

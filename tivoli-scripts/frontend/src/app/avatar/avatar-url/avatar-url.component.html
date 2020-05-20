@@ -1,0 +1,16 @@
+<h2 style="margin-top: 0;">Update avatar URL</h2>
+<mat-form-field style="width: 100%">
+	<input
+		matInput
+		placeholder="Avatar URL"
+		[value]="avatarURL"
+		#avatarURLInput
+	/>
+</mat-form-field>
+<div style="text-align: right;">
+	<button mat-flat-button (click)="onDiscard()">Discard</button>
+	<span style="padding: 0 4px;"></span>
+	<button mat-flat-button color="primary" (click)="onUpdate(avatarURLInput)">
+		<mat-icon>save</mat-icon> Update
+	</button>
+</div>

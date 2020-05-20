@@ -1,0 +1,15 @@
+<h2 style="margin-top: 0;">Add current avatar to bookmarks</h2>
+<mat-form-field style="width: 100%">
+	<input matInput placeholder="Bookmark Name" #bookmarkNameInput />
+</mat-form-field>
+<div style="text-align: right;">
+	<button mat-flat-button (click)="onDiscard()">Discard</button>
+	<span style="padding: 0 4px;"></span>
+	<button
+		mat-flat-button
+		color="primary"
+		(click)="onAddFavorite(bookmarkNameInput)"
+	>
+		<mat-icon>save</mat-icon> Save
+	</button>
+</div>

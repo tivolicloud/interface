@@ -1,0 +1,124 @@
+.domain-card {
+	display: inline-block;
+	// width: calc(100% - 32px);
+	width: 100%;
+
+	// margin: 0 8px;
+	// margin-bottom: 16px;
+
+	.thumbnail {
+		height: 160px;
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		position: relative;
+		border-radius: inherit;
+		cursor: pointer;
+
+		> p {
+			position: absolute;
+			margin: auto;
+			font-size: 1.5em;
+			bottom: 16px;
+			left: 16px;
+			color: #fff;
+		}
+
+		&::before {
+			content: "";
+			position: absolute;
+			margin: auto;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(
+				transparent,
+				transparent,
+				rgba(29, 31, 33, 0.2),
+				rgba(29, 31, 33, 0.8)
+			);
+		}
+
+		.offline {
+			opacity: 0.6;
+		}
+	}
+
+	&.offline .thumbnail {
+		filter: grayscale(1);
+	}
+
+	.mat-card-header {
+		::ng-deep.mat-card-header-text {
+			margin: 0;
+		}
+
+		.header {
+			width: 100%;
+			display: flex;
+			align-items: center;
+
+			.title {
+				display: flex;
+				font-weight: 500;
+				margin: 0;
+
+				.material-icons {
+					margin-right: 4px;
+				}
+			}
+
+			.subtitle {
+				display: inline-block;
+				color: rgba(0, 0, 0, 0.54);
+				font-size: 14px;
+				margin: 0;
+				margin-left: 8px;
+			}
+
+			.like-button {
+				min-width: 0px;
+				padding: 0 4px;
+				margin-right: -4px;
+				opacity: 0.6;
+				line-height: 16px;
+				font-size: 1em;
+
+				&.active {
+					color: #f44336;
+					opacity: 1;
+				}
+			}
+		}
+	}
+
+	.mat-card-actions {
+		margin-top: -8px;
+
+		.mat-button {
+			display: block;
+			max-width: 100%;
+			overflow: hidden;
+			margin-left: -8px;
+		}
+
+		a.mat-button {
+			display: inline-block;
+			margin-top: 4px;
+		}
+	}
+
+	.ellipses {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	.mat-card-content > div {
+		margin-top: 8px;
+		height: 1.4em;
+		// height: 2.4em;
+		overflow: hidden;
+	}
+}

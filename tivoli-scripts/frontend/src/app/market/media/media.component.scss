@@ -1,0 +1,66 @@
+.media {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+
+	.current {
+		height: 300px;
+		background-color: #000;
+		background-position: center;
+		background-size: contain;
+		background-repeat: no-repeat;
+		border-radius: 4px;
+		position: relative;
+
+		.arrow {
+			width: 64px;
+			display: flex;
+			align-items: center;
+			position: absolute;
+			margin: auto;
+			top: 0;
+			bottom: 0;
+
+			.material-icons {
+				font-size: 48px;
+				color: #fff;
+			}
+
+			&:hover {
+				background-color: rgba(#fff, 0.15);
+			}
+
+			&.left {
+				justify-content: flex-start;
+				left: 0;
+			}
+			&.right {
+				justify-content: flex-end;
+				right: 0;
+			}
+		}
+	}
+
+	.strip {
+		height: 100px;
+		display: flex;
+		margin-top: 8px;
+		overflow-x: auto;
+		padding-bottom: 8px; // for scroll bar
+
+		.thumbnail {
+			min-width: 150px;
+			height: 100%;
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border-radius: 4px;
+			margin-right: 8px;
+			cursor: pointer;
+
+			&.selected {
+				border: solid 4px #e91e63;
+			}
+		}
+	}
+}

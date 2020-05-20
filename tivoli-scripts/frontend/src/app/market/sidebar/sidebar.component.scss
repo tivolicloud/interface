@@ -1,0 +1,27 @@
+.header {
+	background-color: #e91e63;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	color: #fff;
+
+	min-height: 80px;
+	display: flex;
+	align-content: center;
+
+	.title {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		* {
+			margin: 0;
+		}
+
+		// .material-icons {
+		// 	margin-right: 8px;
+		// }
+	}
+}

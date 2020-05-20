@@ -1,0 +1,93 @@
+<ng-container *ngIf="category == null">
+	<h1 style="margin: 8px 0; margin-bottom: 16px; text-align: center;">
+		Choose a category!
+	</h1>
+	<button
+		class="primary-button"
+		mat-flat-button
+		style="
+			background-image:
+				linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+				url(assets/recommended-avatars/other.jpg);
+		"
+		(click)="this.category = 'other'"
+	>
+		other
+	</button>
+	<button
+		class="primary-button"
+		mat-flat-button
+		style="
+			background-image:
+				linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+				url(assets/recommended-avatars/female.jpg);
+		"
+		(click)="this.category = 'female'"
+	>
+		female
+	</button>
+	<button
+		class="primary-button"
+		mat-flat-button
+		style="
+			margin-bottom: 0;
+			background-image:
+				linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+				url(assets/recommended-avatars/male.jpg);
+		"
+		(click)="this.category = 'male'"
+	>
+		male
+	</button>
+</ng-container>
+<ng-container *ngIf="category != null">
+	<h2 style="margin-top: 0; display: flex;">
+		<span>
+			<span style="text-transform: capitalize;">{{ category }}</span>
+			avatars<span *ngIf="subCategory != null"
+				>: {{ subCategory.name }}</span
+			>
+		</span>
+		<span style="flex-grow: 1;"></span>
+		<button
+			mat-button
+			(click)="
+				subCategory != null ? (subCategory = null) : (category = null)
+			"
+		>
+			<mat-icon>arrow_back</mat-icon>
+			Return
+		</button>
+	</h2>
+	<div class="avatars" style="margin-bottom: -16px;">
+		<ng-container *ngFor="let avatar of getAvatarList()">
+			<div
+				class="avatar animated"
+				*ngIf="!avatar.avatars"
+				(click)="onChangeAvatar(avatar.path)"
+			>
+				<div
+					class="image"
+					[style.backgroundImage]="
+						'url(' + thumbnailsUrl + avatar.thumbnail + ')'
+					"
+				></div>
+				{{ avatar.name }}
+			</div>
+			<!-- category item -->
+			<div
+				class="avatar animated"
+				*ngIf="avatar.avatars"
+				(click)="subCategory = avatar"
+			>
+				<div
+					class="image"
+					[style.backgroundImage]="
+						'url(' + thumbnailsUrl + avatar.thumbnail + ')'
+					"
+				></div>
+				{{ avatar.name }}
+			</div>
+		</ng-container>
+	</div>
+</ng-container>

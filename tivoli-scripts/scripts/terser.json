@@ -1,0 +1,9 @@
+{
+	"ecma": "5",
+	"compress": {
+		"toplevel": true
+	},
+	"mangle": {
+		"toplevel": true
+	}
+}

@@ -1,0 +1,16 @@
+<h2 style="margin-top: 0;">
+	Remove
+	<b>{{ bookmarkName }}</b
+	>?
+</h2>
+<p>
+	This will permanently remove your avatar and you will be unable to recover
+	it.
+</p>
+<div style="text-align: right;">
+	<button mat-flat-button (click)="onDiscard()">Cancel</button>
+	<span style="padding: 0 4px;"></span>
+	<button mat-flat-button color="primary" (click)="onRemoveFavorite()">
+		<mat-icon>delete</mat-icon> Remove
+	</button>
+</div>

@@ -4,9 +4,6 @@ all linux:
 
     extends: .production
 
-    dependencies:
-        - tivoli scripts
-
     variables:
         BUILD_TYPE: Release
         RELEASE_TYPE: PRODUCTION

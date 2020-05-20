@@ -1,0 +1,186 @@
+<div class="avatar">
+	<mat-toolbar color="primary">
+		<mat-icon style="font-size: 1.5em; width: 32px; height: 32px;">
+			accessibility_new
+		</mat-icon>
+		<span style="padding: 0 4px;"></span>
+		My Avatar
+
+		<!-- <span style="flex-grow: 1;"></span>
+		<button mat-flat-button><mat-icon>settings</mat-icon> Settings</button> -->
+	</mat-toolbar>
+
+	<div>
+		<table>
+			<tr>
+				<td>
+					<img
+						class="avatar-image"
+						src="https://alpha.tivolicloud.com/api/user/_/image"
+					/>
+				</td>
+				<td style="padding-left: 16px;">
+					<h2 style="margin: 0; margin-bottom: 16px;">
+						{{ avatarBookmarkName || avatarName }}
+					</h2>
+					<button
+						mat-flat-button
+						color="primary"
+						(click)="onChangeAvatarURL()"
+					>
+						<mat-icon>link</mat-icon>
+						Update avatar URL
+					</button>
+
+					<div style="padding: 4px 0;"></div>
+
+					<button
+						mat-button
+						(click)="onAddBookark()"
+						*ngIf="!avatarBookmarkName"
+					>
+						<mat-icon>favorite_border</mat-icon>
+						Add to favorites
+					</button>
+
+					<ng-container *ngIf="avatarBookmarkName">
+						<button
+							mat-button
+							(click)="onRemoveBookmark(avatarBookmarkName)"
+							style="padding: 0 8px; margin-left: 0;"
+						>
+							<mat-icon>favorite</mat-icon>
+							Remove from favorites
+						</button>
+						<!-- <button
+							mat-button
+							(click)="onSaveBookmark()"
+							style="padding: 0 8px;"
+						>
+							<mat-icon>save</mat-icon>
+							Save
+						</button> -->
+					</ng-container>
+				</td>
+			</tr>
+		</table>
+
+		<p
+			style="
+				margin: 0;
+				margin-top: 8px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<mat-form-field
+				appearance="outline"
+				class="thin"
+				style="width: 60px;"
+			>
+				<mat-label>Scale</mat-label>
+				<input
+					matInput
+					type="number"
+					[value]="avatarScale.toFixed(2)"
+					step="0.01"
+					(change)="onScaleChanged($event)"
+				/>
+			</mat-form-field>
+			<button
+				mat-button
+				style="padding: 0 8px; min-width: 16px;"
+				(click)="onScaleUp()"
+			>
+				<mat-icon>add</mat-icon>
+			</button>
+			<button
+				mat-button
+				style="padding: 0 8px; min-width: 16px;"
+				(click)="onScaleDown()"
+			>
+				<mat-icon>remove</mat-icon>
+			</button>
+			<button mat-button style="padding: 0 8px;" (click)="onScaleReset()">
+				<mat-icon>undo</mat-icon> Reset
+			</button>
+
+			<span style="flex-grow: 1;"></span>
+
+			<button mat-stroked-button (click)="onNoclip()">
+				<mat-icon *ngIf="avatarCollisions" svgIcon="noclip"></mat-icon>
+				<mat-icon *ngIf="!avatarCollisions">accessibility_new</mat-icon>
+				Toggle noclip
+				{{ avatarCollisions ? "on" : "off" }}
+			</button>
+		</p>
+	</div>
+
+	<hr style="margin: 16px 0;" />
+
+	<div>
+		<h2
+			style="
+				margin-top: 0;
+				margin-bottom: 8px;
+				display: flex;
+				align-items: center;
+			"
+		>
+			<mat-icon style="margin-right: 8px;">favorite</mat-icon> Your
+			favorites
+		</h2>
+	</div>
+	<div
+		style="flex-grow: 1; overflow: auto; height: 0; margin-bottom: 16px;"
+		class="bookmarks"
+	>
+		<div class="bookmark" *ngFor="let name of avatarBookmarkNames">
+			<button mat-stroked-button (click)="onLoadBookmark(name)">
+				{{ name }}
+			</button>
+			<button mat-button (click)="onRemoveBookmark(name)">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
+	<!-- <div *ngIf="firstTime" style="flex-grow: 1;"></div> -->
+
+	<div style="display: flex;">
+		<button
+			class="recommended-avatars"
+			mat-flat-button
+			color="primary"
+			style="flex-grow: 1;"
+			(click)="openRecommendedAvatars()"
+		>
+			<mat-icon inline>search</mat-icon> Find an avatar here!
+		</button>
+		<div style="margin: 0 4px;"></div>
+		<button
+			class="recommended-avatars"
+			style="font-weight: 400; min-width: 140px;"
+			mat-stroked-button
+			(click)="onUseDefault()"
+		>
+			Use default
+		</button>
+	</div>
+</div>
+<!-- <div class="first-time" *ngIf="firstTime">
+	<div class="center">
+		<h1>Welcome to Tivoli!</h1>
+		<h2 style="margin-bottom: 8px;">
+			Find an avatar that suits
+			<br />
+			your personality here!
+		</h2>
+		<button mat-button style="opacity: 0.6;">
+			Dismiss dialog
+		</button>
+		<div style="margin: 16px 0;"></div>
+		<div>
+			<mat-icon inline>arrow_downward</mat-icon>
+		</div>
+	</div>
+</div> -->
