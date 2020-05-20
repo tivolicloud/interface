@@ -22,7 +22,12 @@ async function buildIfNecessary(folder, hashMap) {
 		return hash;
 	}
 
-	npm.load(() => npm.run("build:" + folder));
+	npm.load(
+		{
+			prefix: __dirname,
+		},
+		() => npm.run("build:" + folder),
+	);
 
 	return hash;
 }
