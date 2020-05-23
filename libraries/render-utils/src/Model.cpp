@@ -1365,10 +1365,21 @@ void Model::scaleToFit() {
 }
 
 void Model::setSnapModelToRegistrationPoint(bool snapModelToRegistrationPoint, const glm::vec3& registrationPoint) {
-    glm::vec3 clampedRegistrationPoint = glm::clamp(registrationPoint, 0.0f, 1.0f);
-    if (_snapModelToRegistrationPoint != snapModelToRegistrationPoint || _registrationPoint != clampedRegistrationPoint) {
+    // glm::vec3 clampedRegistrationPoint = glm::clamp(registrationPoint, 0.0f, 1.0f);
+    // if (_snapModelToRegistrationPoint != snapModelToRegistrationPoint || _registrationPoint != clampedRegistrationPoint) {
+    //     _snapModelToRegistrationPoint = snapModelToRegistrationPoint;
+    //     _registrationPoint = clampedRegistrationPoint;
+    //     _snappedToRegistrationPoint = false; // force re-centering
+    // }
+
+    // why clamp? a mesh's origin can be outside of it's bounding box
+    // TODO: see if this has caused any issues since May 23, 2020. if not, remove comments!
+    if (
+        _snapModelToRegistrationPoint != snapModelToRegistrationPoint ||
+        _registrationPoint != registrationPoint
+    ) {
         _snapModelToRegistrationPoint = snapModelToRegistrationPoint;
-        _registrationPoint = clampedRegistrationPoint;
+        _registrationPoint = registrationPoint;
         _snappedToRegistrationPoint = false; // force re-centering
     }
 }
