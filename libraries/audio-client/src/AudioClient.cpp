@@ -104,6 +104,9 @@ QList<HifiAudioDeviceInfo> getAvailableDevices(QAudio::Mode mode, const QString&
     HifiAudioDeviceInfo defaultDesktopDevice;
     QList<HifiAudioDeviceInfo> newDevices;
     for (auto& device : devices) {
+        // TODO: filter device names for Linux
+        // https://forum.qt.io/topic/11343/get-the-list-of-available-audio-devices-in-linux
+
         newDevices.push_back(HifiAudioDeviceInfo(device, false, mode));
         if (device.deviceName() == defDeviceName.trimmed()) {
             defaultDesktopDevice = HifiAudioDeviceInfo(device, true, mode, HifiAudioDeviceInfo::desktop);
@@ -619,6 +622,14 @@ QString defaultAudioDeviceName(QAudio::Mode mode) {
     //         break;
     //     }
     // }
+
+    // if (mode == QAudio::AudioInput) {
+    //     deviceName = QAudioDeviceInfo::defaultInputDevice().deviceName();
+    // } else {
+    //     // Default output device is wrong
+    //     deviceName = QAudioDeviceInfo::defaultOutputDevice().deviceName();
+    // }
+
     deviceName = "default";
 #endif
 
