@@ -37,7 +37,7 @@ class ChatMessage {
 
 		if (noTransition) {
 			updateY(newY, this.overlayUserImageId);
-			updateY(newY + this.maxHeight / 2 - 12, this.overlayMessageId);
+			updateY(newY + this.maxHeight / 2 - 8, this.overlayMessageId);
 		} else {
 			this.transitionManager.startTransition({
 				from: this.overlayY[this.overlayUserImageId],
@@ -50,7 +50,7 @@ class ChatMessage {
 
 			this.transitionManager.startTransition({
 				from: this.overlayY[this.overlayMessageId],
-				to: newY + this.maxHeight / 2 - 12,
+				to: newY + this.maxHeight / 2 - 8,
 				time: animateTime / 2,
 				transitionFn: y => {
 					updateY(y, this.overlayMessageId);
@@ -91,7 +91,7 @@ class ChatMessage {
 		});
 		this.overlayY[this.overlayUserImageId] = userImageY;
 
-		const messageY = this.defaultY() + this.maxHeight / 2 - 12;
+		const messageY = this.defaultY() + this.maxHeight / 2 - 8;
 		this.overlayMessageId = Overlays.addOverlay<
 			Overlays.OverlayPropertiesText
 		>("text", {
