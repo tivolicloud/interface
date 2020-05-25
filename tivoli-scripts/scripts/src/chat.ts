@@ -354,60 +354,60 @@ class MessageBox {
 }
 
 class ChatBubble {
-	transitionManager = new TransitionManager();
+	// transitionManager = new TransitionManager();
 
-	entityId: Uuid;
+	// entityId: Uuid;
 
 	active = false;
 
 	constructor() {
-		this.entityId = Entities.addEntity<Entities.EntityPropertiesImage>(
-			{
-				type: "Image",
-				imageURL:
-					Script.resolvePath("tivoli/assets/chat.svg") + "?3",
-				visible: false,
-				alpha: 0,
-				dimensions: { x: 0.4, y: 0.4, z: 0 },
-				localPosition: { y: 1.5 },
-				parentID: MyAvatar.SELF_ID,
-				keepAspectRatio: true,
-				emissive: true,
-				billboardMode: "yaw",
-			},
-			"avatar",
-		);
+		// this.entityId = Entities.addEntity<Entities.EntityPropertiesImage>(
+		// 	{
+		// 		type: "Image",
+		// 		imageURL:
+		// 			Script.resolvePath("tivoli/assets/chat.svg") + "?3",
+		// 		visible: false,
+		// 		alpha: 0,
+		// 		dimensions: { x: 0.4, y: 0.4, z: 0 },
+		// 		localPosition: { y: 1.5 },
+		// 		parentID: MyAvatar.SELF_ID,
+		// 		keepAspectRatio: true,
+		// 		emissive: true,
+		// 		billboardMode: "yaw",
+		// 	},
+		// 	"avatar",
+		// );
 	}
 
 	setActive(active: boolean) {
 		if (this.active == active) return;
 		this.active = active;
 
-		Entities.editEntity(this.entityId, {
-			visible: true,
-			alpha: active ? 0 : 1,
-		});
+		// Entities.editEntity(this.entityId, {
+		// 	visible: true,
+		// 	alpha: active ? 0 : 1,
+		// });
 
-		this.transitionManager.startTransition({
-			from: active ? 0 : 1,
-			to: active ? 1 : 0,
-			time: animateTime,
-			transitionFn: alpha => {
-				Entities.editEntity(this.entityId, { alpha });
-			},
-		});
+		// this.transitionManager.startTransition({
+		// 	from: active ? 0 : 1,
+		// 	to: active ? 1 : 0,
+		// 	time: animateTime,
+		// 	transitionFn: alpha => {
+		// 		Entities.editEntity(this.entityId, { alpha });
+		// 	},
+		// });
 
-		if (!this.active)
-			Script.setTimeout(() => {
-				Entities.editEntity(this.entityId, {
-					visible: false,
-				});
-			}, animateTime);
+		// if (!this.active)
+		// 	Script.setTimeout(() => {
+		// 		Entities.editEntity(this.entityId, {
+		// 			visible: false,
+		// 		});
+		// 	}, animateTime);
 	}
 
 	cleanup() {
-		Entities.deleteEntity(this.entityId);
-		this.transitionManager.cleanup();
+		// Entities.deleteEntity(this.entityId);
+		// this.transitionManager.cleanup();
 	}
 }
 
