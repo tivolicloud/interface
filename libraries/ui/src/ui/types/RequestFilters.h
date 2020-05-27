@@ -24,7 +24,7 @@ class QQmlContext;
 
 class RequestFilters : public QObject {
 public:
-    static void interceptHFWebEngineRequest(QWebEngineUrlRequestInfo& info, bool restricted);
+    static void interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& info, bool restricted);
     static void interceptFileType(QWebEngineUrlRequestInfo& info);
 };
 #endif

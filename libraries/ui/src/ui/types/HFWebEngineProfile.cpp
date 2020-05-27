@@ -42,7 +42,7 @@ HFWebEngineProfile::~HFWebEngineProfile() {
 }
 
 void HFWebEngineProfile::RequestInterceptor::interceptRequest(QWebEngineUrlRequestInfo& info) {
-    RequestFilters::interceptHFWebEngineRequest(info, isRestricted());
+    RequestFilters::interceptTivoliWebEngineRequest(info, isRestricted());
 }
 
 void HFWebEngineProfile::registerWithContext(QQmlContext* context) {

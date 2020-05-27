@@ -24,52 +24,57 @@
 
 namespace {
 
-    bool isAuthableHighFidelityURL(const QUrl& url) {
+    bool isAuthableTivoliURL(const QUrl& url) {
         auto metaverseServerURL = NetworkingConstants::METAVERSE_SERVER_URL();
-        static const QStringList HF_HOSTS = {
-            "highfidelity.com", "highfidelity.io",
-            metaverseServerURL.toString(), "metaverse.highfidelity.io"
+        static const QStringList TIVOLI_HOSTS = {
+            metaverseServerURL.toString(),
+            "tivolicloud.com",
         };
         const auto& scheme = url.scheme();
         const auto& host = url.host();
 
-        return (scheme == "https" && HF_HOSTS.contains(host)) ||
-            ((scheme == metaverseServerURL.scheme()) && (host == metaverseServerURL.host()));
+        return (
+            (scheme == "https" && TIVOLI_HOSTS.contains(host)) ||
+            (
+                scheme == metaverseServerURL.scheme() &&
+                host == metaverseServerURL.host()
+            )
+        );
     }
 
-     bool isScript(const QString filename) {
-         return filename.endsWith(".js", Qt::CaseInsensitive);
-     }
+    bool isScript(const QString filename) {
+        return filename.endsWith(".js", Qt::CaseInsensitive);
+    }
 
-     bool isJSON(const QString filename) {
+    bool isJSON(const QString filename) {
         return filename.endsWith(".json", Qt::CaseInsensitive);
-     }
+    }
 
-     bool blockLocalFiles(QWebEngineUrlRequestInfo& info) {
-         auto requestUrl = info.requestUrl();
-         if (!requestUrl.isLocalFile()) {
-             // Not a local file, do not block
-             return false;
-         }
+    bool blockLocalFiles(QWebEngineUrlRequestInfo& info) {
+        auto requestUrl = info.requestUrl();
+        if (!requestUrl.isLocalFile()) {
+            // Not a local file, do not block
+            return false;
+        }
 
-         // We can potentially add whitelisting logic or development environment variables that
-         // will allow people to override this setting on a per-client basis here.
-         QString targetFilePath = QFileInfo(requestUrl.toLocalFile()).canonicalFilePath();
+        // We can potentially add whitelisting logic or development environment variables that
+        // will allow people to override this setting on a per-client basis here.
+        QString targetFilePath = QFileInfo(requestUrl.toLocalFile()).canonicalFilePath();
 
-         // If we get here, we've determined it's a local file and we have no reason not to block it
-         qWarning() << "Blocking web access to local file path" << targetFilePath;
-         info.block(true);
-         return true;
-     }
+        // If we get here, we've determined it's a local file and we have no reason not to block it
+        qWarning() << "Blocking web access to local file path" << targetFilePath;
+        info.block(true);
+        return true;
+    }
 }
 
-void RequestFilters::interceptHFWebEngineRequest(QWebEngineUrlRequestInfo& info, bool restricted) {
+void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& info, bool restricted) {
     if (restricted && blockLocalFiles(info)) {
         return;
     }
 
-    // check if this is a request to a highfidelity URL
-    bool isAuthable = isAuthableHighFidelityURL(info.requestUrl());
+    // check if this is a request to a Tivoli URL
+    bool isAuthable = isAuthableTivoliURL(info.requestUrl());
     auto accountManager = DependencyManager::get<AccountManager>();
     if (isAuthable) {
         // if we have an access token, add it to the right HTTP header for authorization

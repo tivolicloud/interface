@@ -45,7 +45,7 @@ FileTypeProfile::~FileTypeProfile() {
 }
 
 void FileTypeProfile::RequestInterceptor::interceptRequest(QWebEngineUrlRequestInfo& info) {
-    RequestFilters::interceptHFWebEngineRequest(info, isRestricted());
+    RequestFilters::interceptTivoliWebEngineRequest(info, isRestricted());
     RequestFilters::interceptFileType(info);
 }
 
