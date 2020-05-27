@@ -1,7 +1,7 @@
 @echo off
 
-REM Set up \Microsoft Visual Studio 2017, where <arch> is \c amd64, \c x86, etc.
-CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+REM Set up \Microsoft Visual Studio 2019, where <arch> is \c amd64, \c x86, etc.
+CALL "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 
 REM Edit this location to point to the source code of Qt
 SET _ROOT=..\qt5

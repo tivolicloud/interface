@@ -29,7 +29,7 @@ endif()
     def __init__(self, args):
         self.args = args
         self.configFilePath = os.path.join(args.build_root, 'qt.cmake')
-        self.version = '5.14.1'
+        self.version = '5.15'
 
         defaultBasePath = os.path.expanduser('~/hifi/qt')
         self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
@@ -58,30 +58,30 @@ endif()
             
         system = platform.system()
 
+        baseQtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/'
+
         if system == 'Windows':
-            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-windows.tar.gz'
+            self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-windows.tar.gz'
         
         elif system == 'Darwin':
-            self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-macos.tar.gz'
+            self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-macos.tar.gz'
        
         elif system == 'Linux':
             issue = open("/etc/issue", "r").read()
-
-            # currently doesn't work
-            # if distro == "Ubuntu":           
-            #     if version[0:2] == "18":
-            #         self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-ubuntu-18.04.tar.gz'
-
+            
             if issue.startswith("Debian GNU/Linux 9"): 
-                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-debian-9.tar.gz'
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-debian-9.tar.gz'
 
+            elif issue.startswith("Ubuntu 20.04"):
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-ubuntu-20.04.tar.gz'
+            
             elif issue.startswith("Arch Linux"):
-                self.qtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/tivoli-qt5-install-5.14.1-arch-linux.tar.gz'
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-arch-linux.tar.gz'
 
             else:
-                raise Exception('Unknown Linux version!')
+                raise Exception('Unsupported Linux version')
         else:
-            raise Exception('Unknown operating system!')
+            raise Exception('Unknown operating system')
 
     def writeConfig(self):
         print("Writing cmake config to {}".format(self.configFilePath))

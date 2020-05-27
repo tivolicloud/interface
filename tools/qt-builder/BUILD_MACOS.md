@@ -1,4 +1,4 @@
-# Building Qt 5.14.1 for macOS
+# Building Qt 5.15 for macOS
 
 ## Install depenencies
 
@@ -14,7 +14,7 @@ sudo xcode-select --switch /Applications/Xcode.app
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.14.1 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15 --single-branch
 ```
 
 ### Apply patches:
@@ -23,7 +23,6 @@ git clone --recursive git://code.qt.io/qt/qt5.git -b 5.14.1 --single-branch
 cp -R patches qt5
 cd qt5
 
-git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch
 git apply --ignore-space-change --ignore-whitespace patches/mac-web-video.patch
 
 cd ..
@@ -38,7 +37,7 @@ cd qt5-build
 ../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
 
 make -j$(sysctl -n hw.logicalcpu)
-make install
+make install -j$(sysctl -n hw.logicalcpu)
 
 cd ..
 ```
@@ -59,7 +58,7 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.14.1-macos.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15-macos.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.
@@ -67,5 +66,5 @@ Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.
 You can test your Qt build by setting environment variable:
 
 ```env
-QT_CMAKE_PREFIX_PATH=path/to/interface/tools/qt-builder/qt5-install/lib/cmake
+QT_CMAKE_PREFIX_PATH=/path/to/interface/tools/qt-builder/qt5-install/lib/cmake
 ```
