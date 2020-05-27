@@ -103,8 +103,8 @@ def downloadProgressHook(count, block_size, total_size):
 
     duration = time.time() - start_time
     progress_size = int(count * block_size)
-    speed = progress_size / (1024 * 1024 * duration)
-    percent = int(count * block_size * 100 / total_size)
+    speed = 0 if duration == 0 else progress_size / (1024 * 1024 * duration)
+    percent = 0 if total_size == 0 else int(count * block_size * 100 / total_size)
     sys.stdout.write(
         "\r%s %d%% %s %d MB / %d MB %s %.2f MB/s %s %d seconds passed" %
         (
@@ -112,7 +112,7 @@ def downloadProgressHook(count, block_size, total_size):
             percent,
             "\u001b[45m", # magenta
             progress_size / (1024 * 1024),
-            total_size/(1024*1024),
+            total_size / (1024 * 1024),
             "\u001b[44m", # blue
             speed, 
             "\u001b[0m", # reset
