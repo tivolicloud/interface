@@ -94,6 +94,8 @@ def parse_args():
     parser.add_argument('--force-build', action='store_true')
     parser.add_argument('--release-type', type=str, default="DEV", help="DEV, PR, or PRODUCTION")
     parser.add_argument('--vcpkg-root', type=str, help='The location of the vcpkg distribution')
+    parser.add_argument('--vcpkg-build-type', type=str, help='Could be `release` or `debug`. By default it doesn`t set the build-type')
+    parser.add_argument('--vcpkg-skip-clean', action='store_true', help='Skip the cleanup of vcpkg downloads and packages folders after vcpkg build completition.')
     parser.add_argument('--build-root', required=True, type=str, help='The location of the cmake build')
     parser.add_argument('--ports-path', type=str, default=defaultPortsPath)
     parser.add_argument('--ci-build', action='store_true', default=os.getenv('CI_BUILD') is not None)
@@ -158,7 +160,7 @@ def main():
             pm.setupDependencies(qt=qtInstallPath)
 
         # wipe out the build directories (after writing the tag, since failure 
-        # here shouldn't invalidte the vcpkg install)
+        # here shouldn't invalidate the vcpkg install)
         with timer('Cleaning builds'):
             pm.cleanBuilds()
 
@@ -172,6 +174,13 @@ def main():
             # Determine the Qt package path
             qtPath = os.path.join(pm.androidPackagePath, 'qt')
             hifi_android.QtPackager(appPath, qtPath).bundle()
+
+        # Fixup the vcpkg cmake to not reset VCPKG_TARGET_TRIPLET
+        pm.fixupCmakeScript()
+
+        if not args.vcpkg_skip_clean:
+            # Cleanup downloads and packages folders in vcpkg to make it smaller for CI
+            pm.cleanupDevelopmentFiles()
 
         # Write the vcpkg config to the build directory last
         with timer('Writing configuration'):
