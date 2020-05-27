@@ -21,6 +21,8 @@ get_filename_component(QT_CMAKE_PREFIX_PATH_UNCACHED "{}" ABSOLUTE)
 
 # If the cached cmake toolchain path is different from the computed one, exit
 if(NOT (QT_CMAKE_PREFIX_PATH_UNCACHED STREQUAL QT_CMAKE_PREFIX_PATH))
+    message("QT_CMAKE_PREFIX_PATH: ${{QT_CMAKE_PREFIX_PATH}}")
+    message("QT_CMAKE_PREFIX_PATH_UNCACHED: ${{QT_CMAKE_PREFIX_PATH_UNCACHED}}")
     message(FATAL_ERROR "QT_CMAKE_PREFIX_PATH has changed, please wipe the build directory and rerun cmake")
 endif()
 """
