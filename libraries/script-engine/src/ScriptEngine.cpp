@@ -109,7 +109,19 @@ static QScriptValue debugPrint(QScriptContext* context, QScriptEngine* engine) {
         if (i > 0) {
             message += " ";
         }
-        message += context->argument(i).toString();
+
+        QScriptValue value = context->argument(i);
+        QVariant variant = value.toVariant();
+
+        if (variant.type() == QVariant::Type::Map) {
+            message += QString(
+                QJsonDocument(
+                    variant.toJsonObject()
+                ).toJson(QJsonDocument::Indented)
+            ).trimmed();
+        } else {
+            message += value.toString();
+        }
     }
 
     if (ScriptEngine *scriptEngine = qobject_cast<ScriptEngine*>(engine)) {

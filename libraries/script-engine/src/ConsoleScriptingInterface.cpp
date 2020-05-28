@@ -18,6 +18,7 @@
 #include "ConsoleScriptingInterface.h"
 
 #include <QtCore/QDateTime>
+#include <QtCore/QJsonDocument>
 
 #include "ScriptEngine.h"
 
@@ -167,7 +168,19 @@ QString ConsoleScriptingInterface::appendArguments(QScriptContext* context) {
         if (i > 0) {
             message += SPACE_SEPARATOR;
         }
-        message += context->argument(i).toString();
+
+        QScriptValue value = context->argument(i);
+        QVariant variant = value.toVariant();
+
+        if (variant.type() == QVariant::Type::Map) {
+            message += QString(
+                QJsonDocument(
+                    variant.toJsonObject()
+                ).toJson(QJsonDocument::Indented)
+            ).trimmed();
+        } else {
+            message += value.toString();
+        }
     }
     return message;
 }
