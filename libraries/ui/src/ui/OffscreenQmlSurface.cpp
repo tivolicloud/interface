@@ -52,7 +52,7 @@
 #include "SecurityImageProvider.h"
 #include "shared/FileUtils.h"
 #include "types/FileTypeProfile.h"
-#include "types/HFWebEngineProfile.h"
+#include "types/TivoliWebEngineProfile.h"
 #include "types/SoundEffect.h"
 
 #include "TabletScriptingInterface.h"
@@ -313,8 +313,8 @@ void OffscreenQmlSurface::onRootContextCreated(QQmlContext* qmlContext) {
         FileTypeProfile::registerWithContext(qmlContext);
     }
     {
-        PROFILE_RANGE(startup, "HFWebEngineProfile");
-        HFWebEngineProfile::registerWithContext(qmlContext);
+        PROFILE_RANGE(startup, "TivoliWebEngineProfile");
+        TivoliWebEngineProfile::registerWithContext(qmlContext);
 
     }
 #endif
@@ -826,7 +826,7 @@ void OffscreenQmlSurface::loadFromQml(const QUrl& qmlSource, QQuickItem* parent,
             ContextAwareProfile::restrictContext(context, false);
 #if !defined(Q_OS_ANDROID)
             FileTypeProfile::registerWithContext(context);
-            HFWebEngineProfile::registerWithContext(context);
+            TivoliWebEngineProfile::registerWithContext(context);
 #endif
         };
         loadInternal(qmlSource, true, parent, objectCallback, contextCallback);

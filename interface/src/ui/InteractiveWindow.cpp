@@ -19,7 +19,7 @@
 #include <QQuickView>
 
 #include <ui/types/ContextAwareProfile.h>
-#include <ui/types/HFWebEngineProfile.h>
+#include <ui/types/TivoliWebEngineProfile.h>
 #include <ui/types/FileTypeProfile.h>
 #include <DependencyManager.h>
 #include <DockWidget.h>
@@ -281,7 +281,7 @@ InteractiveWindow::InteractiveWindow(const QString& sourceUrl, const QVariantMap
             ContextAwareProfile::restrictContext(context, restricted);
 #if !defined(Q_OS_ANDROID)
             FileTypeProfile::registerWithContext(context);
-            HFWebEngineProfile::registerWithContext(context);
+            TivoliWebEngineProfile::registerWithContext(context);
 #endif
         };
 

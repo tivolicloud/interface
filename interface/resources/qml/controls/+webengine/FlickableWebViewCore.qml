@@ -99,7 +99,7 @@ Item {
         width: parent.width
         height: parent.height
 
-        profile: HFWebEngineProfile;
+        profile: TivoliWebEngineProfile;
         settings.pluginsEnabled: true
         settings.touchIconsEnabled: true
         settings.allowRunningInsecureContent: true

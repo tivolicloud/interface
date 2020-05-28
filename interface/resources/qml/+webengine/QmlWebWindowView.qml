@@ -9,7 +9,7 @@ Controls.WebView {
     url: "about:blank"
     anchors.fill: parent
     focus: true
-    profile: HFWebEngineProfile;
+    profile: TivoliWebEngineProfile;
 
     property string userScriptUrl: ""
 

@@ -41,7 +41,7 @@ Item {
         width: parent.width
         height: keyboardEnabled && keyboardRaised ? parent.height - keyboard.height : parent.height
 
-        profile: HFWebEngineProfile;
+        profile: TivoliWebEngineProfile;
 
         property string userScriptUrl: ""
 

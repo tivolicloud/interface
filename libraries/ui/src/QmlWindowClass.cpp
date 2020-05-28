@@ -25,7 +25,7 @@
 
 #include <shared/QtHelpers.h>
 #include "OffscreenUi.h"
-#include "ui/types/HFWebEngineProfile.h"
+#include "ui/types/TivoliWebEngineProfile.h"
 #include "ui/types/FileTypeProfile.h"
 
 static const char* const SOURCE_PROPERTY = "source";
@@ -135,11 +135,11 @@ void QmlWindowClass::initQml(QVariantMap properties) {
 
     auto contextInitLambda = [&](QQmlContext* context) {
 #if !defined(Q_OS_ANDROID)
-        // If the restricted flag is on, override the FileTypeProfile and HFWebEngineProfile objects in the 
+        // If the restricted flag is on, override the FileTypeProfile and TivoliWebEngineProfile objects in the 
         // QML surface root context with local ones
         ContextAwareProfile::restrictContext(context, _restricted);
         FileTypeProfile::registerWithContext(context);
-        HFWebEngineProfile::registerWithContext(context);
+        TivoliWebEngineProfile::registerWithContext(context);
 #endif
     };
 

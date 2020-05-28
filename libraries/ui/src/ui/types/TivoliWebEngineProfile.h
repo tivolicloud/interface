@@ -1,5 +1,5 @@
 //
-//  HFWebEngineProfile.h
+//  TivoliWebEngineProfile.h
 //  interface/src/networking
 //
 //  Created by Stephen Birarda on 2016-10-17.
@@ -11,14 +11,14 @@
 
 #pragma once
 
-#ifndef hifi_HFWebEngineProfile_h
-#define hifi_HFWebEngineProfile_h
+#ifndef hifi_TivoliWebEngineProfile_h
+#define hifi_TivoliWebEngineProfile_h
 
 #include "ContextAwareProfile.h"
 
 #if !defined(Q_OS_ANDROID)
 
-class HFWebEngineProfile : public ContextAwareProfile {
+class TivoliWebEngineProfile : public ContextAwareProfile {
     using Parent = ContextAwareProfile;
 public:
     static void registerWithContext(QQmlContext* parent);
@@ -26,8 +26,8 @@ public:
     static void clearCache();
 
 protected:
-    HFWebEngineProfile(QQmlContext* parent);
-    virtual ~HFWebEngineProfile();
+    TivoliWebEngineProfile(QQmlContext* parent);
+    virtual ~TivoliWebEngineProfile();
 
     class RequestInterceptor : public Parent::RequestInterceptor {
     public:
@@ -38,4 +38,4 @@ protected:
 
 #endif
 
-#endif // hifi_HFWebEngineProfile_h
+#endif // hifi_TivoliWebEngineProfile_h
