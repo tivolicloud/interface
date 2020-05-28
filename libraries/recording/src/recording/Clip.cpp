@@ -18,6 +18,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QBuffer>
 #include <QtCore/QDebug>
+#include <QtCore/QCborValue>
 
 using namespace recording;
 
@@ -104,7 +105,7 @@ bool Clip::write(QIODevice& output) {
     rootObject.insert(FRAME_TYPE_MAP, frameTypeObj);
     // Always mark new files as compressed
     rootObject.insert(FRAME_COMREPSSION_FLAG, true);
-    QByteArray headerFrameData = QJsonDocument(rootObject).toBinaryData();
+    QByteArray headerFrameData = QCborValue::fromVariant(rootObject).toCbor();
     // Never compress the header frame
     if (!writeFrame(output, Frame({ Frame::TYPE_HEADER, 0, headerFrameData }), false)) {
         return false;
