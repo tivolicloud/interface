@@ -2200,6 +2200,10 @@ void EntityScriptingInterface::emitScriptEvent(const EntityItemID& entityID, con
     EntityTree::emitScriptEvent(entityID, message);
 }
 
+void EntityScriptingInterface::sendToQml(const EntityItemID& entityID, const QVariant& message) {
+    EntityTree::sendToQml(entityID, message);
+}
+
 // TODO move this someplace that makes more sense...
 bool EntityScriptingInterface::AABoxIntersectsCapsule(const glm::vec3& low,
                                                       const glm::vec3& dimensions,

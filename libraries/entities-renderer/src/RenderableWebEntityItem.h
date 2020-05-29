@@ -107,10 +107,14 @@ private:
 
 public slots:
     void emitScriptEvent(const QVariant& scriptMessage) override;
+    void sendToQml(const QVariant& message) override;
 
 signals:
     void scriptEventReceived(const QVariant& message);
+    void sendToQmlReceived(const QVariant& message);
+
     void webEventReceived(const QVariant& message);
+    void fromQml(const QVariant& message);
 };
 
 } }

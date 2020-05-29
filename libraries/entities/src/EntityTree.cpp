@@ -3174,6 +3174,7 @@ std::function<QObject*(const QUuid&)> EntityTree::_getEntityObjectOperator = nul
 std::function<QSizeF(const QUuid&, const QString&)> EntityTree::_textSizeOperator = nullptr;
 std::function<bool()> EntityTree::_areEntityClicksCapturedOperator = nullptr;
 std::function<void(const QUuid&, const QVariant&)> EntityTree::_emitScriptEventOperator = nullptr;
+std::function<void(const QUuid&, const QVariant&)> EntityTree::_sendToQmlOperator = nullptr;
 std::function<glm::vec3(const QUuid&)> EntityTree::_getUnscaledDimensionsForIDOperator = nullptr;
 
 QObject* EntityTree::getEntityObject(const QUuid& id) {
@@ -3200,6 +3201,12 @@ bool EntityTree::areEntityClicksCaptured() {
 void EntityTree::emitScriptEvent(const QUuid& id, const QVariant& message) {
     if (_emitScriptEventOperator) {
         _emitScriptEventOperator(id, message);
+    }
+}
+
+void EntityTree::sendToQml(const QUuid& id, const QVariant& message) {
+    if (_sendToQmlOperator) {
+        _sendToQmlOperator(id, message);
     }
 }
 

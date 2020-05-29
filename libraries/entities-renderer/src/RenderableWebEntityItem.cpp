@@ -330,11 +330,20 @@ void WebEntityRenderer::buildWebSurface(const EntityItemPointer& entity, const Q
     _webSurface->resume();
 
     _connections.push_back(QObject::connect(this, &WebEntityRenderer::scriptEventReceived, _webSurface.data(), &OffscreenQmlSurface::emitScriptEvent));
-    _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::webEventReceived, this, &WebEntityRenderer::webEventReceived));
+    _connections.push_back(QObject::connect(this, &WebEntityRenderer::sendToQmlReceived, _webSurface.data(), &OffscreenQmlSurface::sendToQml));
+
     const EntityItemID entityItemID = entity->getID();
+    
+    _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::webEventReceived, this, &WebEntityRenderer::webEventReceived));
     _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::webEventReceived, this, [entityItemID](const QVariant& message) {
         emit DependencyManager::get<EntityScriptingInterface>()->webEventReceived(entityItemID, message);
     }));
+
+    _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::fromQml, this, &WebEntityRenderer::fromQml));
+    _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::fromQml, this, [entityItemID](const QVariant& message) {
+        emit DependencyManager::get<EntityScriptingInterface>()->fromQml(entityItemID, message);
+    }));
+
 
     _tryingToBuildURL = newSourceURL;
 }
@@ -478,4 +487,8 @@ QObject* WebEntityRenderer::getEventHandler() {
 
 void WebEntityRenderer::emitScriptEvent(const QVariant& message) {
     emit scriptEventReceived(message);
+}
+
+void WebEntityRenderer::sendToQml(const QVariant& message) {
+    emit sendToQmlReceived(message);
 }

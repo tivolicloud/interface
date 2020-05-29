@@ -1870,6 +1870,74 @@ public slots:
     Q_INVOKABLE void emitScriptEvent(const EntityItemID& entityID, const QVariant& message);
 
     /**jsdoc
+     * Sends a message to the QML in a web entity. To receive the message, the QML must implement a function:
+     * <pre class="prettyprint"><code>function fromScript(message) {
+     *   ...
+     * }</code></pre>
+     * @function Entities.sendToQml
+     * @param {string | object} message - The message to send to the QML.
+     * @example <caption>Send and receive messages with QML in a web entity.</caption>
+     * // JavaScript file
+     * 
+     * var webEntityID = Entities.addEntity({
+     *     type: "Web",
+     *     position: Vec3.sum(
+     *         MyAvatar.position,
+     *         Vec3.multiplyQbyV(
+     *             Quat.cancelOutRollAndPitch(
+     *                 Quat.multiply(
+     *                     Camera.orientation,
+     *                     Quat.fromPitchYawRollDegrees(0, 180, 0)
+     *                 )
+     *             ),
+     *             { z: 2 }
+     *         )
+     *     ),
+     *     dimensions: Vec3.multiply({ x: 16, y: 9, z: 0 }, 0.1),
+     *     rotation: Quat.cancelOutRollAndPitch(Camera.orientation),
+     *     sourceUrl: Script.resolvePath("WebEntity.qml")
+     * });
+     * 
+     * Entities.fromQml.connect(function (entityID, message) {
+     *     if (entityID == webEntityID) print("Message received: " + message);
+     * });
+     * 
+     * Script.setTimeout(function () {
+     *     Entities.sendToQml(webEntityID, "Hello world!");
+     * }, 2000);
+     * 
+     * Script.scriptEnding.connect(function () {
+     *     Entities.deleteEntity(webEntityID);
+     * });
+
+     * @example
+     * // QML file, "WebEntity.qml"
+     * 
+     * import QtQuick 2.15
+     * 
+     * Rectangle {
+     *     width: parent.width
+     *     height: parent.height
+     * 
+     *     signal sendToScript(var message)
+     * 
+     *     function fromScript(message) {
+     *         text.text = message;
+     *         sendToScript("Hello back!");
+     *     }
+     * 
+     *     Text {
+     *         id: text
+     *         anchors.centerIn: parent
+     *         text: "..."
+     *         font.family: "Roboto"
+     *         font.pointSize: 128
+     *     }
+     * }
+     */
+    Q_INVOKABLE void sendToQml(const EntityItemID& entityID, const QVariant& message);
+
+    /**jsdoc
      * Checks whether an axis-aligned box and a capsule intersect.
      * @function Entities.AABoxIntersectsCapsule
      * @param {Vec3} brn - The bottom right near (minimum axes values) corner of the AA box.
@@ -2510,6 +2578,15 @@ signals:
      * @returns {Signal}
      */
     void webEventReceived(const EntityItemID& entityItemID, const QVariant& message);
+    
+    /**jsdoc
+     * Triggered when a message from the QML in a web entity is received. The QML can send a message (string or object) by calling:
+     * <pre class="prettyprint"><code>sendToScript(message);</code></pre>
+     * @function Entities.fromQml
+     * @param {string|object} message - The message received.
+     * @returns {Signal}
+     */
+    void fromQml(const EntityItemID& entityItemID, const QVariant& message);
 
 protected:
     void withEntitiesScriptEngine(std::function<void(QSharedPointer<EntitiesScriptEngineProvider>)> function) {
