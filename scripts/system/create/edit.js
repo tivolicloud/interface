@@ -593,12 +593,14 @@
             }
 
             if (position !== null && position !== undefined) {
-                var direction;
-                if (Camera.mode === "entity" || Camera.mode === "independent") {
-                    direction = Camera.orientation;
-                } else {
-                    direction = MyAvatar.orientation;
-                }
+                // var direction;
+                // if (Camera.mode === "entity" || Camera.mode === "independent") {
+                //     direction = Camera.orientation;
+                // } else {
+                //     direction = MyAvatar.orientation;
+                // }
+                var direction = Camera.orientation;
+
                 direction = Vec3.multiplyQbyV(direction, Vec3.UNIT_Z);
 
                 var PRE_ADJUST_ENTITY_TYPES = [
@@ -618,20 +620,25 @@
                         registration = DEFAULT_REGISTRATION;
                     }
 
-                    var orientation = properties.orientation;
-                    if (orientation === undefined) {
-                        properties.orientation = MyAvatar.orientation;
-                        var DEFAULT_ORIENTATION = properties.orientation;
-                        orientation = DEFAULT_ORIENTATION;
-                    } else {
-                        // If the orientation is already defined, we perform the corresponding rotation assuming that
-                        //  our start referential is the avatar referential.
-                        properties.orientation = Quat.multiply(
-                            MyAvatar.orientation,
-                            properties.orientation
+                    var rotation = properties.rotation;
+                    if (rotation === undefined) {
+                        properties.rotation = Quat.cancelOutRollAndPitch(
+                            Camera.orientation
                         );
-                        var DEFAULT_ORIENTATION = properties.orientation;
-                        orientation = DEFAULT_ORIENTATION;
+                        var DEFAULT_ROTATION = properties.rotation;
+                        rotation = DEFAULT_ROTATION;
+                    } else {
+                        // If the rotation is already defined, we perform the
+                        // corresponding rotation assuming that our start
+                        // referential is the camera referential.
+                        properties.rotation = Quat.multiply(
+                            Quat.cancelOutRollAndPitch(
+                                Camera.orientation
+                            ),
+                            properties.rotation
+                        );
+                        var DEFAULT_ROTATION = properties.rotation;
+                        rotation = DEFAULT_ROTATION;
                     }
 
                     position = adjustPositionPerBoundingBox(
@@ -2302,7 +2309,9 @@
             position = Vec3.sum(
                 MyAvatar.position,
                 Vec3.multiply(
-                    Quat.getForward(MyAvatar.orientation),
+                    Quat.getForward(
+                        Quat.cancelOutRollAndPitch(Camera.orientation)
+                    ),
                     CREATE_DISTANCE + delta
                 )
             );
