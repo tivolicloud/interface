@@ -3271,6 +3271,33 @@
                             selectionManager._update(false, this);
                         }
                     }
+                } else if (data.action === "reloadPage") {
+                    if (selectionManager.hasSelection()) {
+                        for (
+                            i = 0;
+                            i < selectionManager.selections.length;
+                            i++
+                        ) {
+                            var entityId = selectionManager.selections[i];
+                            var sourceUrl = Entities.getEntityProperties(
+                                entityId,
+                                ["sourceUrl"]
+                            ).sourceUrl;
+
+                            Entities.editEntity(
+                                entityId, { sourceUrl: "about:blank" }
+                            );
+                                
+                            Script.setTimeout(function() {
+                                Entities.editEntity(
+                                    entityId, { sourceUrl: sourceUrl }
+                                );
+                                    
+                                pushCommandForSelections();
+                                selectionManager._update(false, this);
+                            }, 10)
+                        }
+                    }
                 }
             } else if (data.type === "propertiesPageReady") {
                 updateSelections(true);

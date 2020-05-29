@@ -691,7 +691,15 @@ const GROUPS = [
             {
                 label: "Source",
                 type: "string",
-                propertyID: "sourceUrl"
+                propertyID: "sourceUrl",
+                buttons: [
+                    {
+                        id: "reload",
+                        label: "Reload Page",
+                        className: "red",
+                        onClick: reloadPage
+                    }
+                ],
             },
             {
                 label: "Source Resolution",
@@ -3450,6 +3458,15 @@ function reloadModel() {
         JSON.stringify({
             type: "action",
             action: "reloadModel",
+        })
+    )
+}
+
+function reloadPage() {
+    EventBridge.emitWebEvent(
+        JSON.stringify({
+            type: "action",
+            action: "reloadPage",
         })
     )
 }
