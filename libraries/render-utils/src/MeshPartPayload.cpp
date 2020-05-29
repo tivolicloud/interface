@@ -25,8 +25,10 @@
 #include "MeshPartPayload.h"
 
 #ifdef Q_OS_MAC
+bool MeshPartPayload::DEFAULT_ENABLE_MATERIAL_PROCEDURAL_SHADERS = false;
 bool MeshPartPayload::enableMaterialProceduralShaders = false;
 #else
+bool MeshPartPayload::DEFAULT_ENABLE_MATERIAL_PROCEDURAL_SHADERS = true;
 bool MeshPartPayload::enableMaterialProceduralShaders = true;
 #endif
 

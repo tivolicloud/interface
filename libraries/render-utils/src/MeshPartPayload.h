@@ -77,6 +77,7 @@ public:
 
     void setCullWithParent(bool value) { _cullWithParent = value; }
 
+    static bool DEFAULT_ENABLE_MATERIAL_PROCEDURAL_SHADERS;
     static bool enableMaterialProceduralShaders; // set from menu/settings
     static bool sceneIsReady; // set from entity tree renderer
 

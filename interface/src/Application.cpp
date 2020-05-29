@@ -2013,6 +2013,10 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     }
 
     Menu::getInstance()->setIsOptionChecked(MenuOption::ActionMotorControl, true);
+    Menu::getInstance()->setIsOptionChecked(
+        MenuOption::MaterialProceduralShaders,
+        MeshPartPayload::DEFAULT_ENABLE_MATERIAL_PROCEDURAL_SHADERS
+    );
 
 // FIXME spacemouse code still needs cleanup
 #if 0
