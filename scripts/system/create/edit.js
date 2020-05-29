@@ -3293,10 +3293,13 @@
                                 ["sourceUrl"]
                             ).sourceUrl;
 
+                            if (sourceUrl === "about:blank") continue;
+
                             Entities.editEntity(
                                 entityId, { sourceUrl: "about:blank" }
                             );
                                 
+                            // TODO: this doesn't work very well when online
                             Script.setTimeout(function() {
                                 Entities.editEntity(
                                     entityId, { sourceUrl: sourceUrl }
@@ -3304,7 +3307,7 @@
                                     
                                 pushCommandForSelections();
                                 selectionManager._update(false, this);
-                            }, 10)
+                            }, 50);
                         }
                     }
                 }
