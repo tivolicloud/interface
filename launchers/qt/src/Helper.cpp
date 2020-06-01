@@ -100,6 +100,6 @@ QString getHTTPUserAgent() {
 }
 
 const QString& getInterfaceSharedMemoryName() {
-    static const QString applicationName = "High Fidelity Interface - " + qgetenv("USERNAME");
+    static const QString applicationName = "Tivoli Cloud VR - " + qgetenv("USERNAME");
     return applicationName;
 }
