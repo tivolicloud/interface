@@ -404,13 +404,13 @@ bool isPossiblePlaceName(QString possiblePlaceName) {
     return result;
 }
 
-void AddressManager::handleLookupString(const QString& lookupString, bool fromSuggestions) {
-
+bool AddressManager::handleLookupString(const QString& lookupString, bool fromSuggestions) {
     QString sanitizedString = lookupString.trimmed();
     if (!sanitizedString.isEmpty()) {
         // make this a valid hifi URL and handle it off to handleUrl
-        handleUrl(sanitizedString, fromSuggestions ? Suggestions : UserInput);
+        return handleUrl(sanitizedString, fromSuggestions ? Suggestions : UserInput);
     }
+    return false;
 }
 
 const QString DATA_OBJECT_DOMAIN_KEY = "domain";

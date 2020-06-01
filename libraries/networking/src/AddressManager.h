@@ -256,8 +256,9 @@ public slots:
      *     <code>"/"</code>), a position or position and orientation, or a user (starts with <code>"@"</code>).
      * @param {boolean} [fromSuggestions=false] - Set to <code>true</code> if the address is obtained from the "Goto" dialog.
      *     Helps ensure that user's location history is correctly maintained.
+     * @returns {boolean}
      */
-    void handleLookupString(const QString& lookupString, bool fromSuggestions = false);
+    bool handleLookupString(const QString& lookupString, bool fromSuggestions = false);
 
     /**jsdoc
      * Takes you to a position and orientation resulting from a lookup for a named path in the domain (set in the domain 
@@ -265,6 +266,7 @@ public slots:
      * @function location.goToViewpointForPath
      * @param {string} path - The position and orientation corresponding to the named path.
      * @param {string} namedPath - The named path that was looked up on the server.
+     * @returns {boolean}
      * @deprecated This function is deprecated and will be removed.
      */
     // This function is marked as deprecated in anticipation that it will not be included in the JavaScript API if and when the
