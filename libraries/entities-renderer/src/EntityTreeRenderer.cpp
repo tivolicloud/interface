@@ -285,7 +285,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         {
             const auto& renderer = entry.second;
             const EntityItemPointer entityItem = renderer->getEntity();
-            if (!(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == sessionUUID))) 
+            if (entityItem && !(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == sessionUUID))) 
             {
                 fadeOutRenderable(renderer);
             } 
@@ -954,7 +954,7 @@ void EntityTreeRenderer::leaveDomainAndNonOwnedEntities() {
         QSet<EntityItemID> currentEntitiesInsideToSave;
         foreach (const EntityItemID& entityID, _currentEntitiesInside) {
             EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
-            if (!(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == getTree()->getMyAvatarSessionUUID()))) {
+            if (entityItem && !(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == getTree()->getMyAvatarSessionUUID()))) {
                 emit leaveEntity(entityID);
                 if (_entitiesScriptEngine) 
                 {
