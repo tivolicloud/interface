@@ -246,6 +246,8 @@ public:
     
     QString getDomainLabel() { return _domainLabel; }
     QString getDomainAuthor() { return _domainAuthor; }
+    QString getDomainDescription() { return _domainDescription; }
+    QString getDomainRestriction() { return _domainRestriction; }
 
 public slots:
     /**jsdoc
@@ -533,6 +535,8 @@ private:
 
     QString _domainLabel;
     QString _domainAuthor;
+    QString _domainDescription;
+    QString _domainRestriction;
 
     QUuid _rootPlaceID;
     PositionGetter _positionGetter;

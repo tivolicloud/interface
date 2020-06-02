@@ -477,6 +477,8 @@ void AddressManager::goToAddressFromObject(const QVariantMap& dataObject, const 
 
                 _domainLabel = domainObject["label"].toString();
                 _domainAuthor = domainObject["author"].toString();
+                _domainDescription = domainObject["description"].toString();
+                _domainRestriction = domainObject["restriction"].toString();
 
                 if (domainObject.contains(DOMAIN_NETWORK_ADDRESS_KEY)) {
                     QString domainHostname = domainObject[DOMAIN_NETWORK_ADDRESS_KEY].toString();
