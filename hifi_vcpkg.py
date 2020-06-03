@@ -191,8 +191,20 @@ endif()
                 print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
                 hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
             else:
-                print("Cloning vcpkg from github to {}".format(self.path))
-                hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
+                # print("Cloning vcpkg from github to {}".format(self.path))
+                # hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
+                
+                print("Download vcpkg from GitHub to {}".format(self.path))
+                hifi_utils.downloadAndExtract(
+                    "https://codeload.github.com/microsoft/vcpkg/zip/master", self.path, isZip=True
+                )
+                vcpkg_master = os.path.join(self.path, "vcpkg-master")
+                for filename in os.listdir(vcpkg_master):
+                    shutil.move(os.path.join(vcpkg_master, filename), os.path.join(self.path, filename))
+                os.rmdir(vcpkg_master)
+                if platform.system() != "Windows":
+                    hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
+
                 print("Bootstrapping vcpkg")
                 hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)      
 
