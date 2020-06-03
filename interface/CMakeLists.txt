@@ -238,7 +238,6 @@ target_opengl()
 add_crashpad()
 target_breakpad()
 target_json()
-target_discord_game_sdk()
 
 # perform standard include and linking for found externals
 foreach(EXTERNAL ${OPTIONAL_EXTERNALS})
