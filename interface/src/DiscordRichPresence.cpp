@@ -1,7 +1,7 @@
 #include <QtCore/QString>
 #include <QtCore/QDebug>
 #include <QtCore/QDateTime>
-#include "time.h"
+#include <QtCore/QLoggingCategory>
 
 #include "DiscordRichPresence.h"
 #include "DependencyManager.h"
@@ -14,6 +14,8 @@
 
 using namespace discord;
 
+Q_LOGGING_CATEGORY(discord_rich_presence, "hifi.discord_rich_presence")
+
 DiscordRichPresence::DiscordRichPresence() {
     auto result = Core::Create(
         DISCORD_APPLICATION_CLIENT_ID,
@@ -22,29 +24,34 @@ DiscordRichPresence::DiscordRichPresence() {
     );
 
     if (result == Result::Ok) {
-        qDebug()<<"MAKI DISCORD core ok!";
-
         core->SetLogHook(
             LogLevel::Debug, 
             [](LogLevel level, const char* message) {
-                qDebug() << "MAKI DISCORD log (" << 
-                static_cast<uint32_t>(level) << "): " << message;
+                qCDebug(discord_rich_presence) << "Discord log ("
+                    << static_cast<uint32_t>(level) << "): " << message;
             }
         );
 
+        // TODO: doesn't detect interface when not running
+
         core->ActivityManager().RegisterCommand("tivoli://");
-        core->ActivityManager().OnActivityJoin.Connect([](const char* secret) {          
-            qDebug() << "MAKI DISCORD OnActivityJoin"<<secret;
-            // auto addressManager = DependencyManager::get<AddressManager>();
-            // addressManager->handleLookupString(
-            //     QString(secret)
-            // );
+        core->ActivityManager().OnActivityJoin.Connect([](const char* secretStr) {          
+            QString secret(secretStr);
+            QString domainId = secret.split(QRegularExpression("\\s+")).takeLast();
+
+            auto addressManager = DependencyManager::get<AddressManager>();
+            if (addressManager) {
+                addressManager->handleLookupString(domainId);
+                qCDebug(discord_rich_presence) << "Joining domain from Discord";
+            }
         });
     }
 }
 
 void DiscordRichPresence::update() {
-    core->RunCallbacks();
+    if (core) {
+        core->RunCallbacks();
+    }
 }
 
 void DiscordRichPresence::domainChanged() {
@@ -104,22 +111,21 @@ void DiscordRichPresence::domainChanged() {
         auto avatarHashMap = DependencyManager::get<AvatarHashMap>();
         if (avatarHashMap) {
             const int currentSize = avatarHashMap->getAvatarIdentifiers().length();
+            QString lookupString = domainID.mid(1, domainID.length() - 2);
+
             activity.SetInstance(true);
-            activity.GetParty().SetId(domainID.toStdString().c_str());
+            activity.GetParty().SetId(lookupString.toStdString().c_str());
             activity.GetParty().GetSize().SetCurrentSize(currentSize);
             activity.GetParty().GetSize().SetMaxSize(1000);
             activity.GetSecrets().SetJoin(
-                QString("join "+domainID).toStdString().c_str()
+                QString("join "+lookupString).toStdString().c_str()
             );
             activity.GetSecrets().SetMatch(
-                QString("match "+domainID).toStdString().c_str()
+                QString("match "+lookupString).toStdString().c_str()
             );
         }
     }
 
     // update activity
-    qDebug() << "MAKI DISCORD pre UpdateActivity details "<<details;
-    core->ActivityManager().UpdateActivity(activity, [&](Result result) {
-        qDebug() << "MAKI DISCORD UpdateActivity result "<<(int)result;
-    });
+    core->ActivityManager().UpdateActivity(activity, [&](Result result) {});
 }

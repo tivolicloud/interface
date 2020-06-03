@@ -37,5 +37,13 @@ macro(fixup_interface)
                 COMMAND ${MACDEPLOYQT_COMMAND} "$<TARGET_FILE_DIR:${TARGET_NAME}>/../.." -verbose=2 -qmldir=${CMAKE_SOURCE_DIR}/interface/resources/qml/
             )
         endif()
+
+        # copy discord sdk manually
+        # TODO: why is this not happening automatically and why the rename
+        add_custom_command(TARGET interface POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${VCPKG_INSTALL_ROOT}/lib/libdiscord_game_sdk.dylib
+                ${CMAKE_BINARY_DIR}/interface/${CMAKE_BUILD_TYPE}/interface.app/Contents/Frameworks/discord_game_sdk.dylib
+        )
     endif ()
 endmacro()
