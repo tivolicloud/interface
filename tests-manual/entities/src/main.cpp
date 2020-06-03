@@ -14,6 +14,7 @@
 #include <QElapsedTimer>
 #include <QLoggingCategory>
 #include <QDir>
+#include <QRandomGenerator>
 #include <ByteCountCoding.h>
 
 #include <ShapeEntityItem.h>
@@ -79,7 +80,7 @@ void testByteCountCodedStable(const T& value) {
     auto originalEncodedSize = encoded.size();
     #endif
     for (int i = 0; i < 10; ++i) {
-        encoded.append(qrand());
+        encoded.append(QRandomGenerator::global()->generate());
     }
     ByteCountCoded<T> decoder;
     decoder.decode(encoded);
@@ -111,7 +112,7 @@ void testPropertyFlags(uint32_t value) {
     int originalSize = encoded.size();
     #endif
     for (size_t i = 0; i < enumSize; ++i) {
-        encoded.append(qrand());
+        encoded.append(QRandomNumber::global()->generate());
     }
 
     EntityPropertyFlags decodeOld, decodeNew;

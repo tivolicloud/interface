@@ -22,6 +22,7 @@
 #include <QString>
 #include <QTime>
 #include <QUrl>
+#include <QRandomGenerator>
 
 #include "ScriptEngineLogging.h"
 
@@ -103,8 +104,7 @@ QString GooglePolyScriptingInterface::getModelInfo(const QString& input) {
 
 int GooglePolyScriptingInterface::getRandIntInRange(int length) {
     QTime time = QTime::currentTime();
-    qsrand((uint)time.msec());
-    return qrand() % length;
+    return QRandomGenerator((uint)time.msec()).bounded(length);
 }
 
 QUrl GooglePolyScriptingInterface::formatURLQuery(const QString& keyword, const QString& category, const QString& format) {
