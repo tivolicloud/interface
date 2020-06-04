@@ -15,11 +15,6 @@ interface windows:
 
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
-        #HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
-        #HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
-        HIFI_QT_BASE: C:\HIFI_QT
-        HIFI_VCPKG_BASE: C:\HIFI_VCPKG
-
         CL: /MP # might make vcpkg build faster (but doesn't)
 
     # cache is intensly slow on windows ntfs
