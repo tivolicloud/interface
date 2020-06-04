@@ -103,7 +103,7 @@ void PipelineSortShapes::run(const RenderContextPointer& renderContext, const It
     outShapes.clear();
 
     for (const auto& item : inItems) {
-        auto key = scene->getItem(item.id).getShapeKey();
+        auto key = scene->getItem(item.id).getShapeKey(); // TODO: (caitlyn) crashes if you delete the model URL while editing
         auto outItems = outShapes.find(key);
         if (outItems == outShapes.end()) {
             outItems = outShapes.insert(std::make_pair(key, ItemBounds{})).first;

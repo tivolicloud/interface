@@ -88,6 +88,13 @@ void Item::resetPayload(const PayloadPointer& payload) {
     }
 }
 
+// TODO: (caitlyn) I've had multiple crashes here whilst using the edit tools. It appears to 
+// happen after being called by SortTask.cpp: auto key = scene->getItem(item.id).getShapeKey();
+// It looks like _payload is empty and that's what causes the exception. Please fix.
+// I believe it happens when I remove a model's URL in the create tool in a ham fisted attempt
+// to force reload a locally hosted file.  I cut the URL out, press TAB to force it to reload nothing
+// and then crashes, before I have the chance to paste the URL back and force that reload.
+// So it would apepar this is attempting to call and process a model whose URL is removed.
 const ShapeKey Item::getShapeKey() const {
     auto shapeKey = _payload->getShapeKey();
     if (!TransitionStage::isIndexInvalid(_transitionId)) {
