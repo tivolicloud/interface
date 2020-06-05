@@ -17,6 +17,11 @@ interface windows:
 
         CL: /MP # might make vcpkg build faster (but doesn't)
 
+        CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+
+        # SENTRY_AUTH_TOKEN
+        SENTRY_ORG: tivolicloud
+
     # cache is intensly slow on windows ntfs
     # cache:
     #     paths:
@@ -30,6 +35,8 @@ interface windows:
         # -DCLIENT_ONLY:BOOLEAN=TRUE
         - cmake -DCMAKE_BUILD_TYPE=Release -A x64 ..
         - cmake --build . --parallel --config Release --target interface
+
+        - sentry-cli upload-dif --include-sources -p interface interface
 
         - cd interface\Release
         - del interface.exp

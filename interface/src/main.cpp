@@ -218,10 +218,13 @@ int main(int argc, const char* argv[]) {
     }
     qDebug() << "UserActivityLogger is enabled:" << ual.isEnabled();
 
-    if (ual.isEnabled()) {
-        auto crashHandlerStarted = startCrashHandler(argv[0]);
-        qDebug() << "Crash handler started:" << crashHandlerStarted;
-    }
+    // TODO: user activity logger dumps way too much data for analytics
+    // which needs to be ripped out. crash handler is crutial to the
+    // stability of interface
+    // if (ual.isEnabled()) {
+    auto crashHandlerStarted = startCrashHandler(argv[0]);
+    qDebug() << "Crash handler started:" << crashHandlerStarted;
+    // }
 
 
     const QString& applicationName = getInterfaceSharedMemoryName();

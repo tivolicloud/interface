@@ -30,6 +30,8 @@ public:
     virtual void locateLog() override;
     virtual void sync() override;
 
+    static const QString& getLogFilename();
+
 signals:
     void rollingLogFile(QString newFilename);
 

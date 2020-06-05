@@ -6,6 +6,19 @@
     when: manual
     allow_failure: false
 
+# sentry release:
+#     stage: deploy
+#     image: getsentry/sentry-cli
+
+#     extends: .deploy
+#     variables:
+#         # SENTRY_AUTH_TOKEN
+#         SENTRY_ORG: tivolicloud
+
+#     script:
+#         - sentry-cli releases new -p interface $CI_COMMIT_TAG
+#         - sentry-cli releases set-commits --auto $CI_COMMIT_TAG
+
 pages:
     stage: deploy
     image: node:latest

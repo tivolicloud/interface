@@ -42,10 +42,12 @@
 #include <FingerprintUtils.h>
 #include <UUID.h>
 
+#include <shared/FileLogger.h>
+
 using namespace crashpad;
 
 static const std::string BACKTRACE_URL { CMAKE_BACKTRACE_URL };
-static const std::string BACKTRACE_TOKEN { CMAKE_BACKTRACE_TOKEN };
+// static const std::string BACKTRACE_TOKEN { CMAKE_BACKTRACE_TOKEN };
 
 CrashpadClient* client { nullptr };
 std::mutex annotationMutex;
@@ -75,7 +77,8 @@ LONG WINAPI vectoredExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo) {
 #endif
 
 bool startCrashHandler(std::string appPath) {
-    if (BACKTRACE_URL.empty() || BACKTRACE_TOKEN.empty()) {
+    // if (BACKTRACE_URL.empty() || BACKTRACE_TOKEN.empty()) {
+    if (BACKTRACE_URL.empty()) {
         return false;
     }
 
@@ -84,17 +87,19 @@ bool startCrashHandler(std::string appPath) {
     std::vector<std::string> arguments;
 
     std::map<std::string, std::string> annotations;
-    annotations["token"] = BACKTRACE_TOKEN;
-    annotations["format"] = "minidump";
-    annotations["version"] = BuildInfo::VERSION.toStdString();
-    annotations["build_number"] = BuildInfo::BUILD_NUMBER.toStdString();
-    annotations["build_type"] = BuildInfo::BUILD_TYPE_STRING.toStdString();
+    annotations["sentry[release]"] = BuildInfo::VERSION.toStdString();
+    annotations["sentry[contexts][app][app_version]"] = BuildInfo::VERSION.toStdString();
+    annotations["sentry[contexts][app][app_build]"] = BuildInfo::BUILD_NUMBER.toStdString();
+    // annotations["sentry[contexts][app][build_type]"] = BuildInfo::BUILD_TYPE_STRING.toStdString();
 
     auto machineFingerPrint = uuidStringWithoutCurlyBraces(FingerprintUtils::getMachineFingerprint());
     annotations["machine_fingerprint"] = machineFingerPrint.toStdString();
 
-
     arguments.push_back("--no-rate-limit");
+
+    // https://docs.sentry.io/platforms/native/minidump
+    std::map<std::string, std::string> fileAttachments;
+    fileAttachments["tivoli-log.txt"] = QString(FileLogger::getLogFilename()).toStdString();
 
     // Setup Crashpad DB directory
     const auto crashpadDbName = "crashpad-db";
@@ -129,7 +134,9 @@ bool startCrashHandler(std::string appPath) {
     AddVectoredExceptionHandler(0, vectoredExceptionHandler);
 #endif
 
-    return client->StartHandler(handler, db, db, BACKTRACE_URL, annotations, arguments, true, true);
+    return client->StartHandlerForBacktrace(
+        handler, db, db, BACKTRACE_URL, annotations, arguments, fileAttachments, true, true
+    );
 }
 
 void setCrashAnnotation(std::string name, std::string value) {

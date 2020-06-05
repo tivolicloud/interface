@@ -66,7 +66,7 @@ QString getLogRollerFilename() {
     return result;
 }
 
-const QString& getLogFilename() {
+const QString& FileLogger::getLogFilename() {
     static QString fileName = FileUtils::standardPath(LOGS_DIRECTORY) + "tivoli-log.txt";
     return fileName;
 }
@@ -127,7 +127,7 @@ bool FilePersistThread::processQueueItems(const Queue& messages) {
 
 FileLogger::FileLogger(QObject* parent) :
     AbstractLoggerInterface(parent),
-    _fileName(getLogFilename())
+    _fileName(FileLogger::getLogFilename())
 {
     _persistThreadInstance = new FilePersistThread(*this);
     _persistThreadInstance->initialize(true, QThread::LowestPriority);
