@@ -3,14 +3,10 @@ set(EXTERNAL_NAME crashpad)
 
 string(TOUPPER ${EXTERNAL_NAME} EXTERNAL_NAME_UPPER)
 
+# compile with vcpkg and zip up `packages/crashpad_x64-*`
+# make sure to `chmod +x crashpad_handler` on mac and linux
+
 if (WIN32)
-    # compile with vcpkg but modify to
-    # vcpkg_from_git(
-    #   OUT_SOURCE_PATH SOURCE_PATH
-    #   URL https://github.com/backtrace-labs/crashpad
-    #   REF b0ebc0ca3ea8e8788cfdb42afc36d859c94d9c30
-    # )
-    # and zip up
     ExternalProject_Add(
       ${EXTERNAL_NAME}
       URL https://cdn.tivolicloud.com/dependencies/crashpad_x64-windows.zip
@@ -30,11 +26,10 @@ if (WIN32)
     set(LIB_PREFIX "")
     set(LIB_EXT "lib")
 elseif (APPLE)
-  # TODO: update me like above
   ExternalProject_Add(
     ${EXTERNAL_NAME}
-    URL https://cdn.tivolicloud.com/dependencies/crashpad_mac_070318.zip
-    URL_MD5 ba1501dc163591ac2d1be74946967e2a
+    URL https://cdn.tivolicloud.com/dependencies/crashpad_x64-osx.zip
+    URL_MD5 3afaee0800a2a1db14904b7f8d3a2ee0
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
@@ -43,10 +38,10 @@ elseif (APPLE)
 
   ExternalProject_Get_Property(${EXTERNAL_NAME} SOURCE_DIR)
 
-  set(BIN_RELEASE_PATH "${SOURCE_DIR}/out/Release")
+  set(BIN_RELEASE_PATH "${SOURCE_DIR}/tools")
   set(BIN_EXT "")
-  set(LIB_RELEASE_PATH "${SOURCE_DIR}/out/Release/lib")
-  set(LIB_DEBUG_PATH "${SOURCE_DIR}/out/Debug/lib")
+  set(LIB_RELEASE_PATH "${SOURCE_DIR}/lib")
+  set(LIB_DEBUG_PATH "${SOURCE_DIR}/debug/lib")
   set(LIB_PREFIX "lib")
   set(LIB_EXT "a")
 endif ()

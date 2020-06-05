@@ -17,6 +17,11 @@ interface macos:
         OPENSSL_USE_STATIC_LIBS: "TRUE"
         OSX_SDK: "10.11"
 
+        CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+
+        # SENTRY_AUTH_TOKEN
+        SENTRY_ORG: tivolicloud
+
     script:
         - mkdir -p build
         - cd build
@@ -29,6 +34,9 @@ interface macos:
           -DOPENSSL_USE_STATIC_LIBS=$OPENSSL_USE_STATIC_LIBS
           -G Xcode ..
         - cmake --build . --target interface --config $BUILD_TYPE
+
+        # TODO: source code doesn't show
+        - sentry-cli upload-dif --include-sources -p interface interface
 
         - cd interface/Release/interface.app/Contents/Resources
         - echo "[Paths]" > qt.conf

@@ -97,9 +97,9 @@ bool startCrashHandler(std::string appPath) {
 
     arguments.push_back("--no-rate-limit");
 
-    // https://docs.sentry.io/platforms/native/minidump
-    std::map<std::string, std::string> fileAttachments;
-    fileAttachments["tivoli-log.txt"] = QString(FileLogger::getLogFilename()).toStdString();
+    // // https://docs.sentry.io/platforms/native/minidump
+    // std::map<std::string, std::string> fileAttachments;
+    // fileAttachments["tivoli-log.txt"] = QString(FileLogger::getLogFilename()).toStdString();
 
     // Setup Crashpad DB directory
     const auto crashpadDbName = "crashpad-db";
@@ -134,8 +134,8 @@ bool startCrashHandler(std::string appPath) {
     AddVectoredExceptionHandler(0, vectoredExceptionHandler);
 #endif
 
-    return client->StartHandlerForBacktrace(
-        handler, db, db, BACKTRACE_URL, annotations, arguments, fileAttachments, true, true
+    return client->StartHandler(
+        handler, db, db, BACKTRACE_URL, annotations, arguments, true, true
     );
 }
 
