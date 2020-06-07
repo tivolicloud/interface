@@ -14,6 +14,10 @@ all linux:
         HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
         HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
 
+        # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+        # SENTRY_AUTH_TOKEN
+        # SENTRY_ORG: tivolicloud
+
     cache:
         paths:
             - build/HIFI_QT
@@ -36,12 +40,16 @@ all linux:
         - ./cmake-3.14.2-Linux-x86_64.sh --prefix=/usr/local --skip-license
         - curl -sL https://deb.nodesource.com/setup_12.x | bash -
         - apt-get install -y nodejs
+        # - npm i -g @sentry/cli
 
         # build
         - mkdir -p build
         - cd build
         - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
         - make interface domain-server assignment-client oven ice-server -j$(nproc)
+
+        # upload symbols and sources to sentry
+        # - sentry-cli upload-dif --include-sources -p interface interface
 
         # save shared libraries for server
         - cp ../docker/extract-so.py ./extract-so-server.py

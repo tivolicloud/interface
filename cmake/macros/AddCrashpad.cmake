@@ -28,36 +28,27 @@ macro(add_crashpad)
   #   endif()
   # endif()
 
+  # TODO: crashpad for linux doesn't work because no https support. youll probably have to link boringssl when compiling
+  # if ((WIN32 OR APPLE OR UNIX AND NOT ANDROID) AND USE_CRASHPAD)
   if ((WIN32 OR APPLE) AND USE_CRASHPAD)
-    get_property(CRASHPAD_CHECKED GLOBAL PROPERTY CHECKED_FOR_CRASHPAD_ONCE)
-    if (NOT CRASHPAD_CHECKED)
-      message("Using crashpad with backtrace URL: ${CMAKE_BACKTRACE_URL}")
-
-      add_dependency_external_projects(crashpad)
-      find_package(crashpad REQUIRED)
-
-      set_property(GLOBAL PROPERTY CHECKED_FOR_CRASHPAD_ONCE TRUE)
-    endif()
+    target_crashpad()
 
     add_definitions(-DHAS_CRASHPAD)
     add_definitions(-DCMAKE_BACKTRACE_URL=\"${CMAKE_BACKTRACE_URL}\")
     # add_definitions(-DCMAKE_BACKTRACE_TOKEN=\"${CMAKE_BACKTRACE_TOKEN}\")
-
-    target_include_directories(${TARGET_NAME} PRIVATE ${CRASHPAD_INCLUDE_DIRS})
-    target_link_libraries(${TARGET_NAME} ${CRASHPAD_LIBRARY} ${CRASHPAD_BASE_LIBRARY} ${CRASHPAD_UTIL_LIBRARY})
-
-    if (WIN32)
-      set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "/ignore:4099")
-    elseif (APPLE)
-      find_library(Security Security)
-      target_link_libraries(${TARGET_NAME} ${Security})
-      target_link_libraries(${TARGET_NAME} "-lbsm")
-    endif()
 
     add_custom_command(
       TARGET ${TARGET_NAME}
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy ${CRASHPAD_HANDLER_EXE_PATH} "$<TARGET_FILE_DIR:${TARGET_NAME}>/"
     )
+    if (NOT WIN32)
+      # TODO: set proper permissions in the port file
+      add_custom_command(
+        TARGET ${TARGET_NAME}
+        POST_BUILD
+        COMMAND chmod +x "$<TARGET_FILE_DIR:${TARGET_NAME}>/crashpad_handler"
+      )
+    endif ()
   endif ()
 endmacro()
