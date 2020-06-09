@@ -26,6 +26,7 @@
 #include <QtNetwork/QHttpMultiPart>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QSslConfiguration>
 #include <qthread.h>
 
 #include <SettingHandle.h>
