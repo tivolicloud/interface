@@ -11,8 +11,8 @@ all linux:
 
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
-        HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
-        HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
+        TIVOLI_QT_BASE: $CI_PROJECT_DIR/build/TIVOLI_QT
+        TIVOLI_VCPKG_BASE: $CI_PROJECT_DIR/build/TIVOLI_VCPKG
 
         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
         # SENTRY_AUTH_TOKEN
@@ -20,8 +20,8 @@ all linux:
 
     cache:
         paths:
-            - build/HIFI_QT
-            - build/HIFI_VCPKG
+            - build/TIVOLI_QT
+            - build/TIVOLI_VCPKG
 
     script:
         # arch linux
@@ -81,8 +81,8 @@ all linux:
           -executable=interface.AppDir/usr/bin/plugins/libpcmCodec.so
           -executable=interface.AppDir/usr/bin/plugins/libsteamClient.so
           -executable=interface.AppDir/usr/lib/libgl.so
-          -qmake=$HIFI_QT_BASE/5.14.1/qt5-install/bin/qmake
-          -qmldir=$HIFI_QT_BASE/5.14.1/qt5-install/qml
+          -qmake=$TIVOLI_QT_BASE/5.14.1/qt5-install/bin/qmake
+          -qmldir=$TIVOLI_QT_BASE/5.14.1/qt5-install/qml
           -qmldir=../../interface/resources/qml
           -extra-plugins=webview,platformthemes/libqgtk3.so
           -exclude-libs=libnss3.so,libnssutil3.so

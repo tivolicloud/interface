@@ -111,7 +111,7 @@ To view a more complete debug log,
 Some things you can try if you want to do a clean build
  
 * Delete the `build` and `.externalNativeBuild` folders from the folder for each module you're building (for example, `hifi/android/apps/interface`)
-* If you have set your `HIFI_VCPKG_ROOT` environment variable, delete the contents of that directory; otherwise, delete `AppData/Local/Temp/hifi`
+* If you have set your `TIVOLI_VCPKG_ROOT` environment variable, delete the contents of that directory; otherwise, delete `AppData/Local/Temp/hifi`
 * In Android Studio, click _File > Invalidate Caches / Restart_ and select _Invalidate and Restart_
 
 If you see lots of "couldn't acquire lock" errors,

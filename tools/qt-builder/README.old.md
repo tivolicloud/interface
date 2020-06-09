@@ -120,7 +120,7 @@ Before running configure, make sure that the qt5-build folder is empty.
 
 **Only run the git patches once!!!**  
 ### Windows
-Before building, verify that **HIFI_VCPKG_BASE_VERSION** points to a *vcpkg* folder containing *packages\openssl-windows_x64-windows*.  
+Before building, verify that **TIVOLI_VCPKG_BASE_VERSION** points to a *vcpkg* folder containing *packages\openssl-windows_x64-windows*.  
 If not, follow https://github.com/highfidelity/vcpkg to install *vcpkg* and then *openssl*.
 Also, make sure the directory that you are using to build qt is not deeply nested.  It is quite possible to run into the windows MAX_PATH limit when building chromium.  For example: `c:\msys64\home\ajt\code\hifi\tools\qt-builder\qt5-build` is too long.  `c:\q\qt5-build\` is a better choice.
 #### Preparing source files
@@ -143,7 +143,7 @@ Also, make sure the directory that you are using to build qt is not deeply neste
 run `..\qt5\qt5vars.bat`  
 `cd ..\..\qt5-build`  
 
-`..\qt5\configure -force-debug-info -opensource -confirm-license -opengl desktop -platform win32-msvc -openssl-linked  OPENSSL_LIBS="-lssleay32 -llibeay32"  -I %HIFI_VCPKG_BASE_VERSION%\packages\openssl-windows_x64-windows\include -L %HIFI_VCPKG_BASE_VERSION%\packages\openssl-windows_x64-windows\lib -nomake examples -nomake tests -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -no-warnings-are-errors -no-pch -prefix ..\qt5-install`  
+`..\qt5\configure -force-debug-info -opensource -confirm-license -opengl desktop -platform win32-msvc -openssl-linked  OPENSSL_LIBS="-lssleay32 -llibeay32"  -I %TIVOLI_VCPKG_BASE_VERSION%\packages\openssl-windows_x64-windows\include -L %TIVOLI_VCPKG_BASE_VERSION%\packages\openssl-windows_x64-windows\lib -nomake examples -nomake tests -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -no-warnings-are-errors -no-pch -prefix ..\qt5-install`  
 #### Make
 `jom`  
 `jom install`  

@@ -50,15 +50,15 @@ endif()
         # OS dependent information
         system = platform.system()
 
-        if 'HIFI_VCPKG_PATH' in os.environ:
-            self.path = os.environ['HIFI_VCPKG_PATH']
+        if 'TIVOLI_VCPKG_PATH' in os.environ:
+            self.path = os.environ['TIVOLI_VCPKG_PATH']
             self.noClean = True
         elif self.args.vcpkg_root is not None:
             self.path = args.vcpkg_root
             self.noClean = True
         else:
             defaultBasePath = os.path.expanduser('~/tivoli/vcpkg')
-            self.basePath = os.getenv('HIFI_VCPKG_BASE', defaultBasePath)
+            self.basePath = os.getenv('TIVOLI_VCPKG_BASE', defaultBasePath)
             if self.args.android:
                 self.basePath = os.path.join(self.basePath, 'android')
             if (not os.path.isdir(self.basePath)):

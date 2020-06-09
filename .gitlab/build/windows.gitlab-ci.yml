@@ -15,10 +15,10 @@ interface windows:
 
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
-        # HIFI_QT_BASE: $CI_PROJECT_DIR/build/HIFI_QT
-        # HIFI_VCPKG_BASE: $CI_PROJECT_DIR/build/HIFI_VCPKG
-        HIFI_QT_BASE: C:\HIFI_QT
-        HIFI_VCPKG_BASE: C:\HIFI_VCPKG
+        # TIVOLI_QT_BASE: $CI_PROJECT_DIR/build/TIVOLI_QT
+        # TIVOLI_VCPKG_BASE: $CI_PROJECT_DIR/build/TIVOLI_VCPKG
+        TIVOLI_QT_BASE: C:\TIVOLI_QT
+        TIVOLI_VCPKG_BASE: C:\TIVOLI_VCPKG
 
         CL: /MP # might make vcpkg build faster but doesn't
 
@@ -30,8 +30,8 @@ interface windows:
     # cache is intensly slow on windows ntfs
     # cache:
     #     paths:
-    #         - build/HIFI_QT
-    #         - build/HIFI_VCPKG
+    #         - build/TIVOLI_QT
+    #         - build/TIVOLI_VCPKG
 
     script:
         - mkdir build

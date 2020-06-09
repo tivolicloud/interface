@@ -37,22 +37,22 @@ Download and install the latest version of CMake 3.15.
 Download the file named win64-x64 Installer from the [CMake Website](https://cmake.org/download/). You can access the installer on this [3.15 Version page](https://cmake.org/files/v3.15/). During installation, make sure to check "Add CMake to system PATH for all users" when prompted.
 
 ### Step 3. Create VCPKG environment variable
-In the next step, you will use CMake to build High Fidelity. By default, the CMake process builds dependency files in Windows' `%TEMP%` directory, which is periodically cleared by the operating system. To prevent you from having to re-build the dependencies in the event that Windows clears that directory, we recommend that you create a `HIFI_VCPKG_BASE` environment variable linked to a directory somewhere on your machine. That directory will contain all dependency files until you manually remove them.
+In the next step, you will use CMake to build High Fidelity. By default, the CMake process builds dependency files in Windows' `%TEMP%` directory, which is periodically cleared by the operating system. To prevent you from having to re-build the dependencies in the event that Windows clears that directory, we recommend that you create a `TIVOLI_VCPKG_BASE` environment variable linked to a directory somewhere on your machine. That directory will contain all dependency files until you manually remove them.
 
 To create this variable:
 * Naviagte to 'Edit the System Environment Variables' Through the start menu.
 * Click on 'Environment Variables'
 * Select 'New' 
-* Set "Variable name" to `HIFI_VCPKG_BASE`
+* Set "Variable name" to `TIVOLI_VCPKG_BASE`
 * Set "Variable value" to any directory that you have control over.
 
-Additionally, if you have Visual Studio 2019 installed and _only_ Visual Studio 2019 (i.e. you do not have Visual Studio 2017 installed) you must add an additional environment variable `HIFI_VCPKG_BOOTSTRAP` that will fix a bug in our `vcpkg` pre-build step.
+Additionally, if you have Visual Studio 2019 installed and _only_ Visual Studio 2019 (i.e. you do not have Visual Studio 2017 installed) you must add an additional environment variable `TIVOLI_VCPKG_BOOTSTRAP` that will fix a bug in our `vcpkg` pre-build step.
 
 To create this variable:
 * Naviagte to 'Edit the System Environment Variables' Through the start menu.
 * Click on 'Environment Variables'
 * Select 'New' 
-* Set "Variable name" to `HIFI_VCPKG_BOOTSTRAP`
+* Set "Variable name" to `TIVOLI_VCPKG_BOOTSTRAP`
 * Set "Variable value" to `1`
 
 ### Step 4. Running CMake to Generate Build Files
@@ -106,4 +106,4 @@ Remove `CMakeCache.txt` found in the `%HIFI_DIR%\build` directory.
 
 #### CMake can't find OpenSSL
 
-Remove `CMakeCache.txt` found in the `%HIFI_DIR%\build` directory.  Verify that your HIFI_VCPKG_BASE environment variable is set and pointing to the correct location.  Verify that the file `${HIFI_VCPKG_BASE}/installed/x64-windows/include/openssl/ssl.h` exists.
+Remove `CMakeCache.txt` found in the `%HIFI_DIR%\build` directory.  Verify that your TIVOLI_VCPKG_BASE environment variable is set and pointing to the correct location.  Verify that the file `${TIVOLI_VCPKG_BASE}/installed/x64-windows/include/openssl/ssl.h` exists.

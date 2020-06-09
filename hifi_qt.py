@@ -32,7 +32,7 @@ endif()
         self.version = '5.15'
 
         defaultBasePath = os.path.expanduser('~/tivoli/qt')
-        self.basePath = os.getenv('HIFI_QT_BASE', defaultBasePath)
+        self.basePath = os.getenv('TIVOLI_QT_BASE', defaultBasePath)
         if not os.path.isdir(self.basePath):
             os.makedirs(self.basePath)
         self.path = os.path.join(self.basePath, self.version)

@@ -39,13 +39,13 @@ endif()
         # OS dependent information
         system = platform.system()
 
-        if 'HIFI_VCPKG_PATH' in os.environ:
-            self.path = os.environ['HIFI_VCPKG_PATH']
+        if 'TIVOLI_VCPKG_PATH' in os.environ:
+            self.path = os.environ['TIVOLI_VCPKG_PATH']
         elif self.args.vcpkg_root is not None:
             self.path = args.vcpkg_root
         else:
             defaultBasePath = os.path.expanduser('~/tivoli/vcpkg')
-            basePath = os.getenv('HIFI_VCPKG_BASE', defaultBasePath)
+            basePath = os.getenv('TIVOLI_VCPKG_BASE', defaultBasePath)
 
             if self.args.android:
                 self.path = os.path.join(basePath, 'android')

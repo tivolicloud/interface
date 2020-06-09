@@ -65,10 +65,10 @@ WORKDIR /home/jenkins
 # Hifi dependencies
 ENV HIFI_BASE="/home/jenkins/hifi_android"
 ENV HIFI_ANDROID_PRECOMPILED="$HIFI_BASE/dependencies"    
-ENV HIFI_VCPKG_BASE="$HIFI_BASE/vcpkg"
+ENV TIVOLI_VCPKG_BASE="$HIFI_BASE/vcpkg"
 
 RUN mkdir "$HIFI_BASE" && \
-    mkdir "$HIFI_VCPKG_BASE" && \ 
+    mkdir "$TIVOLI_VCPKG_BASE" && \ 
     mkdir "$HIFI_ANDROID_PRECOMPILED"
 
 # Checkout a relatively recent commit from the main repository and use it to cache the 
