@@ -42,6 +42,14 @@ all linux:
         - apt-get install -y nodejs
         # - npm i -g @sentry/cli
 
+        - git clone git://git.openssl.org/openssl.git
+        - cd openssl
+        - git checkout tags/OpenSSL_1_1_1g
+        - ./config
+        - make -s -j$(nproc)
+        - make install_sw -j$(nproc)
+        - cd ..
+
         # build
         - mkdir -p build
         - cd build
