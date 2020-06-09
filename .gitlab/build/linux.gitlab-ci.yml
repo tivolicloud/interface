@@ -74,6 +74,7 @@ all linux:
         # libgl is a terrible name and causes problems
         # TODO: shared libraries should be something like libTivoliGl.so
 
+        # TODO: Qt version shouldn't be manually specified
         - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build
         - ./squashfs-root/AppRun interface.AppDir/usr/bin/interface
           -executable=interface.AppDir/usr/bin/plugins/libhifiCodec.so
@@ -81,8 +82,8 @@ all linux:
           -executable=interface.AppDir/usr/bin/plugins/libpcmCodec.so
           -executable=interface.AppDir/usr/bin/plugins/libsteamClient.so
           -executable=interface.AppDir/usr/lib/libgl.so
-          -qmake=$TIVOLI_QT_BASE/5.14.1/qt5-install/bin/qmake
-          -qmldir=$TIVOLI_QT_BASE/5.14.1/qt5-install/qml
+          -qmake=$TIVOLI_QT_BASE/5.15/qt5-install/bin/qmake
+          -qmldir=$TIVOLI_QT_BASE/5.15/qt5-install/qml
           -qmldir=../../interface/resources/qml
           -extra-plugins=webview,platformthemes/libqgtk3.so
           -exclude-libs=libnss3.so,libnssutil3.so
