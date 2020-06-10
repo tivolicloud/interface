@@ -69,8 +69,8 @@ endif()
         elif system == 'Linux':
             issue = open("/etc/issue", "r").read()
             
-            if issue.startswith("Debian GNU/Linux 9"): 
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-debian-9.tar.gz'
+            if issue.startswith("Debian GNU/Linux 10"): 
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-debian-10.tar.gz'
 
             elif issue.startswith("Ubuntu 20.04"):
                 self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-ubuntu-20.04.tar.gz'

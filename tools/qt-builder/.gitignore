@@ -3,6 +3,6 @@ qt5-build/
 qt5-install/
 *.tar.gz
 
-debian-9
+debian-10
 arch-linux
 ubuntu-20-04

@@ -186,7 +186,7 @@ endif()
         if downloadVcpkg:
             if (
                 platform.system() == "Linux" and
-                open("/etc/issue", "r").read().startswith("Debian GNU/Linux 9")
+                open("/etc/issue", "r").read().startswith("Debian GNU/Linux 10")
             ):
                 print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
                 hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)

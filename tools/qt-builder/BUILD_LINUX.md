@@ -6,24 +6,13 @@ https://wiki.qt.io/Building_Qt_5_from_Git
 
 Recommended to be done in a Docker container
 
-### Debian 9 (Stretch) and Ubuntu 20.04
+### Debian 10 (Buster) and Ubuntu 20.04
 
 ```bash
 grep '^deb ' /etc/apt/sources.list | perl -pe 's/deb /deb-src /' >> /etc/apt/sources.list
 apt-get update -y
 apt-get build-dep -y qt5-default
 apt-get install -y build-essential perl python git '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev flex bison gperf libicu-dev libxslt-dev ruby libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libproxy-dev xinput libopenal-dev ninja-build libre2-dev libminizip-dev libevent-dev libprotobuf-dev liblcms2-dev libharfbuzz-dev
-```
-
-**OpenSSL 1.1.1** is required which **Debian 9** doesn't have. Install using:
-
-```bash
-git clone git://git.openssl.org/openssl.git
-cd openssl
-git checkout tags/OpenSSL_1_1_1g
-./config
-make -j$(nproc)
-make install_sw -j$(nproc)
 ```
 
 ### Arch Linux
@@ -67,7 +56,6 @@ cd qt5-build
 
 make -j$(nproc)
 make install -j$(nproc)
-
 cd ..
 ```
 
@@ -87,7 +75,7 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15-debian-9.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15-debian-10.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.15-ubuntu-20.04.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.15-arch-linux.tar.gz qt5-install
 ```
