@@ -18,7 +18,6 @@
 	// "system/commerce/wallet.js",
 	"system/create/edit.js",
 	"system/dialTone.js", // join and leave sounds
-	"system/firstPersonHMD.js", // changes to first person when enteting vr
 	"system/tablet-ui/tabletUI.js",
 	"system/emote.js",
 	// "system/miniTablet.js",
