@@ -28,9 +28,9 @@ all linux:
         # - pacman -Syu --noconfirm base-devel git curl unzip gcc cmake python python-distutils-extra nodejs openssl double-conversion libpng harfbuzz mesa alsa-lib libxmu libxi freeglut jack libxrandr libudev0-shim zlib md4c
 
         # debian 10 (buster)
-        - export SERVER_DEPS="build-essential gcc g++ git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev"
+        - export SERVER_DEPS="build-essential gcc g++ git curl unzip python3 libssl-dev libdouble-conversion-dev libpng-dev libharfbuzz-dev libgl1-mesa-dev libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev zlib1g-dev libpcre2-dev"
         - export INTERFACE_DEPS="libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1 libjpeg-dev libpulse-mainloop-glib0 libxss-dev libpci-dev libevent-dev libminizip-dev"
-        - export INTERFACE_APPDIR_DEPS="wget libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-render-util0-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev libegl1-mesa-dev libgstreamer-plugins-base1.0-dev libgtk-3-dev libmtdev-dev libinput-dev"
+        - export INTERFACE_APPDIR_DEPS="wget libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-render-util0-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-x11-dev libegl1-mesa-dev libgstreamer-plugins-base1.0-dev libgtk-3-dev libmtdev-dev libinput-dev libxcb-xinput-dev"
 
         - apt-get update -y
         - apt-get install -y $SERVER_DEPS $INTERFACE_DEPS $INTERFACE_APPDIR_DEPS
@@ -52,6 +52,7 @@ all linux:
         # - sentry-cli upload-dif --include-sources -p interface interface
 
         # save shared libraries for server
+        # TODO: switch to AppDir format
         - cp ../docker/extract-so.py ./extract-so-server.py
         - python3 extract-so-server.py
 
@@ -75,8 +76,11 @@ all linux:
         # TODO: shared libraries should be something like libTivoliGl.so
 
         # TODO: Qt version shouldn't be manually specified
+        # TODO: plugins shouldn't be manually specified
+        # TODO: ...write a python script to create AppDirs with linuxdeployqt
         - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build
         - ./squashfs-root/AppRun interface.AppDir/usr/bin/interface
+          -unsupported-allow-new-glibc
           -executable=interface.AppDir/usr/bin/plugins/libhifiCodec.so
           -executable=interface.AppDir/usr/bin/plugins/libhifiSdl2.so
           -executable=interface.AppDir/usr/bin/plugins/libpcmCodec.so
