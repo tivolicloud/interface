@@ -569,6 +569,7 @@ void AddressManager::goToAddressFromObject(const QVariantMap& dataObject, const 
 
                         // we didn't override the path or get one back - ask the DS for the viewpoint of its index path
                         // which we will jump to if it exists
+                        // TODO: this doesnt always work
                         emit pathChangeRequired(INDEX_PATH);
                     }
                 }
