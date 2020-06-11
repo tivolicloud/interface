@@ -15,7 +15,7 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 # RUN pacman -Syu --noconfirm curl pm2
 RUN \
 apt-get update -y && \
-apt-get install -y curl glib2.0 libgl1-mesa-glx && \
+apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
 \
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs && \
