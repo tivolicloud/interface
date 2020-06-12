@@ -40,8 +40,8 @@ function updateControllerDisplay() {
 var button;
 var tablet = Tablet.getTablet("com.highfidelity.interface.tablet.system");
 
-var switchToVR = "ENTER VR";
-var switchToDesktop = "EXIT VR";
+var switchToVR = "Enter VR";
+var switchToDesktop = "Leave VR";
 
 function onHmdChanged(isHmd) {
     HMD.closeTablet();
