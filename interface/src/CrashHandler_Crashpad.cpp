@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
+#include <QDateTime>
 
 
 #if defined(__clang__)
@@ -88,12 +89,16 @@ bool startCrashHandler(std::string appPath) {
 
     std::map<std::string, std::string> annotations;
     annotations["sentry[release]"] = BuildInfo::VERSION.toStdString();
-    annotations["sentry[contexts][app][app_version]"] = BuildInfo::VERSION.toStdString();
-    annotations["sentry[contexts][app][app_build]"] = BuildInfo::BUILD_NUMBER.toStdString();
-    // annotations["sentry[contexts][app][build_type]"] = BuildInfo::BUILD_TYPE_STRING.toStdString();
-
+        
     auto machineFingerPrint = uuidStringWithoutCurlyBraces(FingerprintUtils::getMachineFingerprint());
+    
+    // https://develop.sentry.dev/sdk/event-payloads/contexts
+    annotations["sentry[contexts][app][app_start_time]"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate).toStdString();
+    // annotations["sentry[contexts][app][device_app_hash]"] = machineFingerPrint.toStdString();
     annotations["machine_fingerprint"] = machineFingerPrint.toStdString();
+    annotations["sentry[contexts][app][build_type]"] = BuildInfo::BUILD_TYPE_STRING.toStdString();
+    annotations["sentry[contexts][app][app_version]"] = BuildInfo::VERSION.toStdString();
+    annotations["sentry[contexts][app][app_build]"] = BuildInfo::BUILD_NUMBER.toStdString();    
 
     arguments.push_back("--no-rate-limit");
 

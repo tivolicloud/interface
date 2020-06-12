@@ -1093,6 +1093,9 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     {
         // identify gpu as early as possible to help identify OpenGL initialization errors.
         auto gpuIdent = GPUIdent::getInstance();
+        // setCrashAnnotation("sentry[contexts][gpu][name]", gpuIdent->getName().toStdString());
+        // setCrashAnnotation("sentry[contexts][gpu][version]", gpuIdent->getDriver().toStdString());
+        // setCrashAnnotation("sentry[contexts][gpu][memory_size]", std::to_string(gpuIdent->getMemory()));
         setCrashAnnotation("gpu_name", gpuIdent->getName().toStdString());
         setCrashAnnotation("gpu_driver", gpuIdent->getDriver().toStdString());
         setCrashAnnotation("gpu_memory", std::to_string(gpuIdent->getMemory()));
@@ -7169,7 +7172,7 @@ void Application::updateWindowTitle() const {
 
     const QString username = accountManager->getAccountInfo().getUsername();
 
-    setCrashAnnotation("username", username.toStdString());
+    setCrashAnnotation("sentry[user][username]", username.toStdString());
 
     QString currentWorldName;
     if (isServerlessMode()) {
