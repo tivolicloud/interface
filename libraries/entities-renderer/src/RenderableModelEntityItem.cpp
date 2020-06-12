@@ -1468,7 +1468,7 @@ void ModelEntityRenderer::doRender(RenderArgs* args) {
     DETAILED_PROFILE_RANGE(render_detail, "MetaModelRender");
     DETAILED_PERFORMANCE_TIMER("RMEIrender");
 
-    // If the model doesn't have visual geometry, render our bounding box as green wireframe
+    // If the model doesn't have visual geometry, render our bounding box as a magenta wireframe
     static glm::vec4 magentaColor(0.913f, 0.117f, 0.388f, 1.0f);
     gpu::Batch& batch = *args->_batch;
     batch.setModelTransform(getModelTransform()); // we want to include the scale as well
