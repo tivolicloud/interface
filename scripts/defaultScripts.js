@@ -4,7 +4,7 @@
 	"system/progress.js", // progress bar at the bottom, to be rewritten
 	// "system/away.js",
 	"system/audio.js",
-	"system/hmd.js",
+	"system/hmd.js", // enter leave vr button
 	"system/menu.js", // settings menu in vr
 	// "system/bubble.js",
 
