@@ -452,6 +452,7 @@ public:
         virtual void update(const UpdateFunctorPointer& functor) = 0;
     };
     typedef std::shared_ptr<PayloadInterface> PayloadPointer;
+    typedef std::weak_ptr<PayloadInterface> PayloadWeakPointer;
 
     Item() {}
     ~Item() {}
@@ -497,6 +498,7 @@ public:
 
 protected:
     PayloadPointer _payload;
+    PayloadWeakPointer _wpPayload;
     ItemKey _key;
     ItemCell _cell { INVALID_CELL };
     Index _transitionId { INVALID_INDEX };

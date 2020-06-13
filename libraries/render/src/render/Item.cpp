@@ -85,15 +85,18 @@ void Item::resetPayload(const PayloadPointer& payload) {
     } else {
         _payload = payload;
         _key = _payload->getKey();
-    }
+    }    
+    _wpPayload=_payload;
 }
 
 const ShapeKey Item::getShapeKey() const {
     ShapeKey shapeKey;
-    if (_payload) shapeKey = _payload->getShapeKey();
-    if (!TransitionStage::isIndexInvalid(_transitionId)) {
-        // Objects that are fading are rendered double-sided to give a sense of volume
-        return ShapeKey::Builder(shapeKey).withFade().withoutCullFace();
+    if (_wpPayload.lock()) {
+        shapeKey = _payload->getShapeKey();
+        if (!TransitionStage::isIndexInvalid(_transitionId)) {
+            // Objects that are fading are rendered double-sided to give a sense of volume
+            return ShapeKey::Builder(shapeKey).withFade().withoutCullFace();
+        }
     }
     return shapeKey;
 }
@@ -131,6 +134,7 @@ namespace render {
         if (!payload) {
             return ShapeKey::Builder::ownPipeline();
         }
+        
         return payload->getShapeKey();
     }
 
