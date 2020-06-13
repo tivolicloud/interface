@@ -1,8 +1,8 @@
 # OS specific guides (recommended)
 
--   [BUILD_WIN.md](BUILD_WIN.md)
--   [BUILD_OSX.md](BUILD_OSX.md)
--   [BUILD_LINUX.md](BUILD_LINUX.md)
+-   [BUILD_WIN.md](BUILD_WIN.md) - complete instructions for Windows
+-   [BUILD_OSX.md](BUILD_OSX.md) - additional instructions for OS X
+-   [BUILD_LINUX.md](BUILD_LINUX.md) - additional instructions for Linux
 -   [BUILD_ANDROID.md](BUILD_ANDROID.md) _...may not work anymore_
 
 We also recommended learning from example when new to building Tivoli. There are many complex systems in place and it's not always straightforward and easy.
