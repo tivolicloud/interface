@@ -4,7 +4,9 @@ Note that the current code base does not necessarily follow this with 100% consi
 Basically taken directly from [http://geosoft.no/development/cppstyle.html](http://geosoft.no/development/cppstyle.html) with some subtle changes and omissions.
 
 ## 1 Naming
+
 ### 1.1 General Naming Conventions
+
 #### 1.1.1 Names representing types must be in mixed case ([camelCase](https://en.wikipedia.org/wiki/Camel_case)) starting with upper case.
 
 ```cpp
@@ -46,6 +48,7 @@ puck::geometry, ice::math
 ```cpp
 template<class R>, template<class B>, template<class K>
 ```
+
 This makes template names stand out relative to all other names used.
 
 #### 1.1.8 Abbreviations and acronyms must be uppercase when used in a name or lowercase when used at the beginning of a variable
@@ -68,6 +71,7 @@ UDPSocket udpSocket; // not UDPSocket uDPSocket;
 ```cpp
 void setPuckLogo(Logo* logo) // not void setPuckLogo(Logo* aLogo)
 ```
+
 These will be discernible from class member variables since they are not prefixed with an underscore.
 
 #### 1.1.11 All names should be written in English.
@@ -83,6 +87,7 @@ puck.getDensity();    // NOT: puck.getPuckDensity();
 ```
 
 ### 1.2 Specific Naming Conventions
+
 #### 1.2.1 The terms get/set must be used where an attribute is accessed directly.
 
 ```cpp
@@ -93,6 +98,7 @@ stick.setFlex(flex);
 ```
 
 There is an exception for boolean getters. The getter for a boolean attribute does not need to be prefixed with 'get', and should simply match the name of the boolean attribute. The following example is for a member variable `_isCaptain` on the `crosby` object.
+
 ```cpp
 crosby.setIsCaptain(true);
 crosby.isCaptain(); // returns boolean
@@ -104,6 +110,7 @@ crosby.isCaptain(); // returns boolean
 team->computePowerPlayPercentage();
 player->computePointsPerGame();
 ```
+
 Give the reader the immediate clue that this is a potentially time-consuming operation, and if used repeatedly, she might consider caching the result. Consistent use of the term enhances readability.
 
 #### 1.2.3 The term find can be used in methods where something is looked up.
@@ -112,6 +119,7 @@ Give the reader the immediate clue that this is a potentially time-consuming ope
 net.findGoalLinePosition();
 team.findHeaviestPlayer();
 ```
+
 Give the reader the immediate clue that this is a simple look up method with a minimum of computations involved. Consistent use of the term enhances readability.
 
 #### 1.2.4 The term initialize can be used where an object or a concept is established.
@@ -158,7 +166,7 @@ for (int i = 0; i < numGoals); i++) {
 
 isGoodGoal, isRetired, isWinningTeam Occasionally the has, can, should, and want prefixes will be better choices.
 
-*Note: "want" should generally be used for optional items that are specified by some third party action, e.g. command line or menu options that enable additional functionality, or protocol versioning where negotiation occurs between client and server.*
+_Note: "want" should generally be used for optional items that are specified by some third party action, e.g. command line or menu options that enable additional functionality, or protocol versioning where negotiation occurs between client and server._
 
 ```cpp
 hasWonStanleyCup, canPlay, shouldPass, wantDebugLogging
@@ -175,6 +183,7 @@ get/set, add/remove, create/destroy, start/stop
 ```cpp
 computeGoalsAgainstAverage();  // NOT: compGlsAgstAvg();
 ```
+
 There are domain specific phrases that are more naturally known through their abbreviations/acronym. These phrases should be kept abbreviated.
 Use `html` instead of `hypertextMarkupLanguage`.
 
@@ -183,6 +192,7 @@ Use `html` instead of `hypertextMarkupLanguage`.
 ```cpp
 Puck* puck; // NOT: Puck * puckPtr;
 ```
+
 Many variables in a C/C++ environment are pointers, so a convention like this is almost impossible to follow. Also objects in C++ are often oblique types where the specific implementation should be ignored by the programmer. Only when the actual type of an object is of special significance, the name should emphasize the type.
 
 #### 1.2.14 Negated boolean variable names must be avoided.
@@ -190,6 +200,7 @@ Many variables in a C/C++ environment are pointers, so a convention like this is
 ```cpp
 bool isRetired; // NOT: isNotRetired or isNotPlaying
 ```
+
 This is done to avoid double negatives when used in conjunction with the logical negation operator.
 
 #### 1.2.15 Enumeration constants can be prefixed by a common type name.
@@ -211,7 +222,9 @@ class GoalException {
 ```
 
 ## 2 Files
+
 ### 2.1 Source Files
+
 #### 2.1.1 C++ header files should have the extension .h. Source files should have the extension .cpp.
 
 ```cpp
@@ -226,10 +239,10 @@ Puck.h, Puck.cpp
 
 The header files should declare an interface, the source file should implement it. When looking for an implementation, the programmer should always know that it is found in the source file.
 
-- Simple getters and setters that just access private member variables should appear inline in the class definition in the header file.
-- Simple methods like those making slight mutations (that can fit on the same line in the definition and don't require additional includes in the header file) can be inlined in the class definition.
-- Methods that will be called multiple times in tight-loops or other high-performance situations and must be high performance can be included in the header file BELOW the class definition marked as inline.
-- All other methods must be in a cpp file.
+-   Simple getters and setters that just access private member variables should appear inline in the class definition in the header file.
+-   Simple methods like those making slight mutations (that can fit on the same line in the definition and don't require additional includes in the header file) can be inlined in the class definition.
+-   Methods that will be called multiple times in tight-loops or other high-performance situations and must be high performance can be included in the header file BELOW the class definition marked as inline.
+-   All other methods must be in a cpp file.
 
 ```cpp
 class Puck {
@@ -270,7 +283,7 @@ Use four spaces for indentation.
 teamGoals = iginlaGoals + crosbyGoals +
             malkinGoals;
 
-addToScoreSheet(scorer, 
+addToScoreSheet(scorer,
                 directAssister,
                 indirectAssister);
 
@@ -282,13 +295,15 @@ for (int teamNum = 0; teamNum < numTeams;
     ...
 }
 ```
+
 Split lines occurs when a statement exceed the 128 column limit given above. It is difficult to provide rigid rules for how lines should be split, but the examples above should give a general hint.
 In general: Break after a comma. Break after an operator. Align the new line with the beginning of the expression on the previous line.
 
 ### 2.2 Include Files and Include Statements
+
 #### 2.2.1 Header files must contain an include guard.
 
-Include guards should be in the following format: hifi_$BASENAME_h.
+Include guards should be in the following format: hifi\_\$BASENAME_h.
 
 ```cpp
 #ifndef hifi_SharedUtil_h
@@ -298,7 +313,8 @@ Include guards should be in the following format: hifi_$BASENAME_h.
 
 #endif // hifi_SharedUtil_h
 ```
-*Note: this will change sometime in the future!*
+
+_Note: this will change sometime in the future!_
 
 #### 2.2.2 Include statements should be sorted and grouped. Sorted by their hierarchical position in the system with low level files included first. Leave an empty line between groups of include statements.
 
@@ -312,10 +328,13 @@ Include guards should be in the following format: hifi_$BASENAME_h.
 #include "Puck.h"
 #include "PenaltyBox.h"
 ```
+
 Include statements must be located at the top of a file only.
 
 ## 3 Statements
+
 ### 3.1 Types
+
 #### 3.1.1 The parts of a class must be sorted public, protected and private. All sections must be identified explicitly. Not applicable sections should be left out.
 
 The ordering is "most public first" so people who only wish to use the class can stop reading when they reach the protected/private sections.
@@ -340,9 +359,11 @@ uint8_t* barDataAt = (uint8_t*)&bar; // pointers to primitive types also use C s
 Player* player = getPlayer("forward");
 Forward* forward = static_cast<Forward*>(player);
 ```
+
 For more info about C++ type casting: [http://stackoverflow.com/questions/1609163/what-is-the-difference-between-static-cast-and-c-style-casting](http://stackoverflow.com/questions/1609163/what-is-the-difference-between-static-cast-and-c-style-casting)
 
-#### 3.1.3 Use of *const*
+#### 3.1.3 Use of _const_
+
 ##### 3.1.3.1 Use const types for variables, parameters, return types, and methods whenever possible
 
 ```cpp
@@ -367,6 +388,7 @@ const glm::vec3& AABox::getCorner() const;
 ```
 
 #### 3.1.4 Type aliases
+
 ##### 3.1.4.1 When creating a type alias, prefer the using keyword.
 
 ```cpp
@@ -377,6 +399,7 @@ using Nodes = Vec <Node>;
 ```
 
 ### 3.2 Variables
+
 #### 3.2.1 Variables should be initialized where they are declared.
 
 This ensures that variables are valid at any time.
@@ -418,7 +441,7 @@ Use private variables and access functions instead.
 
 One exception to this rule is when the class is essentially a data structure, with no behavior (equivalent to a C struct). In this case it is appropriate to make the class' instance variables public.
 
-*Note that structs are kept in C++ for compatibility with C only, and avoiding them increases the readability of the code by reducing the number of constructs used. Use a class instead.*
+_Note that structs are kept in C++ for compatibility with C only, and avoiding them increases the readability of the code by reducing the number of constructs used. Use a class instead._
 
 #### 3.2.5 C++ pointers and references should have their reference symbol next to the type rather than to the name.
 
@@ -445,6 +468,7 @@ if (childNode)
 // Testing for null is also preferred
 if (!childNode)
 ```
+
 It is not necessarily defined by the C++ standard that ints and floats 0 are implemented as binary 0.
 
 #### 3.2.7 Variables should be declared in the smallest scope possible.
@@ -452,6 +476,7 @@ It is not necessarily defined by the C++ standard that ints and floats 0 are imp
 Keeping the operations on a variable within a small scope, it is easier to control the effects and side effects of the variable.
 
 ### 3.3 Loops
+
 #### 3.3.1 Loop variables should be initialized immediately before the loop.
 
 ```cpp
@@ -481,6 +506,7 @@ while (1) {
 ```
 
 ### 3.4 Conditionals
+
 #### 3.4.1 The nominal case should be put in the if-part and the exception in the else-part of an if statement
 
 ```cpp
@@ -492,6 +518,7 @@ if (isGoal) {
     ...
 }
 ```
+
 Makes sure that the exceptions don't obscure the normal path of execution. This is important for both the readability and performance.
 
 #### 3.4.2 The conditional should be put on a separate line and wrapped in braces.
@@ -504,7 +531,7 @@ if (isGoal) {
 // NOT: if (isGoal) lightTheLamp();
 ```
 
-#### 3.4.3  Write the expression of a conditional similar to how you would speak it out loud.
+#### 3.4.3 Write the expression of a conditional similar to how you would speak it out loud.
 
 ```cpp
 if (someVariable == 0) {
@@ -514,12 +541,14 @@ if (someVariable == 0) {
 ```
 
 ### 3.5 Miscellaneous
+
 #### 3.5.1 Constants and Magic Numbers
+
 ##### 3.5.1.1 The use of magic numbers in the code should be avoided.
 
-- Numbers other than 0 and 1 should be considered declared as named constants instead.
-- If the number does not have an obvious meaning by itself, the readability is enhanced by introducing a named constant instead.
-- A different approach is to introduce a method from which the constant can be accessed.
+-   Numbers other than 0 and 1 should be considered declared as named constants instead.
+-   If the number does not have an obvious meaning by itself, the readability is enhanced by introducing a named constant instead.
+-   A different approach is to introduce a method from which the constant can be accessed.
 
 ##### 3.5.1.2 Declare constants closest to the scope of their use.
 
@@ -561,7 +590,9 @@ float penaltyMinutes = 0.5f;  // NOT:  float penaltyMinutes = 0.5;
 ```
 
 ## 4 Layout and Comments
+
 ### 4.1 Layout
+
 #### 4.1.1 Basic indentation should be 4.
 
 ```cpp
@@ -655,11 +686,11 @@ do {
 
 A switch statements should follow the following basic formatting rules:
 
-- The case statements are indented one indent (4 spaces) from the switch.
-- The code for each case should be indented one indent (4 spaces) from the case statement.
-- Each separate case should have a break statement, unless it is explicitly intended for the case to fall through to the subsequent cases. In the event that a case statement executes some code, then falls through to the next case, you must include an explicit comment noting that this is intentional.
-- Break statements should be aligned with the code of the case, e.g. indented 4 spaces from the case statement.
-- In the event that brackets are required to create local scope, the open bracket should appear on the same line as the case, and the close bracket should appear on the line immediately following the break aligned with the case statement.
+-   The case statements are indented one indent (4 spaces) from the switch.
+-   The code for each case should be indented one indent (4 spaces) from the case statement.
+-   Each separate case should have a break statement, unless it is explicitly intended for the case to fall through to the subsequent cases. In the event that a case statement executes some code, then falls through to the next case, you must include an explicit comment noting that this is intentional.
+-   Break statements should be aligned with the code of the case, e.g. indented 4 spaces from the case statement.
+-   In the event that brackets are required to create local scope, the open bracket should appear on the same line as the case, and the close bracket should appear on the line immediately following the break aligned with the case statement.
 
 Examples of acceptable form are:
 
@@ -709,7 +740,8 @@ try {
     negotiateNoTradeClause();
 }
 ```
-The catch should always get the exectpion by reference. 
+
+The catch should always get the exectpion by reference.
 
 #### 4.1.11 Single statement if-else, for or while statements must be written with braces.
 
@@ -725,6 +757,7 @@ for (int i = 0; i < numItems; i++)
 ```
 
 ### 4.2 White space
+
 #### 4.2.1 Conventional operators should be surrounded by a space character, except in cases like mathematical expressions where it is easier to visually parse when spaces are used to enhance the grouping.
 
 ```cpp
@@ -757,8 +790,8 @@ for (i = 0; i < 10; i++) {  // NOT: for(i=0;i<10;i++){
 
 #### 4.2.4 Declaring and Calling Functions
 
-- Function names should not be followed by a white space.
-- And there should be no space between the open parenthesis and the first parameter, and no space between the last parameter and the close parenthesis.
+-   Function names should not be followed by a white space.
+-   And there should be no space between the open parenthesis and the first parameter, and no space between the last parameter and the close parenthesis.
 
 Examples:
 
@@ -851,6 +884,7 @@ aCPlusPlusFunctionOfTwoLambdas([](gpu::Batch& batch) {
 ```
 
 ### 4.3 Comments
+
 #### 4.3.1 All comments should be written in English
 
 In an international environment English is the preferred language.
@@ -911,4 +945,3 @@ These types of comments are explicitly not allowed. If you need to break up sect
 
 //--------------------------------------------------------------------------------
 ```
-
