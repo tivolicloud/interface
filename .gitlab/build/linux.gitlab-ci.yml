@@ -66,10 +66,10 @@ all linux:
         - mkdir -p interface.AppDir/usr/bin
         - cp interface interface.AppDir/usr/bin
         - cp resources.rcc interface.AppDir/usr/bin
-        - cp -R jsdoc interface.AppDir/usr/bin
-        - cp -R plugins interface.AppDir/usr/bin
-        - cp -R resources interface.AppDir/usr/bin
-        - cp -R scripts interface.AppDir/usr/bin
+        - cp -r jsdoc interface.AppDir/usr/bin
+        - cp -r plugins interface.AppDir/usr/bin
+        - cp -r resources interface.AppDir/usr/bin
+        - cp -r scripts interface.AppDir/usr/bin
         - mkdir -p interface.AppDir/usr/lib
         - cp ../libraries/gl/libgl.so interface.AppDir/usr/lib
         # libgl is a terrible name and causes problems
