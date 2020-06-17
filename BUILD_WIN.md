@@ -38,7 +38,7 @@ You can set these as **system environment variables** or write a **helper batch 
 
     It will use the directory: `C:\Users\[username]\tivoli\qt`
 
-    It will **also get big!** Use this environement variable to change it:
+    It will **also get big!** Use this environment variable to change it:
 
     `set TIVOLI_QT_BASE=D:\path\to\qt`
 
@@ -104,6 +104,8 @@ Please wait. It will take a while... It really will!
 
     cmake --build . --target interface --config RelWithDebInfo
     ```
+
+    Some available targets are: `interface`, `domain-server`, `assignment-client`
 
 ## Step 5. Running interface
 
