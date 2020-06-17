@@ -1,109 +1,130 @@
-This is a stand-alone guide for creating your first High Fidelity build for Windows 64-bit.  
-## Building High Fidelity
-Note: We are now using Visual Studio 2017 or 2019 and Qt 5.12.3.  
-If you are upgrading from previous versions, do a clean uninstall of those versions before going through this guide.  
+# Building Tivoli for Windows
 
-Note: The prerequisites will require about 10 GB of space on your drive. You will also need a system with at least 8GB of main memory.
+## Step 1. Installing dependencies
 
-### Step 1. Visual Studio & Python 3.x
+Download and install these programs:
 
-If you don’t have Community or Professional edition of Visual Studio, download [Visual Studio Community 2019](https://visualstudio.microsoft.com/vs/). If you have Visual Studio 2017, you are not required to download Visual Studio 2019.
+-   **Visual Studio 2019**: https://visualstudio.microsoft.com/vs
 
-When selecting components, check "Desktop development with C++". On the right on the Summary toolbar, select the following components.
+    When selecting components, make sure to check **Desktop development with C++**.
 
-#### If you're installing Visual Studio 2017,
+-   **CMake 3.15 or higher**: https://cmake.org/download
 
-* Windows 8.1 SDK and UCRT SDK
-* VC++ 2015.3 v14.00 (v140) toolset for desktop
+    During installation, make sure to check **Add CMake to system PATH for all users** when prompted.
 
-#### If you're installing Visual Studio 2019,
+-   **Python 3 or higher**: https://www.python.org/downloads
 
-* MSVC v141 - VS 2017 C++ x64/x86 build tools
-* MSVC v140 - VS 2015 C++ build tools (v14.00)
+-   **Node.js 12 or higher**: https://nodejs.org/en
 
-If you do not already have a Python 3.x development environment installed, also check "Python Development" in this screen.
+Make sure `cmake`, `python` and `node` are available in your PATH.
 
-If you already have Visual Studio installed and need to add Python, open the "Add or remove programs" control panel and find the "Microsoft Visual Studio Installer".  Select it and click "Modify".  In the installer, select "Modify" again, then check "Python Development" and allow the installer to apply the changes.
+## Step 2. Configuring environment variables
 
-### Step 1a.  Alternate Python
+You can set these as **system environment variables** or write a **helper batch file**.
 
-If you do not wish to use the Python installation bundled with Visual Studio, you can download the installer from [here](https://www.python.org/downloads/).  Ensure you get version 3.6.6 or higher.
+-   **For Vcpkg**
 
-### Step 2. Installing CMake
+    CMake will **automatically download Vcpkg** to compile required dependencies for compiling Tivoli.
 
-Download and install the latest version of CMake 3.15. 
- * Note that earlier versions of CMake will work, but there is a specific bug related to the interaction of Visual Studio 2019 and CMake versions prior to 3.15 that will cause Visual Studio to rebuild far more than it needs to on every build
+    It will use the directory: `C:\Users\[username]\tivoli\vcpkg`
 
-Download the file named win64-x64 Installer from the [CMake Website](https://cmake.org/download/). You can access the installer on this [3.15 Version page](https://cmake.org/files/v3.15/). During installation, make sure to check "Add CMake to system PATH for all users" when prompted.
+    This folder **will get big!** It's possible to change it by setting a variable:
 
-### Step 3. Create VCPKG environment variable
-In the next step, you will use CMake to build High Fidelity. By default, the CMake process builds dependency files in Windows' `%TEMP%` directory, which is periodically cleared by the operating system. To prevent you from having to re-build the dependencies in the event that Windows clears that directory, we recommend that you create a `TIVOLI_VCPKG_BASE` environment variable linked to a directory somewhere on your machine. That directory will contain all dependency files until you manually remove them.
+    `set TIVOLI_VCPKG_BASE=D:\path\to\vcpkg`
 
-To create this variable:
-* Naviagte to 'Edit the System Environment Variables' Through the start menu.
-* Click on 'Environment Variables'
-* Select 'New' 
-* Set "Variable name" to `TIVOLI_VCPKG_BASE`
-* Set "Variable value" to any directory that you have control over.
+-   **For Qt**
 
-Additionally, if you have Visual Studio 2019 installed and _only_ Visual Studio 2019 (i.e. you do not have Visual Studio 2017 installed) you must add an additional environment variable `TIVOLI_VCPKG_BOOTSTRAP` that will fix a bug in our `vcpkg` pre-build step.
+    CMake will also **download a custom version of Qt** which is required.
 
-To create this variable:
-* Naviagte to 'Edit the System Environment Variables' Through the start menu.
-* Click on 'Environment Variables'
-* Select 'New' 
-* Set "Variable name" to `TIVOLI_VCPKG_BOOTSTRAP`
-* Set "Variable value" to `1`
+    It will use the directory: `C:\Users\[username]\tivoli\qt`
 
-### Step 4. Running CMake to Generate Build Files
+    It will **also get big!** Use this environment variable to change it:
 
-Run Command Prompt from Start and run the following commands:  
-`cd "%HIFI_DIR%"`  
-`mkdir build`  
-`cd build`  
+    `set TIVOLI_QT_BASE=D:\path\to\qt`
 
-#### If you're using Visual Studio 2017,
-Run `cmake .. -G "Visual Studio 15 Win64"`.
+-   **Developer or production build**
 
-#### If you're using Visual Studio 2019,
-Run `cmake .. -G "Visual Studio 16 2019" -A x64`.
+    By default, it will create a developer build.
 
-Where `%HIFI_DIR%` is the directory for the highfidelity repository.
+    Set these environment variables for a production build:
 
-### Step 5. Making a Build
+    `set RELEASE_TYPE=PRODUCTION`
 
-Open `%HIFI_DIR%\build\hifi.sln` using Visual Studio.
+    `set STABLE_BUILD=1`
 
-Change the Solution Configuration (menu ribbon under the menu bar, next to the green play button) from "Debug" to "Release" for best performance.
+    `set RELEASE_NUMBER=1.2.3` which is unnecessary
 
-Run from the menu bar `Build > Build Solution`.
+    Please do not set these as system variables.
 
-### Step 6. Testing Interface
+## Step 3. Cloning and preparing
 
-Create another environment variable (see Step #3)
-* Set "Variable name": `_NO_DEBUG_HEAP`
-* Set "Variable value": `1`
+Open the command prompt and git clone interface
 
-Restart Visual Studio again.
+```cmd
+git clone https://git.tivolicloud.com/tivolicloud/interface
+cd interface
+```
 
-In Visual Studio, right+click "interface" under the Apps folder in Solution Explorer and select "Set as Startup Project". Run from the menu bar `Debug > Start Debugging`.
+You can use the master branch (default) or checkout to the latest tag
 
-Now, you should have a full build of High Fidelity and be able to run the Interface using Visual Studio. Please check our [Docs](https://wiki.highfidelity.com/wiki/Main_Page) for more information regarding the programming workflow.
+```
+git tag
+git checkout tags/???
+```
 
-Note: You can also run Interface by launching it from command line or File Explorer from `%HIFI_DIR%\build\interface\Release\interface.exe`
+Once you're checked out on the right version
+
+```cmd
+mkdir build
+cd build
+
+cmake .. -G "Visual Studio 16 2019" -A x64
+```
+
+CMake will now download dependencies including Qt and prepare build files.
+
+Please wait. It will take a while... It really will!
+
+## Step 4. Making a Build
+
+-   **Using Visual Studio 2019**
+
+    Open `interface\build\hifi.sln`.
+
+    Change the **Solution Configuration** (next to the green play button at the top) from **Debug** to **RelWithDebInfo** for best performance and debugging capabilities.
+
+    On the right sidebar in the **Solution Explorer**, right mouse click **interface** and click **Build**
+
+-   **Using the command prompt**
+
+    Open the command prompt
+
+    ```cmd
+    cd C:\path\to\tivoli\interface\build
+
+    cmake --build . --target interface --config RelWithDebInfo
+    ```
+
+    Some available targets are: `interface`, `domain-server`, `assignment-client`
+
+## Step 5. Running interface
+
+You can run interface using the launcher: https://alpha.tivolicloud.com/download
+
+In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `C:\path\to\tivoli\interface\build\interface\RelWithDebInfo` which should contain `interface.exe`
+
+If you want to run Tivoli without the launcher, run:
+
+```bash
+interface.exe --tokens [current access token]
+```
+
+You can find your access token in the launcher's developer menu. Please don't share it and keep it safe!
+
+When debugging, you'll likely have to open Tivoli without the launcher.
 
 ## Troubleshooting
 
-For any problems after Step #6, first try this:  
-* Delete your locally cloned copy of the highfidelity repository  
-* Restart your computer  
-* Redownload the [repository](https://github.com/highfidelity/hifi)  
-* Restart directions from Step #6  
+If your build fails, you could ask around on [our Discord](https://alpha.tivolicloud.com/discord) for help.
 
-#### CMake gives you the same error message repeatedly after the build fails
-
-Remove `CMakeCache.txt` found in the `%HIFI_DIR%\build` directory.
-
-#### CMake can't find OpenSSL
-
-Remove `CMakeCache.txt` found in the `%HIFI_DIR%\build` directory.  Verify that your TIVOLI_VCPKG_BASE environment variable is set and pointing to the correct location.  Verify that the file `${TIVOLI_VCPKG_BASE}/installed/x64-windows/include/openssl/ssl.h` exists.
+Deleting the `build` folder and trying again may help.

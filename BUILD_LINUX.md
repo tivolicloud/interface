@@ -1,179 +1,125 @@
-# Linux build guide
+# Building Tivoli for Linux
 
-Please read the [general build guide](BUILD.md) for information on dependencies required for all platforms. Only Linux specific instructions are found in this file.
+# WARNING! NOT ALL DISTROS ARE SUPPORTED!
 
-## Ubuntu 16.04/18.04 specific build guide
-### Ubuntu 16.04 only
-Add the following line to *.bash_profile*  
-`export QT_QPA_FONTDIR=/usr/share/fonts/truetype/dejavu/`
-### Ubuntu 18.04 server only
-Add the universe repository:  
-_(This is not enabled by default on the server edition)_
+Tivoli uses a custom version of Qt that needs to be compiled for a list of distros that we choose.
+
+Currently we support building on:
+
+-   Ubuntu 20.04 _(untested)_
+-   Debian 10 _(production builds use this)_
+-   Arch Linux
+
+We're looking into ways to make this easier. Compiling Qt yourself takes a very long time, therefore it's not viable to put it in our build pipeline.
+
+## Step 1. Installing dependencies
+
+Make sure you have general build tools, `git`, `cmake`, `python` 3+ and `node` 12+ installed.
+
+We'll update this with the proper package lists for supported distros soon.
+
+A verbose list of packages used in our build system can be found here: https://git.tivolicloud.com/tivolicloud/interface/-/blob/master/.gitlab/build/linux.gitlab-ci.yml
+
+## Step 2. Configuring environment variables
+
+You can set these however you like. We recommend you write a **helper shell script** but that's not necessary.
+
+-   **For Vcpkg**
+
+    CMake will **automatically download Vcpkg** to compile required dependencies for compiling Tivoli.
+
+    It will use the directory: `~/tivoli/vcpkg`
+
+    This folder **will get big!** It's possible to change it by setting a variable:
+
+    `export TIVOLI_VCPKG_BASE=~/path/to/vcpkg`
+
+-   **For Qt**
+
+    CMake will also **download a custom version of Qt** which is required.
+
+    It will use the directory: `~/tivoli/qt`
+
+    It will **also get big!** Use this environment variable to change it:
+
+    `export TIVOLI_QT_BASE=~/path/to/qt`
+
+-   **Developer or production build**
+
+    By default, it will create a developer build.
+
+    Set these environment variables for a production build:
+
+    `export RELEASE_TYPE=PRODUCTION`
+
+    `export STABLE_BUILD=1`
+
+    `export RELEASE_NUMBER=1.2.3` which is unnecessary
+
+## Step 3. Cloning and preparing
+
+Open the terminal and git clone interface
+
 ```bash
-sudo add-apt-repository universe
-sudo apt-get update
-```
-#### Install build tools:
-1.  First update the repositiories:  
-```bash
-sudo apt-get update -y
-sudo apt-get upgrade -y
-```
-1.  git
-```bash
-sudo apt-get install git -y
-```
-Verify by git --version  
-1.  g++
-```bash
-sudo apt-get install g++ -y
-```
-Verify by g++ --version  
-1.  *Ubuntu 18.04* cmake
-```bash
-sudo apt-get install cmake -y
-```
-Verify by git --version  
-1. *Ubuntu 16.04* cmake  
-```bash
-wget https://cmake.org/files/v3.14/cmake-3.14.2-Linux-x86_64.sh
-sudo sh cmake-3.14.2-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
-```
-#### Install build dependencies:
-1.  OpenSSL  
-```bash
-sudo apt-get install libssl-dev
-```
-Verify with `openssl version`  
-1.  OpenGL  
-Verify (first install mesa-utils - `sudo apt install mesa-utils -y`) by `glxinfo | grep "OpenGL version"`  
-```bash
-sudo apt-get install libgl1-mesa-dev -y
-sudo ln -s /usr/lib/x86_64-linux-gnu/libGL.so.346.35 /usr/lib/x86_64-linux-gnu/libGL.so.1.2.0
-```
-#### To compile interface in a server you must install:
-```bash
-sudo apt-get -y install libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1
-```
-1.  Misc dependencies
-```bash
-sudo apt-get install libasound2 libxmu-dev libxi-dev freeglut3-dev libasound2-dev libjack0 libjack-dev libxrandr-dev libudev-dev libssl-dev zlib1g-dev
-```
-1.  To compile interface in a server you must install:
-```bash
-sudo apt-get -y install libpulse0 libnss3 libnspr4 libfontconfig1 libxcursor1 libxcomposite1 libxtst6 libxslt1.1
-```
-1.  Install Python 3:
-```bash
-sudo apt-get install python3.6
-```
-1.  Install node, required to build the jsdoc documentation
-```bash
-sudo apt-get install nodejs
+git clone https://git.tivolicloud.com/tivolicloud/interface
+cd interface
 ```
 
-### Get code and checkout the tag you need
+You can use the master branch (default) or checkout to the latest tag
 
-Clone this repository:
-```bash
-git clone https://github.com/highfidelity/hifi.git
+```
+git tag
+git checkout tags/???
 ```
 
-To compile a RELEASE version checkout the tag you need getting a list of all tags:
+Once you're checked out on the right version
+
 ```bash
-git fetch -a
-git tags
+mkdir build
+cd build
+
+cmake -G "Unix Makefiles" ..
 ```
 
-Then checkout last tag with:
+CMake will now download dependencies including Qt and prepare build files.
+
+Please wait. It will take a while... It really will!
+
+## Step 4. Making a Build
+
+Find the amount of **physical CPU cores** your computer has.
+
+If you have an 8 cores desktop Intel CPU, you're likely to have 4 physical cores and 4 hyper threaded. Hyper threaded cores do not count.
+
+Open the terminal
+
 ```bash
-git checkout tags/v0.79.0
+cd /path/to/interface/build
+make interface -j4
 ```
 
-### Compiling
+Replace 4 with your physical CPU core count.
 
-Create the build directory:
+Some available targets are: `interface`, `domain-server`, `assignment-client`
+
+## Step 5. Running interface
+
+You can run interface using the launcher: https://alpha.tivolicloud.com/download
+
+In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `/path/to/interface/build/interface` which should contain `interface` executable
+
+If you want to run Tivoli without the launcher, run:
+
 ```bash
-mkdir -p hifi/build
-cd hifi/build
+interface --tokens [current access token]
 ```
 
-Prepare makefiles:
-```bash
-cmake ..
-```
+You can find your access token in the launcher's developer menu. Please don't share it and keep it safe!
 
-*  If cmake fails with a vcpkg error - delete /tmp/hifi/vcpkg.  
+When debugging, you'll likely have to open Tivoli without the launcher.
 
-Start compilation of the server and get a cup of coffee:
-```bash
-make domain-server assignment-client
-```
+## Troubleshooting
 
-To compile interface:
-```bash
-make interface
-```
+If your build fails, you could ask around on [our Discord](https://alpha.tivolicloud.com/discord) for help.
 
-In a server, it does not make sense to compile interface
-
-### Running the software
-
-#### Domain server
-
-Running domain server:
-```bash
-./domain-server/domain-server
-```
-
-#### Assignment clients
-
-Running assignment client:
-```bash
-./assignment-client/assignment-client -n 6
-```
-
-#### Interface
-
-Running interface:
-```bash
-./interface/interface
-```
-
-Go to localhost in the running interface.
-
-##### Ubuntu 18.04 only
-
-In Ubuntu 18.04 there is a problem related with NVidia driver library version.
-
-It can be worked around following these steps:
-
-1.  Uninstall incompatible nvtt libraries:  
-`sudo apt-get remove libnvtt2 libnvtt-dev`  
-
-1.  Install libssl1.0-dev:  
-`sudo apt-get -y install libssl1.0-dev`  
-
-1.  Clone castano nvidia-texture-tools:  
-`git clone https://github.com/castano/nvidia-texture-tools`  
-`cd nvidia-texture-tools/` 
-
-1.  Make these changes in repo:  
-* In file **VERSION** set `2.2.1`  
-* In file **configure**:  
-  * set `build="release"`  
-  * set `-DNVTT_SHARED=1`  
-
-1.  Configure, build and install:  
-`./configure`  
-`make`  
-`sudo make install`  
-
-1.. Link compiled files:  
-`sudo ln -s /usr/local/lib/libnvcore.so /usr/lib/libnvcore.so`  
-`sudo ln -s /usr/local/lib/libnvimage.so /usr/lib/libnvimage.so`  
-`sudo ln -s /usr/local/lib/libnvmath.so /usr/lib/libnvmath.so`  
-`sudo ln -s /usr/local/lib/libnvtt.so /usr/lib/libnvtt.so`  
-
-1.  After running this steps you can run interface:  
-`interface/interface`  
+Deleting the `build` folder and trying again may help.

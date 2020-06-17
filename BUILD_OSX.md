@@ -1,57 +1,149 @@
-Please read the [general build guide](BUILD.md) for information on dependencies required for all platforms. Only macOS specific instructions are found in this file.
+# Building Tivoli for macOS
 
-### Homebrew
+## Step 1. Installing dependencies
 
-[Homebrew](https://brew.sh/) is an excellent package manager for macOS. It makes install of some High Fidelity dependencies very simple.
+Download and install these programs:
+
+-   **Xcode**
+
+    You can find Xcode on the **App Store**.
+
+-   **MacOSX 10.11 SDK**
+
+    You'll have to download the **10.11 SDK** because compiling with newer SDKs like 10.15 (Catalina) causes lots of issues.
+
+    To install, make sure Xcode is installed and follow these instructions in your terminal:
+
+    ```bash
+    cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+
+    sudo curl -LJO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.11.sdk.tar.xz
+
+    sudo tar -xvf MacOSX10.11.sdk.tar.xz
+    sudo rm -f MacOSX10.11.sdk.tar.xz
+    ```
+
+-   **Homebrew package manager**: https://brew.sh
+
+    Once installed, open the terminal and run:
+
+    ```bash
+    brew install cmake openssl python
+    ```
+
+## Step 2. Configuring environment variables
+
+You can set these however you like. We recommend you write a **helper shell script** but that's not necessary.
+
+-   **For Vcpkg**
+
+    CMake will **automatically download Vcpkg** to compile required dependencies for compiling Tivoli.
+
+    It will use the directory: `~/tivoli/vcpkg`
+
+    This folder **will get big!** It's possible to change it by setting a variable:
+
+    `export TIVOLI_VCPKG_BASE=~/path/to/vcpkg`
+
+-   **For Qt**
+
+    CMake will also **download a custom version of Qt** which is required.
+
+    It will use the directory: `~/tivoli/qt`
+
+    It will **also get big!** Use this environment variable to change it:
+
+    `export TIVOLI_QT_BASE=~/path/to/qt`
+
+-   **Developer or production build**
+
+    By default, it will create a developer build.
+
+    Set these environment variables for a production build:
+
+    `export RELEASE_TYPE=PRODUCTION`
+
+    `export STABLE_BUILD=1`
+
+    `export RELEASE_NUMBER=1.2.3` which is unnecessary
+
+## Step 3. Cloning and preparing
+
+Open the terminal and git clone interface
 
 ```bash
-brew install cmake openssl
+git clone https://git.tivolicloud.com/tivolicloud/interface
+cd interface
 ```
 
-### Python 3
+You can use the master branch (default) or checkout to the latest tag
 
-Download an install Python 3.6.6 or higher from [here](https://www.python.org/downloads/).  
-Execute the `Update Shell Profile.command` script that is provided with the installer.
+```
+git tag
+git checkout tags/???
+```
 
-### OpenSSL
-
-Assuming you've installed OpenSSL using the homebrew instructions above, you'll need to set OPENSSL_ROOT_DIR so CMake can find your installations.  
-For OpenSSL installed via homebrew, set:
+Once you're checked out on the right version
 
 ```bash
-export OPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2t
-export OPENSSL_INCLUDE_DIR=${OPENSSL_ROOT_DIR}/include
+mkdir build
+cd build
+
+cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2t -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl/1.0.2t/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
 ```
 
-Note that this uses the version from the homebrew formula at the time of this writing, and the version in the path will likely change.
+**Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
 
-### MacOSX 10.11 SDK
+CMake will now download dependencies including Qt and prepare build files.
 
-You will need to download the 10.11 SDK. Compiling with 10.15 (Catalina) causes lots of issues.
+Please wait. It will take a while... It really will!
+
+## Step 4. Making a Build
+
+-   **Using Xcode**
+
+    Open `interface\build\hifi.xcodeproj`.
+
+    It will ask if you want to **Autocreate Schemes**. Click yes.
+
+    Next to the play and stop button (top left), you'll find a **target icon with name next to it**. Click that and type/select: **interface**.
+
+    Click the **target icon with name next to it** again and you'll find at the bottom: **Edit Scheme**.
+
+    In the scheme config popup, set the **Build Configuration** from **Debug** to **RelWithDebInfo** and click close.
+
+    Click the **play button** and it will start building.
+
+-   **Using the terminal**
+
+    Open the terminal
+
+    ```bash
+    cd /path/to/tivoli/interface/build
+
+    cmake --build . --target interface --config RelWithDebInfo
+    ```
+
+    Some available targets are: `interface`, `domain-server`, `assignment-client`
+
+## Step 5. Running interface
+
+You can run interface using the launcher: https://alpha.tivolicloud.com/download
+
+In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `/path/to/interface/build/interface/RelWithDebInfo` which should contain `interface` executable
+
+If you want to run Tivoli without the launcher, run:
 
 ```bash
-cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
-sudo curl -LJO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.11.sdk.tar.xz
-sudo tar -xvf MacOSX10.11.sdk.tar.xz
-sudo rm -f MacOSX10.11.sdk.tar.xz
+interface --tokens [current access token]
 ```
 
-Make sure to set the enviroment variable:
+You can find your access token in the launcher's developer menu. Please don't share it and keep it safe!
 
-```bash
-export OSX_SDK=10.11
-```
+When debugging, you'll likely have to open Tivoli without the launcher.
 
-### Xcode
+## Troubleshooting
 
-If Xcode is your editor of choice, you can ask CMake to generate Xcode project files instead of Unix Makefiles.
+If your build fails, you could ask around on [our Discord](https://alpha.tivolicloud.com/discord) for help.
 
-```bash
-cmake .. -G Xcode
-```
-
-If `cmake` complains about Python 3 being missing, you may need to update your CMake binary with command `brew upgrade cmake`, or by downloading and running the latest CMake installer, depending on how you originally instaled CMake
-
-After running cmake, you will have the make files or Xcode project file necessary to build all of the components. Open the hifi.xcodeproj file, choose ALL_BUILD from the Product > Scheme menu (or target drop down), and click Run.
-
-If the build completes successfully, you will have built targets for all components located in the `build/${target_name}/Debug` directories.
+Deleting the `build` folder and trying again may help.
