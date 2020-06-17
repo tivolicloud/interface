@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include <mutex>
 #include <vector>
 #include <string>
 
-#include <QtCore/QDebug>
+#include <QtCore/QAtomicInteger>
+#include <QtCore/QDeadlineTimer>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QString>
@@ -33,7 +33,6 @@
 #include <client/crashpad_client.h>
 #include <client/crash_report_database.h>
 #include <client/settings.h>
-#include <client/annotation_list.h>
 #include <client/crashpad_info.h>
 
 #if defined(__clang__)
@@ -65,11 +64,17 @@ static const QString CRASHPAD_HANDLER_NAME { "crashpad_handler" };
 #endif
 
 #ifdef Q_OS_WIN
+// ------------------------------------------------------------------------------------------------
+// The area within this #ifdef is specific to the Microsoft C++ compiler
+
+static constexpr DWORD STATUS_MSVC_CPP_EXCEPTION = 0xE06D7363;
+static constexpr ULONG_PTR MSVC_CPP_EXCEPTION_SIGNATURE = 0x19930520;
+static constexpr int ANNOTATION_LOCK_WEAK_ATTEMPT = 5000; // attempt to lock the annotations list, but give up if it takes more than 5 seconds
+
 #include <Windows.h>
 #include <typeinfo>
 
 void fatalCxxException(PEXCEPTION_POINTERS pExceptionInfo);
-
 
 LONG WINAPI vectoredExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo) {
     if (!client) {
@@ -125,6 +130,11 @@ struct CatchableTypeArray_internal {
 // the underlying C++ exception type (or at least its name) before throwing the whole
 // mess at crashpad
 void fatalCxxException(PEXCEPTION_POINTERS pExceptionInfo) {
+    SpinLockLocker guard(crashpadAnnotationsProtect, ANNOTATION_LOCK_WEAK_ATTEMPT);
+    if (!guard.isLocked()) {
+        return;
+    }
+
     PEXCEPTION_RECORD ExceptionRecord = pExceptionInfo->ExceptionRecord;
     /*
     Exception arguments for Microsoft C++ exceptions:
@@ -162,8 +172,6 @@ void fatalCxxException(PEXCEPTION_POINTERS pExceptionInfo) {
     }
     const std::type_info* type = reinterpret_cast<std::type_info*>(moduleBase + pCatchableType->pType);
 
-    // we're crashing, not really sure it matters who's currently holding the lock (although this could in theory really mess things up
-    annotationMutex.try_lock();
     crashpadAnnotations->SetKeyValue("thrownObject", type->name());
 
     // After annotating the name of the actual object type, go through the other entries in CatcahleTypeArray and itemize the list of possible
@@ -184,6 +192,8 @@ void fatalCxxException(PEXCEPTION_POINTERS pExceptionInfo) {
     crashpadAnnotations->SetKeyValue("thrownObjectLike", compatibleObjects.toStdString());
 }
 
+// End of code specific to the Microsoft C++ compiler
+// ------------------------------------------------------------------------------------------------
 #endif
 
 bool startCrashHandler(std::string appPath) {
@@ -193,7 +203,7 @@ bool startCrashHandler(std::string appPath) {
     }
 
     assert(!client);
-    client = new CrashpadClient();
+    client = new crashpad::CrashpadClient();
     std::vector<std::string> arguments;
 
     std::map<std::string, std::string> annotations;
@@ -255,7 +265,7 @@ bool startCrashHandler(std::string appPath) {
 
 void setCrashAnnotation(std::string name, std::string value) {
     if (client) {
-        std::lock_guard<std::mutex> guard(annotationMutex);
+        SpinLockLocker guard(crashpadAnnotationsProtect);
         if (!crashpadAnnotations) {
             crashpadAnnotations = new crashpad::SimpleStringDictionary(); // don't free this, let it leak
             crashpad::CrashpadInfo* crashpad_info = crashpad::CrashpadInfo::GetCrashpadInfo();
