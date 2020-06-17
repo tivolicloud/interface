@@ -26,21 +26,21 @@ You can set these as **system environment variables** or write a **helper batch 
 
     CMake will **automatically download Vcpkg** to compile required dependencies for compiling Tivoli.
 
-    It will use the directory: `C:\Users\[username]\hifi\vcpkg`
+    It will use the directory: `C:\Users\[username]\tivoli\vcpkg`
 
     This folder **will get big!** It's possible to change it by setting a variable:
 
-    `set HIFI_VCPKG_BASE=D:\path\to\vcpkg`
+    `set TIVOLI_VCPKG_BASE=D:\path\to\vcpkg`
 
 -   **For Qt**
 
     CMake will also **download a custom version of Qt** which is required.
 
-    It will use the directory: `C:\Users\[username]\hifi\qt`
+    It will use the directory: `C:\Users\[username]\tivoli\qt`
 
     It will **also get big!** Use this environement variable to change it:
 
-    `set HIFI_QT_BASE=D:\path\to\qt`
+    `set TIVOLI_QT_BASE=D:\path\to\qt`
 
 -   **Developer or production build**
 
