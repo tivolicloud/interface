@@ -69,7 +69,7 @@ You can use the master branch (default) or checkout to the latest tag
 
 ```
 git tag
-git checkout tags/0.8.2
+git checkout tags/???
 ```
 
 Once you're checked out on the right version
