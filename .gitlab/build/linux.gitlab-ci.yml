@@ -86,8 +86,8 @@ all linux:
           -executable=interface.AppDir/usr/bin/plugins/libpcmCodec.so
           -executable=interface.AppDir/usr/bin/plugins/libsteamClient.so
           -executable=interface.AppDir/usr/lib/libgl.so
-          -qmake=$TIVOLI_QT_BASE/5.15/qt5-install/bin/qmake
-          -qmldir=$TIVOLI_QT_BASE/5.15/qt5-install/qml
+          -qmake=$TIVOLI_QT_BASE/5.15-1/qt5-install/bin/qmake
+          -qmldir=$TIVOLI_QT_BASE/5.15-1/qt5-install/qml
           -qmldir=../../interface/resources/qml
           -extra-plugins=webview,platformthemes/libqgtk3.so
           -exclude-libs=libnss3.so,libnssutil3.so
