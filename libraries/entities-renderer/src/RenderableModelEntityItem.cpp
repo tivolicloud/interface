@@ -76,8 +76,8 @@ RenderableModelEntityItem::RenderableModelEntityItem(const EntityItemID& entityI
 RenderableModelEntityItem::~RenderableModelEntityItem() { }
 
 void RenderableModelEntityItem::setUnscaledDimensions(const glm::vec3& value) {
-    glm::vec3 newDimensions = glm::max(value, glm::vec3(0.0f)); // can never have negative dimensions
-    if (getUnscaledDimensions() != newDimensions) {
+    // glm::vec3 newDimensions = glm::max(value, glm::vec3(0.0f)); // can never have negative dimensions
+    if (getUnscaledDimensions() != value) {
         _dimensionsInitialized = true;
         ModelEntityItem::setUnscaledDimensions(value);
     }
