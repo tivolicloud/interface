@@ -35,7 +35,7 @@ If you're using a self-compiled version, you can set the build location in the l
 
 If you want to run Tivoli without the launcher, run:
 
-```bash
+```cmd
 interface.exe --tokens [current access token]
 ```
 
