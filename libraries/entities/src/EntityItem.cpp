@@ -1962,8 +1962,7 @@ void EntityItem::setScaledDimensions(const glm::vec3& value) {
 }
 
 void EntityItem::setUnscaledDimensions(const glm::vec3& value) {
-    // glm::vec3 newDimensions = glm::max(value, glm::vec3(ENTITY_ITEM_MIN_DIMENSION));
-    glm::vec3 newDimensions = value;
+    glm::vec3 newDimensions = glm::max(value, glm::vec3(ENTITY_ITEM_MIN_DIMENSION));
     const float MIN_SCALE_CHANGE_SQUARED = 1.0e-6f;
     if (glm::length2(getUnscaledDimensions() - newDimensions) > MIN_SCALE_CHANGE_SQUARED) {
         withWriteLock([&] { _unscaledDimensions = newDimensions; });
