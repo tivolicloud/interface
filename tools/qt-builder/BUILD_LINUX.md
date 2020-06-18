@@ -35,16 +35,14 @@ git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15 --single-branch
 
 ### Apply patches:
 
-No patches necessary!
-
-<!-- ```bash
+```bash
 cp -r patches qt5
 cd qt5
 
-git apply --ignore-space-change --ignore-whitespace patches/qtscript-crash-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
 
 cd ..
-``` -->
+```
 
 ### Configure and build:
 

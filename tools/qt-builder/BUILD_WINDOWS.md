@@ -19,6 +19,7 @@ xcopy /E /I C:\path\to\interface\tools\qt-builder\patches qt5\patches
 cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/chromium-missing-import.patch
+git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
 
 cd ..
 ```
@@ -31,7 +32,7 @@ cd qt5-build
 
 C:\path\to\interface\tools\qt-builder\qt5vars.bat
 
-..\qt5\configure -force-debug-info -release -opensource -confirm-license -recheck-all -opengl desktop -platform win32-msvc -openssl-linked OPENSSL_PREFIX="%TIVOLI_VCPKG_BASE_VERSION%\packages\openssl-windows_x64-windows" -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -prefix ..\qt5-install
+..\qt5\configure -force-debug-info -release -opensource -confirm-license -recheck-all -opengl desktop -platform win32-msvc -openssl-linked OPENSSL_PREFIX="%TIVOLI_VCPKG_BASE_VERSION%\installed\x64-windows-release" -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -prefix ..\qt5-install
 
 jom
 jom install
