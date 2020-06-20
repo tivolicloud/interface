@@ -820,6 +820,11 @@ Menu::Menu() {
         action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNewFaultThreaded);
         connect(action, &QAction::triggered, qApp, []() { std::thread(crash::newFault).join(); });
 
+        action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashThrownException);
+        connect(action, &QAction::triggered, qApp, []() { crash::throwException(); });
+        action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashThrownExceptionThreaded);
+        connect(action, &QAction::triggered, qApp, []() { std::thread(crash::throwException).join(); });
+
         addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOnShutdown, 0, qApp, SLOT(crashOnShutdown()));
     }
     
