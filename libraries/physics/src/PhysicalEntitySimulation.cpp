@@ -311,7 +311,6 @@ void PhysicalEntitySimulation::buildMotionStatesForEntitiesThatNeedThem() {
     SetOfEntities::iterator entityItr = _entitiesToAddToPhysics.begin();
     while (entityItr != _entitiesToAddToPhysics.end()) {
         EntityItemPointer entity = (*entityItr);
-        //if (entity->getEntityPriority() == EntityPriority::STATIC) continue;
         if (entity->isDead()) {
             prepareEntityForDelete(entity);
             entityItr = _entitiesToAddToPhysics.erase(entityItr);

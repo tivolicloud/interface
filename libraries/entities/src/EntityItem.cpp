@@ -1061,7 +1061,6 @@ float EntityItem::computeMass() const {
 }
 
 void EntityItem::setDensity(float density) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     float clampedDensity = glm::max(glm::min(density, ENTITY_ITEM_MAX_DENSITY), ENTITY_ITEM_MIN_DENSITY);
     withWriteLock([&] {
         if (_density != clampedDensity) {
@@ -1076,7 +1075,6 @@ void EntityItem::setMass(float mass) {
     // we must protect the density range to help maintain stability of physics simulation
     // therefore this method might not accept the mass that is supplied.
 
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
 
     glm::vec3 dimensions = getScaledDimensions();
     float volume = _volumeMultiplier * dimensions.x * dimensions.y * dimensions.z;
@@ -1137,7 +1135,6 @@ QString EntityItem::getCustomTags() const {  // TIVOLI tagging
 }
 
 void EntityItem::setCollisionSoundURL(const QString& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     bool modified = false;
     withWriteLock([&] {
         if (_collisionSoundURL != value) {
@@ -1154,7 +1151,6 @@ void EntityItem::setCollisionSoundURL(const QString& value) {
 
 void EntityItem::simulate(const quint64& now) {
 
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No simulation support for static entity priority
 
     DETAILED_PROFILE_RANGE(simulation_physics, "Simulate");
     if (getLastSimulated() == 0) {
@@ -1759,7 +1755,7 @@ AACube EntityItem::getQueryAACube(bool& success) const {
 }
 
 bool EntityItem::shouldPuffQueryAACube() const {
-    return (getEntityPriority() != EntityPriority::STATIC);
+   // return (getEntityPriority() != EntityPriority::STATIC);
     return hasActions() || isChildOfMyAvatar() || isMovingRelativeToParent();
 }
 
@@ -1993,7 +1989,6 @@ void EntityItem::setRotation(glm::quat rotation) {
 }
 
 void EntityItem::setVelocity(const glm::vec3& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     glm::vec3 velocity = getLocalVelocity();
     if (velocity != value) {
         float speed = glm::length(value);
@@ -2014,7 +2009,6 @@ void EntityItem::setVelocity(const glm::vec3& value) {
 }
 
 void EntityItem::setDamping(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     auto clampedDamping = glm::clamp(value, ENTITY_ITEM_MIN_DAMPING, ENTITY_ITEM_MAX_DAMPING);
     withWriteLock([&] {
         if (_damping != clampedDamping) {
@@ -2025,7 +2019,6 @@ void EntityItem::setDamping(float value) {
 }
 
 void EntityItem::setGravity(const glm::vec3& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     withWriteLock([&] {
         if (_gravity != value) {
             float magnitude = glm::length(value);
@@ -2043,7 +2036,6 @@ void EntityItem::setGravity(const glm::vec3& value) {
 }
 
 void EntityItem::setAngularVelocity(const glm::vec3& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     glm::vec3 angularVelocity = getLocalAngularVelocity();
     if (angularVelocity != value) {
         float speed = glm::length(value);
@@ -2064,7 +2056,6 @@ void EntityItem::setAngularVelocity(const glm::vec3& value) {
 }
 
 void EntityItem::setAngularDamping(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     auto clampedDamping = glm::clamp(value, ENTITY_ITEM_MIN_DAMPING, ENTITY_ITEM_MAX_DAMPING);
     withWriteLock([&] {
         if (_angularDamping != clampedDamping) {
@@ -2119,7 +2110,6 @@ void EntityItem::setDynamic(bool value) {
 }
 
 void EntityItem::setRestitution(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     float clampedValue = glm::max(glm::min(ENTITY_ITEM_MAX_RESTITUTION, value), ENTITY_ITEM_MIN_RESTITUTION);
     withWriteLock([&] {
         if (_restitution != clampedValue) {
@@ -2130,7 +2120,6 @@ void EntityItem::setRestitution(float value) {
 }
 
 void EntityItem::setFriction(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     float clampedValue = glm::max(glm::min(ENTITY_ITEM_MAX_FRICTION, value), ENTITY_ITEM_MIN_FRICTION);
     withWriteLock([&] {
         if (_friction != clampedValue) {
@@ -2141,7 +2130,6 @@ void EntityItem::setFriction(float value) {
 }
 
 void EntityItem::setLifetime(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     withWriteLock([&] {
         if (_lifetime != value) {
             _lifetime = value;
@@ -2824,7 +2812,6 @@ glm::vec3 EntityItem::getAcceleration() const {
 }
 
 void EntityItem::setAcceleration(const glm::vec3& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // No physics for static entity priority
     withWriteLock([&] { _acceleration = value; });
 }
 
@@ -3081,7 +3068,7 @@ bool EntityItem::isPrimitiveShapeType() const {
 }
 
 bool EntityItem::getDynamic() const {
-    if (SHAPE_TYPE_STATIC_MESH == getShapeType()) {// || getEntityPriority() == EntityPriority::STATIC) {
+    if (SHAPE_TYPE_STATIC_MESH == getShapeType()) {
         return false;
     }
     return _dynamic;
@@ -3266,7 +3253,6 @@ bool EntityItem::getCloneable() const {
 }
 
 void EntityItem::setCloneable(bool value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneable = value; });
 }
 
@@ -3277,7 +3263,6 @@ float EntityItem::getCloneLifetime() const {
 }
 
 void EntityItem::setCloneLifetime(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneLifetime = value; });
 }
 
@@ -3288,7 +3273,6 @@ float EntityItem::getCloneLimit() const {
 }
 
 void EntityItem::setCloneLimit(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneLimit = value; });
 }
 
@@ -3299,7 +3283,6 @@ bool EntityItem::getCloneDynamic() const {
 }
 
 void EntityItem::setCloneDynamic(bool value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneDynamic = value; });
 }
 
@@ -3310,7 +3293,6 @@ bool EntityItem::getCloneAvatarEntity() const {
 }
 
 void EntityItem::setCloneAvatarEntity(bool value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneAvatarEntity = value; });
 }
 
@@ -3321,7 +3303,6 @@ const QUuid EntityItem::getCloneOriginID() const {
 }
 
 void EntityItem::setCloneOriginID(const QUuid& value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneOriginID = value; });
 }
 
@@ -3349,7 +3330,6 @@ const QVector<QUuid> EntityItem::getCloneIDs() const {
 }
 
 void EntityItem::setCloneIDs(const QVector<QUuid>& cloneIDs) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] { _cloneIDs = cloneIDs; });
 }
 
@@ -3358,10 +3338,10 @@ bool EntityItem::shouldPreloadScript() const {
 }
 
 bool EntityItem::shouldBePhysical() const {
-    bool isStaticShape = (getEntityPriority() == EntityPriority::STATIC &&
+    bool isStaticShape = (
         getShapeType() != ShapeType::SHAPE_TYPE_NONE &&
         getShapeType() != ShapeType::SHAPE_TYPE_STATIC_MESH);
-    return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && (isStaticShape || getEntityPriority() != EntityPriority::STATIC);
+    return !isDead() && getShapeType() != SHAPE_TYPE_NONE && !isLocalEntity() && isStaticShape;
 }
 
 void EntityItem::scriptHasPreloaded() {
@@ -3407,13 +3387,11 @@ void EntityItem::prepareForSimulationOwnershipBid(EntityItemProperties& properti
 }
 
 bool EntityItem::isWearable() const {
-    if (getEntityPriority() == EntityPriority::STATIC) return false; // Not for static entity priority
     return isVisible() &&
            (getParentID() == DependencyManager::get<NodeList>()->getSessionUUID() || getParentID() == AVATAR_SELF_ID);
 }
 
 bool EntityItem::isMyAvatarEntity() const {
-    if (getEntityPriority() == EntityPriority::STATIC) return false; // Not for static entity priority
     return _hostType == entity::HostType::AVATAR && Physics::getSessionUUID() == _owningAvatarID;
 };
 

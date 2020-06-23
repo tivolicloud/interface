@@ -346,7 +346,6 @@ void ModelEntityItem::setCompoundShapeURL(const QString& url) {
 }
 
 void ModelEntityItem::setAnimationURL(const QString& url) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     _flags |= Simulation::DIRTY_UPDATEABLE;
     withWriteLock([&] {
         _animationProperties.setURL(url);
@@ -416,7 +415,6 @@ void ModelEntityItem::setAnimationSettings(const QString& value) {
 }
 
 void ModelEntityItem::setAnimationIsPlaying(bool value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     _flags |= Simulation::DIRTY_UPDATEABLE;
     withWriteLock([&] {
         _animationProperties.setRunning(value);
@@ -424,7 +422,6 @@ void ModelEntityItem::setAnimationIsPlaying(bool value) {
 }
 
 void ModelEntityItem::setAnimationFPS(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     _flags |= Simulation::DIRTY_UPDATEABLE;
     withWriteLock([&] {
         _animationProperties.setFPS(value);
@@ -630,7 +627,6 @@ AnimationPropertyGroup ModelEntityItem::getAnimationProperties() const {
 }
 
 bool ModelEntityItem::hasAnimation() const {
-    if (getEntityPriority() == EntityPriority::STATIC) return false; // Not supported for static entities
     return resultWithReadLock<bool>([&] { 
         return !_animationProperties.getURL().isEmpty();
     });
@@ -643,14 +639,12 @@ QString ModelEntityItem::getAnimationURL() const {
 }
 
 void ModelEntityItem::setAnimationCurrentFrame(float value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] {
         _animationProperties.setCurrentFrame(value);
     });
 }
 
 void ModelEntityItem::setAnimationAllowTranslation(bool value) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] {
         _animationProperties.setAllowTranslation(value);
     });
@@ -663,7 +657,6 @@ bool ModelEntityItem::getAnimationAllowTranslation() const {
 }
 
 void ModelEntityItem::setAnimationLoop(bool loop) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] {
         _animationProperties.setLoop(loop);
     });
@@ -677,7 +670,6 @@ bool ModelEntityItem::getAnimationLoop() const {
 
 
 void ModelEntityItem::setAnimationHold(bool hold) {
-    if (getEntityPriority() == EntityPriority::STATIC) return; // Not supported for static entities
     withWriteLock([&] {
         _animationProperties.setHold(hold);
     });
