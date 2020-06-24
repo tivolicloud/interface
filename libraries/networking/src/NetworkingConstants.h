@@ -25,8 +25,8 @@ namespace NetworkingConstants {
     // if you manually generate a personal access token for the domains scope
     // at https://staging.highfidelity.com/user/tokens/new?for_domain_server=true
 
-    const QUrl METAVERSE_SERVER_URL_STABLE { "https://alpha.tivolicloud.com" };
-    const QUrl METAVERSE_SERVER_URL_STAGING { "https://alpha.tivolicloud.com" }; // staging not ready yet
+    const QUrl METAVERSE_SERVER_URL_STABLE { "https://tivolicloud.com" };
+    const QUrl METAVERSE_SERVER_URL_STAGING { "https://tivolicloud.com" }; // staging not ready yet
     QUrl METAVERSE_SERVER_URL();
 }
 

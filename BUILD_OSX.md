@@ -128,7 +128,7 @@ Please wait. It will take a while... It really will!
 
 ## Step 5. Running interface
 
-You can run interface using the launcher: https://alpha.tivolicloud.com/download
+You can run interface using the launcher: https://tivolicloud.com/download
 
 In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `/path/to/interface/build/interface/RelWithDebInfo` which should contain `interface` executable
 
@@ -144,6 +144,6 @@ When debugging, you'll likely have to open Tivoli without the launcher.
 
 ## Troubleshooting
 
-If your build fails, you could ask around on [our Discord](https://alpha.tivolicloud.com/discord) for help.
+If your build fails, you could ask around on [our Discord](https://tivolicloud.com/discord) for help.
 
 Deleting the `build` folder and trying again may help.

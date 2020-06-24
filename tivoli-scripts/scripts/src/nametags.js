@@ -26,7 +26,7 @@ function initNametags() {
 		Entities.editEntity(nametag.entity, {
 			alpha: 1,
 			imageURL: (
-				"https://alpha.tivolicloud.com/api/user/"+
+				"https://tivolicloud.com/api/user/"+
 				nametag.username+
 				"/nametag?"+
 				(nametag.admin?"&admin":"")+
@@ -110,7 +110,7 @@ function initNametags() {
 			// add nametag
 			addNametag(id, {
 				username: localUser.displayName,
-				avatarURL: "https://alpha.tivolicloud.com/api/user/-/image",
+				avatarURL: "https://tivolicloud.com/api/user/-/image",
 				connection: null,
 				admin: false,
 			});

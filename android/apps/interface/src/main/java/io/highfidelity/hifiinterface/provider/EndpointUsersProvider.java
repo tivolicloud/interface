@@ -28,7 +28,7 @@ import retrofit2.http.Query;
 
 public class EndpointUsersProvider implements UsersProvider {
 
-    public static final String BASE_URL = "https://alpha.tivolicloud.com/";
+    public static final String BASE_URL = "https://tivolicloud.com/";
     private final Retrofit mRetrofit;
     private final EndpointUsersProviderService mEndpointUsersProviderService;
 
