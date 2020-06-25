@@ -18,8 +18,8 @@ Item {
                                             icon: OriginalDialogs.StandardIcon.Warning,
                                             buttons: OriginalDialogs.StandardButton.Ok,
                                             defaultButton: OriginalDialogs.StandardButton.NoButton,
-                                            title: "No Connection",
-                                            text: "Unable to connect to this domain. Click the 'GO TO' button on the toolbar to visit another domain."
+                                            title: "Unable to connect to this world",
+                                            text: "Open the \"Explore\" app on the tablet to visit another world."
                                         });
         object.selected.connect(function(button) {
             if (button === OriginalDialogs.StandardButton.Ok) {
