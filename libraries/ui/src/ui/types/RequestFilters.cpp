@@ -13,6 +13,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
+#include <QWebEngineProfile>
 
 #include <SettingHandle.h>
 #include <NetworkingConstants.h>
@@ -87,13 +88,16 @@ void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& i
         }
     }
     
-    // static const QString USER_AGENT = "User-Agent";
-    // const QString tokenStringMobile{ "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36" };
-    // const QString tokenStringMetaverse{ "Chrome/48.0 (TivoliCloudVR)" };
-    // const QString tokenStringLimitedCommerce{ "Chrome/48.0 (TivoliCloudVR limitedCommerce)" };
+    const QString defaultUserAgent = QWebEngineProfile::defaultProfile()->httpUserAgent();
 
-    //const QString tokenString = !isAuthable ? tokenStringMobile : (accountManager->getLimitedCommerce() ? tokenStringLimitedCommerce : tokenStringMetaverse);
-    //info.setHttpHeader(USER_AGENT.toLocal8Bit(), tokenString.toLocal8Bit());
+    info.setHttpHeader(
+        "User-Agent",
+        (
+            defaultUserAgent +
+            " TivoliCloudVR/" +
+            (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+        ).toLocal8Bit()
+    );
 }
 
 void RequestFilters::interceptFileType(QWebEngineUrlRequestInfo& info) {
