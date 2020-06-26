@@ -49,9 +49,9 @@ $.extend(Settings, {
 });
 
 var URLs = {
-  // STABLE METAVERSE_URL: https://alpha.tivolicloud.com
+  // STABLE METAVERSE_URL: https://tivolicloud.com
   // STAGING METAVERSE_URL: https://staging.highfidelity.com
-  METAVERSE_URL: 'https://alpha.tivolicloud.com',
+  METAVERSE_URL: 'https://tivolicloud.com',
   PLACE_URL: 'https://hifi.place',
 };
 

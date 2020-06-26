@@ -20,7 +20,7 @@
     NSString *postLength = [NSString stringWithFormat:@"%ld", (unsigned long)[postData length]];
 
     NSMutableURLRequest *request = [NSMutableURLRequest new];
-    [request setURL:[NSURL URLWithString:@"https://alpha.tivolicloud.com/oauth/token"]];
+    [request setURL:[NSURL URLWithString:@"https://tivolicloud.com/oauth/token"]];
     [request setHTTPMethod:@"POST"];
     [request setValue:@USER_AGENT_STRING forHTTPHeaderField:@"User-Agent"];
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];

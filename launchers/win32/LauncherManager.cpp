@@ -599,7 +599,7 @@ LauncherUtils::ResponseError LauncherManager::getAccessTokenForCredentials(const
     CString response;
     LauncherUtils::ResponseError error = LauncherUtils::makeHTTPCall(getHttpUserAgent(),
                                                                      true,
-                                                                     L"alpha.tivolicloud.com", 
+                                                                     L"tivolicloud.com", 
                                                                      L"/oauth/token",
                                                                      contentTypeText, post, 
                                                                      response, true);

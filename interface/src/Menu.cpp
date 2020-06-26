@@ -864,7 +864,7 @@ Menu::Menu() {
     // Help > Discord Server
     action = addActionToQMenuAndActionHash(helpMenu, "Discord Server");
     connect(action, &QAction::triggered, qApp, [] {
-        QDesktopServices::openUrl(QUrl("https://alpha.tivolicloud.com/discord"));
+        QDesktopServices::openUrl(QUrl("https://tivolicloud.com/discord"));
     });
 
     // Help > JavaScript API Reference

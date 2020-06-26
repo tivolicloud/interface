@@ -1,4 +1,4 @@
-<img height="150" src="https://alpha.tivolicloud.com/assets/logo-dark.svg" alt="Tivoli Cloud VR"/>
+<img height="150" src="https://tivolicloud.com/assets/logo-dark.svg" alt="Tivoli Cloud VR"/>
 
 # https://tivolicloud.com
 
@@ -13,7 +13,7 @@ Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.co
 
 The JavaScript API reference can be found under [apidocs.tivolicloud.com](https://apidocs.tivolicloud.com).
 
-We have a [Discord server](https://alpha.tivolicloud.com/discord) where you can always ask for help.
+We have a [Discord server](https://tivolicloud.com/discord) where you can always ask for help.
 
 There is also detailed documentation on [our coding standards](howtos/CODING_STANDARD.md).
 
@@ -29,7 +29,7 @@ All information required to build is found in the [build guide](howtos/BUILD.md)
 
 # Running interface
 
-You can run the interface using the launcher available at: https://alpha.tivolicloud.com/download
+You can run the interface using the launcher available at: https://tivolicloud.com/download
 
 If you're using a self-compiled version, you can set the build location in the launcher under the developer menu.
 

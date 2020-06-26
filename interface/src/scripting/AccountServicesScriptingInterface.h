@@ -59,7 +59,7 @@ class AccountServicesScriptingInterface : public QObject {
      *         <li><code>"all"</code> &mdash; user is visible to everyone.</li>
      *     </ul>
      * @property {string} metaverseServerURL - The metaverse server that the user is authenticated against when logged in
-     *     &mdash; typically <code>"https://alpha.tivolicloud.com"</code>. <em>Read-only.</em>
+     *     &mdash; typically <code>"https://tivolicloud.com"</code>. <em>Read-only.</em>
      */
 
     /**jsdoc

@@ -103,7 +103,7 @@
         <source>&lt;style type=&quot;text/css&quot;&gt;
 	a { text-decoration: none; color: #267077;}
 &lt;/style&gt;
-Invalid username or password. &lt;a href=&quot;https://alpha.tivolicloud.com/password/new&quot;&gt;Recover?&lt;/a&gt;</source>
+Invalid username or password. &lt;a href=&quot;https://tivolicloud.com/password/new&quot;&gt;Recover?&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

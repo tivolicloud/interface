@@ -153,7 +153,7 @@ var places = {};
 
 function changeLobbyTextures() {
   var req = new XMLHttpRequest();
-  req.open("GET", "https://alpha.tivolicloud.com/api/v1/places?limit=21", false);
+  req.open("GET", "https://tivolicloud.com/api/v1/places?limit=21", false);
   req.send();
 
   places = JSON.parse(req.responseText).data.places;
