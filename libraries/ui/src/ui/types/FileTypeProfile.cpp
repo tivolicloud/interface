@@ -15,6 +15,7 @@
 #include <mutex>
 #include <QtQml/QQmlContext>
 
+#include "BuildInfo.h"
 #include "RequestFilters.h"
 
 #if !defined(Q_OS_ANDROID)
@@ -26,7 +27,10 @@ static std::mutex FileTypeProfile_mutex;
 FileTypeProfile::FileTypeProfile(QQmlContext* parent) :
     ContextAwareProfile(parent)
 {
-    static const QString WEB_ENGINE_USER_AGENT = "Chrome/48.0 (HighFidelityInterface)";
+    static const QString WEB_ENGINE_USER_AGENT = QString(
+        "TivoliCloudVR/" + 
+        (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+    );
     setHttpUserAgent(WEB_ENGINE_USER_AGENT);
 
     setStorageName(QML_WEB_ENGINE_STORAGE_NAME);

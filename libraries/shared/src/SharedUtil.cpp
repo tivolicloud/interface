@@ -59,8 +59,6 @@ extern "C" FILE * __cdecl __iob_func(void) {
 #include <QSysInfo>
 #include <QThread>
 
-#include <BuildInfo.h>
-
 #include "LogHandler.h"
 #include "NumericalConstants.h"
 #include "OctalCode.h"

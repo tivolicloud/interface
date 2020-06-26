@@ -2630,8 +2630,10 @@ QString Application::getUserAgent() {
         return userAgent;
     }
 
-    QString userAgent = "Mozilla/5.0 (HighFidelityInterface/" + BuildInfo::VERSION + "; "
-        + QSysInfo::productType() + " " + QSysInfo::productVersion() + ")";
+    QString userAgent = (
+        "TivoliCloudVR/" + 
+        (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+    );
 
     auto formatPluginName = [](QString name) -> QString { return name.trimmed().replace(" ", "-");  };
 

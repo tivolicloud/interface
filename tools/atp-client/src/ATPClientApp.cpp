@@ -27,7 +27,6 @@
 #include <AssetUpload.h>
 #include <StatTracker.h>
 
-#define HIGH_FIDELITY_ATP_CLIENT_USER_AGENT "Mozilla/5.0 (HighFidelityATPClient)"
 #define TIMEOUT_MILLISECONDS 8000
 
 ATPClientApp::ATPClientApp(int argc, char* argv[]) :
@@ -138,7 +137,12 @@ ATPClientApp::ATPClientApp(int argc, char* argv[]) :
     DependencyManager::registerInheritance<LimitedNodeList, NodeList>();
 
     DependencyManager::set<StatTracker>();
-    DependencyManager::set<AccountManager>(false, [&]{ return QString(HIGH_FIDELITY_ATP_CLIENT_USER_AGENT); });
+    DependencyManager::set<AccountManager>(false, [&]{
+        return QString(
+            "TivoliCloudVR/" +
+            (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+        );
+    });
     DependencyManager::set<AddressManager>();
     DependencyManager::set<NodeList>(NodeType::Agent, _listenPort);
 

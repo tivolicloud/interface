@@ -26,6 +26,8 @@
 #include <QUuid>
 
 #include "NumericalConstants.h"
+#include "BuildInfo.h"
+
 // When writing out avatarEntities to a QByteArray, if the parentID is the ID of MyAvatar, use this ID instead.  This allows
 // the value to be reset when the sessionID changes.
 const QUuid AVATAR_SELF_ID = QUuid("{00000000-0000-0000-0000-000000000001}");
@@ -82,7 +84,10 @@ typedef unsigned char colorPart;
 typedef unsigned char nodeColor[BYTES_PER_COLOR + BYTES_PER_FLAGS];
 
 // Use a custom User-Agent to avoid ModSecurity filtering, e.g. by hosting providers.
-const QByteArray HIGH_FIDELITY_USER_AGENT = "Mozilla/5.0 (HighFidelityInterface)";
+const QByteArray HIGH_FIDELITY_USER_AGENT = QString(
+    "TivoliCloudVR/" + 
+    (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+).toLocal8Bit();
 
 // Equivalent to time_t but in usecs instead of secs
 quint64 usecTimestampNow(bool wantDebug = false);

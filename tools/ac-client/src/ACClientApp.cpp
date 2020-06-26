@@ -100,7 +100,12 @@ ACClientApp::ACClientApp(int argc, char* argv[]) :
 
     DependencyManager::registerInheritance<LimitedNodeList, NodeList>();
 
-    DependencyManager::set<AccountManager>(false, [&]{ return QString("Mozilla/5.0 (HighFidelityACClient)"); });
+    DependencyManager::set<AccountManager>(false, [&]{
+        return QString(
+            "TivoliCloudVR/" +
+            (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+        );
+    });
     DependencyManager::set<AddressManager>();
     DependencyManager::set<NodeList>(NodeType::Agent, listenPort);
 
