@@ -3067,6 +3067,9 @@ void Application::initializeGL() {
         chromiumFlags << "--disable-seccomp-filter-sandbox";
     #endif
 
+    // Enable autoplay
+    chromiumFlags << "--autoplay-policy=no-user-gesture-required";
+
     // Enable this for debugging chromium
     //chromiumFlags << "--enable-logging" << "--log-level=0" << "--v=1";
 
