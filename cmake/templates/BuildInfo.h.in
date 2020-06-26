@@ -9,6 +9,9 @@
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
 
+#ifndef hifi_BuildInfo_h
+#define hifi_BuildInfo_h
+
 #define USE_STABLE_GLOBAL_SERVICES @USE_STABLE_GLOBAL_SERVICES@
 
 #include <QString>
@@ -47,3 +50,5 @@ namespace BuildInfo {
 #endif
 
 }
+
+#endif // hifi_BuildInfo_h
