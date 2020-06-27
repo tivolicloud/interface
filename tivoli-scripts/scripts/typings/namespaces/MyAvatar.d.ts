@@ -103,6 +103,7 @@ declare namespace MyAvatar {
 
 	// signals
 	const collisionsEnabledChanged: Signal<(enabled: boolean) => any>;
+	const displayNameChanged: Signal<() => any>;
 	const otherAvatarsCollisionsEnabledChanged: Signal<(
 		enabled: boolean,
 	) => any>;

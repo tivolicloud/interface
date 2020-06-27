@@ -42,6 +42,20 @@ class Optimize {
 		this.signals.connect(Camera.modeUpdated, forceFirstPerson);
 	}
 
+	private forceDisplayNameToUsername() {
+		const forceDisplayName = () => {
+			if (MyAvatar.displayName != AccountServices.username)
+				MyAvatar.displayName = AccountServices.username;
+		};
+
+		forceDisplayName();
+		this.signals.connect(MyAvatar.displayNameChanged, forceDisplayName);
+		this.signals.connect(
+			AccountServices.myUsernameChanged,
+			forceDisplayName,
+		);
+	}
+
 	cleanup = () => {
 		this.signals.cleanup();
 	};
@@ -49,6 +63,7 @@ class Optimize {
 	constructor() {
 		this.disableTrackingSmoothing();
 		this.forceFirstPersonInHMD();
+		this.forceDisplayNameToUsername();
 
 		Window.interstitialModeEnabled = false;
 		MyAvatar.setOtherAvatarsCollisionsEnabled(false);
