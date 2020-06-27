@@ -9,11 +9,18 @@
 	</mdc-drawer-header>
 	<mdc-drawer-content>
 		<mdc-list>
-			<a mdc-list-item selected>
-				<mdc-icon mdcListItemGraphic>accessibility_new</mdc-icon>
+			<a
+				mdc-list-item
+				routerLink="/market"
+				routerLinkActive="mdc-list-item--activated"
+				[queryParams]="{ type: 'avatar' }"
+			>
+				<mdc-icon mdcListItemGraphic>
+					{{ marketService.getIconForType("avatar") }}
+				</mdc-icon>
 				Avatars
 			</a>
-			<a mdc-list-item style="margin-left: 32px;">
+			<!-- <a mdc-list-item style="margin-left: 32px;">
 				Female
 			</a>
 			<a mdc-list-item style="margin-left: 32px;">
@@ -21,15 +28,22 @@
 			</a>
 			<a mdc-list-item style="margin-left: 32px;">
 				Other
-			</a>
-			<!-- <a mdc-list-item>
-				<mdc-icon mdcListItemGraphic>description</mdc-icon>
+			</a> -->
+			<a
+				mdc-list-item
+				routerLink="/market"
+				routerLinkActive="mdc-list-item--activated"
+				[queryParams]="{ type: 'script' }"
+			>
+				<mdc-icon mdcListItemGraphic>
+					{{ marketService.getIconForType("script") }}
+				</mdc-icon>
 				Scripts
 			</a>
 			<mdc-list-divider></mdc-list-divider>
-			<a mdc-list-item href="#/drawer-demo/examples">
+			<a mdc-list-item style="opacity: 0.5;">
 				<mdc-icon mdcListItemGraphic>settings</mdc-icon>Manage scripts
-			</a> -->
+			</a>
 		</mdc-list>
 	</mdc-drawer-content>
 </mdc-drawer>

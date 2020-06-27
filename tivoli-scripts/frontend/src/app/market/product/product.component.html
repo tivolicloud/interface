@@ -1,7 +1,12 @@
 <div class="container">
 	<div class="row">
 		<div class="col-12">
-			<h1 class="title" style="margin-bottom: 0;">{{ product.name }}</h1>
+			<h1 class="title" style="margin-bottom: 0;">
+				<mat-icon style="width: 32px; height: 32px; font-size: 32px;">
+					{{ marketService.getIconForType(product.type) }}
+				</mat-icon>
+				{{ product.name }}
+			</h1>
 			<h2 style="margin-top: 0;">
 				Created by <b>{{ product.author }}</b>
 			</h2>
@@ -36,20 +41,20 @@
 				mdc-button
 				unelevated
 				class="install"
-				(click)="onUseNow(useNowMenu)"
+				(click)="onUseOrInstall(installMenu)"
 			>
-				Use now!
-				<div mdcMenuSurfaceAnchor #useNowAnchor></div>
+				{{ product.type == "avatar" ? "Use now!" : "Install now!" }}
+				<div mdcMenuSurfaceAnchor #installAnchor></div>
 			</button>
 			<mdc-menu
-				#useNowMenu
-				[anchorElement]="useNowAnchor"
+				#installMenu
+				[anchorElement]="installAnchor"
 				class="version-menu"
 			>
 				<mdc-list>
 					<mdc-list-item
 						*ngFor="let version of versions"
-						(click)="wearAvatar(version.url)"
+						(click)="useOrInstall(version.url)"
 					>
 						<div
 							class="image"

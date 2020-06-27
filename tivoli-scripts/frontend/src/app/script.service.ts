@@ -1,6 +1,5 @@
-import { Injectable, NgZone, Query } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
 import { Subject } from "rxjs";
-import { ActivatedRoute } from "@angular/router";
 
 @Injectable({
 	providedIn: "root",

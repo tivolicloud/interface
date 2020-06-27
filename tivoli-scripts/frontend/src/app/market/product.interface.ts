@@ -4,7 +4,7 @@ export interface MarketProduct {
 	author: string;
 	price: number;
 
-	type: "avatar";
+	type: "avatar" | "script";
 	fileSize: number;
 	added: string;
 	url: string | { name: string; image?: string; url: string }[];

@@ -19,10 +19,12 @@
 						"
 					></mdc-card-media>
 					<div class="content" style="display: flex;">
-						<mdc-icon>accessibility_new</mdc-icon>
+						<mdc-icon>
+							{{ marketService.getIconForType(product.type) }}
+						</mdc-icon>
 						<div
 							style="
-								margin-left: 4px;
+								margin-left: 8px;
 								margin-top: -4px;
 								flex-grow: 1;
 							"

@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { MarketService } from "../market.service";
 import { MarketProduct } from "../product.interface";
 
 @Component({
@@ -9,7 +10,7 @@ import { MarketProduct } from "../product.interface";
 export class ProductsComponent implements OnInit {
 	@Input() products: MarketProduct[] = [];
 
-	constructor() {}
+	constructor(public readonly marketService: MarketService) {}
 
 	ngOnInit(): void {}
 }

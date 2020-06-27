@@ -13,7 +13,7 @@ class AvatarHandler extends WebEventHandler {
 
 		this.signalManager.connect(MyAvatar.skeletonModelURLChanged, () => {
 			this.emitEvent(
-				"getAvatarURL",
+				"getAvatarUrl",
 				MyAvatar.getFullAvatarURLFromPreferences(),
 			);
 		});
@@ -36,19 +36,19 @@ class AvatarHandler extends WebEventHandler {
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			// avatar url
-			case "getAvatarURL":
+			case "getAvatarUrl":
 				this.emitEvent(
-					"getAvatarURL",
+					"getAvatarUrl",
 					MyAvatar.getFullAvatarURLFromPreferences(),
 				);
 				break;
-			case "setAvatarURL":
+			case "setAvatarUrl":
 				MyAvatar.useFullAvatarURL(
 					data.value,
 					data.value.split("/").pop(),
 				);
 				MyAvatar.scale = 1;
-				this.emitEvent("getAvatarURL", data.value);
+				this.emitEvent("getAvatarUrl", data.value);
 				this.setAvatarBookmarkName("");
 				break;
 			case "useDefault":
@@ -57,7 +57,7 @@ class AvatarHandler extends WebEventHandler {
 				const defaultAvatarUrl = MyAvatar.getDefaultFullAvatarURL();
 				MyAvatar.useFullAvatarURL(defaultAvatarUrl, "Default");
 				MyAvatar.scale = 1;
-				this.emitEvent("getAvatarURL", defaultAvatarUrl);
+				this.emitEvent("getAvatarUrl", defaultAvatarUrl);
 				this.setAvatarBookmarkName("");
 				break;
 
@@ -102,7 +102,7 @@ class AvatarHandler extends WebEventHandler {
 				this.setAvatarBookmarkName(data.value);
 
 				this.emitEvent(
-					"getAvatarURL",
+					"getAvatarUrl",
 					MyAvatar.getFullAvatarURLFromPreferences(),
 				);
 				this.emitEvent("getAvatarScale", MyAvatar.scale);

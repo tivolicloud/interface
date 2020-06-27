@@ -3,6 +3,7 @@
 
 /// <reference path="web-event-handlers/avatar.ts" />
 /// <reference path="web-event-handlers/explore.ts" />
+/// <reference path="web-event-handlers/market.ts" />
 
 class Buttons {
 	readonly tablet = Tablet.getTablet(
@@ -69,7 +70,7 @@ class Buttons {
 			"#9c27b0", // purple 500
 			13,
 			true,
-			AvatarHandler,
+			MarketHandler,
 		);
 
 		Controller.enableMapping(this.exploreMappingName);

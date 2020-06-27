@@ -1,7 +1,7 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MarketProduct } from "./product.interface";
 import { marketProducts } from "./products";
-import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
 	selector: "app-market",
@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 	styleUrls: ["./market.component.scss"],
 })
 export class MarketComponent implements OnInit {
-	marketProducts = marketProducts;
+	marketProducts = [];
 
 	currentProduct: MarketProduct = null;
 
@@ -23,6 +23,20 @@ export class MarketComponent implements OnInit {
 			const id = params.get("id");
 			const product = marketProducts.find(product => product.id == id);
 			this.selectProduct(product);
+		});
+
+		this.route.queryParams.subscribe(query => {
+			if (query.type == null) {
+				this.router.navigate(["/market"], {
+					queryParams: {
+						type: "avatar",
+					},
+				});
+			} else {
+				this.marketProducts = marketProducts.filter(
+					product => product.type == query.type,
+				);
+			}
 		});
 	}
 

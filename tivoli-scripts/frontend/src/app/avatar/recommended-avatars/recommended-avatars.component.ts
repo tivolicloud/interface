@@ -293,7 +293,7 @@ export class RecommendedAvatarsComponent {
 	onChangeAvatar(path: string) {
 		this.scriptService.emitEvent(
 			"avatar",
-			"setAvatarURL",
+			"setAvatarUrl",
 			this.defaultAvatarsUrl + path,
 		);
 		this.scriptService.emitEvent("avatar", "close");

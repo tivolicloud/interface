@@ -19,7 +19,7 @@ export class AvatarUrlComponent {
 	}
 
 	onUpdate(input: any) {
-		this.scriptService.emitEvent("avatar", "setAvatarURL", input.value);
+		this.scriptService.emitEvent("avatar", "setAvatarUrl", input.value);
 		this.scriptService.emitEvent("avatar", "close");
 		this.dialogRef.close();
 	}

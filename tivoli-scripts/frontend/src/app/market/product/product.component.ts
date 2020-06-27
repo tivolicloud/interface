@@ -3,6 +3,7 @@ import { ScriptService } from "../../script.service";
 import { MarketProduct } from "../product.interface";
 import { MdcMenu } from "@angular-mdc/web";
 import { Router } from "@angular/router";
+import { MarketService } from "../market.service";
 
 @Component({
 	selector: "app-product",
@@ -17,6 +18,7 @@ export class ProductComponent implements OnInit {
 	constructor(
 		private readonly scriptService: ScriptService,
 		private readonly router: Router,
+		public readonly marketService: MarketService,
 	) {}
 
 	ngOnInit() {
@@ -24,17 +26,23 @@ export class ProductComponent implements OnInit {
 			this.product.url == "string" ? [] : (this.product.url as any);
 	}
 
-	wearAvatar(url: string) {
-		this.scriptService.emitEvent("market", "setAvatarURL", url);
+	useOrInstall(url: string) {
+		const type = this.product.type;
+
+		let event = "";
+		if (type == "avatar") event = "setAvatarUrl";
+		if (type == "script") event = "installScript";
+		this.scriptService.emitEvent("market", event, url);
+
 		this.scriptService.emitEvent("market", "close");
 		this.router.navigate(["/market"], {
 			queryParamsHandling: "preserve",
 		});
 	}
 
-	onUseNow(menu: MdcMenu) {
+	onUseOrInstall(menu: MdcMenu) {
 		if (typeof this.product.url == "string") {
-			this.wearAvatar(this.product.url);
+			this.useOrInstall(this.product.url);
 		} else {
 			menu.open = !menu.open;
 		}

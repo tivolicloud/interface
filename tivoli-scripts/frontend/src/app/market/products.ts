@@ -453,8 +453,29 @@ export const otherAvatars: MarketProduct[] = [
 	},
 ];
 
+export const scripts: MarketProduct[] = [
+	{
+		id: randomId(),
+		name: "Sit On Someone",
+		author: "Maki",
+		price: 0,
+
+		type: "script",
+		fileSize: 0,
+		added: "2020-06-27T00:03:10.005Z",
+		url:
+			"https://files.tivolicloud.com/maki/scripts/sitOnSomeone/sitOnSomeone.js",
+
+		images: [
+			"https://files.tivolicloud.com/maki/scripts/sitOnSomeone/thumbnail.jpg",
+		],
+		description: "Sit on someone!",
+	},
+];
+
 export const marketProducts: MarketProduct[] = [
 	...femaleAvatars,
 	...maleAvatars,
 	...otherAvatars,
+	...scripts,
 ];

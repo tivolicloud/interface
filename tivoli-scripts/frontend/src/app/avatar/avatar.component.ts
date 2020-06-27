@@ -71,7 +71,7 @@ export class AvatarComponent implements OnInit, OnDestroy {
 				// 			false,
 				// 		);
 				// 	break;
-				case "getAvatarURL":
+				case "getAvatarUrl":
 					this.avatarURL = data.value;
 					this.avatarName = (() => {
 						const filename = data.value.split("/").pop();
@@ -98,7 +98,7 @@ export class AvatarComponent implements OnInit, OnDestroy {
 
 		this.scriptService.emitEvents("avatar", [
 			//"getFirstTime",
-			"getAvatarURL",
+			"getAvatarUrl",
 			"getAvatarScale",
 			"getAvatarWorldCollisions",
 			"getAvatarBookmarks",
