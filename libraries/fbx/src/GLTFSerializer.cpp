@@ -1752,7 +1752,7 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
         hfmMat.isPBSMaterial = true;
 
         if (material.pbrMetallicRoughness.defined["metallicFactor"]) {
-            hfmMat.metallic = material.pbrMetallicRoughness.metallicFactor;
+            hfmMat._material->setMetallic(material.pbrMetallicRoughness.metallicFactor);
         }
         if (material.pbrMetallicRoughness.defined["baseColorTexture"]) {
             hfmMat.opacityTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture]);
