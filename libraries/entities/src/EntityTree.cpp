@@ -330,13 +330,26 @@ bool EntityTree::updateEntity(EntityItemPointer entity, const EntityItemProperti
     EntityItemProperties properties = origProperties;
 
     bool allowLockChange;
+    bool allowAnyRez;
     QUuid senderID;
     if (senderNode.isNull()) {
         auto nodeList = DependencyManager::get<NodeList>();
         allowLockChange = nodeList->isAllowedEditor();
+        allowAnyRez = (
+            nodeList->getThisNodeCanRez() || 
+            nodeList->getThisNodeCanRezCertified() || 
+            nodeList->getThisNodeCanRezTmp() || 
+            nodeList->getThisNodeCanRezTmpCertified() 
+        ); 
         senderID = nodeList->getSessionUUID();
     } else {
         allowLockChange = senderNode->isAllowedEditor();
+        allowAnyRez = (
+            senderNode->getCanRez() || 
+            senderNode->getCanRezCertified() ||
+            senderNode->getCanRezTmp() || 
+            senderNode->getCanRezTmpCertified()
+        );
         senderID = senderNode->getUUID();
     }
 
@@ -459,8 +472,37 @@ bool EntityTree::updateEntity(EntityItemPointer entity, const EntityItemProperti
         }
         UpdateEntityOperator theOperator(getThisPointer(), containingElement, entity, newQueryAACube);
         recurseTreeWithOperator(&theOperator);
-        if (entity->setProperties(properties)) {
-            emit editingEntityPointer(entity);
+
+        // avatar entities can be set to any property
+        // this is somewhat malicious but it's only as long as the user is in world
+        if (allowAnyRez || entity->isAvatarEntity() || entity->isLocalEntity()) {
+            if (entity->setProperties(properties)) {
+                emit editingEntityPointer(entity);
+            }
+        } else {
+            // if not allowed to rez but entity is grabbable or equippable, only allow simulation properties
+            if (entity->getGrabProperties().getGrabbable() || entity->getGrabProperties().getEquippable()) {
+                #define prop properties
+                EntityItemProperties tmp;
+                
+                if (prop.simulationOwnerChanged()) tmp.setSimulationOwner(prop.getSimulationOwner());
+                if (prop.positionChanged()) tmp.setPosition(prop.getPosition());
+                if (prop.rotationChanged()) tmp.setRotation(prop.getRotation());
+                if (prop.velocityChanged()) tmp.setVelocity(prop.getVelocity());
+                if (prop.angularVelocityChanged()) tmp.setAngularVelocity(prop.getAngularVelocity());
+                if (prop.accelerationChanged()) tmp.setAcceleration(prop.getAcceleration());
+                if (prop.parentIDChanged()) tmp.setParentID(prop.getParentID());
+                if (prop.parentJointIndexChanged()) tmp.setParentJointIndex(prop.getParentJointIndex());
+
+                if (prop.lastEditedByChanged()) tmp.setLastEditedBy(prop.getLastEditedBy());
+                tmp.setLastEdited(prop.getLastEdited());
+               
+                if (entity->setProperties(tmp)) {
+                    emit editingEntityPointer(entity);
+                }
+            } else {
+                return false;
+            }
         }
 
         // if the entity has children, run UpdateEntityOperator on them.  If the children have children, recurse
@@ -1970,15 +2012,9 @@ int EntityTree::processEditPacketData(ReceivedMessage& message, const unsigned c
                 //bool allowed = (!isPhysics && senderNode->isAllowedEditor()) || filterProperties(existingEntity, properties, properties, wasChanged, filterType);
 
                 bool allowed = (
-                    !isPhysics &&
-                    senderNode->isAllowedEditor() &&
-                    (
-                        senderNode->getCanRez() ||
-                        senderNode->getCanRezTmp() ||
-                        senderNode->getCanRezCertified() ||
-                        senderNode->getCanRezTmpCertified()
-                    )
-                ) || filterProperties(existingEntity, properties, properties, wasChanged, filterType);
+                    (!isPhysics && senderNode->isAllowedEditor()) ||
+                    filterProperties(existingEntity, properties, properties, wasChanged, filterType)
+                );
                 if (!allowed) {
                     // the update failed and we need to convey that fact to the sender
                     // our method is to re-assert the current properties and bump the lastEdited timestamp
