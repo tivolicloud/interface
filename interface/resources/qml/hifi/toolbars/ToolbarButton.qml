@@ -65,24 +65,24 @@ Item {
         }
     }
 
-    function updateState() {
-        if (buttonEnabled) {
-            if (!button.isEntered && !button.isActive) {
-                buttonState = imageOffOut;
-            } else if (!button.isEntered && button.isActive) {
-                buttonState = imageOnOut;
-            } else if (button.isEntered && !button.isActive) {
-                buttonState = imageOffIn;
-            } else {
-                buttonState = imageOnIn;
-            }
-        } else {
-            buttonState = 0;
-        }
-    }
+    // function updateState() {
+    //     if (buttonEnabled) {
+    //         if (!button.isEntered && !button.isActive) {
+    //             buttonState = imageOffOut;
+    //         } else if (!button.isEntered && button.isActive) {
+    //             buttonState = imageOnOut;
+    //         } else if (button.isEntered && !button.isActive) {
+    //             buttonState = imageOffIn;
+    //         } else {
+    //             buttonState = imageOnIn;
+    //         }
+    //     } else {
+    //         buttonState = 0;
+    //     }
+    // }
 
-    onIsActiveChanged: updateState();
-    onButtonEnabledChanged: updateState();
+    // onIsActiveChanged: updateState();
+    // onButtonEnabledChanged: updateState();
 
     Timer {
         id: asyncClickSender
@@ -115,11 +115,11 @@ Item {
             }
 
             button.isEntered = true;
-            updateState();
+            // updateState();
         }
         onExited: {
             button.isEntered = false;
-            updateState();
+            // updateState();
         }
     }
 
