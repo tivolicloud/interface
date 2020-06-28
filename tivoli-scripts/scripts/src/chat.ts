@@ -68,6 +68,7 @@ class ChatMessage {
 		public username: string,
 		public message: string,
 		public position = 0,
+		public globalMessage = false,
 	) {
 		if (position < 0) this.position = 0;
 
@@ -103,7 +104,10 @@ class ChatMessage {
 
 			alpha: 0,
 
-			text: this.username + ": " + this.message,
+			text:
+				(globalMessage || this.username == ""
+					? ""
+					: this.username + ": ") + this.message,
 			backgroundAlpha: 0,
 		});
 		this.overlayY[this.overlayMessageId] = messageY;
@@ -437,8 +441,10 @@ class Chat {
 		this.currentChatSound = this.currentChatSound == 0 ? 1 : 0;
 	}
 
-	addMessage(username: string, message: string) {
-		this.messages.unshift(new ChatMessage(username, message, 0));
+	addMessage(username: string, message: string, globalMessage = false) {
+		this.messages.unshift(
+			new ChatMessage(username, message, 0, globalMessage),
+		);
 		this.playChatSound();
 
 		if (this.messages.length > maxMessages) {
@@ -561,6 +567,68 @@ class Chat {
 				msg.setPosition(i, true);
 			}
 		});
+
+		// join and leave messages
+
+		const usernames: { [uuid: string]: string } = {};
+
+		const getUsername = (
+			requestId: Uuid,
+			callback?: (username: string) => any,
+		) => {
+			const signals = new SignalManager();
+			signals.connect(
+				Users.usernameFromIDReply,
+				(id, username, machineFingerprint, isAdmin) => {
+					if (requestId != id) return;
+
+					const avatar = AvatarList.getAvatar(id);
+					if (avatar.displayName.toLowerCase() == username) {
+						usernames[id] = avatar.displayName;
+					} else {
+						usernames[id] = username; // lowercase
+					}
+					if (callback) callback(usernames[id]);
+
+					signals.cleanup();
+				},
+			);
+		};
+
+		for (const uuid of AvatarList.getAvatarIdentifiers()) {
+			getUsername(uuid);
+		}
+
+		let isMovingBetweenWorlds = false;
+		let isMovingBetweenWorldsInterval = null;
+		const movingBetweenWorlds = () => {
+			Script.clearTimeout(isMovingBetweenWorldsInterval);
+			isMovingBetweenWorlds = true;
+			isMovingBetweenWorldsInterval = Script.setTimeout(() => {
+				isMovingBetweenWorlds = false;
+				for (const uuid of AvatarList.getAvatarIdentifiers()) {
+					getUsername(uuid);
+				}
+			}, 500);
+		};
+		this.signals.connect(MyAvatar.sessionUUIDChanged, movingBetweenWorlds);
+		this.signals.connect(AddressManager.hostChanged, movingBetweenWorlds);
+
+		this.signals.connect(AvatarList.avatarAddedEvent, uuid => {
+			if (isMovingBetweenWorlds) return;
+			getUsername(uuid, username => {
+				this.addMessage(username, username + " joined", true);
+			});
+		});
+
+		this.signals.connect(AvatarList.avatarRemovedEvent, uuid => {
+			if (isMovingBetweenWorlds) return;
+			const username = usernames[uuid];
+			delete usernames[uuid];
+			this.addMessage(username, username + " left", true);
+		});
+
+		// testing
 
 		// this.addMessage("Maki", "Caitlyn is so cute!!!");
 		// Script.setTimeout(() => {

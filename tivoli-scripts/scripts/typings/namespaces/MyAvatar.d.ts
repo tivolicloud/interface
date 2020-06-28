@@ -107,5 +107,6 @@ declare namespace MyAvatar {
 	const otherAvatarsCollisionsEnabledChanged: Signal<(
 		enabled: boolean,
 	) => any>;
+	const sessionUUIDChanged: Signal<() => any>;
 	const skeletonModelURLChanged: Signal<() => any>;
 }
