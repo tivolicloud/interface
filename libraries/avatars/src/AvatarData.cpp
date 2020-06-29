@@ -47,6 +47,7 @@
 #include "AvatarTraits.h"
 #include "ClientTraitsHandler.h"
 #include "ResourceRequestObserver.h"
+#include "AccountManager.h"
 
 //#define WANT_DEBUG
 
@@ -2331,7 +2332,14 @@ void AvatarData::setSkeletonModelURL(const QUrl& skeletonModelURL) {
 }
 
 void AvatarData::setDisplayName(const QString& displayName) {
-    _displayName = displayName;
+    // force display name to username for now until things are better implemented
+    const auto accountManager = DependencyManager::get<AccountManager>();
+    if (accountManager && accountManager->getAccountInfo().getUsername().isEmpty() == false) {
+        _displayName = QString(accountManager->getAccountInfo().getUsername());
+    } else {
+        _displayName = displayName;
+    }
+    
     _sessionDisplayName = "";
 
     qCDebug(avatars) << "Changing display name for avatar to" << displayName;
