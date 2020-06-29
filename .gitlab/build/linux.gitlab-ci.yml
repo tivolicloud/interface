@@ -124,7 +124,7 @@ launcher linux:
         - pacman -Syu --noconfirm git nodejs-lts-erbium npm yarn python binutils
 
         - rm -rf launcher # just incase
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
+        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
         - mkdir -p launcher/interface
         - mv build/interface/interface.AppDir launcher/interface # interface.AppDir is a folder
 

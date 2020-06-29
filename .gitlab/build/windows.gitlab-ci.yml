@@ -69,7 +69,7 @@ launcher windows:
 
     script:
         # - Remove-Item -Recurse -Force -ErrorAction Ignore launcher # just incase
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
+        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
         - mv build/interface/Release launcher/interface
 
         # TODO: this needs changing

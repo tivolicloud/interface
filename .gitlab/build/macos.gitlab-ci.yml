@@ -65,7 +65,7 @@ launcher macos:
 
     script:
         - rm -rf launcher # just incase
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud-private/launcher
+        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
         - mkdir -p launcher/interface
         - mv build/interface/Release/interface.app launcher/interface # interface.app is a folder
 
