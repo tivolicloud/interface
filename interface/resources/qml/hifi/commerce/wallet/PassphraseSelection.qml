@@ -38,12 +38,12 @@ Item {
 
     Connections {
         target: Commerce;
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             passphrasePageSecurityImage.source = "";
             passphrasePageSecurityImage.source = "image://security/securityImage";
         }
 
-        onChangePassphraseStatusResult: {
+        function onChangePassphraseStatusResult() {
             sendMessageToLightbox({method: 'statusResult', status: changeSuccess});
         }
     }

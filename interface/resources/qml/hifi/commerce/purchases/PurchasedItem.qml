@@ -63,19 +63,19 @@ Item {
     Connections {
         target: Commerce;
 
-        onContentSetChanged: {
+        function onContentSetChanged() {
             if (contentSetHref === root.itemHref) {
                 showConfirmation = true;
             }
         }
 
-        onAppInstalled: {
+        function onAppInstalled() {
             if (appID === root.itemId) {
                 root.isInstalled = true;
             }
         }
 
-        onAppUninstalled: {
+        function onAppUninstalled() {
             if (appID === root.itemId) {
                 root.isInstalled = false;
             }
@@ -85,7 +85,7 @@ Item {
     Connections {
         target: MyAvatar;
 
-        onSkeletonModelURLChanged: {
+        function onSkeletonModelURLChanged() {
             if (skeletonModelURL === root.itemHref) {
                 showConfirmation = true;
             }

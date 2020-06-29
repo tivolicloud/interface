@@ -49,7 +49,7 @@ Rectangle {
     Connections {
         target: MyAvatar
 
-        onSkeletonModelURLChanged: {
+        function onSkeletonModelURLChanged() {
             root.updatePreviewUrl();
         }
     }
@@ -57,7 +57,7 @@ Rectangle {
     Connections {
         target: Commerce
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (isLoggedIn) {
                 Commerce.getWalletStatus();
             } else {
@@ -66,7 +66,7 @@ Rectangle {
             }
         }
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (walletStatus === 5) {
                 getInventory();
             } else {
@@ -75,7 +75,7 @@ Rectangle {
             }
         }
 
-        onInventoryResult: {
+        function onInventoryResult() {
             if (result.status !== "success") {
                 errorText.text = "There was a problem while retrieving your inventory. " +
                     "Please try closing and re-opening the Avatar app.\n\nInventory status: " + result.status + "\nMessage: " + result.message;

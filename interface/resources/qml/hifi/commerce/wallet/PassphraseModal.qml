@@ -38,14 +38,14 @@ Item {
     Connections {
         target: Commerce;
 
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             titleBarSecurityImage.source = "";
             titleBarSecurityImage.source = "image://security/securityImage";
             passphraseModalSecurityImage.source = "";
             passphraseModalSecurityImage.source = "image://security/securityImage";
         }
 
-        onWalletAuthenticatedStatusResult: {
+        function onWalletAuthenticatedStatusResult() {
             submitPassphraseInputButton.enabled = true;
 
             // It's not possible to auth with a blank passphrase,

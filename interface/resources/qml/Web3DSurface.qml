@@ -46,8 +46,10 @@ Item {
         })
     }
 
-    Component.onCompleted: {
-        load(root.url, root.scriptUrl);
+    Component{
+        function onCompleted() {
+            load(root.url, root.scriptUrl);
+        }
     }
 
     signal sendToScript(var message);

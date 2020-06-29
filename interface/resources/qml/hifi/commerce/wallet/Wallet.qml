@@ -44,7 +44,7 @@ Rectangle {
     Connections {
         target: Commerce;
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (walletStatus === 0) {
                 if (root.activeView !== "needsLogIn") {
                     root.activeView = "needsLogIn";
@@ -77,7 +77,7 @@ Rectangle {
             }
         }
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (!isLoggedIn && root.activeView !== "needsLogIn") {
                 root.activeView = "needsLogIn";
             } else if (isLoggedIn) {
@@ -85,14 +85,14 @@ Rectangle {
             }
         }
 
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             if (exists) {
                 titleBarSecurityImage.source = "";
                 titleBarSecurityImage.source = "image://security/securityImage";
             }
         }
 
-        onAvailableUpdatesResult: {
+        function onAvailableUpdatesResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get Available Updates", result.data.message);
             } else {
@@ -226,7 +226,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 if (msg.method === 'walletSetup_finished') {
                     followReferrer(msg);
                 } else if (msg.method === 'walletSetup_raiseKeyboard') {
@@ -251,7 +251,7 @@ Rectangle {
         anchors.bottom: parent.bottom;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 if (passphraseChange.visible) {
                     if (msg.method === 'walletSetup_raiseKeyboard') {
                         root.keyboardRaised = true;
@@ -295,14 +295,14 @@ Rectangle {
         anchors.right: parent.right;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 sendToScript(msg);
             }
         }
     }
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             Commerce.getLoginStatus();
         }
     }
@@ -315,7 +315,7 @@ Rectangle {
         titleBarIcon: hifi.glyphs.wallet;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 if (msg.method === "authSuccess") {
                     Commerce.getWalletStatus();
                 } else {
@@ -334,7 +334,7 @@ Rectangle {
         anchors.right: parent.right;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 if (msg.method === 'transactionHistory_usernameLinkClicked') {
                     if (has3DHTML) {
                         userInfoViewer.url = msg.usernameLink;
@@ -354,7 +354,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendToScript: {
+            function onSendToScript() {
                 sendToScript(message);
             }
         }
@@ -368,7 +368,7 @@ Rectangle {
         anchors.left: parent.left;
         anchors.right: parent.right;
         Connections {
-            onSendToScript: {
+            function onSendToScript() {
                 if (message.method === 'purchases_itemCertificateClicked') {
                     inspectionCertificate.visible = true;
                     inspectionCertificate.isLightbox = true;
@@ -396,7 +396,7 @@ Rectangle {
         parentAppNavBarHeight: tabButtonsContainer.height;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 sendToScript(msg);
             }
         }

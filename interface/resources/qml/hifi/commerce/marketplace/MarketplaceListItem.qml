@@ -136,7 +136,7 @@ Rectangle {
                 Connections {
                     target: MarketplaceScriptingInterface
 
-                    onMarketplaceItemLikeResult: {
+                    function onMarketplaceItemLikeResult() {
                         if (result.status !== 'success') {
                             console.log("Failed to get Marketplace Categories", result.data.message);
                             root.requestReload();

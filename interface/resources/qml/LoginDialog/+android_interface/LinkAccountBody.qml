@@ -247,7 +247,7 @@ Item {
 
     Connections {
         target: loginDialog
-        onHandleLoginCompleted: {
+        function onHandleLoginCompleted() {
             console.log("Login Succeeded, linking steam account")
 
             if (loginDialog.isSteamRunning()) {

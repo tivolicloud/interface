@@ -269,7 +269,12 @@ Fadable {
     }
 
     // When the desktop pinned state changes, automatically handle the current windows
-    Connections { target: desktop;  onPinnedChanged: d.updateVisibility() }
+    Connections {
+        target: desktop;
+        function onPinnedChanged() {
+            d.updateVisibility()
+        }
+    }
 
 
     function raise() {

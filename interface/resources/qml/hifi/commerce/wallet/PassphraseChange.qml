@@ -89,7 +89,7 @@ Item {
             anchors.bottom: passphraseNavBar.top;
 
             Connections {
-                onSendMessageToLightbox: {
+                function onSendMessageToLightbox() {
                     if (msg.method === 'statusResult') {
                         if (msg.status) {
                             // Success submitting new passphrase

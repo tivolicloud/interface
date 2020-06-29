@@ -74,7 +74,7 @@ Rectangle {
     Connections {
         target: GlobalServices
 
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             Commerce.getLoginStatus();
         }
     }
@@ -82,7 +82,7 @@ Rectangle {
     Connections {
         target: MarketplaceScriptingInterface
 
-        onGetMarketplaceCategoriesResult: {
+        function onGetMarketplaceCategoriesResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get Marketplace Categories", result.data.message);
             } else {
@@ -97,13 +97,13 @@ Rectangle {
             }
             getMarketplaceItems();
         }
-        onGetMarketplaceItemsResult: {
+        function onGetMarketplaceItemsResult() {
             if (!pendingGetMarketplaceItemCall) {
                 marketBrowseModel.handlePage(result.status !== "success" && result.message, result);
             }
         }
         
-        onGetMarketplaceItemResult: {
+        function onGetMarketplaceItemResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get Marketplace Item", result.data.message);
             } else {
@@ -137,7 +137,7 @@ Rectangle {
     Connections {
         target: Commerce
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             root.isLoggedIn = isLoggedIn;
         }
     }

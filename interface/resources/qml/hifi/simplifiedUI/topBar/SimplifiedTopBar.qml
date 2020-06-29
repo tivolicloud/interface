@@ -49,7 +49,7 @@ Rectangle {
     Connections {
         target: MyAvatar
 
-        onSkeletonModelURLChanged: {
+        function onSkeletonModelURLChanged() {
             root.updatePreviewUrl();
 
             if ((MyAvatar.skeletonModelURL.indexOf("defaultAvatar") > -1 || MyAvatar.skeletonModelURL.indexOf("fst") === -1) &&
@@ -63,7 +63,7 @@ Rectangle {
     Connections {
         target: Commerce
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (inventoryFullyReceived) {
                 return;
             }
@@ -75,7 +75,7 @@ Rectangle {
             }
         }
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (inventoryFullyReceived) {
                 return;
             }
@@ -97,7 +97,7 @@ Rectangle {
             }
         }
 
-        onInventoryResult: {
+        function onInventoryResult() {
             if (inventoryFullyReceived) {
                 return;
             }

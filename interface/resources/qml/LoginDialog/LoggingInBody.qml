@@ -297,7 +297,7 @@ Item {
 
     Connections {
         target: loginDialog
-        onHandleCreateCompleted: {
+        function onHandleCreateCompleted() {
             console.log("Create Succeeded")
             if (loggingInBody.withOculus) {
                 if (loggingInBody.loginDialogPoppedUp) {
@@ -312,7 +312,7 @@ Item {
                 oculusSuccessTimer.start();
             }
         }
-        onHandleCreateFailed: {
+        function onHandleCreateFailed() {
             console.log("Create Failed: " + error);
             if (loggingInBody.withOculus) {
                 if (loggingInBody.loginDialogPoppedUp) {
@@ -325,7 +325,7 @@ Item {
                     "withOculus": loggingInBody.withOculus, "errorString": error });
             }
         }
-        onHandleLinkCompleted: {
+        function onHandleLinkCompleted() {
             console.log("Link Succeeded");
             if (loggingInBody.linkSteam) {
                 loggingInBody.linkSteam = false;
@@ -346,7 +346,7 @@ Item {
             }
             loggingInBody.loadingSuccess();
         }
-        onHandleLinkFailed: {
+        function onHandleLinkFailed() {
             console.log("Link Failed: " + error);
             loggingInSpinner.visible = false;
             if (loggingInBody.linkOculus) {
@@ -371,12 +371,12 @@ Item {
             }
         }
 
-        onHandleLoginCompleted: {
+        function onHandleLoginCompleted() {
             console.log("Login Succeeded");
             loggingInBody.loadingSuccess();
         }
 
-        onHandleLoginFailed: {
+        function onHandleLoginFailed() {
             console.log("Login Failed")
             loggingInSpinner.visible = false;
             loggingInGlyph.visible = false;

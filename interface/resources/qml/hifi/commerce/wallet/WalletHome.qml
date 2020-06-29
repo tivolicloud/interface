@@ -39,18 +39,18 @@ Item {
     Connections {
         target: Commerce;
 
-        onBalanceResult : {
+        function onBalanceResult(): {
             balanceText.text = result.data.balance;
         }
 
-        onHistoryResult : {
+        function onHistoryResult(): {
             transactionHistoryModel.handlePage(null, result);
         }
     }
 
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             transactionHistoryModel.resetModel();
             usernameText.text = Account.username;
         }

@@ -69,12 +69,12 @@ Item {
     Connections {
         target: Commerce;
 
-        onBalanceResult : {
+        function onBalanceResult(): {
             balanceText.text = result.data.balance;
             sendButton.enabled = true;
         }
 
-        onTransferAssetToNodeResult: {
+        function onTransferAssetToNodeResult() {
             if (!root.visible) {
                 return;
             }
@@ -96,7 +96,7 @@ Item {
             }
         }
 
-        onTransferAssetToUsernameResult: {
+        function onTransferAssetToUsernameResult() {
             if (!root.visible) {
                 return;
             }
@@ -110,7 +110,7 @@ Item {
             }
         }
 
-        onAuthorizeAssetTransferResult: {
+        function onAuthorizeAssetTransferResult() {
             if (!root.visible) {
                 return;
             }
@@ -131,7 +131,7 @@ Item {
             }
         }
 
-        onCertificateInfoResult: {
+        function onCertificateInfoResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get certificate info", result.data.message);
             } else {
@@ -142,7 +142,7 @@ Item {
 
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             usernameText.text = Account.username;
         }
     }
@@ -615,7 +615,7 @@ Item {
                         anchors.bottomMargin: 6;
 
                         Connections {
-                            onSendToParent: {
+                            function onSendToParent() {
                                 sendAssetStep.referrer = "connections";
                                 sendAssetStep.selectedRecipientNodeID = '';
                                 sendAssetStep.selectedRecipientDisplayName = 'connection';

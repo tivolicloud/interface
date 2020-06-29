@@ -29,7 +29,7 @@ Rectangle {
     Connections {
         target: Commerce;
         
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             securityImageChangePageSecurityImage.source = "";
             securityImageChangePageSecurityImage.source = "image://security/securityImage";
             if (exists) { // Success submitting new security image

@@ -70,7 +70,7 @@ Rectangle {
     Connections {
         target: Commerce;
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (walletStatus === 0) {
                 if (root.activeView !== "needsLogIn") {
                     root.activeView = "needsLogIn";
@@ -92,7 +92,7 @@ Rectangle {
             }
         }
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (!isLoggedIn && root.activeView !== "needsLogIn") {
                 root.activeView = "needsLogIn";
             } else {
@@ -100,7 +100,7 @@ Rectangle {
             }
         }
 
-        onBuyResult: {
+        function onBuyResult() {
             if (result.status !== 'success') {
                 failureErrorText.text = result.data.message;
                 root.activeView = "checkoutFailure";
@@ -113,7 +113,7 @@ Rectangle {
             }
         }
 
-        onBalanceResult: {
+        function onBalanceResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get balance", result.data.message);
             } else {
@@ -123,7 +123,7 @@ Rectangle {
             }
         }
 
-        onAlreadyOwnedResult: {
+        function onAlreadyOwnedResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get Already Owned status", result.data.message);
             } else {
@@ -138,13 +138,13 @@ Rectangle {
             }
         }
 
-        onAppInstalled: {
+        function onAppInstalled() {
             if (appID === root.itemId) {
                 root.isInstalled = true;
             }
         }
 
-        onAvailableUpdatesResult: {
+        function onAvailableUpdatesResult() {
             // Answers the updatable original item cert data still owned by this user that are EITHER instances of this marketplace id, or update to this marketplace id.
             if (result.status !== 'success') {
                 console.log("Failed to get Available Updates", result.data.message);
@@ -178,7 +178,7 @@ Rectangle {
             }
         }
 
-        onUpdateItemResult: {
+        function onUpdateItemResult() {
             if (result.status !== 'success') {
                 failureErrorText.text = result.data ? (result.data.message || "Unknown Error") : JSON.stringify(result);
                 root.activeView = "checkoutFailure";
@@ -229,7 +229,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendToParent: {
+            function onSendToParent() {
                 sendToScript(msg);
             }
         }
@@ -250,7 +250,7 @@ Rectangle {
         anchors.top: parent.top;
 
         Connections {
-            onSendToParent: {
+            function onSendToParent() {
                 if (msg.method === 'needsLogIn' && root.activeView !== "needsLogIn") {
                     root.activeView = "needsLogIn";
                 } else if (msg.method === 'showSecurityPicLightbox') {
@@ -299,14 +299,14 @@ Rectangle {
         anchors.right: parent.right;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 sendToScript(msg);
             }
         }
     }
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             Commerce.getLoginStatus();
         }
     }
@@ -319,7 +319,7 @@ Rectangle {
         titleBarIcon: hifi.glyphs.wallet;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 if (msg.method === "authSuccess") {
                     authSuccessStep();
                 } else {
@@ -336,7 +336,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 switch (message.method) {
                     case 'tutorial_skipClicked':
                     case 'tutorial_finished':

@@ -59,10 +59,18 @@ Rectangle {
 
     Connections {
         target: ScriptDiscoveryService
-        onPrintedMessage: sendToLogWindow("", message, engineName);
-        onWarningMessage: sendToLogWindow("WARNING", message, engineName);
-        onErrorMessage: sendToLogWindow("ERROR", message, engineName);
-        onInfoMessage: sendToLogWindow("INFO", message, engineName);
+        function onPrintedMessage() {
+            sendToLogWindow("", message, engineName);
+        }
+        function onWarningMessage() {
+            sendToLogWindow("WARNING", message, engineName);
+        }
+        function onErrorMessage() {
+            sendToLogWindow("ERROR", message, engineName);
+        }
+        function onInfoMessage() {
+            sendToLogWindow("INFO", message, engineName);
+        }
     }
 
     TextArea {

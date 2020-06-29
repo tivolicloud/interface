@@ -79,7 +79,7 @@ Rectangle {
     Connections {
         target: MarketplaceScriptingInterface
 
-        onMarketplaceItemLikeResult: {
+        function onMarketplaceItemLikeResult() {
             if (result.status !== 'success') {
                 console.log("Like/Unlike item", result.data.message);
             } else {

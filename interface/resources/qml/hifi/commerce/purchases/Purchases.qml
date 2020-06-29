@@ -49,7 +49,7 @@ Rectangle {
     Connections {
         target: Commerce;
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (walletStatus === 0) {
                 if (root.activeView !== "needsLogIn") {
                     root.activeView = "needsLogIn";
@@ -75,7 +75,7 @@ Rectangle {
             }
         }
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (!isLoggedIn && root.activeView !== "needsLogIn") {
                 root.activeView = "needsLogIn";
             } else {
@@ -83,11 +83,11 @@ Rectangle {
             }
         }
 
-        onInventoryResult: {
+        function onInventoryResult() {
             purchasesModel.handlePage(result.status !== "success" && result.message, result);
         }
 
-        onAvailableUpdatesResult: {
+        function onAvailableUpdatesResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get Available Updates", result.data.message);
             } else {
@@ -95,11 +95,11 @@ Rectangle {
             }
         }
 
-        onAppInstalled: {
+        function onAppInstalled() {
             root.installedApps = Commerce.getInstalledApps(appID);
         }
 
-        onAppUninstalled: {
+        function onAppUninstalled() {
             root.installedApps = Commerce.getInstalledApps();
         }
     }
@@ -123,7 +123,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendToParent: {
+            function onSendToParent() {
                 if (msg.method === 'commerceLightboxLinkClicked') {
                     Qt.openUrlExternally(msg.linkUrl);
                 } else {
@@ -149,7 +149,7 @@ Rectangle {
         parentAppNavBarHeight: 0;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 if (msg.method === 'sendAssetHome_back' || msg.method === 'closeSendAsset') {
                     getPurchases();
                 } else {
@@ -322,14 +322,14 @@ Rectangle {
         anchors.right: parent.right;
 
         Connections {
-            onSendSignalToWallet: {
+            function onSendSignalToWallet() {
                 sendToScript(msg);
             }
         }
     }
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             Commerce.getLoginStatus();
         }
     }
@@ -342,7 +342,7 @@ Rectangle {
         titleBarIcon: hifi.glyphs.wallet;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 if (msg.method === "authSuccess") {
                     root.activeView = "initialize";
                     Commerce.getWalletStatus();
@@ -360,7 +360,7 @@ Rectangle {
         anchors.fill: parent;
 
         Connections {
-            onSendSignalToParent: {
+            function onSendSignalToParent() {
                 switch (message.method) {
                     case 'tutorial_skipClicked':
                     case 'tutorial_finished':
@@ -566,7 +566,7 @@ Rectangle {
                 anchors.bottomMargin: 10;
 
                 Connections {
-                    onSendToPurchases: {
+                    function onSendToPurchases() {
                         if (msg.method === 'purchases_itemInfoClicked') {
                             sendToScript({method: 'purchases_itemInfoClicked', itemId: itemId});
                         } else if (msg.method === "purchases_rezClicked") {

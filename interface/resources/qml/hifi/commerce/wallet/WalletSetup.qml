@@ -43,7 +43,7 @@ Item {
     Connections {
         target: Commerce;
 
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             if (!exists && root.lastPage === "step_2") {
                 // ERROR! Invalid security image.
                 root.activeView = "step_2";
@@ -53,13 +53,13 @@ Item {
             }
         }
 
-        onWalletAuthenticatedStatusResult: {
+        function onWalletAuthenticatedStatusResult() {
             if (isAuthenticated) {
                 root.activeView = "step_4";
             }
         }
 
-        onKeyFilePathIfExistsResult: {
+        function onKeyFilePathIfExistsResult() {
             root.keyFilePath = path;
         }
     }
@@ -374,7 +374,7 @@ Item {
             anchors.bottom: passphraseNavBar.top;
 
             Connections {
-                onSendMessageToLightbox: {
+                function onSendMessageToLightbox() {
                     if (msg.method === 'statusResult') {
                     } else {
                         sendSignalToWallet(msg);

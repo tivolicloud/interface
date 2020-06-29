@@ -30,7 +30,7 @@ Item {
     Connections {
         target: Commerce;
 
-        onWalletStatusResult: {
+        function onWalletStatusResult() {
             if (walletStatus === 0) {
                 sendToParent({method: "needsLogIn"});
             } else if (walletStatus === 5) {
@@ -40,7 +40,7 @@ Item {
             }
         }
 
-        onLoginStatusResult: {
+        function onLoginStatusResult() {
             if (!isLoggedIn) {
                 sendToParent({method: "needsLogIn"});
             } else {
@@ -48,7 +48,7 @@ Item {
             }
         }
 
-        onSecurityImageResult: {
+        function onSecurityImageResult() {
             if (exists) {
                 securityImage.source = "";
                 securityImage.source = "image://security/securityImage";
@@ -62,7 +62,7 @@ Item {
 
     Connections {
         target: GlobalServices
-        onMyUsernameChanged: {
+        function onMyUsernameChanged() {
             Commerce.getLoginStatus();
         }
     }

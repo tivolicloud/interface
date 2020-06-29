@@ -29,7 +29,7 @@ Item {
     Connections {
         target: Commerce;
 
-        onKeyFilePathIfExistsResult: {
+        function onKeyFilePathIfExistsResult() {
             root.keyFilePath = path;
         }
     }

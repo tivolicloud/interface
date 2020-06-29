@@ -50,7 +50,7 @@ Rectangle {
     Connections {
         target: Commerce;
 
-        onCertificateInfoResult: {
+        function onCertificateInfoResult() {
             if (result.status !== 'success') {
                 console.log("Failed to get certificate info", result.data.message);
                 // We should still tell the user that static cert verification failed
@@ -131,7 +131,7 @@ Rectangle {
             root.certificateInfoPending = false;
         }
 
-        onUpdateCertificateStatus: {
+        function onUpdateCertificateStatus() {
             updateCertificateStatus(certStatus);
         }
     }

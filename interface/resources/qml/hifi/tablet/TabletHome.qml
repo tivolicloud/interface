@@ -264,7 +264,7 @@ Item {
 
                             Connections {
                                 target: modelData;
-                                onPropertiesChanged:  {
+                                function onPropertiesChanged()  {
                                     updateProperties();
                                 }
                             }
