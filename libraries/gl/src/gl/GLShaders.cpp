@@ -10,6 +10,8 @@
 
 #include <shared/FileUtils.h>
 
+#define DISABLE_SHADER_CACHE
+
 using namespace gl;
 
 void Uniform::load(GLuint glprogram, int index) {
@@ -438,7 +440,7 @@ static const char* SHADER_JSON_SOURCE_KEY = "source";
 static const char* SHADER_JSON_DATA_KEY = "data";
 
 void gl::loadShaderCache(ShaderCache& cache) {
-#if !defined(DISABLE_QML)
+#if !defined(DISABLE_QML) && !defined(DISABLE_SHADER_CACHE)
     QString shaderCacheFile = getShaderCacheFile();
     if (QFileInfo(shaderCacheFile).exists()) {
         QString json = FileUtils::readFile(shaderCacheFile);
@@ -458,6 +460,7 @@ void gl::loadShaderCache(ShaderCache& cache) {
 }
 
 void gl::saveShaderCache(const ShaderCache& cache) {
+#if !defined(DISABLE_SHADER_CACHE)
     QByteArray json;
     {
         QVariantMap variantMap;
@@ -481,6 +484,7 @@ void gl::saveShaderCache(const ShaderCache& cache) {
         saveFile.write(json);
         saveFile.close();
     }
+#endif
 }
 
 std::string gl::getShaderHash(const std::string& shaderSource) {
