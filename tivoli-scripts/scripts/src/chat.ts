@@ -606,9 +606,15 @@ class Chat {
 			isMovingBetweenWorlds = true;
 			isMovingBetweenWorldsInterval = Script.setTimeout(() => {
 				isMovingBetweenWorlds = false;
+
 				for (const uuid of AvatarList.getAvatarIdentifiers()) {
 					getUsername(uuid);
 				}
+
+				for (let msg of this.messages) {
+					msg.cleanup();
+				}
+				this.messages = [];
 			}, 500);
 		};
 		this.signals.connect(MyAvatar.sessionUUIDChanged, movingBetweenWorlds);
