@@ -97,3 +97,26 @@ The following build options can be used when running CMake
 
 -   `USE_GLES`
 -   `DISABLE_UI`
+
+## Running a domain server locally for testing
+
+We recommend using the `pm2` process manager
+
+-   Install Node.js
+-   `npm i -g pm2`
+
+Enter the root directory of this repo and run:
+
+```bash
+pm2 start ecosystem.config.js
+# here are extra commands
+pm2 ls
+pm2 logs 0 # id of the process found in ls
+pm2 logs 0 --lines 999
+pm2 stop 0
+pm2 start 0
+pm2 restart 0
+pm2 kill
+```
+
+**Don't forget to run `pm2 kill`** when you're finished or it'll keep running in the background!
