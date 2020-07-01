@@ -35,6 +35,17 @@
 					<div style="padding: 4px 0;"></div>
 
 					<button
+						mat-flat-button
+						color="primary"
+						(click)="onAvatarFromTivoliFiles()"
+					>
+						<mat-icon>folder</mat-icon>
+						Avatar from my Tivoli files
+					</button>
+
+					<div style="padding: 4px 0;"></div>
+
+					<button
 						mat-button
 						(click)="onAddBookark()"
 						*ngIf="!avatarBookmarkName"

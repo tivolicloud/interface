@@ -1,19 +1,14 @@
-import {
-	Component,
-	NgZone,
-	OnDestroy,
-	OnInit,
-	ChangeDetectorRef,
-} from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { ScriptService } from "../script.service";
-import { AvatarUrlComponent } from "./avatar-url/avatar-url.component";
-import { RecommendedAvatarsComponent } from "./recommended-avatars/recommended-avatars.component";
-import { Subscription } from "rxjs";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
+import { Subscription } from "rxjs";
+import { ScriptService } from "../script.service";
 import { AddFavoriteComponent } from "./add-favorite/add-favorite.component";
+import { AvatarUrlComponent } from "./avatar-url/avatar-url.component";
+import { AvatarService } from "./avatar.service";
 import { RemoveFavoriteComponent } from "./remove-favorite/remove-favorite.component";
+import { TivoliFilesComponent } from "./tivoli-files/tivoli-files.component";
 
 interface AvatarBookmark {
 	version: number;
@@ -48,10 +43,11 @@ export class AvatarComponent implements OnInit, OnDestroy {
 	scriptEventSub: Subscription;
 
 	constructor(
-		private scriptService: ScriptService,
-		private dialog: MatDialog,
-		private iconRegistry: MatIconRegistry,
-		private sanitizer: DomSanitizer,
+		private readonly scriptService: ScriptService,
+		private readonly dialog: MatDialog,
+		private readonly iconRegistry: MatIconRegistry,
+		private readonly sanitizer: DomSanitizer,
+		private readonly avatarService: AvatarService,
 	) {}
 
 	ngOnInit() {
@@ -109,6 +105,13 @@ export class AvatarComponent implements OnInit, OnDestroy {
 	onChangeAvatarURL() {
 		this.dialog.open(AvatarUrlComponent, {
 			data: this.avatarURL,
+			width: "90vw",
+			maxWidth: "90vw",
+		});
+	}
+
+	onAvatarFromTivoliFiles() {
+		this.dialog.open(TivoliFilesComponent, {
 			width: "90vw",
 			maxWidth: "90vw",
 		});

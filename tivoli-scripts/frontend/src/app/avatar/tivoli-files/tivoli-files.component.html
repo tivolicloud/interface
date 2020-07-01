@@ -1,0 +1,24 @@
+<h2 style="margin-top: 0; margin-bottom: 16px;">Avatar from my Tivoli files</h2>
+<p *ngIf="loading">
+	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</p>
+<p *ngIf="error">
+	Something went wrong... You can try looking for the avatar url on the files
+	page or try again later.
+</p>
+<div
+	*ngIf="avatars.length > 0"
+	style="overflow-y: auto; max-height: 70vh; margin-bottom: 16px;"
+>
+	<button
+		mat-button
+		*ngFor="let avatar of avatars"
+		(click)="onUpdate(avatar.url)"
+		style="margin: 0 -8px; display: block;"
+	>
+		{{ avatar.key }}
+	</button>
+</div>
+<div style="text-align: right;">
+	<button mat-flat-button (click)="onDiscard()">Discard</button>
+</div>
