@@ -63,7 +63,7 @@ Rectangle {
         TextInput {
             id: materialURL
             height: 20
-            text: qsTr("")
+            text: qsTr("materialData")
             color: "white"
             anchors.top: text1.bottom
             anchors.topMargin: 5

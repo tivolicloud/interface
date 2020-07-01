@@ -553,6 +553,9 @@
             isSpotlight: false,
             exponent: 1.0,
             cutoff: 75.0
+        },
+        Material: {
+            name: "Material"
         }
     };
 
