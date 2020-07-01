@@ -34,12 +34,13 @@ class Optimize {
 	private forceFirstPersonInHMD() {
 		const forceFirstPerson = () => {
 			if (HMD.mounted == false) return;
-			if (Camera.mode == "first person look at") return;
+			if (Camera.getModeString() == "first person look at") return;
 			Camera.setModeString("first person look at");
 		};
 
 		this.signals.connect(HMD.displayModeChanged, forceFirstPerson);
 		this.signals.connect(Camera.modeUpdated, forceFirstPerson);
+		forceFirstPerson();
 	}
 
 	cleanup = () => {
