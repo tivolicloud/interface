@@ -48,8 +48,11 @@ int main(int argc, char *argv[]) {
     addImportPath(engine, scriptsDir);
     addImportPath(engine, scriptsDir + "/developer/tests");
 
+    QFontDatabase::addApplicationFont(resourcesDir + "/fonts/Roboto-Light.ttf");
     QFontDatabase::addApplicationFont(resourcesDir + "/fonts/Roboto-Regular.ttf");
     QFontDatabase::addApplicationFont(resourcesDir + "/fonts/Roboto-Medium.ttf");
+    QFontDatabase::addApplicationFont(resourcesDir + "/fonts/Roboto-Bold.ttf");
+    QFontDatabase::addApplicationFont(resourcesDir + "/fonts/RobotoCondensed-Regular.ttf");
     QFontDatabase::addApplicationFont(resourcesDir + "/fonts/hifi-glyphs.ttf");
 
     auto url = getRelativeDir(".") + "qml/ControlsGalleryWindow.qml";
