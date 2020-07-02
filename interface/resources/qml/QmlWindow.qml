@@ -47,7 +47,6 @@ Window {
         if (root.dynamicContent && root.dynamicContent.fromScript) {
             root.dynamicContent.fromScript(message);
         }
-        root
     }
 
     function clearDebugWindow() {
