@@ -37,6 +37,8 @@
  * @borrows OverlayWindow.initQml as initQml
  * @borrows OverlayWindow.isVisible as isVisible
  * @borrows OverlayWindow.setVisible as setVisible
+ * @borrows OverlayWindow.isFrameless as isFrameless
+ * @borrows OverlayWindow.setFrameless as setFrameless
  * @borrows OverlayWindow.getPosition as getPosition
  * @borrows OverlayWindow.setPosition as setPosition
  * @borrows OverlayWindow.getSize as getSize

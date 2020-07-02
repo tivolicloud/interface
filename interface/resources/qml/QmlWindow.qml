@@ -1,12 +1,12 @@
 import QtQuick 2.3
 
-import "windows" as Windows
+import "windows"
 import "controls"
 import controlsUit 1.0 as Controls
 import "styles"
 import stylesUit 1.0
 
-Windows.Window {
+Window {
     id: root
     HifiConstants { id: hifi }
     title: "QmlWindow"
@@ -18,6 +18,14 @@ Windows.Window {
     destroyOnCloseButton: false
     property var source;
     property var dynamicContent;
+
+    property bool frameless: false
+    readonly property var _hiddenFrame: HiddenFrame { }
+    readonly property var _defaultFrame: DefaultFrame { 
+        property var window: root
+    }
+    frame: root.frameless ? _hiddenFrame : _defaultFrame;
+
 
     // Keyboard control properties in case needed by QML content.
     property bool keyboardEnabled: false
@@ -39,6 +47,7 @@ Windows.Window {
         if (root.dynamicContent && root.dynamicContent.fromScript) {
             root.dynamicContent.fromScript(message);
         }
+        root
     }
 
     function clearDebugWindow() {

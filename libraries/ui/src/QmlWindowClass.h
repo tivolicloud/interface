@@ -83,17 +83,30 @@ public slots:
     /**jsdoc
      * Gets whether the window is shown or hidden.
      * @function OverlayWindow.isVisible
-     * @returns {boolean} code>true</code> if the window is shown, <code>false</code> if it is hidden.
+     * @returns {boolean} <code>true</code> if the window is shown, <code>false</code> if it is hidden.
      */
     bool isVisible();
 
     /**jsdoc
      * Shows or hides the window.
      * @function OverlayWindow.setVisible
-     * @param {boolean} visible - code>true</code> to show the window, <code>false</code> to hide it.
+     * @param {boolean} visible - <code>true</code> to show the window, <code>false</code> to hide it.
      */
     void setVisible(bool visible);
 
+    /**jsdoc
+     * Gets whether the window is frameless or not.
+     * @function OverlayWindow.isFrameless
+     * @returns {boolean} <code>true</code> if the window has no frame, <code>false</code> if it does.
+     */
+    bool isFrameless();
+
+    /**jsdoc
+     * Shows or hides the frame of the window.
+     * @function OverlayWindow.setFrameless
+     * @param {boolean} frameless - <code>true</code> to remove the frame, <code>false</code> to show it.
+     */
+    void setFrameless(bool frameless);
 
     /**jsdoc
      * Gets the position of the window.

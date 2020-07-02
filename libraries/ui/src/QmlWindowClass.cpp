@@ -34,6 +34,7 @@ static const char* const EVENT_BRIDGE_PROPERTY = "eventBridge";
 static const char* const WIDTH_PROPERTY = "width";
 static const char* const HEIGHT_PROPERTY = "height";
 static const char* const VISIBILE_PROPERTY = "visible";
+static const char* const FRAMELESS_PROPERTY = "frameless";
 static const uvec2 MAX_QML_WINDOW_SIZE { 1280, 720 };
 static const uvec2 MIN_QML_WINDOW_SIZE { 120, 80 };
 
@@ -96,7 +97,8 @@ QmlWindowClass::QmlWindowClass(bool restricted) : _restricted(restricted) {
  * @property {string} [source] - The source of the QML or HTML to display.
  * @property {number} [width=0] - The width of the window interior, in pixels.
  * @property {number} [height=0] - The height of the window interior, in pixels.
- * @property {boolean} [visible=true] - <code>true</codE> if the window should be visible, <code>false</code> if it shouldn't.
+ * @property {boolean} [visible=true] - <code>true</code> if the window should be visible, <code>false</code> if it shouldn't.
+ * @property {boolean} [frameless=false] - <code>true</code> if the window should be frame, <code>false</code> if it shouldn't.
  */
 void QmlWindowClass::initQml(QVariantMap properties) {
 #ifndef DISABLE_QML
@@ -120,6 +122,10 @@ void QmlWindowClass::initQml(QVariantMap properties) {
         bool visible = !properties.contains(VISIBILE_PROPERTY) || properties[VISIBILE_PROPERTY].toBool();
         object->setProperty(OFFSCREEN_VISIBILITY_PROPERTY, visible);
         object->setProperty(SOURCE_PROPERTY, _source);
+
+        if (properties.contains(FRAMELESS_PROPERTY)) {
+            object->setProperty(FRAMELESS_PROPERTY, properties[FRAMELESS_PROPERTY].toBool());
+        }
 
         const QMetaObject *metaObject = _qmlWindow->metaObject();
         // Forward messages received from QML on to the script
@@ -246,6 +252,31 @@ bool QmlWindowClass::isVisible() {
     }
 
     return asQuickItem()->isVisible();
+}
+
+void QmlWindowClass::setFrameless(bool frameless) {
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, "setFrameless", Q_ARG(bool, frameless));
+        return;
+    }
+
+    QQuickItem* targetWindow = asQuickItem();
+    targetWindow->setProperty(FRAMELESS_PROPERTY, frameless);
+}
+
+bool QmlWindowClass::isFrameless() {
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        BLOCKING_INVOKE_METHOD(this, "isFrameless", Q_RETURN_ARG(bool, result));
+        return result;
+    }
+
+    // The tool window itself has special logic based on whether any tabs are enabled
+    if (_qmlWindow.isNull()) {
+        return false;
+    }
+
+    return asQuickItem()->property(FRAMELESS_PROPERTY).toBool();
 }
 
 glm::vec2 QmlWindowClass::getPosition() {

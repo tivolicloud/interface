@@ -10,12 +10,12 @@
 
 import QtQuick 2.5
 
-import "windows" as Windows
+import "windows"
 import "."
 import controlsUit 1.0 as Controls
 import stylesUit 1.0
 
-Windows.ScrollingWindow {
+ScrollingWindow {
     id: root
     HifiConstants { id: hifi }
     title: "WebWindow"
@@ -25,6 +25,13 @@ Windows.ScrollingWindow {
     destroyOnCloseButton: false
     property alias source: webview.url
     property alias scriptUrl: webview.userScriptUrl
+
+    property bool frameless: false
+    readonly property var _hiddenFrame: HiddenFrame { }
+    readonly property var _defaultFrame: DefaultFrame { 
+        property var window: root
+    }
+    frame: root.frameless ? _hiddenFrame : _defaultFrame;
 
     // This is for JS/QML communication, which is unused in a WebWindow,
     // but not having this here results in spurious warnings about a 
