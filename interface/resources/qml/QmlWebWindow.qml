@@ -32,6 +32,7 @@ ScrollingWindow {
         property var window: root
     }
     frame: root.frameless ? _hiddenFrame : _defaultFrame;
+    hideBackground: root.frameless
 
     // This is for JS/QML communication, which is unused in a WebWindow,
     // but not having this here results in spurious warnings about a 
@@ -65,6 +66,7 @@ ScrollingWindow {
 
         QmlWebWindowView {
             id: webview
+            backgroundColor: root.frameless ? "transparent" : {}
         }
     }
 }
