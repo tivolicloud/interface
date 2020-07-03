@@ -1,7 +1,10 @@
 import { Injectable } from "@angular/core";
+import { EmojiService } from "../emoji.service";
 import { ScriptService } from "../script.service";
 
 class Message {
+	public messageParts: { html: boolean; content: string }[] = [];
+
 	public imageUrl: string;
 
 	public shouldBeShowing = true;
@@ -26,6 +29,10 @@ class Message {
 	) {
 		this.getImageFromText();
 
+		this.messageParts = chatService.emojiService.textToPartsWithEmojis(
+			message,
+		);
+
 		if (noSound == false)
 			this.chatService.scriptService.emitEvent("chat", "sound");
 
@@ -45,7 +52,10 @@ export class ChatService {
 
 	readonly messageShownTime = 1000 * 20; // how long till messages fade out
 
-	constructor(public readonly scriptService: ScriptService) {
+	constructor(
+		public readonly scriptService: ScriptService,
+		public readonly emojiService: EmojiService,
+	) {
 		this.scriptService.event$.subscribe(data => {
 			switch (data.key) {
 				case "message":
