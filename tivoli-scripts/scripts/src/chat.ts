@@ -187,15 +187,22 @@ class Chat {
 	window: OverlayWebWindow;
 	handler: ChatHandler;
 
-	constructor() {
-		const width = 512;
-		const height = 512;
-		const offsetX = 48;
-		const offsetY = 48;
+	readonly width = 512;
+	readonly height = 512;
+	readonly offsetX = 48;
+	readonly offsetY = 48;
 
+	fixPosition() {
+		this.window.setPosition(
+			this.offsetX,
+			Overlays.height() - this.height - this.offsetY,
+		);
+	}
+
+	constructor() {
 		this.window = new OverlayWebWindow({
-			width,
-			height,
+			width: this.width,
+			height: this.height,
 			visible: false,
 			frameless: true,
 			source:
@@ -203,8 +210,12 @@ class Chat {
 				"#/chat?metaverseUrl=" +
 				AccountServices.metaverseServerURL,
 		});
-		this.window.setPosition(offsetX, Overlays.height() - height - offsetY);
+		this.fixPosition();
 		this.window.setVisible(true);
+
+		this.signals.connect(Window.geometryChanged, () => {
+			this.fixPosition();
+		});
 
 		this.handler = new ChatHandler("com.tivolicloud.defaultScripts.chat", {
 			button: null,
@@ -221,5 +232,7 @@ class Chat {
 		);
 	}
 
-	cleanup() {}
+	cleanup() {
+		this.signals.cleanup();
+	}
 }
