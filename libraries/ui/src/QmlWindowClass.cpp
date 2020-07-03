@@ -354,6 +354,17 @@ void QmlWindowClass::setTitle(const QString& title) {
     }
 }
 
+void QmlWindowClass::setFocus(bool focus) {
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, "setFocus", Q_ARG(bool, focus));
+        return;
+    }
+
+    if (!_qmlWindow.isNull()) {
+        asQuickItem()->setFocus(focus);
+    }
+}
+
 void QmlWindowClass::close() {
     if (QThread::currentThread() != thread()) {
         QMetaObject::invokeMethod(this, "close");

@@ -161,6 +161,13 @@ public slots:
     void setTitle(const QString& title);
 
     /**jsdoc
+     * Sets the window focus.
+     * @function OverlayWindow.setFocus
+     * @param {boolean} focus - The window focus.
+     */
+    void setFocus(bool focus);
+
+    /**jsdoc
      * Raises the window to the top.
      * @function OverlayWindow.raise
      */

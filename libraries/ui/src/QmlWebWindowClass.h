@@ -44,6 +44,7 @@
  * @borrows OverlayWindow.getSize as getSize
  * @borrows OverlayWindow.setSize as setSize
  * @borrows OverlayWindow.setTitle as setTitle
+ * @borrows OverlayWindow.setFocus as setFocus
  * @borrows OverlayWindow.raise as raise
  * @borrows OverlayWindow.close as close
  * @borrows OverlayWindow.getEventBridge as getEventBridge
