@@ -8,7 +8,7 @@
 /// <reference path="buttons.ts" />
 // <reference path="nametags.ts" />
 /// <reference path="nametags.js" />
-// <reference path="chat.ts" />
+/// <reference path="chat.ts" />
 
 class Tivoli {
 	// sentry = new Sentry({
@@ -23,7 +23,7 @@ class Tivoli {
 	optimize = new Optimize();
 	buttons = new Buttons();
 	// nametags = new Nametags();
-	// chat = new Chat();
+	chat = new Chat();
 
 	private forceRemoveScript(scriptFilename: string) {
 		const runningScripts = ScriptDiscoveryService.getRunning();
@@ -53,7 +53,7 @@ class Tivoli {
 		this.optimize.cleanup();
 		this.buttons.cleanup();
 		// this.nametags.cleanup();
-		// this.chat.cleanup();
+		this.chat.cleanup();
 
 		// this.sentry.cleanup();
 

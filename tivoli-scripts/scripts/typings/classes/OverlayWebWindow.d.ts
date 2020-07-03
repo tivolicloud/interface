@@ -4,6 +4,7 @@ declare interface OverlayWindowProperties {
 	width?: number;
 	height?: number;
 	visible?: boolean;
+	frameless?: boolean;
 }
 
 declare class OverlayWebWindow {
@@ -24,8 +25,11 @@ declare class OverlayWebWindow {
 	getPosition(): Vec2;
 	getSize(): Vec2;
 	getURL(): string;
+	isFrameless(): boolean;
 	isVisible(): boolean;
 	raise(): void;
+	setFocus(focus: boolean): void;
+	setFrameless(frameless: boolean): void;
 	setPosition(position: Vec2): void;
 	setPosition(x: number, y: number): void;
 	setScriptURL(script: string): void;

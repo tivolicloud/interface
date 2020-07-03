@@ -1,0 +1,7 @@
+<div
+	#input
+	class="input fast-transition"
+	contenteditable
+	(keydown)="onKeyDown($event)"
+	[style.opacity]="chatService.focused ? '1' : '0'"
+></div>

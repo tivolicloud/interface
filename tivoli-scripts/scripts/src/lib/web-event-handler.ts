@@ -10,9 +10,9 @@ class WebEventHandler {
 	private panel: PanelPair;
 
 	constructor(
-		public uuid: string,
-		public button: ButtonData,
-		public otherButtons: ButtonData[],
+		public readonly uuid: string,
+		public readonly button?: ButtonData,
+		public readonly otherButtons?: ButtonData[],
 	) {
 		this.panel = button.panel;
 	}

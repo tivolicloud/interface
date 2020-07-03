@@ -1,0 +1,14 @@
+.input {
+	width: 100%;
+	padding: 8px 12px;
+	background-color: rgba(#1d1f21, 0.9);
+	color: #fff;
+	font-family: "Roboto";
+	overflow-x: hidden;
+	overflow-y: auto;
+	border-radius: 8px;
+
+	&:focus {
+		outline: none;
+	}
+}

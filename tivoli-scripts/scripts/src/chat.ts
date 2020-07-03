@@ -1,0 +1,225 @@
+/// <reference path="lib/signal-manager.ts" />
+/// <reference path="lib/web-event-handler.ts" />
+
+class ChatJoinAndLeave {
+	private signals = new SignalManager();
+
+	private usernames: { [uuid: string]: string } = {};
+
+	private getUsername = (
+		requestId: Uuid,
+		callback?: (username: string) => any,
+	) => {
+		const signals = new SignalManager();
+		signals.connect(
+			Users.usernameFromIDReply,
+			(id, username, machineFingerprint, isAdmin) => {
+				if (requestId != id) return;
+
+				const avatar = AvatarList.getAvatar(id);
+				if (avatar.displayName.toLowerCase() == username) {
+					this.usernames[id] = avatar.displayName;
+				} else {
+					this.usernames[id] = username; // lowercase
+				}
+				if (callback) callback(this.usernames[id]);
+
+				signals.cleanup();
+			},
+		);
+	};
+
+	private isMovingBetweenWorlds = false;
+	private isMovingBetweenWorldsInterval = null;
+
+	private movingBetweenWorlds = () => {
+		Script.clearTimeout(this.isMovingBetweenWorldsInterval);
+		this.isMovingBetweenWorlds = true;
+		this.isMovingBetweenWorldsInterval = Script.setTimeout(() => {
+			this.isMovingBetweenWorlds = false;
+
+			for (const uuid of AvatarList.getAvatarIdentifiers()) {
+				this.getUsername(uuid);
+			}
+
+			this.onNewWorld();
+		}, 500);
+	};
+
+	onJoin = (username: string) => {};
+	onLeave = (username: string) => {};
+	onNewWorld = () => {};
+
+	constructor() {
+		for (const uuid of AvatarList.getAvatarIdentifiers()) {
+			this.getUsername(uuid);
+		}
+
+		this.signals.connect(
+			MyAvatar.sessionUUIDChanged,
+			this.movingBetweenWorlds,
+		);
+		this.signals.connect(
+			AddressManager.hostChanged,
+			this.movingBetweenWorlds,
+		);
+
+		this.signals.connect(AvatarList.avatarAddedEvent, uuid => {
+			if (this.isMovingBetweenWorlds) return;
+			this.getUsername(uuid, username => {
+				this.onJoin(username);
+			});
+		});
+
+		this.signals.connect(AvatarList.avatarRemovedEvent, uuid => {
+			if (this.isMovingBetweenWorlds) return;
+			const username = this.usernames[uuid];
+			delete this.usernames[uuid];
+			this.onLeave(username);
+		});
+	}
+
+	cleanup() {
+		this.signals.cleanup();
+	}
+}
+
+class ChatHandler extends WebEventHandler {
+	readonly channel = "chat";
+
+	private joinAndLeave = new ChatJoinAndLeave();
+
+	private currentChatSound = 0;
+	private chatSounds = [
+		SoundCache.getSound(Script.resolvePath("tivoli/assets/chat1.wav")),
+		SoundCache.getSound(Script.resolvePath("tivoli/assets/chat2.wav")),
+	];
+
+	private playChatSound() {
+		const sound = this.chatSounds[this.currentChatSound];
+
+		if (sound.downloaded)
+			Audio.playSound(sound, {
+				position: MyAvatar.position,
+				localOnly: true,
+				volume: 0.05,
+			});
+
+		this.currentChatSound = this.currentChatSound == 0 ? 1 : 0;
+	}
+
+	constructor(uuid: string, button: ButtonData) {
+		super(uuid, button);
+
+		Messages.subscribe(this.channel);
+
+		this.signalManager.connect(
+			Messages.messageReceived,
+			(channel, message, senderID) => {
+				if (channel != this.channel) return;
+
+				try {
+					const data = JSON.parse(message);
+					if (data.length < 2) throw new Error();
+
+					this.emitEvent("message", data);
+				} catch (err) {
+					const user = AvatarList.getAvatar(senderID);
+					const displayName = user.displayName;
+
+					if (
+						displayName == "" ||
+						displayName == MyAvatar.displayName
+					) {
+						this.emitEvent("message", ["Unknown", message]);
+					} else {
+						this.emitEvent("message", [displayName, message]);
+					}
+				}
+			},
+		);
+
+		this.signalManager.connect(Controller.keyPressEvent, (e: KeyEvent) => {
+			if (e.text == "\r") {
+				this.emitEvent("focus");
+				this.button.panel.window.setFocus(true);
+			}
+		});
+
+		this.joinAndLeave.onJoin = username => {
+			this.emitEvent("join", username);
+		};
+		this.joinAndLeave.onLeave = username => {
+			this.emitEvent("leave", username);
+		};
+		this.joinAndLeave.onNewWorld = () => {
+			this.emitEvent("clear");
+		};
+	}
+
+	handleEvent(data: { key: string; value: any }) {
+		switch (data.key) {
+			case "message":
+				Messages.sendMessage(
+					this.channel,
+					JSON.stringify([AccountServices.username, data.value]),
+				);
+				break;
+			case "unfocus":
+				this.button.panel.window.setFocus(false);
+				break;
+			case "sound":
+				this.playChatSound();
+				break;
+		}
+	}
+
+	cleanup() {
+		Messages.unsubscribe(this.channel);
+		this.joinAndLeave.cleanup();
+		this.signalManager.cleanup();
+	}
+}
+
+class Chat {
+	signals = new SignalManager();
+
+	window: OverlayWebWindow;
+	handler: ChatHandler;
+
+	constructor() {
+		const width = 512;
+		const height = 512;
+		const offsetX = 48;
+		const offsetY = 48;
+
+		this.window = new OverlayWebWindow({
+			width,
+			height,
+			visible: false,
+			frameless: true,
+			source:
+				Script.resolvePath("tivoli/ui/index.html") +
+				"#/chat?metaverseUrl=" +
+				AccountServices.metaverseServerURL,
+		});
+		this.window.setPosition(offsetX, Overlays.height() - height - offsetY);
+		this.window.setVisible(true);
+
+		this.handler = new ChatHandler("com.tivolicloud.defaultScripts.chat", {
+			button: null,
+			panel: {
+				window: this.window,
+				entity: null,
+			},
+			open: null,
+			close: null,
+		});
+		this.signals.connect(
+			this.window.webEventReceived,
+			this.handler.webEventReceived,
+		);
+	}
+
+	cleanup() {}
+}

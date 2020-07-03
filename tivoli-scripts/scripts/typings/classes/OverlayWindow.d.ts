@@ -1,4 +1,11 @@
-declare interface OverlayWindowProperties {}
+declare interface OverlayWindowProperties {
+	title?: string;
+	source?: string;
+	width?: number;
+	height?: number;
+	visible?: boolean;
+	frameless?: boolean;
+}
 
 declare class OverlayWindow {
 	position: Vec2;
@@ -17,9 +24,12 @@ declare class OverlayWindow {
 	emitScriptEvent(message: string | object): void;
 	getPosition(): Vec2;
 	getSize(): Vec2;
+	isFrameless(): boolean;
 	isVisible(): boolean;
 	raise(): void;
 	sendToQml(message: string | object): void;
+	setFocus(focus: boolean): void;
+	setFrameless(frameless: boolean): void;
 	setPosition(position: Vec2): void;
 	setPosition(x: number, y: number): void;
 	setSize(size: Vec2): void;

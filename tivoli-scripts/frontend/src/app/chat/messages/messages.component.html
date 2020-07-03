@@ -1,0 +1,33 @@
+<div #messages class="messages">
+	<div
+		class="message transition"
+		*ngFor="let message of chatService.messages; let i = index"
+		[style.transitionDelay]="
+			(chatService.messages.length - 1 - i) * 10 + 'ms'
+		"
+		[style.opacity]="
+			chatService.focused || message.shouldBeShowing ? '1' : '0'
+		"
+	>
+		<div
+			class="avatar"
+			*ngIf="message.username"
+			[style.backgroundImage]="
+				'url(' +
+				scriptService.metaverseUrl +
+				'/api/user/' +
+				message.username.toLowerCase() +
+				'/image), url(./assets/default-user-icon.jpg)'
+			"
+		></div>
+		<div class="username">
+			{{
+				message.type == "message"
+					? message.username + ":"
+					: message.message
+			}}
+		</div>
+		{{ message.type == "message" ? message.message : "" }}
+		<img *ngIf="message.imageUrl" [src]="message.imageUrl" class="image" />
+	</div>
+</div>
