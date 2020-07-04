@@ -310,9 +310,11 @@ FocusScope {
                 var mappedPoint = mapToItem(child, point.x, point.y);
                 if (child.hasOwnProperty("frame")) {
                     var outLine = child.frame.children[2];
-                    var framePoint = outLine.mapFromGlobal(point.x, point.y);
-                    if (outLine.contains(framePoint)) {
-                        return true;
+                    if (outLine) {
+                        var framePoint = outLine.mapFromGlobal(point.x, point.y);
+                        if (outLine.contains(framePoint)) {
+                            return true;
+                        }
                     }
                 }
 
