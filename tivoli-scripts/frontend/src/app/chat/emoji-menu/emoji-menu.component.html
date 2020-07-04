@@ -1,0 +1,16 @@
+<div class="menu">
+	<!-- <cdk-virtual-scroll-viewport [itemSize]="100" style="height: 100%;">
+		<img
+			class="emoji"
+			*cdkVirtualFor="let emoji of emojiService.emojis"
+			[src]="emojiService.emojiSvgUrl + emoji.code + '.svg'"
+			(click)="onEmoji(emoji.shortcode)"
+		/>
+	</cdk-virtual-scroll-viewport> -->
+	<img
+		class="emoji"
+		*ngFor="let emoji of emojiService.emojis"
+		[src]="emojiService.emojiSvgUrl + emoji.code + '.svg'"
+		(click)="onEmoji(emoji.shortcode)"
+	/>
+</div>

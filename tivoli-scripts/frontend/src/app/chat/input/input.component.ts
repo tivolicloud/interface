@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-import { ChatService } from "../chat.service";
-import { ScriptService } from "../../script.service";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Subscription } from "rxjs";
+import { EmojiService } from "../../emoji.service";
+import { ScriptService } from "../../script.service";
+import { ChatService } from "../chat.service";
 
 @Component({
 	selector: "app-input",
@@ -11,12 +12,15 @@ import { Subscription } from "rxjs";
 export class InputComponent implements OnInit {
 	subs: Subscription[] = [];
 
+	@ViewChild("input") input: ElementRef<HTMLDivElement>;
+
+	emojiMenuOpen = false;
+
 	constructor(
 		public readonly chatService: ChatService,
+		public readonly emojiService: EmojiService,
 		private readonly scriptService: ScriptService,
 	) {}
-
-	@ViewChild("input") input: ElementRef<HTMLDivElement>;
 
 	ngOnInit(): void {
 		this.subs.push(
@@ -37,6 +41,8 @@ export class InputComponent implements OnInit {
 	}
 
 	onKeyDown(event: KeyboardEvent) {
+		this.emojiMenuOpen = false;
+
 		if (event.key == "Enter") {
 			event.preventDefault();
 
@@ -50,5 +56,11 @@ export class InputComponent implements OnInit {
 		}
 
 		if (event.key == "Escape") return this.unfocus();
+	}
+
+	onEmojiShortcode(shortcode: string) {
+		this.input.nativeElement.textContent +=
+			(this.input.nativeElement.textContent.endsWith(" ") ? "" : " ") +
+			`:${shortcode}: `;
 	}
 }

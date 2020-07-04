@@ -12,3 +12,28 @@
 		outline: none;
 	}
 }
+
+.button {
+	position: absolute;
+	top: 0.333em;
+	bottom: 0;
+	height: 1.333em;
+
+	&.emoji {
+		right: 0.333em;
+		cursor: pointer;
+
+		opacity: 0.5;
+		filter: grayscale(1);
+		&:hover {
+			opacity: 1;
+			filter: grayscale(0);
+		}
+	}
+}
+
+.emoji-menu {
+	position: absolute;
+	bottom: calc(100% + 8px);
+	right: 0;
+}

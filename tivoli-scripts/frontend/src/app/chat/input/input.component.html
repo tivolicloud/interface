@@ -1,7 +1,23 @@
 <div
-	#input
-	class="input fast-transition"
-	contenteditable
-	(keydown)="onKeyDown($event)"
+	class="fast-transition"
+	style="position: relative;"
 	[style.opacity]="chatService.focused ? '1' : '0'"
-></div>
+>
+	<div
+		#input
+		class="input"
+		contenteditable
+		(keydown)="onKeyDown($event)"
+	></div>
+	<img
+		class="button emoji transition"
+		[src]="emojiService.codeToImage('1F642')"
+		(click)="emojiMenuOpen = !emojiMenuOpen"
+	/>
+	<app-emoji-menu
+		[style.opacity]="emojiMenuOpen ? '1' : '0'"
+		[style.width]="emojiMenuOpen ? '' : '0'"
+		class="emoji-menu fast-transition"
+		(emojiShortcode)="onEmojiShortcode($event)"
+	></app-emoji-menu>
+</div>

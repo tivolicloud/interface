@@ -27,11 +27,16 @@
 					: message.message
 			}}
 		</div>
-		<ng-container *ngFor="let part of message.messageParts">
-			<ng-container *ngIf="part.html == false">{{
-				part.content
-			}}</ng-container>
-			<span *ngIf="part.html == true" [innerHTML]="part.content"></span>
+		<ng-container *ngIf="message.type == 'message'">
+			<ng-container *ngFor="let part of message.messageParts">
+				<ng-container *ngIf="part.html == false">{{
+					part.content
+				}}</ng-container>
+				<span
+					*ngIf="part.html == true"
+					[innerHTML]="part.content"
+				></span>
+			</ng-container>
 		</ng-container>
 		<img *ngIf="message.imageUrl" [src]="message.imageUrl" class="image" />
 	</div>
