@@ -143,6 +143,7 @@ class ChatHandler extends WebEventHandler {
 			if (e.text == "\r") {
 				this.emitEvent("focus");
 				this.button.panel.window.setFocus(true);
+				this.button.panel.window.setEnabled(true);
 			}
 		});
 
@@ -167,6 +168,7 @@ class ChatHandler extends WebEventHandler {
 				break;
 			case "unfocus":
 				this.button.panel.window.setFocus(false);
+				this.button.panel.window.setEnabled(false);
 				break;
 			case "sound":
 				this.playChatSound();

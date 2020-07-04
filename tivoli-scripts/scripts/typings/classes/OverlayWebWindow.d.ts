@@ -28,6 +28,7 @@ declare class OverlayWebWindow {
 	isFrameless(): boolean;
 	isVisible(): boolean;
 	raise(): void;
+	setEnabled(enabled: boolean): void;
 	setFocus(focus: boolean): void;
 	setFrameless(frameless: boolean): void;
 	setPosition(position: Vec2): void;
