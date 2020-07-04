@@ -168,6 +168,13 @@ public slots:
     void setFocus(bool focus);
 
     /**jsdoc
+     * Enables or disables the window
+     * @function OverlayWindow.setEnabled
+     * @param {boolean} enabled - <code>true</code> to allow all input, <code>false</code> to disable.
+     */
+    void setEnabled(bool enabled);
+
+    /**jsdoc
      * Raises the window to the top.
      * @function OverlayWindow.raise
      */

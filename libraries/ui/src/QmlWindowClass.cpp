@@ -365,6 +365,17 @@ void QmlWindowClass::setFocus(bool focus) {
     }
 }
 
+void QmlWindowClass::setEnabled(bool enabled) {
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, "setEnabled", Q_ARG(bool, enabled));
+        return;
+    }
+
+    if (!_qmlWindow.isNull()) {
+        asQuickItem()->setEnabled(enabled);
+    }
+}
+
 void QmlWindowClass::close() {
     if (QThread::currentThread() != thread()) {
         QMetaObject::invokeMethod(this, "close");
