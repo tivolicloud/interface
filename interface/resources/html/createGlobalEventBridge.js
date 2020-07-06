@@ -90,29 +90,20 @@ var EventBridge;
 			}
 		});
 
-		// To be able to update the state of the output device selection for every element added to the DOM
-		// we need to listen to events that might precede the addition of this elements.
-		// A more robust hack will be to add a setInterval that look for DOM changes every 100-300 ms (low performance?)
-
-		window.addEventListener("load", () => {
-			setTimeout(() => {
-				EventBridge.forceHtmlAudioOutputDeviceUpdate();
-			}, 1200);
+		new WebKitMutationObserver(mutations => {
+			mutations.forEach(mutation => {
+				for (const node of mutation.addedNodes) {
+					if (node.nodeName == "VIDEO" || node.nodeName == "AUDIO")
+						EventBridge.forceHtmlAudioOutputDeviceUpdate();
+				}
+			});
+		}).observe(document.body, {
+			childList: true,
 		});
 
-		document.addEventListener("click", () => {
-			setTimeout(() => {
-				EventBridge.forceHtmlAudioOutputDeviceUpdate();
-			}, 1200);
+		window.addEventListener("DOMContentLoaded", () => {
+			EventBridge.forceHtmlAudioOutputDeviceUpdate();
 		});
-
-		document.addEventListener("change", () => {
-			setTimeout(() => {
-				EventBridge.forceHtmlAudioOutputDeviceUpdate();
-			}, 1200);
-		});
-
-		EventBridge.forceHtmlAudioOutputDeviceUpdate();
 
 		tempEventBridge._callbacks.forEach(callback => {
 			EventBridge.scriptEventReceived.connect(callback);
