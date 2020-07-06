@@ -82,6 +82,18 @@ For example, to pass the `QT_CMAKE_PREFIX_PATH` variable (if not using our versi
     cmake .. -DQT_CMAKE_PREFIX_PATH=/path/to/qt/lib/cmake
 ```
 
+## Load QML from resources folder, not `resources.rcc`
+
+When working on QML, you'll need a way to easily see the changes you're making.
+
+-   Make sure you're making a **dev build** (`cmake ..` without any production variables)
+
+    -   You can verify this in `build/includes/BuildInfo.h` with `VERSION = "dev"`
+
+-   When launching interface, add `HIFI_USE_SOURCE_TREE_RESOURCES=1` environment variable. You can add this in the launcher under **Developer > Additional environment variables**.
+
+-   Once in-world, you can test your QML and press **Edit > Clear Cache & Reload (very slow)** to reload.
+
 ## Optional components
 
 The following build options can be used when running CMake
