@@ -11,65 +11,66 @@
 // Stick a EventBridge object in the global namespace.
 var EventBridge;
 (function () {
-    // the TempEventBridge class queues up emitWebEvent messages and executes them when the real EventBridge is ready.
-    // Similarly, it holds all scriptEventReceived callbacks, and hooks them up to the real EventBridge.
-    function TempEventBridge() {
-        var self = this;
-        this._callbacks = [];
-        this._messages = [];
-        this.scriptEventReceived = {
-            connect: function (callback) {
-                self._callbacks.push(callback);
-            }
-        };
-        this.emitWebEvent = function (message) {
-            self._messages.push(message);
-        };
-    };
+	// the TempEventBridge class queues up emitWebEvent messages and executes them when the real EventBridge is ready.
+	// Similarly, it holds all scriptEventReceived callbacks, and hooks them up to the real EventBridge.
+	class TempEventBridge {
+		_callbacks = [];
+		_messages = [];
 
-    EventBridge = new TempEventBridge();
+		scriptEventReceived = {
+			connect: callback => {
+				this._callbacks.push(callback);
+			},
+		};
 
-    const webChannel = new QWebChannel(qt.webChannelTransport, function (channel) {
-        // replace the TempEventBridge with the real one.
-        const tempEventBridge = EventBridge;
-        EventBridge = channel.objects.eventBridge;
-        
-        EventBridge.audioOutputDeviceChanged.connect(async (deviceName) => {
+		emitWebEvent = message => {
+			this._messages.push(message);
+		};
+	}
+
+	EventBridge = new TempEventBridge();
+
+	new QWebChannel(qt.webChannelTransport, channel => {
+		// replace the TempEventBridge with the real one.
+		const tempEventBridge = EventBridge;
+		EventBridge = channel.objects.eventBridge;
+
+		EventBridge.audioOutputDeviceChanged.connect(async deviceName => {
 			deviceName = deviceName.trim().toLowerCase();
 			if (deviceName == "") deviceName = "default";
 
 			await navigator.mediaDevices
 				.getUserMedia({ audio: true, video: false })
-				.catch((err) => {
+				.catch(err => {
 					console.error(
 						"Error getting media devices" +
 							err.name +
 							": " +
-							err.message
+							err.message,
 					);
 				});
-                
+
 			const devices = await navigator.mediaDevices
 				.enumerateDevices()
-				.catch((err) => {
+				.catch(err => {
 					console.error(
 						"Error getting user media" +
 							err.name +
 							": " +
-							err.message
+							err.message,
 					);
 				});
 
 			const device = devices
-				.filter((device) => device.kind == "audiooutput")
-				.find((device) =>
+				.filter(device => device.kind == "audiooutput")
+				.find(device =>
 					deviceName == "default"
 						? device.deviceId == "default"
 						: deviceName ==
 						  device.label
 								.replace(/\([0-9a-f]{4}:[0-9a-f]{4}\)/gi, "")
 								.trim()
-								.toLowerCase()
+								.toLowerCase(),
 				);
 
 			if (device == null) {
@@ -77,7 +78,7 @@ var EventBridge;
 				return;
 			} else {
 				console.log(
-					"Changing HTML audio output to device " + device.label
+					"Changing HTML audio output to device " + device.label,
 				);
 			}
 
@@ -88,34 +89,36 @@ var EventBridge;
 				audio.setSinkId(device.deviceId);
 			}
 		});
-        
-        // To be able to update the state of the output device selection for every element added to the DOM
-        // we need to listen to events that might precede the addition of this elements.
-        // A more robust hack will be to add a setInterval that look for DOM changes every 100-300 ms (low performance?)
-        
-        window.addEventListener("load",function(event) {
-            setTimeout(function() { 
-                EventBridge.forceHtmlAudioOutputDeviceUpdate();
-            }, 1200);
-        }, false);
-        
-        document.addEventListener("click",function(){
-            setTimeout(function() { 
-                EventBridge.forceHtmlAudioOutputDeviceUpdate();
-            }, 1200);
-        }, false);
-        
-        document.addEventListener("change",function(){
-            setTimeout(function() { 
-                EventBridge.forceHtmlAudioOutputDeviceUpdate();
-            }, 1200);
-        }, false);
-        
-        tempEventBridge._callbacks.forEach(function (callback) {
-            EventBridge.scriptEventReceived.connect(callback);
-        });
-        tempEventBridge._messages.forEach(function (message) {
-            EventBridge.emitWebEvent(message);
-        });
-    });
+
+		// To be able to update the state of the output device selection for every element added to the DOM
+		// we need to listen to events that might precede the addition of this elements.
+		// A more robust hack will be to add a setInterval that look for DOM changes every 100-300 ms (low performance?)
+
+		window.addEventListener("load", () => {
+			setTimeout(() => {
+				EventBridge.forceHtmlAudioOutputDeviceUpdate();
+			}, 1200);
+		});
+
+		document.addEventListener("click", () => {
+			setTimeout(() => {
+				EventBridge.forceHtmlAudioOutputDeviceUpdate();
+			}, 1200);
+		});
+
+		document.addEventListener("change", () => {
+			setTimeout(() => {
+				EventBridge.forceHtmlAudioOutputDeviceUpdate();
+			}, 1200);
+		});
+
+		EventBridge.forceHtmlAudioOutputDeviceUpdate();
+
+		tempEventBridge._callbacks.forEach(callback => {
+			EventBridge.scriptEventReceived.connect(callback);
+		});
+		tempEventBridge._messages.forEach(message => {
+			EventBridge.emitWebEvent(message);
+		});
+	});
 })();
