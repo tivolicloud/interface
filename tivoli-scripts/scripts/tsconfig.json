@@ -7,5 +7,5 @@
 		"removeComments": true,
 		"allowJs": true
 	},
-	"include": ["src/**/*", "typings", "typings/namespaces/.ts"]
+	"include": ["src", "typings"]
 }
