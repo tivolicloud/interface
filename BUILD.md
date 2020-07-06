@@ -86,9 +86,7 @@ For example, to pass the `QT_CMAKE_PREFIX_PATH` variable (if not using our versi
 
 When working on QML, you'll need a way to easily see the changes you're making.
 
--   Make sure you're making a **dev build** (`cmake ..` without any production variables)
-
-    -   You can verify this in `build/includes/BuildInfo.h` with `VERSION = "dev"`
+-   Make sure you're making a **dev build** (`cmake ..` without any production variables). You can verify this in `build/includes/BuildInfo.h` with `VERSION = "dev"`
 
 -   When launching interface, add `HIFI_USE_SOURCE_TREE_RESOURCES=1` environment variable. You can add this in the launcher under **Developer > Additional environment variables**.
 
