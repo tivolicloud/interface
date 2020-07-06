@@ -61,7 +61,7 @@ var EventBridge;
 				})
 			).filter(device => device.kind == "audiooutput");
 
-			let device =
+			const device =
 				deviceName == "default"
 					? devices.find(device => device.deviceId == "default")
 					: devices.find(
@@ -74,10 +74,7 @@ var EventBridge;
 									)
 									.trim()
 									.toLowerCase(),
-					  );
-
-			if (device == null)
-				device = devices.find(device => device.deviceId == "default");
+					  ) || devices.find(device => device.deviceId == "default");
 
 			if (device == null) {
 				console.error("Failed to change HTML audio output device");
