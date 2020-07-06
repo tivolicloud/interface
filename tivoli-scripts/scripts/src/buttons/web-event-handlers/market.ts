@@ -1,5 +1,5 @@
-import { WebEventHandler } from "../lib/web-event-handler";
-import { ButtonData } from "../lib/button-manager";
+import { WebEventHandler } from "../web-event-handler";
+import { ButtonData } from "../button-manager";
 
 export class MarketHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {

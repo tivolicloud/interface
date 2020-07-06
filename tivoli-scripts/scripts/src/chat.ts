@@ -1,6 +1,6 @@
-import { ButtonData } from "./lib/button-manager";
+import { ButtonData } from "./buttons/button-manager";
 import { SignalManager } from "./lib/signal-manager";
-import { WebEventHandler } from "./lib/web-event-handler";
+import { WebEventHandler } from "./buttons/web-event-handler";
 
 class ChatJoinAndLeave {
 	private signals = new SignalManager();

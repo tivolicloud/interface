@@ -1,4 +1,4 @@
-import { Buttons } from "./buttons";
+import { Buttons } from "./buttons/buttons";
 import { Chat } from "./chat";
 import { SignalManager } from "./lib/signal-manager";
 import { initNametags } from "./nametags";

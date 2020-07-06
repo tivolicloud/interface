@@ -1,4 +1,4 @@
-import { SignalManager } from "./signal-manager";
+import { SignalManager } from "../lib/signal-manager";
 import { WebEventHandler } from "./web-event-handler";
 
 export interface PanelPair {

@@ -1,5 +1,5 @@
-import { ButtonData } from "../lib/button-manager";
-import { WebEventHandler } from "../lib/web-event-handler";
+import { ButtonData } from "../button-manager";
+import { WebEventHandler } from "../web-event-handler";
 
 export class AvatarHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {

@@ -1,5 +1,5 @@
-import { ButtonManager } from "./lib/button-manager";
-import { SignalManager } from "./lib/signal-manager";
+import { ButtonManager } from "./button-manager";
+import { SignalManager } from "../lib/signal-manager";
 import { AvatarHandler } from "./web-event-handlers/avatar";
 import { ExploreHandler } from "./web-event-handlers/explore";
 import { MarketHandler } from "./web-event-handlers/market";
@@ -41,7 +41,7 @@ export class Buttons {
 		// explore
 		const explore = this.buttonManager.addWebButton(
 			"Explore",
-			Script.resolvePath("assets/explore.png"),
+			Script.resolvePath("../assets/explore.png"),
 			null,
 			8,
 			true,

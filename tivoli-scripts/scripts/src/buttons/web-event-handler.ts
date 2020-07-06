@@ -1,5 +1,5 @@
 import { ButtonData, PanelPair } from "./button-manager";
-import { SignalManager } from "./signal-manager";
+import { SignalManager } from "../lib/signal-manager";
 
 export class WebEventHandler {
 	readonly tablet = Tablet.getTablet(
