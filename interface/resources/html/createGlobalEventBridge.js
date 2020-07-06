@@ -50,35 +50,41 @@ var EventBridge;
 					);
 				});
 
-			const devices = await navigator.mediaDevices
-				.enumerateDevices()
-				.catch(err => {
+			const devices = (
+				await navigator.mediaDevices.enumerateDevices().catch(err => {
 					console.error(
 						"Error getting user media" +
 							err.name +
 							": " +
 							err.message,
 					);
-				});
+				})
+			).filter(device => device.kind == "audiooutput");
 
-			const device = devices
-				.filter(device => device.kind == "audiooutput")
-				.find(device =>
-					deviceName == "default"
-						? device.deviceId == "default"
-						: deviceName ==
-						  device.label
-								.replace(/\([0-9a-f]{4}:[0-9a-f]{4}\)/gi, "")
-								.trim()
-								.toLowerCase(),
-				);
+			let device =
+				deviceName == "default"
+					? devices.find(device => device.deviceId == "default")
+					: devices.find(
+							device =>
+								deviceName ==
+								device.label
+									.replace(
+										/\([0-9a-f]{4}:[0-9a-f]{4}\)/gi,
+										"",
+									)
+									.trim()
+									.toLowerCase(),
+					  );
+
+			if (device == null)
+				device = devices.find(device => device.deviceId == "default");
 
 			if (device == null) {
 				console.error("Failed to change HTML audio output device");
 				return;
 			} else {
 				console.log(
-					"Changing HTML audio output to device " + device.label,
+					"Changing HTML audio output to device " + deviceName,
 				);
 			}
 
