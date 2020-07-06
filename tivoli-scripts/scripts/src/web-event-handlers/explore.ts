@@ -1,6 +1,7 @@
-/// <reference path="../lib/web-event-handler.ts" />
+import { ButtonData } from "../lib/button-manager";
+import { WebEventHandler } from "../lib/web-event-handler";
 
-class ExploreHandler extends WebEventHandler {
+export class ExploreHandler extends WebEventHandler {
 	canGoBack = false;
 	canGoForward = false;
 

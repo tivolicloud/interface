@@ -1,11 +1,10 @@
-/// <reference path="lib/signal-manager.ts" />
-/// <reference path="lib/button-manager.ts" />
+import { ButtonManager } from "./lib/button-manager";
+import { SignalManager } from "./lib/signal-manager";
+import { AvatarHandler } from "./web-event-handlers/avatar";
+import { ExploreHandler } from "./web-event-handlers/explore";
+import { MarketHandler } from "./web-event-handlers/market";
 
-/// <reference path="web-event-handlers/avatar.ts" />
-/// <reference path="web-event-handlers/explore.ts" />
-/// <reference path="web-event-handlers/market.ts" />
-
-class Buttons {
+export class Buttons {
 	readonly tablet = Tablet.getTablet(
 		"com.highfidelity.interface.tablet.system",
 	);
@@ -42,7 +41,7 @@ class Buttons {
 		// explore
 		const explore = this.buttonManager.addWebButton(
 			"Explore",
-			Script.resolvePath("tivoli/assets/explore.png"),
+			Script.resolvePath("assets/explore.png"),
 			null,
 			8,
 			true,

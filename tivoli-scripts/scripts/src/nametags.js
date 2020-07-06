@@ -1,4 +1,4 @@
-function initNametags() {
+export function initNametags() {
 	var nametags = {};
 
 	function getUsers(resolve) {

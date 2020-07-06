@@ -2,13 +2,18 @@
 	"scripts": {
 		"files": "copyfiles -u 1 src/assets/**/* ../dist/tivoli",
 		"minify": "terser --config-file terser.json ../dist/tivoli.js -o ../dist/tivoli.js",
-		"build": "npm run files && tsc",
-		"start": "npm run files && tsc -w"
+		"patch": "node patch-modules.js ../dist/tivoli",
+		"build": "npm run files && tsc && npm run patch",
+		"start": "npm run files && tsc-watch --onSuccess \"npm run patch\""
 	},
 	"dependencies": {
+		"@babel/generator": "^7.10.4",
+		"@babel/parser": "^7.10.4",
 		"copyfiles": "^2.3.0",
+		"globby": "^11.0.1",
 		"rimraf": "^3.0.2",
 		"terser": "^4.7.0",
+		"tsc-watch": "^4.2.9",
 		"typescript": "^3.9.5"
 	}
 }

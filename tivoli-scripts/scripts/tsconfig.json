@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es3",
 		"lib": ["es2015"],
-		"outFile": "../dist/tivoli.js",
+		"outDir": "../dist/tivoli",
 		"types": [],
 		"removeComments": true,
 		"allowJs": true

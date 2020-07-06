@@ -1,5 +1,6 @@
-/// <reference path="lib/signal-manager.ts" />
-/// <reference path="lib/web-event-handler.ts" />
+import { ButtonData } from "./lib/button-manager";
+import { SignalManager } from "./lib/signal-manager";
+import { WebEventHandler } from "./lib/web-event-handler";
 
 class ChatJoinAndLeave {
 	private signals = new SignalManager();
@@ -91,8 +92,8 @@ class ChatHandler extends WebEventHandler {
 
 	private currentChatSound = 0;
 	private chatSounds = [
-		SoundCache.getSound(Script.resolvePath("tivoli/assets/chat1.wav")),
-		SoundCache.getSound(Script.resolvePath("tivoli/assets/chat2.wav")),
+		SoundCache.getSound(Script.resolvePath("assets/chat1.wav")),
+		SoundCache.getSound(Script.resolvePath("assets/chat2.wav")),
 	];
 
 	private playChatSound() {
@@ -183,7 +184,7 @@ class ChatHandler extends WebEventHandler {
 	}
 }
 
-class Chat {
+export class Chat {
 	signals = new SignalManager();
 
 	window: OverlayWebWindow;
@@ -208,7 +209,7 @@ class Chat {
 			visible: false,
 			frameless: true,
 			source:
-				Script.resolvePath("tivoli/ui/index.html") +
+				Script.resolvePath("ui/index.html") +
 				"#/chat?metaverseUrl=" +
 				AccountServices.metaverseServerURL,
 		});

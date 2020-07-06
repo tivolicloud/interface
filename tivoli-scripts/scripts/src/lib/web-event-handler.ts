@@ -1,6 +1,7 @@
-/// <reference path="signal-manager.ts" />
+import { ButtonData, PanelPair } from "./button-manager";
+import { SignalManager } from "./signal-manager";
 
-class WebEventHandler {
+export class WebEventHandler {
 	readonly tablet = Tablet.getTablet(
 		"com.highfidelity.interface.tablet.system",
 	);

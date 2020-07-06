@@ -1,4 +1,4 @@
-class SignalManager {
+export class SignalManager {
 	private instances: {
 		signal: Signal<any>;
 		func: any;

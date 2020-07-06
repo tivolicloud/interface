@@ -1,4 +1,6 @@
-class Optimize {
+import { SignalManager } from "./lib/signal-manager";
+
+export class Optimize {
 	signals = new SignalManager();
 
 	private disableTrackingSmoothing() {

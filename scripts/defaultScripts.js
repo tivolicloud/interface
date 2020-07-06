@@ -32,7 +32,7 @@
 
 // loaded scripts
 [
-	"tivoli.js"
+	"tivoli/tivoli.js"
 ].forEach(function(script) {
 	var runningScripts = ScriptDiscoveryService.getRunning();
 

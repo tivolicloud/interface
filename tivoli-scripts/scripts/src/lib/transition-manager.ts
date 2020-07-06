@@ -1,4 +1,4 @@
-/// <reference path="./signal-manager.ts" />
+import { SignalManager } from "./signal-manager";
 
 interface Transition {
 	from: number;

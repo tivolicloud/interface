@@ -1,18 +1,19 @@
-/// <reference path="signal-manager.ts" />
+import { SignalManager } from "./signal-manager";
+import { WebEventHandler } from "./web-event-handler";
 
-interface PanelPair {
+export interface PanelPair {
 	window: OverlayWebWindow;
 	entity: Uuid;
 }
 
-interface ButtonData {
+export interface ButtonData {
 	button: TabletButtonProxy;
 	panel: PanelPair;
 	open: Function;
 	close: Function;
 }
 
-class ButtonManager {
+export class ButtonManager {
 	// for cleanup
 	private buttons: ButtonData[] = [];
 	private handlers: WebEventHandler[] = [];
@@ -89,7 +90,7 @@ class ButtonManager {
 		handlerClass: typeof WebEventHandler,
 	) {
 		const sourceUrl =
-			Script.resolvePath("tivoli/ui/index.html") +
+			Script.resolvePath("../ui/index.html") +
 			"#/" +
 			name.toLowerCase() +
 			"?metaverseUrl=" +

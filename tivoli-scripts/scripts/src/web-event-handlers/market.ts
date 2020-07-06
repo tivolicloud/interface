@@ -1,6 +1,7 @@
-/// <reference path="../lib/web-event-handler.ts" />
+import { WebEventHandler } from "../lib/web-event-handler";
+import { ButtonData } from "../lib/button-manager";
 
-class MarketHandler extends WebEventHandler {
+export class MarketHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {
 		super(uuid, button, otherButtons);
 	}

@@ -1,6 +1,7 @@
-/// <reference path="../lib/web-event-handler.ts" />
+import { ButtonData } from "../lib/button-manager";
+import { WebEventHandler } from "../lib/web-event-handler";
 
-class AvatarHandler extends WebEventHandler {
+export class AvatarHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData, otherButtons: ButtonData[]) {
 		super(uuid, button, otherButtons);
 
