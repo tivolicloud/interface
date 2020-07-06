@@ -22,6 +22,7 @@ const glm::mat4 LightStage::Shadow::_biasMatrix {
     0.0, 0.5, 0.0, 0.0,
     0.0, 0.0, 0.5, 0.0,
     0.5, 0.5, 0.5, 1.0 };
+// TODO: Change MAP_SIZE based on your performance settings. 
 const int LightStage::Shadow::MAP_SIZE = 2048;
 
 const LightStage::Index LightStage::INVALID_INDEX { render::indexed_container::INVALID_INDEX };
@@ -181,7 +182,7 @@ void LightStage::Shadow::setMaxDistance(float value) {
             // Distribute the cascades along that distance
             // TODO : these parameters should be exposed to the user as part of the light entity parameters, no?
             static const auto LOW_MAX_DISTANCE = 45.0f;
-            static const auto MAX_RESOLUTION_LOSS = 0.0f; // Between 0 and 1, 0 giving tighter distributions. Higher = shadows stay fuzzy until you get close. Lower changes that.
+            static const auto MAX_RESOLUTION_LOSS = 0.0f; // Between 0 and 1, 0 giving sharper shadows at distance, higher = shadows stay fuzzy until you get close. Lower changes that.
 
             // The max cascade distance is computed by multiplying the previous cascade's max distance by a certain
             // factor. There is a "user" factor that is computed from a desired max resolution loss in the shadow
