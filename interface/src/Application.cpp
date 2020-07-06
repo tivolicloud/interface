@@ -329,7 +329,7 @@ static const int ENTITY_SERVER_ADDED_TIMEOUT = 5000;
 static const int ENTITY_SERVER_CONNECTION_TIMEOUT = 5000;
 static const int WATCHDOG_TIMER_TIMEOUT = 100;
 
-static const float INITIAL_QUERY_RADIUS = 10.0f;  // priority radius for entities before physics enabled
+static const float INITIAL_QUERY_RADIUS = 300.0f;  // priority radius for entities before physics enabled
 
 static const QString DESKTOP_LOCATION = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
@@ -6997,7 +6997,7 @@ void Application::queryOctree(
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
-        float radius = glm::max(INITIAL_QUERY_RADIUS, 1000.0f);// was 0.5 * glm::length(box.getDimensions()));
+        float radius = INITIAL_QUERY_RADIUS; //glm::max(INITIAL_QUERY_RADIUS, 350);//0.5 * glm::length(box.getDimensions())); 
         sphericalView.setPositionAndSimpleRadius(box.calcCenter(), radius);
 
         //if (interstitialModeEnabled) {
