@@ -30,6 +30,7 @@ public:
     
     bool isFocusText() const { return _focusText; }
     bool getCleaned() { return _isCleaned; }
+    Q_INVOKABLE QString getCurrentAudioOutputDevice() { return _currentAudioOutputDevice; }
 
     bool eventFilter(QObject* originalDestination, QEvent* event) override;
     void setKeyboardRaised(QObject* object, bool raised, bool numeric = false, bool passwordField = false);

@@ -1,4 +1,5 @@
 import QtQuick 2.5
+import QtWebEngine 1.5
 
 Rectangle {
     id: root
@@ -9,8 +10,22 @@ Rectangle {
     property string feature: 'none'
     signal sendPermission(string securityOrigin, string feature, bool shouldGivePermission)
 
+    function allowAudio() {
+        if (feature == WebEngineView.MediaAudioCapture) {
+            root.sendPermission(securityOrigin, feature, true);
+            root.visible = false;
+            securityOrigin = 'none';
+            feature = 'none';
+        }
+    }
+
     onFeatureChanged: {
         permissionPopupItem.currentRequestedPermission = feature;
+        allowAudio();
+    }
+
+    onVisibleChanged: {
+        allowAudio();
     }
 
     MouseArea {
