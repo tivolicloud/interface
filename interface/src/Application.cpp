@@ -6997,7 +6997,7 @@ void Application::queryOctree(
 
         ConicalViewFrustum sphericalView;
         AABox box = getMyAvatar()->getGlobalBoundingBox();
-        float radius = glm::max(INITIAL_QUERY_RADIUS, 25000.0f);// was 0.5 * glm::length(box.getDimensions()));
+        float radius = glm::max(INITIAL_QUERY_RADIUS, 1000.0f);// was 0.5 * glm::length(box.getDimensions()));
         sphericalView.setPositionAndSimpleRadius(box.calcCenter(), radius);
 
         //if (interstitialModeEnabled) {
