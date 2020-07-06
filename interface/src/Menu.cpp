@@ -361,10 +361,10 @@ Menu::Menu() {
     MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
 
     addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::StopRendering);
-   /* action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
+    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
                                                     qApp->getLoadCompleteEntityTreeSetting());
  
-    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
+    /* action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
         qApp->getForcedBypassPrioritySorting());*/
     
 

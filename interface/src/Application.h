@@ -695,8 +695,8 @@ private:
     Setting::Handle<bool> _miniTabletEnabledSetting;
     Setting::Handle<bool> _keepLogWindowOnTop{ "keepLogWindowOnTop", false };
     // TIVOLI SPECIFIC
-    Setting::Handle<bool> _loadCompleteEntityTreeSetting;  // TIVOLI new feature
-    Setting::Handle<bool> _bypassPrioritySortingSetting; // TIVOLI new feature
+    Setting::Handle<bool> _loadCompleteEntityTreeSetting; 
+    Setting::Handle<bool> _bypassPrioritySortingSetting;
 
     float _scaleMirror;
     float _mirrorYawOffset;
