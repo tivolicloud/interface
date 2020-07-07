@@ -92,7 +92,7 @@ class StateController;
 
 static const QString RUNNING_MARKER_FILENAME = "Interface.running";
 static const QString SCRIPTS_SWITCH = "scripts";
-static const QString HIFI_NO_LOGIN_COMMAND_LINE_KEY = "no-login-suggestion";
+// static const QString HIFI_NO_LOGIN_COMMAND_LINE_KEY = "no-login-suggestion";
 
 class Application;
 #if defined(qApp)

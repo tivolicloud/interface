@@ -757,8 +757,8 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     const char* portStr = getCmdOption(argc, constArgv, "--listenPort");
     const int listenPort = portStr ? atoi(portStr) : INVALID_PORT;
 
-    static const auto SUPPRESS_SETTINGS_RESET = "--suppress-settings-reset";
-    bool suppressPrompt = cmdOptionExists(argc, const_cast<const char**>(argv), SUPPRESS_SETTINGS_RESET);
+    // static const auto SUPPRESS_SETTINGS_RESET = "--suppress-settings-reset";
+    // bool suppressPrompt = cmdOptionExists(argc, const_cast<const char**>(argv), SUPPRESS_SETTINGS_RESET);
 
     // set the OCULUS_STORE property so the oculus plugin can know if we ran from the Oculus Store
     static const auto OCULUS_STORE_ARG = "--oculus-store";
@@ -782,7 +782,8 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
 
     bool previousSessionCrashed { false };
     if (!inTestMode) {
-        previousSessionCrashed = CrashRecoveryHandler::checkForResetSettings(runningMarkerExisted, suppressPrompt);
+        // previousSessionCrashed = CrashRecoveryHandler::checkForResetSettings(runningMarkerExisted, suppressPrompt);
+        previousSessionCrashed = CrashRecoveryHandler::checkForResetSettings(runningMarkerExisted, true);
     }
 
     // get dir to use for cache
@@ -1573,12 +1574,12 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     connect(offscreenUi.data(), &OffscreenUi::keyboardFocusActive, [this]() {
 #if !defined(Q_OS_ANDROID) && !defined(DISABLE_QML)
         // Do not show login dialog if requested not to on the command line
-        QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
-        int index = arguments().indexOf(hifiNoLoginCommandLineKey);
-        if (index != -1) {
+        // QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
+        // int index = arguments().indexOf(hifiNoLoginCommandLineKey);
+        // if (index != -1) {
             resumeAfterLoginDialogActionTaken();
             return;
-        }
+        // }
 
         // TIVOLI showLoginScreen();
 #else
@@ -1997,23 +1998,23 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 
 
     // If launched from Steam, let it handle updates
-    const QString HIFI_NO_UPDATER_COMMAND_LINE_KEY = "--no-updater";
-    bool noUpdater = true; // CPM arguments().indexOf(HIFI_NO_UPDATER_COMMAND_LINE_KEY) != -1;
-    bool buildCanUpdate = BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable
-        || BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Master;
-    if (!noUpdater && buildCanUpdate) {
-        constexpr auto INSTALLER_TYPE_CLIENT_ONLY = "client_only";
+    // const QString HIFI_NO_UPDATER_COMMAND_LINE_KEY = "--no-updater";
+    // bool noUpdater = arguments().indexOf(HIFI_NO_UPDATER_COMMAND_LINE_KEY) != -1;
+    // bool buildCanUpdate = BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable
+    //     || BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Master;
+    // if (!noUpdater && buildCanUpdate) {
+    //     constexpr auto INSTALLER_TYPE_CLIENT_ONLY = "client_only";
 
-        auto applicationUpdater = DependencyManager::set<AutoUpdater>();
+    //     auto applicationUpdater = DependencyManager::set<AutoUpdater>();
 
-        AutoUpdater::InstallerType type = installerType == INSTALLER_TYPE_CLIENT_ONLY
-            ? AutoUpdater::InstallerType::CLIENT_ONLY : AutoUpdater::InstallerType::FULL;
+    //     AutoUpdater::InstallerType type = installerType == INSTALLER_TYPE_CLIENT_ONLY
+    //         ? AutoUpdater::InstallerType::CLIENT_ONLY : AutoUpdater::InstallerType::FULL;
 
-        applicationUpdater->setInstallerType(type);
-        applicationUpdater->setInstallerCampaign(installerCampaign);
-        connect(applicationUpdater.data(), &AutoUpdater::newVersionIsAvailable, dialogsManager.data(), &DialogsManager::showUpdateDialog);
-        applicationUpdater->checkForUpdate();
-    }
+    //     applicationUpdater->setInstallerType(type);
+    //     applicationUpdater->setInstallerCampaign(installerCampaign);
+    //     connect(applicationUpdater.data(), &AutoUpdater::newVersionIsAvailable, dialogsManager.data(), &DialogsManager::showUpdateDialog);
+    //     applicationUpdater->checkForUpdate();
+    // }
 
     Menu::getInstance()->setIsOptionChecked(MenuOption::ActionMotorControl, true);
     Menu::getInstance()->setIsOptionChecked(
@@ -5421,7 +5422,7 @@ void Application::loadSettings() {
     }
 
     bool isFirstPerson = false;
-    if (arguments().contains("--no-launcher")) {
+    // if (arguments().contains("--no-launcher")) {
         auto displayPlugins = pluginManager->getDisplayPlugins();
         for (auto& plugin : displayPlugins) {
             if (!plugin->isHmd()) {
@@ -5433,32 +5434,32 @@ void Application::loadSettings() {
             }
         }
         isFirstPerson = (qApp->isHMDMode());
-    } else {
-        if (_firstRun.get()) {
-            // If this is our first run, and no preferred devices were set, default to
-            // an HMD device if available.
-            auto displayPlugins = pluginManager->getDisplayPlugins();
-            for (auto& plugin : displayPlugins) {
-                if (plugin->isHmd()) {
-                    if (auto action = menu->getActionForOption(plugin->getName())) {
-                        action->setChecked(true);
-                        action->trigger();
-                        break;
-                    }
-                }
-            }
-            isFirstPerson = (qApp->isHMDMode());
-        } else {
-            // if this is not the first run, the camera will be initialized differently depending on user settings
-            if (qApp->isHMDMode()) {
-                // if the HMD is active, use first-person camera, unless the appropriate setting is checked
-                isFirstPerson = menu->isOptionChecked(MenuOption::FirstPersonHMD);
-            } else {
-                // if HMD is not active, only use first person if the menu option is checked
-                isFirstPerson = menu->isOptionChecked(MenuOption::FirstPersonLookAt);
-            }
-        }
-    }
+    // } else {
+    //     if (_firstRun.get()) {
+    //         // If this is our first run, and no preferred devices were set, default to
+    //         // an HMD device if available.
+    //         auto displayPlugins = pluginManager->getDisplayPlugins();
+    //         for (auto& plugin : displayPlugins) {
+    //             if (plugin->isHmd()) {
+    //                 if (auto action = menu->getActionForOption(plugin->getName())) {
+    //                     action->setChecked(true);
+    //                     action->trigger();
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         isFirstPerson = (qApp->isHMDMode());
+    //     } else {
+    //         // if this is not the first run, the camera will be initialized differently depending on user settings
+    //         if (qApp->isHMDMode()) {
+    //             // if the HMD is active, use first-person camera, unless the appropriate setting is checked
+    //             isFirstPerson = menu->isOptionChecked(MenuOption::FirstPersonHMD);
+    //         } else {
+    //             // if HMD is not active, only use first person if the menu option is checked
+    //             isFirstPerson = menu->isOptionChecked(MenuOption::FirstPersonLookAt);
+    //         }
+    //     }
+    // }
 
     // Load settings of the RenderScritpingInterface
     // Do that explicitely before being used

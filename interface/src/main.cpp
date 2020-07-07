@@ -77,8 +77,8 @@ int main(int argc, const char* argv[]) {
     QCommandLineOption helpOption = parser.addHelpOption();
 
     QCommandLineOption urlOption("url", "", "value");
-    QCommandLineOption noLauncherOption("no-launcher", "Do not execute the launcher");
-    QCommandLineOption noUpdaterOption("no-updater", "Do not show auto-updater");
+    // QCommandLineOption noLauncherOption("no-launcher", "Do not execute the launcher");
+    // QCommandLineOption noUpdaterOption("no-updater", "Do not show auto-updater");
     QCommandLineOption checkMinSpecOption("checkMinSpec", "Check if machine meets minimum specifications");
     QCommandLineOption runServerOption("runServer", "Whether to run the server");
     QCommandLineOption serverContentPathOption("serverContentPath", "Where to find server content", "serverContentPath");
@@ -91,8 +91,8 @@ int main(int argc, const char* argv[]) {
     QCommandLineOption defaultScriptOverrideOption("defaultScriptsOverride", "override defaultsScripts.js", "string");
 
     parser.addOption(urlOption);
-    parser.addOption(noLauncherOption);
-    parser.addOption(noUpdaterOption);
+    // parser.addOption(noLauncherOption);
+    // parser.addOption(noUpdaterOption);
     parser.addOption(checkMinSpecOption);
     parser.addOption(runServerOption);
     parser.addOption(serverContentPathOption);
@@ -154,16 +154,16 @@ int main(int argc, const char* argv[]) {
                 static const QString LAUNCHER_PATH_KEY = "launcherPath";
                 launcherPath = doc.object()[LAUNCHER_PATH_KEY].toString();
                 if (!launcherPath.isEmpty()) {
-                    if (!parser.isSet(noLauncherOption)) {
-                        qDebug() << "Found a launcherPath in application config. Starting launcher.";
-                        QProcess launcher;
-                        launcher.setProgram(launcherPath);
-                        launcher.startDetached();
-                        return 0;
-                    } else {
+                    // if (!parser.isSet(noLauncherOption)) {
+                    //     qDebug() << "Found a launcherPath in application config. Starting launcher.";
+                    //     QProcess launcher;
+                    //     launcher.setProgram(launcherPath);
+                    //     launcher.startDetached();
+                    //     return 0;
+                    // } else {
                         qDebug() << "Found a launcherPath in application config, but the launcher"
                                     " has been suppressed. Continuing normal execution.";
-                    }
+                    // }
                     configFile.close();
                 }
             }
@@ -368,19 +368,20 @@ int main(int argc, const char* argv[]) {
         bool runningMarkerExisted = runningMarker.fileExists();
         runningMarker.writeRunningMarkerFile();
 
-        bool noUpdater = parser.isSet(noUpdaterOption);
+        // bool noUpdater = parser.isSet(noUpdaterOption);
         bool runServer = parser.isSet(runServerOption);
         bool serverContentPathOptionIsSet = parser.isSet(serverContentPathOption);
         QString serverContentPath = serverContentPathOptionIsSet ? parser.value(serverContentPathOption) : QString();
         if (runServer) {
-            SandboxUtils::runLocalSandbox(serverContentPath, true, noUpdater);
+            // SandboxUtils::runLocalSandbox(serverContentPath, true, noUpdater);
+            SandboxUtils::runLocalSandbox(serverContentPath, true, true);
         }
 
         // Extend argv to enable WebGL rendering
         std::vector<const char*> argvExtended(&argv[0], &argv[argc]);
         argvExtended.push_back("--ignore-gpu-blacklist");
 #ifdef Q_OS_ANDROID
-        argvExtended.push_back("--suppress-settings-reset");
+        // argvExtended.push_back("--suppress-settings-reset");
 #endif
         int argcExtended = (int)argvExtended.size();
 
