@@ -37,7 +37,7 @@
 	var runningScripts = ScriptDiscoveryService.getRunning();
 
 	for (var i = 0; i < runningScripts.length; i++) {
-		if (runningScripts[i].name == script) return;
+		if (runningScripts[i].name == script.split("/").pop()) return;
 	}
 
 	ScriptDiscoveryService.loadScript("file:///~/" + script);
