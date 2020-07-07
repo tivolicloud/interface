@@ -181,8 +181,8 @@ void LightStage::Shadow::setMaxDistance(float value) {
         } else {
             // Distribute the cascades along that distance
             // TODO : these parameters should be exposed to the user as part of the light entity parameters, no?
-            static const auto LOW_MAX_DISTANCE = 45.0f;
-            static const auto MAX_RESOLUTION_LOSS = 0.0f; // Between 0 and 1, 0 giving sharper shadows at distance, higher = shadows stay fuzzy until you get close. Lower changes that.
+            static const auto LOW_MAX_DISTANCE = 2.0f;
+            static const auto MAX_RESOLUTION_LOSS = 0.6f; // Between 0 and 1, 0 giving sharper shadows at distance, higher = shadows stay fuzzy until you get close. Lower changes that.
 
             // The max cascade distance is computed by multiplying the previous cascade's max distance by a certain
             // factor. There is a "user" factor that is computed from a desired max resolution loss in the shadow
