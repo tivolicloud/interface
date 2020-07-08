@@ -174,7 +174,11 @@ Windows.ScrollingWindow {
 
 
     function canEditScript(script) {
-        if ((script === "controllerScripts.js") || (script === "defaultScripts.js")) {
+        if (
+            script === "controllerScripts.js" ||
+            script === "defaultScripts.js" ||
+            script === "tivoli.js"
+        ) {
             return developerMenuEnabled;
         }
 
