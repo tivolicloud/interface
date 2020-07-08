@@ -36,7 +36,6 @@ Item {
     children: [
         focusShadow,
         decoration,
-        sizeOutline,
         debugZ,
         sizeDrag
     ]
@@ -75,19 +74,6 @@ Item {
             GradientStop { position: 1.0; color: "#00000000" }
         }
         cached: true
-    }
-
-    Rectangle {
-        id: sizeOutline
-        x: -frameMarginLeft
-        y: -frameMarginTop - offsetCorrection
-        width: window ? window.width + frameMarginLeft + frameMarginRight + 2 : 0
-        height: window ? window.height + frameMarginTop + frameMarginBottom + 2 : 0
-        color: hifi.colors.baseGrayHighlight15
-        border.width: 3
-        border.color: hifi.colors.white50
-        radius: hifi.dimensions.borderRadius
-        visible: window ? !window.content.visible : false
     }
 
     MouseArea {
