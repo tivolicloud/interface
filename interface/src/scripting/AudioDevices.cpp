@@ -312,15 +312,15 @@ void AudioDeviceList::onDevicesChanged(QAudio::Mode mode, const QList<HifiAudioD
         if (deviceInfo.isDefault()) {
             if (deviceInfo.getDeviceType() == HifiAudioDeviceInfo::desktop) {
                 if (deviceInfo.getMode() == QAudio::AudioInput) {
-                    device.display = "Computer's default microphone (recommended)";
+                    device.display = "Computer's default microphone";
                 } else {
-                    device.display = "Computer's default audio (recommended)";
+                    device.display = "Computer's default audio";
                 }
             } else if (deviceInfo.getDeviceType() == HifiAudioDeviceInfo::hmd) {
                 if (deviceInfo.getMode() == QAudio::AudioInput) {
-                    device.display = "Headset's default mic (recommended)";
+                    device.display = "Headset's default microphone";
                 } else {
-                    device.display = "Headset's default audio (recommended)";
+                    device.display = "Headset's default audio";
                 }
             }
         } else {
