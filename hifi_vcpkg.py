@@ -106,6 +106,9 @@ endif()
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
             # self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
             self.hostTriplet = 'x64-linux'
+            if platform.machine() == "aarch64":
+                self.bootstrapCmds.append('-useSystemBinaries')
+                self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
 
         if self.args.android:
             self.triplet = 'arm64-android'
