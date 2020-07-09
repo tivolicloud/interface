@@ -14,6 +14,7 @@ vcpkg_from_github(
         bc7.patch
         squish.patch
         fix-build-error.patch
+        fix-aarch64.patch
 )
 
 vcpkg_configure_cmake(
