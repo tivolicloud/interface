@@ -59,12 +59,9 @@ class OverviewHandler extends WebEventHandler {
 		});
 	};
 
-	private enabled = false;
 	interval: object;
 
 	setEnabled(enabled: boolean) {
-		this.enabled = enabled;
-
 		if (this.interval) Script.clearInterval(this.interval);
 
 		if (enabled) this.emitOverview();
@@ -77,10 +74,13 @@ class OverviewHandler extends WebEventHandler {
 		super(uuid, button);
 	}
 
-	// handleEvent(data: { key: string; value: any }) {
-	// 	switch (data.key) {
-	// 	}
-	// }
+	handleEvent(data: { key: string; value: any }) {
+		switch (data.key) {
+			case "overview":
+				this.emitOverview();
+				break;
+		}
+	}
 
 	cleanup() {
 		this.signalManager.cleanup();
@@ -117,6 +117,7 @@ export class Overview {
 				AccountServices.metaverseServerURL,
 		});
 		this.window.setEnabled(false); // input passthrough
+		this.window.setSize(this.width, 0);
 		this.fixPosition();
 
 		this.handler = new OverviewHandler(this.uuid, {

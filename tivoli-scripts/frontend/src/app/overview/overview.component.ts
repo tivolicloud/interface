@@ -26,5 +26,8 @@ export class OverviewComponent implements OnInit {
 		this.scriptService.event$.subscribe(data => {
 			if (data.key == "overview") this.overview = data.value;
 		});
+
+		// do an initial load
+		this.scriptService.emitEvent("overview", "overview");
 	}
 }
