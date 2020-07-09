@@ -57,31 +57,43 @@ endif()
             return
             
         system = platform.system()
+        arch = platform.machine()
 
         baseQtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/'
 
-        if system == 'Windows':
-            self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-windows.tar.gz'
-        
-        elif system == 'Darwin':
-            self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-macos.tar.gz'
-       
-        elif system == 'Linux':
-            issue = open("/etc/issue", "r").read()
-            
-            if issue.startswith("Debian GNU/Linux 10"): 
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10.tar.gz'
-
-            elif issue.startswith("Ubuntu 20.04"):
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-20.04.tar.gz'
-            
-            elif issue.startswith("Arch Linux"):
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-arch-linux.tar.gz'
-
+        if arch == "x86_64":
+            if system == 'Windows':
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-windows.tar.gz'
+            elif system == 'Darwin':
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-macos.tar.gz'
+            elif system == 'Linux':
+                issue = open("/etc/issue", "r").read()
+                if issue.startswith("Debian GNU/Linux 10"):
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10.tar.gz'
+                elif issue.startswith("Ubuntu 20.04"):
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-20.04.tar.gz'
+                elif issue.startswith("Arch Linux"):
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-arch-linux.tar.gz'
+                else:
+                    raise Exception('Unsupported Linux version')
             else:
-                raise Exception('Unsupported Linux version')
+                raise Exception('Unsupported operating system')
+        
+        elif arch == "aarch64":
+            if system == 'Linux':
+                issue = open("/etc/issue", "r").read()
+                if issue.startswith("Debian GNU/Linux 10"): 
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10-arm64v8.tar.gz'
+                else:
+                    raise Exception('Unsupported arm64 Linux version')
+            else:
+                raise Exception('Unsupported arm64 operating system')
+        
+        elif arch == "i386":
+            raise Exception('32-bit not supported')
+
         else:
-            raise Exception('Unknown operating system')
+            raise Exception('Unknown CPU architecture')
 
     def writeConfig(self):
         print("Writing cmake config to {}".format(self.configFilePath))

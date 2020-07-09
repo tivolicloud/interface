@@ -4,5 +4,6 @@ qt5-install/
 *.tar.gz
 
 debian-10
+debian-10-arm64v8
 arch-linux
 ubuntu-20-04

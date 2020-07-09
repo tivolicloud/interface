@@ -6,6 +6,12 @@ https://wiki.qt.io/Building_Qt_5_from_Git
 
 Recommended to be done in a Docker container
 
+If you want to run a Docker ARM image on x86_64 hardware, run this once on the host machine:
+
+```bash
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+```
+
 ### Debian 10 (Buster) and Ubuntu 20.04
 
 ```bash
@@ -74,6 +80,7 @@ cd ..
 
 ```bash
 tar -zcvf tivoli-qt5-install-5.15-debian-10.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15-debian-10-arm64v8.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.15-ubuntu-20.04.tar.gz qt5-install
 tar -zcvf tivoli-qt5-install-5.15-arch-linux.tar.gz qt5-install
 ```
