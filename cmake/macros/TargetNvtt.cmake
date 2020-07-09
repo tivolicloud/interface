@@ -50,7 +50,6 @@ macro(TARGET_NVTT)
         select_library_configurations(NVTT)
     endif()
 
-    message("${NVTT_LIBRARIES}")
     target_link_libraries(${TARGET_NAME} ${NVTT_LIBRARIES})
     if ((NOT WIN32) AND (NOT ANDROID) AND (NOT APPLE))
         find_package(OpenMP)
