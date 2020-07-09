@@ -25,6 +25,10 @@ def saveLibraries(executable, outputPath):
 	print("To destination: " + outputPath)
 	print("")
 
+	if not os.path.exists(executable):
+		print(executable + " not found")
+		return
+
 	args = ["ldd", executable]
 	lines = subprocess.check_output(args).decode("utf-8").split("\n")
 
