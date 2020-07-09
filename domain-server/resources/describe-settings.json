@@ -1052,7 +1052,7 @@
           "label": "Automatically determine thread count",
           "type": "checkbox",
           "help": "Allow system to determine number of threads (recommended)",
-          "default": false,
+          "default": true,
           "advanced": true
         },
         {
@@ -1342,7 +1342,7 @@
           "label": "Automatically determine thread count",
           "type": "checkbox",
           "help": "Allow system to determine number of threads (recommended)",
-          "default": false,
+          "default": true,
           "advanced": true
         },
         {
