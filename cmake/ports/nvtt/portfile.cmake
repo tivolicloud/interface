@@ -1,25 +1,27 @@
-# Common Ambient Variables:
-#   VCPKG_ROOT_DIR = <C:\path\to\current\vcpkg>
-#   TARGET_TRIPLET is the current triplet (x86-windows, etc)
-#   PORT is the current port name (zlib, etc)
-#   CURRENT_BUILDTREES_DIR = ${VCPKG_ROOT_DIR}\buildtrees\${PORT}
-#   CURRENT_PACKAGES_DIR  = ${VCPKG_ROOT_DIR}\packages\${PORT}_${TARGET_TRIPLET}
-#
 include(vcpkg_common_functions)
+
+vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO highfidelity/nvidia-texture-tools
-    REF 330c4d56274a0f602a5c70596e2eb670a4ed56c2
-    SHA512 4c0bc2f369120d696cc27710b6d33086b27eef55f537ec66b9a5c8b1839bc2426c0413670b0f65be52c5d353468f0126dfe024be1f0690611d4d7e33ac530127
+    REPO castano/nvidia-texture-tools
+    REF 2.1.1
+    SHA512 3e6fef5977ca29daa7dc97afe11d61de57a8556c9caf30902db8c5c167d9c38f736bcb62eebdaaf7558299b39975bc269d41ab980c813b67dd1fc85064c853c9
     HEAD_REF master
+    PATCHES
+        001-define-value-for-HAVE_UNISTD_H-in-mac-os.patch
+        bc6h.patch
+        bc7.patch
+        squish.patch
+        fix-build-error.patch
 )
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
-        -DBUILD_TESTS=OFF
-        -DBUILD_TOOLS=OFF
+        -DNVTT_SHARED=0
+        -DCMAKE_DEBUG_POSTFIX=_d # required by OSG
 )
 
 vcpkg_install_cmake()
@@ -27,7 +29,7 @@ vcpkg_install_cmake()
 if(VCPKG_LIBRARY_LINKAGE STREQUAL static)
     file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
 endif()
-    
+
 vcpkg_copy_pdbs()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
