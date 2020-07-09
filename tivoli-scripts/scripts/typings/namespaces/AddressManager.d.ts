@@ -1,6 +1,9 @@
 declare namespace AddressManager {
 	// properties
 	const domainID: Uuid;
+	const worldName: string;
+	const worldAuthor: string;
+	const worldDescription: string;
 	const hostname: string;
 	const href: string;
 	const isConnected: boolean;

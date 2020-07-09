@@ -472,6 +472,8 @@ signals:
      */
     void wheelEvent(const WheelEvent& event);
 
+    // TODO: this is for overview.ts and gets called in Application::eventFilter. needs to be rewritten
+    void tabKeyEvent(const bool down);
 private:
     QMultiMap<int,KeyEvent> _capturedKeys;
     QSet<int> _capturedJoysticks;

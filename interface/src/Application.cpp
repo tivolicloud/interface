@@ -4371,6 +4371,18 @@ bool Application::eventFilter(QObject* object, QEvent* event) {
         }
     }
 
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
+        QKeyEvent* key = static_cast<QKeyEvent*>(event);
+        
+        // for overview and needs to be rewritten
+		if (key->key() == Qt::Key_Tab) {
+            if (key->isAutoRepeat() == false) {
+                _controllerScriptingInterface->tabKeyEvent(event->type() == QEvent::KeyPress);
+            }
+            return true; 
+        }
+    }
+
     return false;
 }
 

@@ -1,0 +1,77 @@
+<div class="overview" *ngIf="overview">
+	<div class="stats">
+		<div class="world">
+			<img
+				[src]="
+					scriptService.metaverseUrl +
+					'/api/domain/' +
+					overview.world.id.slice(1, -1) +
+					'/image'
+				"
+				[alt]="overview.world.name"
+			/>
+			<div>
+				<h2>{{ overview.world.name }}</h2>
+				<h3>
+					<img
+						[src]="
+							scriptService.metaverseUrl +
+							'/api/user/' +
+							overview.world.author +
+							'/image'
+						"
+						[alt]="overview.world.name"
+					/>
+					{{ overview.world.author }}
+				</h3>
+			</div>
+		</div>
+		<div class="stat">
+			<mat-icon>people</mat-icon>
+			<div>
+				<h2>{{ overview.usersCount }} users</h2>
+				<h3>here in-world</h3>
+			</div>
+		</div>
+		<div class="stat">
+			<mat-icon>settings_ethernet</mat-icon>
+			<div>
+				<h2>{{ overview.ping }} ms ping</h2>
+				<h3>avg. to the server</h3>
+			</div>
+		</div>
+		<div class="stat">
+			<mat-icon>layers</mat-icon>
+			<div>
+				<h2>{{ overview.drawcalls }} draw calls</h2>
+				<h3>rendering now</h3>
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="users">
+		<div class="user" *ngFor="let user of overview.users">
+			<div class="user-container">
+				<img
+					[src]="
+						scriptService.metaverseUrl +
+						'/api/user/' +
+						user.username +
+						'/image'
+					"
+					[alt]="user.username"
+				/>
+				<div>
+					<h3>{{ user.username }}</h3>
+					<h4 style="opacity: 0.75;">
+						{{
+							user.distance == 0
+								? "It's you!"
+								: user.distance.toFixed(2) + " m"
+						}}
+					</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

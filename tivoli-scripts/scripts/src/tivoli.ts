@@ -3,13 +3,23 @@ import { Chat } from "./chat";
 import { SignalManager } from "./lib/signal-manager";
 import { initNametags } from "./nametags";
 import { Optimize } from "./optimize";
+import { Overview } from "./overview";
+
+const tryInit = (func: () => any) => {
+	try {
+		return func();
+	} catch (err) {
+		console.error(err);
+	}
+};
 
 class Tivoli {
 	signals = new SignalManager();
 
-	optimize = new Optimize();
-	buttons = new Buttons();
-	chat = new Chat();
+	optimize = tryInit(() => new Optimize());
+	buttons = tryInit(() => new Buttons());
+	chat = tryInit(() => new Chat());
+	overview = tryInit(() => new Overview());
 
 	private forceRemoveScript(scriptFilename: string) {
 		const runningScripts = ScriptDiscoveryService.getRunning();
@@ -30,15 +40,16 @@ class Tivoli {
 		);
 
 		// TODO: finish rewriting
-		initNametags();
+		tryInit(initNametags);
 
 		this.signals.connect(Script.scriptEnding, this.cleanup);
 	}
 
 	cleanup = () => {
-		this.optimize.cleanup();
-		this.buttons.cleanup();
-		this.chat.cleanup();
+		if (this.optimize) this.optimize.cleanup();
+		if (this.buttons) this.buttons.cleanup();
+		if (this.chat) this.chat.cleanup();
+		if (this.overview) this.overview.cleanup();
 
 		this.signals.cleanup();
 	};
