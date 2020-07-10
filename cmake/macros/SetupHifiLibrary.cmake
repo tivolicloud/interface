@@ -15,6 +15,8 @@ macro(SETUP_HIFI_LIBRARY)
   file(GLOB_RECURSE LIB_SRCS "src/*.h" "src/*.cpp" "src/*.c" "src/*.qrc")
   list(APPEND ${TARGET_NAME}_SRCS ${LIB_SRCS})
 
+  include(CheckCXXCompilerFlag)
+
   # add compiler flags to AVX source files
   file(GLOB_RECURSE AVX_SRCS "src/avx/*.cpp" "src/avx/*.c")
   foreach(SRC ${AVX_SRCS})
@@ -42,7 +44,6 @@ macro(SETUP_HIFI_LIBRARY)
   endforeach()
 
   # add compiler flags to AVX512 source files, if supported by compiler
-  include(CheckCXXCompilerFlag)
   file(GLOB_RECURSE AVX512_SRCS "src/avx512/*.cpp" "src/avx512/*.c")
   foreach(SRC ${AVX512_SRCS})
     if (WIN32)
