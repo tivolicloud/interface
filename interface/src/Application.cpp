@@ -7226,7 +7226,8 @@ void Application::updateWindowTitle() const {
 
     const QString title = (
         (status.isEmpty() ? "" : status + " - ") +
-        (username.isEmpty() ? "" : username + " @ ") + 
+        username +
+        (username.isEmpty() || currentWorldName.isEmpty() ? "" : " @ ")  +
         currentWorldName + " - " +
         "Tivoli Cloud VR " + buildVersion
     );
