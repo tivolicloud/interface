@@ -1,4 +1,4 @@
-From 831d8e1a9173b1fb7e01f10fc1d33f42fe2da0fd Mon Sep 17 00:00:00 2001
+From dff0d0b432d3960f2fd787ba27afcd63f3029a42 Mon Sep 17 00:00:00 2001
 From: leper <blubblub@mail.ru>
 Date: Mon, 16 Mar 2020 21:08:18 +0100
 Subject: [PATCH] Fix build on AArch64. Fixes #298.
@@ -9,10 +9,10 @@ Subject: [PATCH] Fix build on AArch64. Fixes #298.
  2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/src/nvcore/Debug.cpp b/src/nvcore/Debug.cpp
-index 38429e92..f25c5ca3 100644
+index 9ab4525..338c37d 100644
 --- a/src/nvcore/Debug.cpp
 +++ b/src/nvcore/Debug.cpp
-@@ -1015,6 +1015,12 @@ void debug::dumpInfo()
+@@ -1008,6 +1008,12 @@ void debug::dumpInfo()
  #endif
  }
  
@@ -25,7 +25,7 @@ index 38429e92..f25c5ca3 100644
  /// Dump callstack using the specified handler.
  void debug::dumpCallstack(MessageHandler *messageHandler, int callstackLevelsToSkip /*= 0*/)
  {
-@@ -1027,8 +1033,11 @@ void debug::dumpCallstack(MessageHandler *messageHandler, int callstackLevelsToS
+@@ -1020,8 +1026,11 @@ void debug::dumpCallstack(MessageHandler *messageHandler, int callstackLevelsToS
          Array<const char *> lines;
          writeStackTrace(trace, size, callstackLevelsToSkip + 1, lines);     // + 1 to skip the call to dumpCallstack
  
@@ -39,14 +39,14 @@ index 38429e92..f25c5ca3 100644
          }
      }
 diff --git a/src/nvcore/Debug.h b/src/nvcore/Debug.h
-index c3a4144c..4aca31b8 100644
+index 96b3aae..4e20501 100644
 --- a/src/nvcore/Debug.h
 +++ b/src/nvcore/Debug.h
 @@ -166,7 +166,7 @@ NVCORE_API void NV_CDECL nvDebugPrint( const char *msg, ... ) __attribute__((for
  namespace nv
  {
      inline bool isValidPtr(const void * ptr) {
--    #if NV_CPU_X86_64 || POSH_CPU_PPC64
+-    #if NV_CPU_X86_64 || POSH_CPU_PPC64 || NV_CPU_ARM_64
 +    #if NV_CPU_X86_64 || POSH_CPU_PPC64 || NV_CPU_AARCH64
          if (ptr == NULL) return true;
          if (reinterpret_cast<uint64>(ptr) < 0x10000ULL) return false;
