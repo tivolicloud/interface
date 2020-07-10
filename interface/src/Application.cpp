@@ -1352,6 +1352,10 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     connect(accountManager.data(), &AccountManager::authRequired, dialogsManager.data(), &DialogsManager::showLoginDialog);
 #endif
     connect(accountManager.data(), &AccountManager::usernameChanged, this, &Application::updateWindowTitle);
+    connect(accountManager.data(), &AccountManager::usernameChanged, this, [&](const QString username){
+        auto avatarManager = DependencyManager::get<AvatarManager>();
+        if (avatarManager) avatarManager->getMyAvatar()->setDisplayName(username);
+    });
 
     // use our MyAvatar position and quat for address manager path
     addressManager->setPositionGetter([] {
