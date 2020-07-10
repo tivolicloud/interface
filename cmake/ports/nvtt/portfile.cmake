@@ -14,8 +14,14 @@ vcpkg_from_github(
         bc7.patch
         squish.patch
         fix-build-error.patch
-        fix-aarch64.patch
 )
+
+if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "^arm")
+	vcpkg_apply_patches(
+		SOURCE_PATH ${SOURCE_PATH}
+		PATCHES fix-aarch64.patch
+	)
+endif()
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
