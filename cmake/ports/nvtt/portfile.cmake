@@ -15,12 +15,12 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "^arm")
+if (VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
 	vcpkg_apply_patches(
 		SOURCE_PATH ${SOURCE_PATH}
 		PATCHES fix-aarch64.patch
 	)
-endif()
+endif ()
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
