@@ -226,6 +226,8 @@ void AudioHandler::run() {
     qDebug() << "QML Audio changed to " << _newTargetDevice;
 }
 
+bool OffscreenQmlSurface::viewportFocused = true;
+
 OffscreenQmlSurface::~OffscreenQmlSurface() {
     clearFocusItem();
 }
@@ -603,6 +605,8 @@ void OffscreenQmlSurface::onFocusObjectChanged(QObject* object) {
         return;
     }
 
+    OffscreenQmlSurface::viewportFocused = object->objectName() == "desktop";
+    
     QInputMethodQueryEvent query(Qt::ImEnabled);
     qApp->sendEvent(object, &query);
     setFocusText(query.value(Qt::ImEnabled).toBool());

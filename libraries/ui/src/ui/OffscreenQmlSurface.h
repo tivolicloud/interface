@@ -38,6 +38,7 @@ public:
     PointerEvent::EventType choosePointerEventType(QEvent::Type type);
     Q_INVOKABLE unsigned int deviceIdByTouchPoint(qreal x, qreal y);
    
+    static bool viewportFocused;
 
 signals:
     void focusObjectChanged(QObject* newFocus);
