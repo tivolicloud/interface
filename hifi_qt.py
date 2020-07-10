@@ -57,11 +57,11 @@ endif()
             return
             
         system = platform.system()
-        arch = platform.machine()
+        arch = platform.machine().lower()
 
         baseQtUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/'
 
-        if arch == "x86_64":
+        if arch == "x86_64" or arch == "amd64":
             if system == 'Windows':
                 self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-windows.tar.gz'
             elif system == 'Darwin':
