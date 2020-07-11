@@ -13,14 +13,8 @@ vcpkg_from_github(
     REF 330c4d56274a0f602a5c70596e2eb670a4ed56c2
     SHA512 4c0bc2f369120d696cc27710b6d33086b27eef55f537ec66b9a5c8b1839bc2426c0413670b0f65be52c5d353468f0126dfe024be1f0690611d4d7e33ac530127
     HEAD_REF master
+    PATCHES fix-arm64.patch
 )
-
-if (VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
-	vcpkg_apply_patches(
-		SOURCE_PATH ${SOURCE_PATH}
-		PATCHES fix-aarch64.patch
-	)
-endif ()
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
