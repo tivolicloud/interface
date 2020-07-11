@@ -39,9 +39,9 @@ using namespace gpu;
 #include <Etc2/Etc.h>
 #include <Etc2/EtcFilter.h>
 
-static const glm::uvec2 SPARSE_PAGE_SIZE(128);
-static const glm::uvec2 MAX_TEXTURE_SIZE_GLES(2048);
-static const glm::uvec2 MAX_TEXTURE_SIZE_GL(8192);
+static const glm::uvec2 SPARSE_PAGE_SIZE(512); // cpm was 128
+static const glm::uvec2 MAX_TEXTURE_SIZE_GLES(2048); // cpm was 2048
+static const glm::uvec2 MAX_TEXTURE_SIZE_GL(8192);  // cpm was 4096
 bool DEV_DECIMATE_TEXTURES = false;
 std::atomic<size_t> DECIMATED_TEXTURE_COUNT{ 0 };
 std::atomic<size_t> RECTIFIED_TEXTURE_COUNT{ 0 };

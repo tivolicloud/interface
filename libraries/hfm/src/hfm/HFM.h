@@ -51,7 +51,7 @@ using ColorType = glm::vec3;
 #define HFM_COLOR_ELEMENT gpu::Element::VEC3F_XYZ
 #endif
 
-const int MAX_NUM_PIXELS_FOR_FBX_TEXTURE = 8192 * 8192;
+const int MAX_NUM_PIXELS_FOR_FBX_TEXTURE = 4096 * 4096;
 
 
 using ShapeVertices = std::vector<glm::vec3>;
