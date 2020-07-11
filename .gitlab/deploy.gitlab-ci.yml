@@ -103,6 +103,8 @@ upload server:
 upload server arm64:
     stage: deploy
     image: docker:latest
+    tags:
+        - arm64
 
     extends: .deploy
 
@@ -118,9 +120,6 @@ upload server arm64:
     script:
         - docker system info
         - docker image ls
-
-        # install qemu so it works on x86_64 hardware
-        - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
         # prepare server image
         - cd docker/server
