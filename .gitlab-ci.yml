@@ -2,6 +2,7 @@ stages:
     - build
     - package
     - deploy
+    - finalize
 
 .production:
     only:
@@ -14,3 +15,4 @@ include:
     - local: .gitlab/build/windows.gitlab-ci.yml
     - local: .gitlab/build/macos.gitlab-ci.yml
     - local: .gitlab/deploy.gitlab-ci.yml
+    - local: .gitlab/finalize.gitlab-ci.yml
