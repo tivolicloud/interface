@@ -109,6 +109,7 @@ endif()
             if platform.machine() == "aarch64":
                 self.bootstrapCmds.append('-useSystemBinaries')
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
+                self.hostTriplet = 'arm64-linux'
 
         if self.args.android:
             self.triplet = 'arm64-android'
@@ -208,6 +209,20 @@ endif()
             os.rmdir(vcpkg_master)
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
+
+            # add arm64-linux.cmake if it doesn't exist
+            # TODO: remove once vcpkg has arm64-linux triplet
+            ARM64_LINUX_TRIPLET_PATH = os.path.join(self.path, "triplets", "arm64-linux.cmake")
+            if not os.path.isfile(ARM64_LINUX_TRIPLET_PATH):
+                with open(ARM64_LINUX_TRIPLET_PATH, "w") as file:
+                    file.write("\n".join([
+                        "set(VCPKG_TARGET_ARCHITECTURE arm64)",
+                        "set(VCPKG_CRT_LINKAGE dynamic)",
+                        "set(VCPKG_LIBRARY_LINKAGE static)",
+                        "",
+                        "set(VCPKG_CMAKE_SYSTEM_NAME Linux)",
+                        "",
+                    ]))
 
             print("Bootstrapping vcpkg")
             hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)      
