@@ -715,8 +715,7 @@ bool Octree::readJSONFromGzippedFile(QString qFileName) {
 bool Octree::readFromURL(
     const QString& urlString,
     const bool isObservable,
-    const qint64 callerId,
-    const bool isImport
+    const qint64 callerId
 ) {
     QString trimmedUrl = urlString.trimmed();
     auto request = std::unique_ptr<ResourceRequest>(
@@ -747,7 +746,7 @@ bool Octree::readFromURL(
     }
 
     QDataStream inputStream(data);
-    return readFromStream(data.size(), inputStream, isImport);
+    return readFromStream(data.size(), inputStream);
 }
 
 bool Octree::readFromByteArray(
@@ -770,8 +769,7 @@ bool Octree::readFromByteArray(
 
 bool Octree::readFromStream(
     uint64_t streamLength,
-    QDataStream& inputStream,
-    const bool isImport
+    QDataStream& inputStream
 ) {
     // decide if this is binary SVO or JSON-formatted SVO
     QIODevice *device = inputStream.device();
@@ -784,7 +782,7 @@ bool Octree::readFromStream(
         return false;
     } else {
         qCDebug(octree) << "Reading from JSON SVO Stream length:" << streamLength;
-        return readJSONFromStream(streamLength, inputStream, isImport);
+        return readJSONFromStream(streamLength, inputStream);
     }
 }
 
@@ -793,8 +791,7 @@ const int READ_JSON_BUFFER_SIZE = 2048;
 
 bool Octree::readJSONFromStream(
     uint64_t streamLength,
-    QDataStream& inputStream,
-    const bool isImport
+    QDataStream& inputStream
 ) {
     // if the data is gzipped we may not have a useful bytesAvailable() result, so just keep reading until
     // we get an eof.  Leave streamLength parameter for consistency.
@@ -822,7 +819,7 @@ bool Octree::readJSONFromStream(
         return false;
     }
 
-    bool success = readFromMap(asMap, isImport);
+    bool success = readFromMap(asMap);
     delete[] rawData;
     return success;
 }

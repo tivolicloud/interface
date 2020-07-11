@@ -40,7 +40,6 @@ public:
 class SendEntitiesOperationArgs {
 public:
     glm::vec3 root;
-    QString entityHostType;
     EntityTree* ourTree;
     EntityTreePointer otherTree;
     QHash<EntityItemID, EntityItemID>* map;
@@ -118,7 +117,7 @@ public:
     // The newer API...
     void postAddEntity(EntityItemPointer entityItem);
 
-    EntityItemPointer addEntity(const EntityItemID& entityID, const EntityItemProperties& properties, bool isClone = false, const bool isImport = false);
+    EntityItemPointer addEntity(const EntityItemID& entityID, const EntityItemProperties& properties, bool isClone = false);
 
     // use this method if you only know the entityID
     bool updateEntity(const EntityItemID& entityID, const EntityItemProperties& properties, const SharedNodePointer& senderNode = SharedNodePointer(nullptr));
@@ -177,7 +176,7 @@ public:
     static QByteArray remapActionDataIDs(QByteArray actionData, QHash<EntityItemID, EntityItemID>& map);
 
     QVector<EntityItemID> sendEntities(EntityEditPacketSender* packetSender, EntityTreePointer localTree,
-                                       const QString& entityHostType, float x, float y, float z);
+                                       float x, float y, float z);
 
     void entityChanged(EntityItemPointer entity);
 
@@ -195,7 +194,7 @@ public:
 
     virtual bool writeToMap(QVariantMap& entityDescription, OctreeElementPointer element, bool skipDefaultValues,
                             bool skipThoseWithBadParents) override;
-    virtual bool readFromMap(QVariantMap& entityDescription, const bool isImport = false) override;
+    virtual bool readFromMap(QVariantMap& entityDescription) override;
     virtual bool writeToJSON(QString& jsonString, const OctreeElementPointer& element) override;
 
 
