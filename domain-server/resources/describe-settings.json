@@ -22,7 +22,7 @@
           "name": "automatic_networking",
           "label": "Automatic Networking",
           "help": "This defines how other nodes in the Tivoli metaverse will be able to reach your server.<br/>If you don't want to deal with any network settings, use full automatic networking.",
-          "default": "ip",
+          "default": "full",
           "type": "select",
           "options": [
             {
