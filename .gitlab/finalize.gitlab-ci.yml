@@ -2,14 +2,14 @@ finalize server:
     stage: finalize
     image: docker:latest
 
-    extends: .deploy
+    # extends: .deploy
 
     variables:
         DOCKER_TLS_CERTDIR: ""
 
-    dependencies:
-        - upload server
-        - upload server arm64
+    # dependencies:
+    #     - upload server
+    #     - upload server arm64
 
     services:
         - name: docker:dind
