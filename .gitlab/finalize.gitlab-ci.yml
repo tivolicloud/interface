@@ -64,8 +64,8 @@ finalize server:
         - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.16.1/reg-linux-amd64
         - chmod +x /usr/bin/reg
 
-        - reg rm -u $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-        - reg rm -u $CI_REGISTRY_IMAGE/server:arm64-0.10.4
+        - reg rm $CI_REGISTRY_IMAGE/server:amd64-0.10.4
+        - reg rm $CI_REGISTRY_IMAGE/server:arm64-0.10.4
 
-        - reg rm -u tivolicloud/server:amd64-0.10.4
-        - reg rm -u tivolicloud/server:arm64-0.10.4
+        - reg rm tivolicloud/server:amd64-0.10.4
+        - reg rm tivolicloud/server:arm64-0.10.4
