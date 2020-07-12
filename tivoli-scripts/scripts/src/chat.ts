@@ -11,23 +11,42 @@ class ChatJoinAndLeave {
 		requestId: Uuid,
 		callback?: (username: string) => any,
 	) => {
-		const signals = new SignalManager();
-		signals.connect(
-			Users.usernameFromIDReply,
-			(id, username, machineFingerprint, isAdmin) => {
-				if (requestId != id) return;
+		// const signals = new SignalManager();
+		// signals.connect(
+		// 	Users.usernameFromIDReply,
+		// 	(id, username, machineFingerprint, isAdmin) => {
+		// 		if (requestId != id) return;
 
-				const avatar = AvatarList.getAvatar(id);
-				if (avatar.displayName.toLowerCase() == username) {
-					this.usernames[id] = avatar.displayName;
-				} else {
-					this.usernames[id] = username; // lowercase
-				}
-				if (callback) callback(this.usernames[id]);
+		// 		const avatar = AvatarList.getAvatar(id);
+		// 		if (avatar.displayName.toLowerCase() == username) {
+		// 			this.usernames[id] = avatar.displayName;
+		// 		} else {
+		// 			this.usernames[id] = username; // lowercase
+		// 		}
+		// 		if (callback) callback(this.usernames[id]);
 
-				signals.cleanup();
-			},
-		);
+		// 		signals.cleanup();
+		// 	},
+		// );
+
+		let tries = 50; // 5 seconds
+
+		const interval = Script.setInterval(() => {
+			if (tries <= 0) {
+				Script.clearInterval(interval);
+				return callback(null);
+			}
+
+			const avatar = AvatarList.getAvatar(requestId);
+			const username = avatar.displayName.trim();
+			if (username != "") {
+				Script.clearInterval(interval);
+				this.usernames[requestId] = username;
+				return callback(username);
+			}
+
+			tries--;
+		}, 100);
 	};
 
 	private isMovingBetweenWorlds = false;
