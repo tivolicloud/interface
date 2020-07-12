@@ -63,8 +63,6 @@ void MainWindow::restoreGeometry() {
     // Did not use setGeometry() on purpose,
     // see http://doc.qt.io/qt-5/qsettings.html#restoring-the-state-of-a-gui-application
 
-#if defined(Q_OS_MAC)
-    // maximising on mac is actually fullscreen
 
     const float intialWindowScale = 1.0f;
 
@@ -79,7 +77,9 @@ void MainWindow::restoreGeometry() {
             windowSize.height()
         ) / 2
     );
-#else
+
+#if !defined(Q_OS_MAC)
+    // maximising on mac is actually fullscreen
     setWindowState(Qt::WindowMaximized);
 #endif
     
