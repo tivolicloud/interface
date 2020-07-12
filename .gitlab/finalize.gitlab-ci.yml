@@ -58,14 +58,16 @@ finalize server:
         - docker manifest push tivolicloud/server:0.10.4
         - docker manifest push tivolicloud/server:latest
 
-        # delete build tags
+        # # delete build tags
 
-        - apk add wget
-        - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.16.1/reg-linux-amd64
-        - chmod +x /usr/bin/reg
+        # - apk add wget
+        # - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.16.1/reg-linux-amd64
+        # - chmod +x /usr/bin/reg
 
-        - reg rm $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-        - reg rm $CI_REGISTRY_IMAGE/server:arm64-0.10.4
+        # - reg rm $CI_REGISTRY_IMAGE/server:amd64-0.10.4
+        # - reg rm $CI_REGISTRY_IMAGE/server:arm64-0.10.4
 
-        - reg rm tivolicloud/server:amd64-0.10.4
-        - reg rm tivolicloud/server:arm64-0.10.4
+        # - reg rm tivolicloud/server:amd64-0.10.4
+        # - reg rm tivolicloud/server:arm64-0.10.4
+
+        - echo
