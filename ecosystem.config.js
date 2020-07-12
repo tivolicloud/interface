@@ -1,13 +1,17 @@
 const path = require("path");
 const os = require("os");
 const fs = require("fs");
-const { EROFS } = require("constants");
 
 const buildPath = path.join(__dirname, "build");
-const buildType = os.platform() != "linux" ? "RelWithDebInfo" : "";
+const buildType = os.platform() == "linux" ? "" : "RelWithDebInfo";
 
 const getExePath = exe => {
-	const exePath = path.join(buildPath, exe, buildType, exe);
+	const exePath = path.join(
+		buildPath,
+		exe,
+		buildType,
+		exe + (os.platform() == "win32" ? ".exe" : ""),
+	);
 	if (fs.existsSync(exePath) == false)
 		throw new Error(`"${exePath}" not found`);
 	return exePath;
