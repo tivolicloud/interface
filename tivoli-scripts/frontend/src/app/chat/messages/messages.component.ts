@@ -1,17 +1,37 @@
+import { animate, style, transition, trigger } from "@angular/animations";
 import {
-	Component,
-	OnInit,
 	AfterViewChecked,
-	ViewChild,
+	Component,
 	ElementRef,
+	OnInit,
+	ViewChild,
 } from "@angular/core";
-import { ChatService } from "../chat.service";
 import { ScriptService } from "../../script.service";
+import { ChatService } from "../chat.service";
 
 @Component({
 	selector: "app-messages",
 	templateUrl: "./messages.component.html",
 	styleUrls: ["./messages.component.scss"],
+	animations: [
+		trigger("message", [
+			transition(":enter", [
+				style({
+					height: "0",
+					opacity: "0",
+					transform: "translateX(-32px)",
+				}),
+				animate(
+					"100ms cubic-bezier(0.4, 0, 0.2, 1)",
+					style({
+						height: "*",
+						opacity: "1",
+						transform: "translateX(0)",
+					}),
+				),
+			]),
+		]),
+	],
 })
 export class MessagesComponent implements OnInit, AfterViewChecked {
 	constructor(
