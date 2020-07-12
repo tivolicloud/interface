@@ -617,10 +617,11 @@ void DefaultLightingSetup::run(const RenderContextPointer& renderContext) {
             // Allocate a default global light directional and ambient
             auto lp = std::make_shared<graphics::Light>();
             lp->setType(graphics::Light::SUN);
-            lp->setDirection(glm::vec3(-1.0f));
+            lp->setDirection(glm::vec3(0, -0.8674231767654419, 0.49757108092308044)); // 60 degrees
             lp->setColor(glm::vec3(1.0f));
             lp->setIntensity(1.0f);
             lp->setType(graphics::Light::SUN);
+            lp->setCastShadows(true);
             lp->setAmbientSpherePreset(gpu::SphericalHarmonics::Preset::OLD_TOWN_SQUARE);
 
             lp->setAmbientIntensity(0.5f);
