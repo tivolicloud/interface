@@ -22,6 +22,11 @@ finalize server:
         - docker system info
         - docker image ls
 
+        # login
+
+        - docker login registry.tivolicloud.com -u gitlab-ci-token -p $CI_JOB_TOKEN
+        - docker login -u makitsune -p $DOCKER_HUB_ACCESS_TOKEN
+
         # create manifests for our registry and upload
 
         - docker manifest create $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG
@@ -31,7 +36,6 @@ finalize server:
           --amend $CI_REGISTRY_IMAGE/server:amd64-$CI_COMMIT_TAG
           --amend $CI_REGISTRY_IMAGE/server:arm64-$CI_COMMIT_TAG
 
-        - docker login registry.tivolicloud.com --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker manifest push $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG
         - docker manifest push $CI_REGISTRY_IMAGE/server:latest
 
@@ -51,7 +55,6 @@ finalize server:
           --amend tivolicloud/server:amd64-$CI_COMMIT_TAG
           --amend tivolicloud/server:arm64-$CI_COMMIT_TAG
 
-        - docker login --username makitsune --password $DOCKER_HUB_ACCESS_TOKEN
         - docker manifest push tivolicloud/server:$CI_COMMIT_TAG
         - docker manifest push tivolicloud/server:latest
 
