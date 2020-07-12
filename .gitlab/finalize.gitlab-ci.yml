@@ -2,14 +2,14 @@ finalize server:
     stage: finalize
     image: docker:latest
 
-    # extends: .deploy
+    extends: .deploy
 
     variables:
         DOCKER_TLS_CERTDIR: ""
 
-    # dependencies:
-    #     - upload server
-    #     - upload server arm64
+    dependencies:
+        - upload server
+        - upload server arm64
 
     services:
         - name: docker:dind
@@ -29,33 +29,35 @@ finalize server:
 
         # create manifests for our registry and upload
 
-        - docker manifest create $CI_REGISTRY_IMAGE/server:0.10.4
-          --amend $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-          --amend $CI_REGISTRY_IMAGE/server:arm64-0.10.4
-        - docker manifest create $CI_REGISTRY_IMAGE/server:latest
-          --amend $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-          --amend $CI_REGISTRY_IMAGE/server:arm64-0.10.4
+        - docker manifest create $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG
+          --amend $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64
+          --amend $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
 
-        - docker manifest push $CI_REGISTRY_IMAGE/server:0.10.4
+        - docker manifest create $CI_REGISTRY_IMAGE/server:latest
+          --amend $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64
+          --amend $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
+
+        - docker manifest push $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG
         - docker manifest push $CI_REGISTRY_IMAGE/server:latest
 
         # upload and create manifests for docker hub
 
-        - docker pull $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-        - docker pull $CI_REGISTRY_IMAGE/server:arm64-0.10.4
-        - docker tag $CI_REGISTRY_IMAGE/server:amd64-0.10.4 tivolicloud/server:amd64-0.10.4
-        - docker tag $CI_REGISTRY_IMAGE/server:arm64-0.10.4 tivolicloud/server:arm64-0.10.4
-        - docker push tivolicloud/server:amd64-0.10.4
-        - docker push tivolicloud/server:arm64-0.10.4
+        - docker pull $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64
+        - docker pull $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
+        - docker tag $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64 tivolicloud/server:$CI_COMMIT_TAG-amd64
+        - docker tag $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64 tivolicloud/server:$CI_COMMIT_TAG-arm64
+        - docker push tivolicloud/server:$CI_COMMIT_TAG-amd64
+        - docker push tivolicloud/server:$CI_COMMIT_TAG-arm64
 
-        - docker manifest create tivolicloud/server:0.10.4
-          --amend tivolicloud/server:amd64-0.10.4
-          --amend tivolicloud/server:arm64-0.10.4
+        - docker manifest create tivolicloud/server:$CI_COMMIT_TAG
+          --amend tivolicloud/server:$CI_COMMIT_TAG-amd64
+          --amend tivolicloud/server:$CI_COMMIT_TAG-arm64
+
         - docker manifest create tivolicloud/server:latest
-          --amend tivolicloud/server:amd64-0.10.4
-          --amend tivolicloud/server:arm64-0.10.4
+          --amend tivolicloud/server:$CI_COMMIT_TAG-amd64
+          --amend tivolicloud/server:$CI_COMMIT_TAG-arm64
 
-        - docker manifest push tivolicloud/server:0.10.4
+        - docker manifest push tivolicloud/server:$CI_COMMIT_TAG
         - docker manifest push tivolicloud/server:latest
 
         # # delete build tags
@@ -64,10 +66,10 @@ finalize server:
         # - wget -O /usr/bin/reg https://github.com/genuinetools/reg/releases/download/v0.16.1/reg-linux-amd64
         # - chmod +x /usr/bin/reg
 
-        # - reg rm $CI_REGISTRY_IMAGE/server:amd64-0.10.4
-        # - reg rm $CI_REGISTRY_IMAGE/server:arm64-0.10.4
+        # - reg rm $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64
+        # - reg rm $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
 
-        # - reg rm tivolicloud/server:amd64-0.10.4
-        # - reg rm tivolicloud/server:arm64-0.10.4
+        # - reg rm tivolicloud/server:$CI_COMMIT_TAG-amd64
+        # - reg rm tivolicloud/server:$CI_COMMIT_TAG-arm64
 
         - echo
