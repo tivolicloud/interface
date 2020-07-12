@@ -12,10 +12,12 @@ finalize server:
         - upload server arm64
 
     services:
-        - docker:dind
+        - name: docker:dind
+          command: ["--experimental"]
 
     script:
-        - 'echo ''{"experimental": true}'' > /etc/docker/daemon.json'
+        - mkdir -p ~/.docker
+        - 'echo ''{"experimental": "enabled"}'' > ~/.docker/config.json'
 
         - docker system info
         - docker image ls
