@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { MaterialModule } from "../material.module";
-import { DomainCardComponent } from "./domain-card/domain-card.component";
-import { ExploreComponent } from "./explore.component";
-import { Routes, RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { MaterialModule } from "../material.module";
+import { ExploreComponent } from "./explore.component";
+import { FriendsComponent } from "./friends/friends.component";
+import { HeaderComponent } from "./header/header.component";
+import { WorldCardComponent } from "./world-card/world-card.component";
+import { WorldsComponent } from "./worlds/worlds.component";
 
 const routes: Routes = [
 	{
@@ -15,13 +17,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	declarations: [ExploreComponent, DomainCardComponent],
+	declarations: [
+		ExploreComponent,
+		HeaderComponent,
+		WorldsComponent,
+		WorldCardComponent,
+		FriendsComponent,
+	],
 	imports: [
 		CommonModule,
 		RouterModule.forChild(routes),
 		MaterialModule,
 		HttpClientModule,
-		InfiniteScrollModule,
 	],
 })
 export class ExploreModule {}

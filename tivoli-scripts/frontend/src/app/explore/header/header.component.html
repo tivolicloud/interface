@@ -1,0 +1,51 @@
+<div class="header">
+	<mat-tab-group
+		animationDuration="0"
+		(selectedTabChange)="onTabChange($event)"
+	>
+		<mat-tab *ngFor="let tab of tabs">
+			<ng-template mat-tab-label>
+				<mat-icon style="margin-right: 8px;">{{ tab.icon }}</mat-icon>
+				{{ tab.name }}
+			</ng-template>
+		</mat-tab>
+	</mat-tab-group>
+	<div class="extra">
+		<button
+			mat-stroked-button
+			style="margin-right: 8px;"
+			(click)="onVisitTutorialWorld()"
+		>
+			Visit tutorial world
+		</button>
+		<mat-form-field appearance="outline">
+			<mat-icon matPrefix>search</mat-icon>
+			<mat-label>Search</mat-label>
+			<input #search matInput type="text" (keyup)="onSearch($event)" />
+		</mat-form-field>
+		<button
+			mat-button
+			class="icon-button"
+			[disabled]="!canGoBack"
+			(click)="goBack()"
+		>
+			<mat-icon>arrow_back</mat-icon>
+		</button>
+		<button
+			mat-button
+			class="icon-button"
+			[disabled]="!canGoForward"
+			(click)="goForward()"
+		>
+			<mat-icon>arrow_forward</mat-icon>
+		</button>
+		<button mat-button class="icon-button" (click)="refresh()">
+			<mat-icon>refresh</mat-icon>
+		</button>
+	</div>
+	<mat-progress-bar
+		class="loading"
+		mode="indeterminate"
+		[style.opacity]="exploreService.loading ? '1' : '0'"
+	></mat-progress-bar>
+</div>

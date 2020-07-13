@@ -1,0 +1,62 @@
+<mat-card
+	class="world-card"
+	[ngClass]="{ offline: !world.online, small: true }"
+>
+	<div mat-card-image>
+		<div
+			class="thumbnail"
+			[ngStyle]="{
+				backgroundImage:
+					'url(' +
+					scriptService.metaverseUrl +
+					'/api/domain/' +
+					world.id +
+					'/image' +
+					')'
+			}"
+			(click)="onJoinWorld()"
+		>
+			<p>{{ world.label }}</p>
+		</div>
+	</div>
+	<mat-card-header>
+		<div class="header">
+			<h3 class="title">
+				<mat-icon *ngIf="world.restriction == 'acl'">lock</mat-icon>
+				{{ users }}
+			</h3>
+			<p class="subtitle">{{ world.username }}</p>
+
+			<span style="flex-grow: 1;"></span>
+
+			<button
+				mat-flat-button
+				class="like-button"
+				[class.active]="world.liked"
+				(click)="onLikeWorld()"
+			>
+				{{ world.likes }}
+				<mat-icon *ngIf="!world.liked">favorite_border</mat-icon>
+				<mat-icon *ngIf="world.liked">favorite</mat-icon>
+			</button>
+		</div>
+
+		<!-- <mat-card-title class="ellipses">
+			{{ world.label }}
+		</mat-card-title>
+		<mat-card-subtitle class="ellipses">
+			{{ world.username }}
+		</mat-card-subtitle> -->
+	</mat-card-header>
+	<mat-card-content>
+		<div class="ellipses">{{ world.description }}</div>
+	</mat-card-content>
+	<!-- <mat-card-actions>
+		<button mat-button (click)="onJoinWorld()">
+			<mat-icon>launch</mat-icon> Join
+			<span style="opacity: 0.5; font-size: 0.8em; padding-left: 8px;">
+				{{ world.networkAddress + ":" + world.networkPort }}
+			</span>
+		</button>
+	</mat-card-actions> -->
+</mat-card>

@@ -1,0 +1,50 @@
+<div class="friends">
+	<h2 style="margin-top: 0; margin-bottom: 12px;">
+		<mat-icon inline>supervisor_account</mat-icon> Online Users
+	</h2>
+
+	<div class="domain-friends" *ngFor="let domain of domainFriends">
+		<h3>
+			<mat-icon inline *ngIf="domain.private">lock</mat-icon>
+			{{ domain.name }}
+		</h3>
+		<div
+			class="friend"
+			*ngFor="let friend of domain.friends"
+			(click)="onJoinFriend(friend.username)"
+		>
+			<!-- <div
+				class="avatar"
+				[style.backgroundImage]="'url(' + friend.image + ')'"
+			>
+				<div class="status"></div>
+			</div> -->
+			<svg class="avatar" viewBox="0 0 32 32">
+				<mask
+					id="avatar-mask"
+					maskContentUnits="objectBoundingBox"
+					viewBox="0 0 1 1"
+				>
+					<circle fill="white" cx="0.5" cy="0.5" r="0.5"></circle>
+					<circle
+						fill="black"
+						cx="0.84375"
+						cy="0.84375"
+						r="0.25"
+					></circle>
+				</mask>
+				<image
+					mask="url(#avatar-mask)"
+					[attr.href]="friend.image"
+					height="32"
+					width="32"
+				/>
+				<circle fill="rgb(67, 181, 129)" cx="27" cy="27" r="5"></circle>
+			</svg>
+			<div class="info">
+				<p class="name">{{ friend.username }}</p>
+				<!-- <p class="location">{{ friend.domain.name }}</p> -->
+			</div>
+		</div>
+	</div>
+</div>

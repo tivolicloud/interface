@@ -1,14 +1,9 @@
-import {
-	HttpClient,
-	HttpErrorResponse,
-	HttpParams,
-} from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
 import { ScriptService } from "../script.service";
+import { Subject } from "rxjs";
 
-export interface Domain {
+export interface World {
 	id: string;
 	label: string;
 	username: string;
@@ -45,74 +40,72 @@ export class ExploreService {
 		private http: HttpClient,
 	) {}
 
-	private handleError = (err: HttpErrorResponse): Observable<never> => {
-		return throwError(err.statusText);
-	};
+	loading = false;
 
-	private findDomainsFrom(
-		endpoint: string,
-		page = 1,
-		amount = 50,
-		search = "",
-	) {
-		if (page <= 0) page = 1;
+	worlds: World[] = [];
+	type: "popular" | "liked" | "private" = "popular";
+	search = "";
+	page = 1;
 
-		return this.http
-			.get<Domain[]>(this.scriptService.metaverseUrl + endpoint, {
-				params: new HttpParams()
-					.set("page", page + "")
-					.set("amount", amount + "")
-					.set("search", search),
-			})
-			.pipe(catchError(this.handleError));
-	}
+	friends$ = new Subject<Friend[]>();
 
-	findDomains = {
-		popular: (page = 1, amount = 50, search = "") => {
-			return this.findDomainsFrom("/api/domains", page, amount, search);
-		},
-		liked: (page = 1, amount = 50, search = "") => {
-			return this.findDomainsFrom(
-				"/api/user/domains/liked",
-				page,
-				amount,
-				search,
-			);
-		},
-		private: (page = 1, amount = 50, search = "") => {
-			return this.findDomainsFrom(
-				"/api/user/domains/private",
-				page,
-				amount,
-				search,
-			);
-		},
-	};
+	loadWorlds(reset = true) {
+		this.loading = true;
 
-	likeDomain(id: string, unlike = false) {
-		return this.http
-			.post(
+		this.page = reset ? 1 : this.page + 1;
+
+		this.http
+			.get<World[]>(
 				this.scriptService.metaverseUrl +
-					"/api/domains/" +
-					id +
-					"/" +
-					(unlike ? "unlike" : "like"),
-				null,
+					(() => {
+						const t = this.type;
+						if (t == "popular") return "/api/domains";
+						if (t == "liked") return "/api/user/domains/liked";
+						if (t == "private") return "/api/user/domains/private";
+					})(),
+				{
+					params: new HttpParams()
+						.set("page", this.page + "")
+						.set("amount", 50 + "")
+						.set("search", this.search),
+				},
 			)
-			.pipe(catchError(this.handleError));
+			.subscribe(
+				worlds => {
+					this.worlds = reset ? worlds : [...this.worlds, ...worlds];
+					this.loading = false;
+				},
+				err => {
+					this.worlds = reset ? [] : this.worlds;
+					this.loading = false;
+				},
+			);
 	}
 
-	findFriends() {
+	likeWorld(id: string, like = true) {
+		return this.http.post(
+			this.scriptService.metaverseUrl +
+				"/api/domains/" +
+				id +
+				"/" +
+				(like ? "like" : "unlike"),
+			null,
+		);
+	}
+
+	loadFriends() {
 		return this.http
 			.get<Friend[]>(
 				this.scriptService.metaverseUrl + "/api/user/friends",
 			)
-			.pipe(catchError(this.handleError));
-	}
-
-	getDomain(id: string) {
-		return this.http
-			.get<Domain>(this.scriptService.metaverseUrl + "/api/domain/" + id)
-			.pipe(catchError(this.handleError));
+			.subscribe(
+				friends => {
+					this.friends$.next(friends);
+					console.log(friends);
+				},
+				err => {
+					this.friends$.next([]);
+				},
+			);
 	}
 }

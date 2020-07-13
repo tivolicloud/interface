@@ -1,0 +1,6 @@
+<div class="worlds">
+	<div class="world" *ngFor="let world of exploreService.worlds">
+		<app-world-card [world]="world"></app-world-card>
+	</div>
+	<div #anchor style="height: 100px;"></div>
+</div>

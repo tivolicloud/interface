@@ -1,0 +1,11 @@
+.worlds {
+	zoom: 0.85;
+	padding: 4px;
+
+	.world {
+		display: inline-block;
+		width: calc(100% / 4);
+		height: 260px;
+		padding: 8px;
+	}
+}
