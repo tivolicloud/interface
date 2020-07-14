@@ -9,7 +9,7 @@ class ChatJoinAndLeave {
 
 	private getUsername = (
 		requestId: Uuid,
-		callback?: (username: string) => any,
+		callback: (username: string) => any = () => {},
 	) => {
 		// const signals = new SignalManager();
 		// signals.connect(
