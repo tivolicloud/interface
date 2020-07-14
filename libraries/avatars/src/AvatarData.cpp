@@ -136,7 +136,7 @@ void AvatarData::randomizeDefaultFullAvatarModelUrl() {
     // TODO: this shouldnt have to live on the metaverse.
     // the idea is that the default avatar is random for each person.
     // on the server, it will set the albedo in the fst for the top and hair
-    _defaultFullAvatarModelUrl = NetworkingConstants::METAVERSE_SERVER_URL();
+    _defaultFullAvatarModelUrl = QUrl(NetworkingConstants::METAVERSE_SERVER_URL().toString());
     _defaultFullAvatarModelUrl.setPath(
         "/api/lynden/" +
         QString::number(usecTimestampNow()) +
