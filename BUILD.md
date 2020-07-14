@@ -92,6 +92,10 @@ When working on QML, you'll need a way to easily see the changes you're making.
 
 -   Once in-world, you can test your QML and press **Edit > Clear Cache & Reload (very slow)** to reload.
 
+## Other runtime environment variables
+
+-   `HIFI_SHOW_DEVELOPER_CRASH_MENU` - enables menu to test crashing
+
 ## Optional components
 
 The following build options can be used when running CMake
