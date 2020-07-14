@@ -42,6 +42,7 @@ struct MenuCache {
         bool checkable;
         bool checked;
         QString groupName;
+        QKeySequence shortcut;
     };
     QHash<QString, Item> items;
     std::map<QString, QActionGroup*> _exclusiveGroups;
@@ -65,9 +66,13 @@ struct MenuCache {
         menu->removeMenu(menuName);
     }
 
-    void addMenuItem(ui::Menu* menu, const QString& path, const QString& name, std::function<void(bool)> onClicked, bool checkable, bool checked, const QString& groupName) {
+    void addMenuItem(
+        ui::Menu* menu, const QString& path, const QString& name,
+        std::function<void(bool)> onClicked, bool checkable, bool checked,
+        const QString& groupName, const QKeySequence& shortcut
+    ) {
         if (!menu) {
-            items[name] = Item{ path, onClicked, checkable, checked, groupName };
+            items[name] = Item{ path, onClicked, checkable, checked, groupName, shortcut };
             return;
         }
         flushCache(menu);
@@ -77,7 +82,7 @@ struct MenuCache {
             return;
         }
 
-        QAction* action = menu->addActionToQMenuAndActionHash(parentItem, name);
+        QAction* action = menu->addActionToQMenuAndActionHash(parentItem, name, shortcut);
         if (!groupName.isEmpty()) {
             QActionGroup* group{ nullptr };
             if (!_exclusiveGroups.count(groupName)) {
@@ -138,7 +143,11 @@ struct MenuCache {
 
         for (const auto& menuItemName : items.keys()) {
             const auto menuItem = items[menuItemName];
-            addMenuItem(menu, menuItem.path, menuItemName, menuItem.onClicked, menuItem.checkable, menuItem.checked, menuItem.groupName);
+            addMenuItem(
+                menu, menuItem.path, menuItemName, menuItem.onClicked,
+                menuItem.checkable, menuItem.checked, menuItem.groupName,
+                menuItem.shortcut
+            );
         }
         items.clear();
     }
@@ -158,8 +167,12 @@ void PluginContainer::removeMenu(const QString& menuName) {
     getMenuCache().removeMenu(getPrimaryMenu(), menuName);
 }
 
-void PluginContainer::addMenuItem(PluginType type, const QString& path, const QString& name, std::function<void(bool)> onClicked, bool checkable, bool checked, const QString& groupName) {
-    getMenuCache().addMenuItem(getPrimaryMenu(), path, name, onClicked, checkable, checked, groupName);
+void PluginContainer::addMenuItem(
+    PluginType type, const QString& path, const QString& name,
+    std::function<void(bool)> onClicked, bool checkable, bool checked,
+    const QString& groupName, const QKeySequence& shortcut
+) {
+    getMenuCache().addMenuItem(getPrimaryMenu(), path, name, onClicked, checkable, checked, groupName, shortcut);
     if (type == PluginType::DISPLAY_PLUGIN) {
         _currentDisplayPluginActions.push_back({ path, name });
     } else {

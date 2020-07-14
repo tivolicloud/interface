@@ -15,6 +15,7 @@
 #include <QtCore/QVector>
 #include <QtCore/QPair>
 #include <QtCore/QRect>
+#include <QKeySequence>
 
 #include <plugins/Forward.h>
 
@@ -46,7 +47,12 @@ public:
 
     void addMenu(const QString& menuName);
     void removeMenu(const QString& menuName);
-    void addMenuItem(PluginType pluginType, const QString& path, const QString& name, std::function<void(bool)> onClicked, bool checkable = false, bool checked = false, const QString& groupName = "");
+    void addMenuItem(
+        PluginType pluginType, const QString& path, const QString& name,
+        std::function<void(bool)> onClicked, bool checkable = false,
+        bool checked = false, const QString& groupName = "",
+        const QKeySequence& shortcut = 0
+    );
     void removeMenuItem(const QString& menuName, const QString& menuItem);
     bool isOptionChecked(const QString& name);
     void setIsOptionChecked(const QString& path, bool checked);

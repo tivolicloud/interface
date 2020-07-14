@@ -104,7 +104,7 @@ bool Basic2DWindowOpenGLDisplayPlugin::internalActivate() {
             } else {
                 _container->unsetFullscreen();
             }
-        }, true, false);
+        }, true, false, "", Qt::Key_F11);
 
     return Parent::internalActivate();
 }
