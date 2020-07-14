@@ -89,7 +89,7 @@ export class ButtonManager {
 		isPanel = false,
 		handlerClass: typeof WebEventHandler,
 	) {
-		const sourceUrl =
+		const url =
 			Script.resolvePath("../ui/index.html") +
 			"#/" +
 			name.toLowerCase() +
@@ -119,13 +119,13 @@ export class ButtonManager {
 					window: new OverlayWebWindow({
 						title: name,
 						visible: false,
-						source: sourceUrl,
+						source: "about:blank",
 					}),
 					// for vr
 					entity: Entities.addEntity<Entities.EntityPropertiesWeb>(
 						{
 							type: "Web",
-							sourceUrl,
+							sourceUrl: "about:blank",
 							position: { x: 0, y: 0, z: 0 },
 							dimensions: { x: 0, y: 0, z: 0 },
 							maxFPS: 120,
@@ -140,6 +140,30 @@ export class ButtonManager {
 			: null;
 
 		// functions
+
+		const verifyPanelUrl = () => {
+			if (isPanel == false) return;
+
+			const windowUrl = panel.window.getURL();
+			const entityUrl = Entities.getEntityProperties<
+				Entities.EntityPropertiesWeb
+			>(panel.entity).sourceUrl;
+
+			const inVr = this.inVr();
+			const windowTargetUrl = inVr ? "about:blank" : url;
+			const entityTargetUrl = inVr ? url : "about:blank";
+
+			if (windowUrl != windowTargetUrl)
+				panel.window.setURL(windowTargetUrl);
+
+			if (entityUrl != entityTargetUrl)
+				Entities.editEntity<Entities.EntityPropertiesWeb>(
+					panel.entity,
+					{ sourceUrl: entityTargetUrl },
+				);
+		};
+
+		verifyPanelUrl();
 
 		const open = () => {
 			if (visible) return;
@@ -215,8 +239,10 @@ export class ButtonManager {
 					);
 					panel.window.setVisible(true);
 				}
+
+				verifyPanelUrl();
 			} else {
-				this.tablet.gotoWebScreen(sourceUrl);
+				this.tablet.gotoWebScreen(url);
 			}
 		};
 
@@ -282,6 +308,10 @@ export class ButtonManager {
 			setVisible(!visible);
 		});
 
+		this.signalManager.connect(HMD.displayModeChanged, () => {
+			verifyPanelUrl();
+		});
+
 		if (panel) {
 			// when window changes visibility
 			this.signalManager.connect(panel.window.visibleChanged, () => {
@@ -330,7 +360,7 @@ export class ButtonManager {
 			this.signalManager.connect(
 				this.tablet.screenChanged,
 				(type: string, newCurrentUrl: string) => {
-					setVisible(newCurrentUrl == sourceUrl);
+					setVisible(newCurrentUrl == url);
 				},
 			);
 
