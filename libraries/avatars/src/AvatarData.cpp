@@ -2069,9 +2069,9 @@ void AvatarData::processAvatarIdentity(QDataStream& packetStream, bool& identity
 
 #ifdef WANT_DEBUG
         qCDebug(avatars) << __FUNCTION__
-            << "identity.uuid:" << identity.uuid
             << "identity.displayName:" << identity.displayName
-            << "identity.sessionDisplayName:" << identity.sessionDisplayName;
+            << "identity.sessionDisplayName:" << identity.sessionDisplayName
+            << "identity.identityFlags:" << identity.identityFlags;
     } else {
 
         qCDebug(avatars) << "Refusing to process identity for" << uuidStringWithoutCurlyBraces(avatarSessionID) << "since"
