@@ -153,6 +153,7 @@ if program == "interface":
 	    linuxdeployqt,
 	    "interface.AppDir/usr/bin/interface",
 	    "-unsupported-allow-new-glibc",
+	    "-executable=interface.AppDir/usr/lib/libgl.so",
 	    "-qmake=" + qt_path + "/bin/qmake",
 	    "-qmldir=" + qt_path + "/qml",
 	    "-extra-plugins=webview,platformthemes/libqgtk3.so",
@@ -165,8 +166,7 @@ if program == "interface":
 	for plugin in plugins:
 		deploy_args.append(
 		    "-executable=interface.AppDir/usr/bin/plugins/" + plugin
-		),
-	deploy_args.append("-executable=interface.AppDir/usr/lib/libgl.so")
+		)
 
 	# run linuxdeployqt!
 	env = os.environ.copy()
@@ -178,6 +178,13 @@ if program == "interface":
 	print("-- Done!")
 
 elif program == "server":
+
+	# find all plugins
+
+	assignment_client_dir = resolve(build_dir, "assignment-client")
+
+	plugins = os.listdir(resolve(assignment_client_dir, "plugins"))
+	print("-- Found plugins: " + ", ".join(plugins))
 
 	# recreate appdir
 
@@ -195,6 +202,7 @@ elif program == "server":
 	    "cp assignment-client/assignment-client server.AppDir/usr/bin"
 	)
 	run(build_dir, "cp tools/oven/oven server.AppDir/usr/bin")
+	run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
 	run(build_dir, "cp -r domain-server/resources server.AppDir/usr/bin")
 
 	# libgl is a bad name and is ignored by linuxdeployqt
@@ -217,6 +225,11 @@ elif program == "server":
 	    "-no-copy-copyright-files",
 	    "-bundle-non-qt-libs",
 	]
+
+	for plugin in plugins:
+		deploy_args.append(
+		    "-executable=server.AppDir/usr/bin/plugins/" + plugin
+		)
 
 	# run linuxdeployqt!
 
