@@ -62,24 +62,21 @@ linuxdeployqt_compile_from_source = True
 
 if linuxdeployqt_compile_from_source:
 	# debian
-	# apt-get install -y unzip cmake build-essential libdouble-conversion-dev libpcre2-dev libglib2.0-dev
+	# apt-get install -y git unzip cmake build-essential libdouble-conversion-dev libpcre2-dev libglib2.0-dev
 
-	linuxdeployqt_zip_url = "https://codeload.github.com/probonopd/linuxdeployqt/zip/master"
-	linuxdeployqt_zip_dir = resolve(build_dir, "linuxdeployqt.zip")
+	linuxdeployqt_url = "https://github.com/probonopd/linuxdeployqt"
 	linuxdeployqt_dir = resolve(build_dir, "linuxdeployqt")
 	linuxdeployqt_build_dir = resolve(linuxdeployqt_dir, "build")
 	linuxdeployqt = resolve(
 	    linuxdeployqt_build_dir, "tools/linuxdeployqt/linuxdeployqt"
 	)
 
-	if not os.path.isfile(linuxdeployqt_zip_dir):
-		print("-- Downloading linuxdeployqt...")
-		urllib.request.urlretrieve(linuxdeployqt_zip_url, linuxdeployqt_zip_dir)
-
 	if not os.path.isdir(linuxdeployqt_dir):
-		print("-- Extracting linuxdeployqt...")
-		run(build_dir, "unzip -q " + linuxdeployqt_zip_dir + " -d " + build_dir)
-		run(build_dir, "mv linuxdeployqt-master linuxdeployqt")
+		print("-- Cloning linuxdeployqt...")
+		run(
+		    build_dir,
+		    "git clone " + linuxdeployqt_url + " " + linuxdeployqt_dir
+		)
 
 	if not os.path.isfile(linuxdeployqt):
 		print("-- Compiling linuxdeployqt...")
