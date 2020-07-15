@@ -35,9 +35,9 @@ int TexturePointerMetaTypeId = qRegisterMetaType<TexturePointer>();
 
 ContextMetricCount Texture::_textureCPUCount;
 ContextMetricSize Texture::_textureCPUMemSize;
-std::atomic<Texture::Size> Texture::_allowedCPUMemoryUsage { 0 };
+std::atomic<Texture::Size> Texture::_allowedCPUMemoryUsage { MB_TO_BYTES(8192) };
 
-#define MIN_CORES_FOR_INCREMENTAL_TEXTURES 5
+#define MIN_CORES_FOR_INCREMENTAL_TEXTURES 4
 bool recommendedSparseTextures = (QThread::idealThreadCount() >= MIN_CORES_FOR_INCREMENTAL_TEXTURES);
 
 std::atomic<bool> Texture::_enableSparseTextures { recommendedSparseTextures };
