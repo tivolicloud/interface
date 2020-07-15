@@ -69,7 +69,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
 	}
 
 	onSearch(e: KeyboardEvent) {
-		this.exploreService.search = (e.target as any).value;
+		if (e.key == "Enter") {
+			this.scriptService.emitEvent(
+				"explore",
+				"joinDomain",
+				(e.target as any).value,
+			);
+			this.scriptService.emitEvent("explore", "close");
+
+			this.exploreService.search = "";
+			this.searchRef.nativeElement.value = "";
+		} else {
+			this.exploreService.search = (e.target as any).value;
+		}
 		this.refresh();
 	}
 
