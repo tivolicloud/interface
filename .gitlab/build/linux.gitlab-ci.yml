@@ -53,64 +53,17 @@ all linux:
         # upload symbols and sources to sentry
         # - sentry-cli upload-dif --include-sources -p interface interface
 
-        # save shared libraries for server
-        # TODO: switch to AppDir format
-        - cp ../docker/extract-so.py ./extract-so-server.py
-        - python3 extract-so-server.py
-
-        # make interface AppDir
-        - cd interface
-
-        - wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-        - chmod +x linuxdeployqt-continuous-x86_64.AppImage
-        - ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
-
-        - mkdir -p interface.AppDir/usr/bin
-        - cp interface interface.AppDir/usr/bin
-        - cp resources.rcc interface.AppDir/usr/bin
-        - cp -r jsdoc interface.AppDir/usr/bin
-        - cp -r plugins interface.AppDir/usr/bin
-        - cp -r resources interface.AppDir/usr/bin
-        - cp -r scripts interface.AppDir/usr/bin
-        - mkdir -p interface.AppDir/usr/lib
-        - cp ../libraries/gl/libgl.so interface.AppDir/usr/lib
-        # libgl is a terrible name and causes problems
-        # TODO: shared libraries should be something like libTivoliGl.so
-
-        # TODO: Qt version shouldn't be manually specified
-        # TODO: plugins shouldn't be manually specified
-        # TODO: ...write a python script to create AppDirs with linuxdeployqt
-        - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build
-        - ./squashfs-root/AppRun interface.AppDir/usr/bin/interface
-          -unsupported-allow-new-glibc
-          -executable=interface.AppDir/usr/bin/plugins/libhifiCodec.so
-          -executable=interface.AppDir/usr/bin/plugins/libhifiSdl2.so
-          -executable=interface.AppDir/usr/bin/plugins/libpcmCodec.so
-          -executable=interface.AppDir/usr/bin/plugins/libsteamClient.so
-          -executable=interface.AppDir/usr/lib/libgl.so
-          -qmake=$TIVOLI_QT_BASE/5.15-1/qt5-install/bin/qmake
-          -qmldir=$TIVOLI_QT_BASE/5.15-1/qt5-install/qml
-          -qmldir=../../interface/resources/qml
-          -extra-plugins=webview,platformthemes/libqgtk3.so
-          -exclude-libs=libnss3.so,libnssutil3.so
-          -no-translations -no-copy-copyright-files -bundle-non-qt-libs
-
-        - cd interface.AppDir
-        - ln -s usr/bin/interface interface
+        # make AppDirs
+        - python3 ../tools/make_appdir.py interface .
+        - python3 ../tools/make_appdir.py server .
+        - python3 ../tools/make_appdir.py ice-server .
 
     artifacts:
         expire_in: 1 day
         paths:
-            - build/domain-server/domain-server
-            - build/domain-server/resources
-            - build/domain-server/lib
-            - build/assignment-client/assignment-client
-            - build/tools/oven/oven
-
-            - build/ice-server/ice-server
-            - build/ice-server/lib
-
             - build/interface/interface.AppDir
+            - build/server.AppDir
+            - build/ice-server.AppDir
 
 server linux arm64:
     stage: build
@@ -163,19 +116,13 @@ server linux arm64:
         - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON
         - make domain-server assignment-client oven -j$(nproc)
 
-        # save shared libraries for server
-        # TODO: switch to AppDir format
-        - cp ../docker/extract-so.py ./extract-so-server.py
-        - python3 extract-so-server.py
+        # make AppDir
+        - python3 ../tools/make_appdir.py server .
 
     artifacts:
         expire_in: 1 day
         paths:
-            - build/domain-server/domain-server
-            - build/domain-server/resources
-            - build/domain-server/lib
-            - build/assignment-client/assignment-client
-            - build/tools/oven/oven
+            - build/server.AppDir
 
 launcher linux:
     stage: package

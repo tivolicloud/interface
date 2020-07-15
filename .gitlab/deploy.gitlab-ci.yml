@@ -53,39 +53,33 @@ upload server:
     script:
         - docker system info
         - docker image ls
+        - cd docker
 
-        # prepare server image
-        - cd docker/server
+        # server
+        - cd server
         - mkdir -p dist
 
-        - cp ../../build/domain-server/domain-server dist/domain-server
-        - cp ../../build/assignment-client/assignment-client dist/assignment-client
-        - cp ../../build/tools/oven/oven dist/oven
-        - cp -r ../../build/domain-server/resources dist/resources
-        - cp -r ../../build/domain-server/lib dist/lib
+        - mv ../../build/server.AppDir dist
         - cp ecosystem.config.js dist
 
-        # build server image
         - docker build -t $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64 .
         - docker image ls
         - cd ..
 
-        # prepare ice image
-        - cd ice
+        # ice server
+        - cd ice-server
         - mkdir -p dist
 
-        - cp ../../build/ice-server/ice-server dist/ice-server
-        - cp -r ../../build/ice-server/lib dist/lib
+        - mv ../../build/ice-server.AppDir dist
 
-        # build ice image
         - docker build -t $CI_REGISTRY_IMAGE/ice:latest .
         - docker image ls
         - cd ..
 
-        # publish server and ice to our registry
+        # publish server and ice server to our registry
         - docker login registry.tivolicloud.com --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker push $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64
-        - docker push $CI_REGISTRY_IMAGE/ice:latest
+        - docker push $CI_REGISTRY_IMAGE/ice-server:latest
 
 upload server arm64:
     stage: deploy
@@ -107,20 +101,16 @@ upload server arm64:
     script:
         - docker system info
         - docker image ls
+        - cd docker
 
-        # prepare server image
-        - cd docker/server
+        # server
+        - cd server
         - mkdir -p dist
 
-        - cp ../../build/domain-server/domain-server dist/domain-server
-        - cp ../../build/assignment-client/assignment-client dist/assignment-client
-        - cp ../../build/tools/oven/oven dist/oven
-        - cp -r ../../build/domain-server/resources dist/resources
-        - cp -r ../../build/domain-server/lib dist/lib
+        - mv ../../build/server.AppDir dist
         - cp ecosystem.config.js dist
 
-        # build server image
-        - docker build -t $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64 .
+        - docker build -t $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64 .
         - docker image ls
         - cd ..
 
