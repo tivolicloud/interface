@@ -42,27 +42,6 @@ def run(cwd, command, env=os.environ.copy()):
 	if (0 != process.returncode):
 		raise RuntimeError('Call to "{}" failed.\n'.format(command))
 
-# download linuxdeployqt
-
-linuxdeployqt_url = "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-linuxdeployqt_appimage = resolve(build_dir, "linuxdeployqt.AppImage")
-linuxdeployqt_appdir = resolve(build_dir, "linuxdeployqt")
-linuxdeployqt = resolve(linuxdeployqt_appdir, "AppRun")
-
-if not os.path.isfile(linuxdeployqt_appimage):
-	print("-- Downloading linuxdeployqt...")
-	urllib.request.urlretrieve(linuxdeployqt_url, linuxdeployqt_appimage)
-
-if not os.path.isdir(linuxdeployqt_appdir):
-	print("-- Extracting linuxdeployqt...")
-	run(build_dir, "chmod +x linuxdeployqt.AppImage")
-	run(build_dir, "./linuxdeployqt.AppImage --appimage-extract")
-	run(build_dir, "mv squashfs-root " + linuxdeployqt_appdir)
-
-if not os.path.isfile(linuxdeployqt):
-	print("-- " + linuxdeployqt + " not found!")
-	sys.exit(1)
-
 # find qt path
 
 with open(resolve(build_dir, "qt.cmake"), "r") as file:
@@ -77,7 +56,69 @@ with open(resolve(build_dir, "qt.cmake"), "r") as file:
 
 print("-- Found Qt: " + qt_path)
 
-# make interface.AppDir
+# download linuxdeployqt
+
+linuxdeployqt_compile_from_source = True
+
+if linuxdeployqt_compile_from_source:
+	# debian
+	# apt-get install -y unzip cmake build-essential libdouble-conversion-dev libpcre2-dev libglib2.0-dev
+
+	linuxdeployqt_zip_url = "https://codeload.github.com/probonopd/linuxdeployqt/zip/master"
+	linuxdeployqt_zip_dir = resolve(build_dir, "linuxdeployqt.zip")
+	linuxdeployqt_dir = resolve(build_dir, "linuxdeployqt")
+	linuxdeployqt_build_dir = resolve(linuxdeployqt_dir, "build")
+	linuxdeployqt = resolve(
+	    linuxdeployqt_build_dir, "tools/linuxdeployqt/linuxdeployqt"
+	)
+
+	if not os.path.isfile(linuxdeployqt_zip_dir):
+		print("-- Downloading linuxdeployqt...")
+		urllib.request.urlretrieve(linuxdeployqt_zip_url, linuxdeployqt_zip_dir)
+
+	if not os.path.isdir(linuxdeployqt_dir):
+		print("-- Extracting linuxdeployqt...")
+		run(build_dir, "unzip -q " + linuxdeployqt_zip_dir + " -d " + build_dir)
+		run(build_dir, "mv linuxdeployqt-master linuxdeployqt")
+
+	if not os.path.isfile(linuxdeployqt):
+		print("-- Compiling linuxdeployqt...")
+		run(linuxdeployqt_dir, "rm -rf build")
+		run(linuxdeployqt_dir, "mkdir build")
+		run(
+		    linuxdeployqt_build_dir,
+		    "cmake .. -DCMAKE_PREFIX_PATH=\"" + qt_path + "\""
+		)
+		run(linuxdeployqt_build_dir, "make")
+
+else:
+	# precompiled but there's no arm64
+	sys.exit(1)
+
+	# linuxdeployqt_url = "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+	# linuxdeployqt_appimage = resolve(build_dir, "linuxdeployqt.AppImage")
+	# linuxdeployqt_appdir = resolve(build_dir, "linuxdeployqt")
+	# linuxdeployqt = resolve(linuxdeployqt_appdir, "AppRun")
+
+	# if not os.path.isfile(linuxdeployqt_appimage):
+	# 	print("-- Downloading linuxdeployqt...")
+	# 	urllib.request.urlretrieve(linuxdeployqt_url, linuxdeployqt_appimage)
+
+	# if not os.path.isdir(linuxdeployqt_appdir):
+	# 	print("-- Extracting linuxdeployqt...")
+	# 	run(build_dir, "chmod +x linuxdeployqt.AppImage")
+	# 	run(build_dir, "./linuxdeployqt.AppImage --appimage-extract")
+	# 	run(build_dir, "mv squashfs-root " + linuxdeployqt_appdir)
+
+# verify linuxdeployqt
+
+if not os.path.isfile(linuxdeployqt):
+	print("-- " + linuxdeployqt + " not found!")
+	sys.exit(1)
+
+print("-- Installed linuxdeployqt")
+
+# make appdir
 
 if program == "interface":
 
