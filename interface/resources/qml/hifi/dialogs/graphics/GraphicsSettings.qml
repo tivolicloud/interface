@@ -40,7 +40,7 @@ Item {
             spacing: 0
 
             HifiStylesUit.RobotoRegular {
-                text: "PERFORMANCE SETTINGS"
+                text: "GRAPHICS SETTINGS"
                 Layout.maximumWidth: parent.width
                 height: 30
                 size: 16
@@ -48,7 +48,7 @@ Item {
             }
 
             HifiStylesUit.RobotoRegular {
-                text: "Tivoli will reset to \"High\" when restarting!\nThe performance system needs redesigning."
+                text: "Tivoli will reset to \"High\" when restarting!\nThe graphics settings need redesigning."
                 Layout.maximumWidth: parent.width
                 Layout.topMargin: 10
                 height: 30
@@ -353,13 +353,13 @@ Item {
                         id: resolutionScaleSlider
                         // enabled: performanceCustom.checked
                         anchors.left: resolutionHeader.right
-                        anchors.leftMargin: 57
+                        anchors.leftMargin: 20
                         anchors.top: parent.top
-                        width: 150 
+                        width: 280
                         height: parent.height
                         colorScheme: hifi.colorSchemes.dark
                         minimumValue: 0.1
-                        maximumValue: 5.0
+                        maximumValue: 4.0
                         stepSize: 0.1
                         value: Render.viewportResolutionScale
                         live: true
@@ -371,6 +371,9 @@ Item {
                         }
 
                         onValueChanged: {
+                            if (value > 1) {
+                                value = Math.round(value * 2) / 2
+                            }
                             updateResolutionScale(value);
                         }
                         onPressedChanged: {

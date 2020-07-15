@@ -289,7 +289,7 @@ Menu::Menu() {
     });
 
     // Settings > Graphics...
-    action = addActionToQMenuAndActionHash(settingsMenu, "Performance...");
+    action = addActionToQMenuAndActionHash(settingsMenu, "Graphics...");
     connect(action, &QAction::triggered, [] {
         auto tablet = DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
         auto hmd = DependencyManager::get<HMDScriptingInterface>();
