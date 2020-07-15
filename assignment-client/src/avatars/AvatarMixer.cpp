@@ -388,7 +388,7 @@ void AvatarMixer::manageIdentityData(const SharedNodePointer& node) {
         }
 
         QString baseName = avatar.getDisplayName().trimmed();
-        const QRegularExpression curses { "fuck|shit|damn|cock|cunt" }; // POC. We may eventually want something much more elaborate (subscription?).
+        const QRegularExpression curses { "fuck|shit|damn|cock|cunt|nigger" }; // POC. We may eventually want something much more elaborate (subscription?).
         baseName = baseName.replace(curses, "*"); // Replace rather than remove, so that people have a clue that the person's a jerk.
         static const QRegularExpression trailingDigits { R"(\s*(_\d+\s*)?(\s*\n[^$]*)?$)" }; // trailing whitespace "_123" and any subsequent lines
         baseName = baseName.remove(trailingDigits);
