@@ -110,7 +110,7 @@ upload server arm64:
         - mv ../../build/server.AppDir dist
         - cp ecosystem.config.js dist
 
-        - docker build -t $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-amd64 .
+        - docker build -t $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64 .
         - docker image ls
         - cd ..
 
