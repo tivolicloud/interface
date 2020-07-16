@@ -7007,6 +7007,8 @@ void Application::queryOctree(
     }
 
     const bool isModifiedQuery = !_physicsEnabled;
+    
+    // if (isModifiedQuery) {
     if (true) {
         if (!_octreeProcessor.safeLandingIsActive()) {
             // don't send the octreeQuery until SafeLanding knows it has started
