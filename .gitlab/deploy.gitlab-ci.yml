@@ -72,7 +72,7 @@ upload server:
 
         - mv ../../build/ice-server.AppDir dist
 
-        - docker build -t $CI_REGISTRY_IMAGE/ice:latest .
+        - docker build -t $CI_REGISTRY_IMAGE/ice-server:latest .
         - docker image ls
         - cd ..
 
