@@ -73,11 +73,11 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
         // we have at least one changed trait to send
 
         auto nodeList = DependencyManager::get<NodeList>();
-        //auto avatarMixer = nodeList->soloNodeOfType(NodeType::AvatarMixer);
-        //if (!avatarMixer || !avatarMixer->getActiveSocket()) {
-        //    // we don't have an avatar mixer with an active socket, we can't send changed traits at this time
-        //    return 0;
-        //}
+        auto avatarMixer = nodeList->soloNodeOfType(NodeType::AvatarMixer);
+        if (!avatarMixer || !avatarMixer->getActiveSocket()) {
+           // we don't have an avatar mixer with an active socket, we can't send changed traits at this time
+           return 0;
+        }
 
         // we have a mixer to send to, setup our set traits packet
         auto traitsPacketList = NLPacketList::create(PacketType::SetAvatarTraits, QByteArray(), true, true);
@@ -137,16 +137,7 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
             ++instancedIt;
         }
 
-        //nodeList->sendPacketList(std::move(traitsPacketList), *avatarMixer);
-
-        nodeList->eachMatchingNode(
-            [](const SharedNodePointer& node)->bool {
-                return node->getType() == NodeType::AvatarMixer && node->getActiveSocket();
-            },
-            [&](const SharedNodePointer& node) {
-                nodeList->sendPacketList(std::move(traitsPacketList), *node);
-        });
-
+        nodeList->sendPacketList(std::move(traitsPacketList), *avatarMixer);
     }
 
     return bytesWritten;
