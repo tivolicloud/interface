@@ -23,27 +23,26 @@ PerformanceManager::PerformanceManager()
 }
 
 void PerformanceManager::setupPerformancePresetSettings(bool evaluatePlatformTier) {
-    // if (evaluatePlatformTier || (getPerformancePreset() == UNKNOWN)) {
-    //     // If evaluatePlatformTier, evalute the Platform Tier and assign the matching Performance profile by default.
-    //     // A bunch of Performance, Simulation and Render settings will be set to a matching default value from this
+    if (evaluatePlatformTier || (getPerformancePreset() == UNKNOWN)) {
+        setPerformancePreset(PerformanceManager::PerformancePreset::HIGH); 
 
-    //     // Here is the mapping between pelatformTIer and performance profile
-    //     const std::array<PerformanceManager::PerformancePreset, platform::Profiler::NumTiers> platformToPerformancePresetMap = { {
-    //         PerformanceManager::PerformancePreset::HIGH,  // platform::Profiler::UNKNOWN
-    //         PerformanceManager::PerformancePreset::POTATO,  // platform::Profiler::POTATO
-    //         PerformanceManager::PerformancePreset::LOW,  // platform::Profiler::LOW
-    //         PerformanceManager::PerformancePreset::MID,  // platform::Profiler::MID
-    //         PerformanceManager::PerformancePreset::HIGH  // platform::Profiler::HIGH
-    //     } };
+        // // If evaluatePlatformTier, evalute the Platform Tier and assign the matching Performance profile by default.
+        // // A bunch of Performance, Simulation and Render settings will be set to a matching default value from this
 
-    //     // What is our profile?
-    //     auto platformTier = platform::Profiler::profilePlatform();
-    //     // Then let's assign the performance preset setting from it
-    //     setPerformancePreset(platformToPerformancePresetMap[platformTier]);
-    // }
+        // // Here is the mapping between pelatformTIer and performance profile
+        // const std::array<PerformanceManager::PerformancePreset, platform::Profiler::NumTiers> platformToPerformancePresetMap = { {
+        //     PerformanceManager::PerformancePreset::HIGH,  // platform::Profiler::UNKNOWN
+        //     PerformanceManager::PerformancePreset::POTATO,  // platform::Profiler::POTATO
+        //     PerformanceManager::PerformancePreset::LOW,  // platform::Profiler::LOW
+        //     PerformanceManager::PerformancePreset::MID,  // platform::Profiler::MID
+        //     PerformanceManager::PerformancePreset::HIGH  // platform::Profiler::HIGH
+        // } };
 
-    // force high for now
-    setPerformancePreset(PerformanceManager::PerformancePreset::HIGH); 
+        // // What is our profile?
+        // auto platformTier = platform::Profiler::profilePlatform();
+        // // Then let's assign the performance preset setting from it
+        // setPerformancePreset(platformToPerformancePresetMap[platformTier]);
+    }
 }
 
 void PerformanceManager::setPerformancePreset(PerformanceManager::PerformancePreset preset) {
