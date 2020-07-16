@@ -67,7 +67,7 @@ using AvatarGrabDataMap = QMap<QUuid, QByteArray>;
 
 using AvatarDataSequenceNumber = uint16_t;
 
-const int MAX_NUM_AVATAR_ENTITIES = 42;
+const int MAX_NUM_AVATAR_ENTITIES = 128; 
 
 // avatar motion behaviors
 const quint32 AVATAR_MOTION_ACTION_MOTOR_ENABLED = 1U << 0;
