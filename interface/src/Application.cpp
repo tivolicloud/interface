@@ -7007,7 +7007,7 @@ void Application::queryOctree(
     }
 
     const bool isModifiedQuery = !_physicsEnabled;
-    if (isModifiedQuery) {
+    if (true) {
         if (!_octreeProcessor.safeLandingIsActive()) {
             // don't send the octreeQuery until SafeLanding knows it has started
             return;
@@ -7037,7 +7037,7 @@ void Application::queryOctree(
                // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
                 _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
                 _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-                //_octreeQuery.setConicalViews({ sphericalView, farView });
+               // _octreeQuery.setConicalViews({ sphericalView, farView });
             }
         } else {
             _octreeQuery.setConicalViews({ sphericalView });
