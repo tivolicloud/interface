@@ -27,9 +27,12 @@ public:
         ECO = 0,
         INTERACTIVE,
         REALTIME,
+        UNLIMITED,
         PROFILE_NUM
     };
-    static bool isValidRefreshRateProfile(RefreshRateProfile value) { return (value >= RefreshRateProfile::ECO && value <= RefreshRateProfile::REALTIME); }
+    static bool isValidRefreshRateProfile(RefreshRateProfile value) {
+        return (value >= RefreshRateProfile::ECO && value <= RefreshRateProfile::UNLIMITED);
+    }
 
     /**jsdoc
      * <p>Interface states that affect the refresh rate.</p>

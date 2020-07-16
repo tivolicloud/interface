@@ -21,20 +21,34 @@ static const int VR_TARGET_RATE = 90;
  * <p>Refresh rate profile.</p>
  * <table>
  *   <thead>
- *     <tr><th>Value</th><th>Description</th></tr>
+ *     <tr>
+ *       <th>Value</th><th>Description</th>
+ *     </tr>
  *   </thead>
  *   <tbody>
- *     <tr><td><code>"Eco"</code></td><td>Low refresh rate, which is reduced when Interface doesn't have focus or is 
- *         minimized.</td></tr>
- *     <tr><td><code>"Interactive"</code></td><td>Medium refresh rate, which is reduced when Interface doesn't have focus or is 
- *         minimized.</td></tr>
- *     <tr><td><code>"Realtime"</code></td><td>High refresh rate, even when Interface doesn't have focus or is minimized.
+ *     <tr>
+ *       <td><code>"Eco"</code></td>
+ *       <td>Low refresh rate, which is reduced when Interface doesn't have focus or is minimized.</td>
+ *     </tr>
+ *     <tr>
+ *       <td><code>"Interactive"</code></td>
+ *       <td>Medium refresh rate, which is reduced when Interface doesn't have focus or is minimized.</td>
+ *     </tr>
+ *     <tr>
+ *       <td><code>"Realtime"</code></td>
+ *       <td>High refresh rate, even when Interface doesn't have focus or is minimized.</td>
+ *     </tr>
+ *     <tr>
+ *       <td><code>"Unlimited"</code></td>
+ *       <td>Unlimited refresh rate, even when Interface doesn't have focus or is minimized.</td>
+ *     </tr>
  *   </tbody>
  * </table>
  * @typedef {string} RefreshRateProfileName
  */
-static const std::array<std::string, RefreshRateManager::RefreshRateProfile::PROFILE_NUM> REFRESH_RATE_PROFILE_TO_STRING =
-    { { "Eco", "Interactive", "Realtime" } };
+static const std::array<std::string, RefreshRateManager::RefreshRateProfile::PROFILE_NUM> REFRESH_RATE_PROFILE_TO_STRING = {
+    { "Eco", "Interactive", "Realtime", "Unlimited" }
+};
 
 /**jsdoc
  * <p>Interface states that affect the refresh rate.</p>
@@ -53,8 +67,9 @@ static const std::array<std::string, RefreshRateManager::RefreshRateProfile::PRO
  * </table>
  * @typedef {string} RefreshRateRegimeName
  */
-static const std::array<std::string, RefreshRateManager::RefreshRateRegime::REGIME_NUM> REFRESH_RATE_REGIME_TO_STRING =
-    { { "FocusActive", "FocusInactive", "Unfocus", "Minimized", "StartUp", "ShutDown" } };
+static const std::array<std::string, RefreshRateManager::RefreshRateRegime::REGIME_NUM> REFRESH_RATE_REGIME_TO_STRING = {
+    { "FocusActive", "FocusInactive", "Unfocus", "Minimized", "StartUp", "ShutDown" }
+};
 
 /**jsdoc
  * <p>User experience (UX) modes.</p>
@@ -69,29 +84,43 @@ static const std::array<std::string, RefreshRateManager::RefreshRateRegime::REGI
  * </table>
  * @typedef {string} UXModeName
  */
-static const std::array<std::string, RefreshRateManager::UXMode::UX_NUM> UX_MODE_TO_STRING =
-    { { "Desktop", "VR" } };
+static const std::array<std::string, RefreshRateManager::UXMode::UX_NUM> UX_MODE_TO_STRING = {
+    { "Desktop", "VR" }
+};
 
-static const std::map<std::string, RefreshRateManager::RefreshRateProfile> REFRESH_RATE_PROFILE_FROM_STRING =
-    { { "Eco", RefreshRateManager::RefreshRateProfile::ECO },
-      { "Interactive", RefreshRateManager::RefreshRateProfile::INTERACTIVE },
-      { "Realtime", RefreshRateManager::RefreshRateProfile::REALTIME } };
+static const std::map<std::string, RefreshRateManager::RefreshRateProfile> REFRESH_RATE_PROFILE_FROM_STRING = {
+    { "Eco", RefreshRateManager::RefreshRateProfile::ECO },
+    { "Interactive", RefreshRateManager::RefreshRateProfile::INTERACTIVE },
+    { "Realtime", RefreshRateManager::RefreshRateProfile::REALTIME },
+    { "Unlimited", RefreshRateManager::RefreshRateProfile::UNLIMITED }
+};
 
 
 // Porfile regimes are:
 //  { { "FocusActive", "FocusInactive", "Unfocus", "Minimized", "StartUp", "ShutDown" } }
 
-static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> ECO_PROFILE =
-    { { 20, 10, 5, 2, 30, 30 } };
+static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> ECO_PROFILE = {
+    { 20, 10, 5, 2, 30, 30 }
+};
 
-static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> INTERACTIVE_PROFILE =
-    { { 30, 20, 10, 2, 30, 30 } };
+static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> INTERACTIVE_PROFILE = {
+    { 30, 20, 10, 2, 30, 30 }
+};
 
-static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> REALTIME_PROFILE =
-    { { 60, 60, 60, 2, 30, 30} };
+static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> REALTIME_PROFILE = {
+    { 60, 60, 60, 2, 30, 30}
+};
 
-static const std::array<std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM>, RefreshRateManager::RefreshRateProfile::PROFILE_NUM> REFRESH_RATE_PROFILES =
-    { { ECO_PROFILE, INTERACTIVE_PROFILE, REALTIME_PROFILE } };
+static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> UNLIMITED_PROFILE = {
+    { 999, 999, 999, 2, 30, 30}
+};
+
+static const std::array<
+    std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM>,
+    RefreshRateManager::RefreshRateProfile::PROFILE_NUM
+> REFRESH_RATE_PROFILES = {
+    { ECO_PROFILE, INTERACTIVE_PROFILE, REALTIME_PROFILE, UNLIMITED_PROFILE }
+};
 
 
 static const int INACTIVE_TIMER_LIMIT = 3000;

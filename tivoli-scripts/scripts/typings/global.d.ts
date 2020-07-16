@@ -332,7 +332,11 @@ declare interface Rect {
 	height: number;
 }
 
-declare type RefreshRateProfileName = "Eco" | "Interactive" | "Realtime";
+declare type RefreshRateProfileName =
+	| "Eco"
+	| "Interactive"
+	| "Realtime"
+	| "Unlimited";
 
 declare enum RefreshRateRegime {
 	FOCUS_ACTIVE,

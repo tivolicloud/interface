@@ -86,6 +86,7 @@ public:
         ECO = RefreshRateManager::RefreshRateProfile::ECO,
         INTERACTIVE = RefreshRateManager::RefreshRateProfile::INTERACTIVE,
         REALTIME = RefreshRateManager::RefreshRateProfile::REALTIME,
+        UNLIMITED = RefreshRateManager::RefreshRateProfile::UNLIMITED,
     };
     Q_ENUM(RefreshRateProfile)
 

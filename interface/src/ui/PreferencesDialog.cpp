@@ -101,10 +101,9 @@ void setupPreferences() {
         auto preference = new ComboBoxPreference(GRAPHICS_QUALITY, "Refresh Rate", getter, setter);
         QStringList refreshRateProfiles{
             QString::fromStdString(RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::ECO)),
-            QString::fromStdString(
-                RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::INTERACTIVE)),
-            QString::fromStdString(
-                RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::REALTIME))
+            QString::fromStdString(RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::INTERACTIVE)),
+            QString::fromStdString(RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::REALTIME)),
+            QString::fromStdString(RefreshRateManager::refreshRateProfileToString(RefreshRateManager::RefreshRateProfile::UNLIMITED))
         };
 
         preference->setItems(refreshRateProfiles);

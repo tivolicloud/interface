@@ -287,16 +287,20 @@ Item {
                         id: refreshRateModel
 
                         ListElement {
-                            text: "20 fps"
+                            text: "20 FPS"
                             refreshRatePreset: 0 // RefreshRateProfile::ECO
                         }
                         ListElement {
-                            text: "30 fps"
+                            text: "30 FPS"
                             refreshRatePreset: 1 // RefreshRateProfile::INTERACTIVE
                         }
                         ListElement {
-                            text: "60 fps"
+                            text: "60 FPS"
                             refreshRatePreset: 2 // RefreshRateProfile::REALTIME
+                        }
+                        ListElement {
+                            text: "Unlimited FPS"
+                            refreshRatePreset: 3 // RefreshRateProfile::UNLIMITED
                         }
                     }
                 
@@ -317,8 +321,10 @@ Item {
                                 refreshRateDropdown.currentIndex = 0;
                             } else if (Performance.getRefreshRateProfile() === 1) {
                                 refreshRateDropdown.currentIndex = 1;
-                            } else {
+                            } else if (Performance.getRefreshRateProfile() === 2) {
                                 refreshRateDropdown.currentIndex = 2;
+                            } else {
+                                refreshRateDropdown.currentIndex = 3;
                             }
                         }
 
