@@ -1022,6 +1022,10 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         element->getTree()->trackIncomingEntityLastEdited(lastEditedFromBufferAdjusted, bytesRead);
     }
 
+    if (somethingChanged) {
+        somethingChangedNotification();
+    }
+
     return bytesRead;
 }
 
@@ -1624,6 +1628,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
             // when position and/or velocity was changed).
             _lastSimulated = now;
         }
+        somethingChangedNotification();
     }
 
     // timestamps

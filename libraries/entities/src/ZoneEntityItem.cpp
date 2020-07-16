@@ -86,27 +86,8 @@ EntityItemProperties ZoneEntityItem::getProperties(const EntityPropertyFlags& de
     return properties;
 }
 
-bool ZoneEntityItem::setProperties(const EntityItemProperties& properties) {
-    bool somethingChanged = false;
-    somethingChanged = EntityItem::setProperties(properties); // set the properties in our base class
-
-    if (somethingChanged) {
-        bool wantDebug = false;
-        if (wantDebug) {
-            uint64_t now = usecTimestampNow();
-            int elapsed = now - getLastEdited();
-            qCDebug(entities) << "ZoneEntityItem::setProperties() AFTER update... edited AGO=" << elapsed <<
-                    "now=" << now << " getLastEdited()=" << getLastEdited();
-        }
-        setLastEdited(properties._lastEdited);
-        somethingChangedNotification();
-    }
-
-    return somethingChanged;
-}
-
 bool ZoneEntityItem::setSubClassProperties(const EntityItemProperties& properties) {
-    bool somethingChanged = EntityItem::setSubClassProperties(properties); // set the properties in our base class
+    bool somethingChanged = false;
 
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(shapeType, setShapeType);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(compoundShapeURL, setCompoundShapeURL);
@@ -135,7 +116,7 @@ bool ZoneEntityItem::setSubClassProperties(const EntityItemProperties& propertie
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(toneMappingMode, setToneMappingMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(avatarPriority, setAvatarPriority);
 
-    somethingChanged = somethingChanged || _keyLightPropertiesChanged || _ambientLightPropertiesChanged ||
+    somethingChanged = _keyLightPropertiesChanged || _ambientLightPropertiesChanged ||
                        _skyboxPropertiesChanged || _hazePropertiesChanged || _bloomPropertiesChanged || 
                        _zoneCullingPropertiesChanged || _toneMappingPropertiesChanged;
 
