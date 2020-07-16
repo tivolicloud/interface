@@ -179,7 +179,7 @@ void RefreshRateManager::setRefreshRateProfile(RefreshRateManager::RefreshRatePr
 }
 
 RefreshRateManager::RefreshRateProfile RefreshRateManager::getRefreshRateProfile() const {
-    RefreshRateManager::RefreshRateProfile profile = RefreshRateManager::RefreshRateProfile::REALTIME;
+    RefreshRateManager::RefreshRateProfile profile = RefreshRateManager::RefreshRateProfile::UNLIMITED;
 
     if (getUXMode() != RefreshRateManager::UXMode::VR) {
         return _refreshRateProfile;

@@ -93,7 +93,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
+            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(true);
             // instance->setCustomShadersEnabled(true);
@@ -108,7 +108,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
+            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(true);
@@ -122,7 +122,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
+            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(false);
@@ -137,7 +137,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::REALTIME);
+            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(false);
