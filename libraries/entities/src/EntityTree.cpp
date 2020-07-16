@@ -575,7 +575,7 @@ bool EntityTree::updateEntity(EntityItemPointer entity, const EntityItemProperti
     return true;
 }
 
-EntityItemPointer EntityTree::addEntity(const EntityItemID& entityID, const EntityItemProperties& properties, bool isClone) {
+EntityItemPointer EntityTree::addEntity(const EntityItemID& entityID, const EntityItemProperties& properties, bool isClone, const bool isImport) {
     EntityItemProperties props = properties;
 
     auto nodeList = DependencyManager::get<NodeList>();
@@ -586,7 +586,8 @@ EntityItemPointer EntityTree::addEntity(const EntityItemID& entityID, const Enti
 
     if (properties.getEntityHostType() == entity::HostType::DOMAIN && getIsClient() &&
         !nodeList->getThisNodeCanRez() && !nodeList->getThisNodeCanRezTmp() &&
-        !nodeList->getThisNodeCanRezCertified() && !nodeList->getThisNodeCanRezTmpCertified() && !_serverlessDomain && !isClone) {
+        !nodeList->getThisNodeCanRezCertified() && !nodeList->getThisNodeCanRezTmpCertified() && 
+        !_serverlessDomain && !isClone && !isImport) {
         return nullptr;
     }
 
@@ -2688,11 +2689,12 @@ QByteArray EntityTree::remapActionDataIDs(QByteArray actionData, QHash<EntityIte
 }
 
 QVector<EntityItemID> EntityTree::sendEntities(EntityEditPacketSender* packetSender, EntityTreePointer localTree,
-                                               float x, float y, float z) {
+                                               const QString& entityHostType, float x, float y, float z) {
     SendEntitiesOperationArgs args;
     args.ourTree = this;
     args.otherTree = localTree;
     args.root = glm::vec3(x, y, z);
+    args.entityHostType = entityHostType;
     // If this is called repeatedly (e.g., multiple pastes with the same data), the new elements will clash unless we
     // use new identifiers.  We need to keep a map so that we can map parent identifiers correctly.
     QHash<EntityItemID, EntityItemID> map;
@@ -2781,6 +2783,11 @@ bool EntityTree::sendEntitiesOperation(const OctreeElementPointer& element, void
         EntityItemID oldID = item->getEntityItemID();
         EntityItemID newID = getMapped(oldID);
         EntityItemProperties properties = item->getProperties();
+
+        properties.setEntityHostTypeFromString(args->entityHostType);
+        if (properties.getEntityHostType() == entity::HostType::AVATAR) {
+            properties.setOwningAvatarID(AVATAR_SELF_ID);
+        }
 
         EntityItemID oldParentID = properties.getParentID();
         if (oldParentID.isInvalidID()) {  // no parent
@@ -2957,7 +2964,7 @@ void convertGrabUserDataToProperties(EntityItemProperties& properties) {
 }
 
 
-bool EntityTree::readFromMap(QVariantMap& map) {
+bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
     // These are needed to deal with older content (before adding inheritance modes)
     int contentVersion = map["Version"].toInt();
 
@@ -3127,7 +3134,7 @@ bool EntityTree::readFromMap(QVariantMap& map) {
             }
         }
 
-        EntityItemPointer entity = addEntity(entityItemID, properties);
+        EntityItemPointer entity = addEntity(entityItemID, properties, isImport);
         if (!entity) {
             qCDebug(entities) << "adding Entity failed:" << entityItemID << properties.getType();
             success = false;

@@ -4080,7 +4080,7 @@ std::map<QString, QString> Application::prepareServerlessDomainContents(QUrl dom
     bool success = tmpTree->readFromByteArray(domainURL.toString(), data);
     if (success) {
         tmpTree->reaverageOctreeElements();
-        tmpTree->sendEntities(&_entityEditSender, getEntities()->getTree(), 0, 0, 0);
+        tmpTree->sendEntities(&_entityEditSender, getEntities()->getTree(), "domain", 0, 0, 0);
     }
     std::map<QString, QString> namedPaths = tmpTree->getNamedPaths();
 
@@ -5539,7 +5539,7 @@ bool Application::importEntities(const QString& urlOrFilename, const bool isObse
 
         // FIXME: readFromURL() can take over the main event loop which may cause problems, especially if downloading the JSON 
         // from the Web.
-        success = _entityClipboard->readFromURL(urlOrFilename, isObservable, callerId);
+        success = _entityClipboard->readFromURL(urlOrFilename, isObservable, callerId, true);
         if (success) {
             _entityClipboard->reaverageOctreeElements();
         }
@@ -5547,8 +5547,8 @@ bool Application::importEntities(const QString& urlOrFilename, const bool isObse
     return success;
 }
 
-QVector<EntityItemID> Application::pasteEntities(float x, float y, float z) {
-    return _entityClipboard->sendEntities(&_entityEditSender, getEntities()->getTree(), x, y, z);
+QVector<EntityItemID> Application::pasteEntities(const QString& entityHostType, float x, float y, float z) {
+    return _entityClipboard->sendEntities(&_entityEditSender, getEntities()->getTree(), entityHostType, x, y, z);
 }
 
 void Application::init() {
