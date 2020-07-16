@@ -109,7 +109,7 @@ int gl::getSwapInterval() {
     return interval;
 #else 
     // TODO: Fill in for linux
-    return 1;
+    return 0;
 #endif
 }
 

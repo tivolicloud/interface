@@ -155,7 +155,7 @@ public:
                         }
 
                         if (newPlugin) {
-                            bool hasVsync = true;
+                            bool hasVsync = false;
                             QThread::setPriority(newPlugin->getPresentPriority());
                             bool wantVsync = newPlugin->wantVsync();
 #if defined(Q_OS_MAC)
@@ -166,6 +166,8 @@ public:
                             newPlugin->swapBuffers();
 #endif
                             hasVsync = gl::getSwapInterval() != 0;
+                            qCDebug(displayPlugins) << "Vsync enabled:" << hasVsync;
+
                             newPlugin->setVsyncEnabled(hasVsync);
                             newPlugin->customizeContext();
                             CHECK_GL_ERROR();

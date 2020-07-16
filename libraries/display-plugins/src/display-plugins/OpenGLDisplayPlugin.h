@@ -74,7 +74,7 @@ public:
 
     bool beginFrameRender(uint32_t frameIndex) override;
 
-    virtual bool wantVsync() const { return true; }
+    virtual bool wantVsync() const { return false; }
     void setVsyncEnabled(bool vsyncEnabled) { _vsyncEnabled = vsyncEnabled; }
     bool isVsyncEnabled() const { return _vsyncEnabled; }
     // Three threads, one for rendering, one for texture transfers, one reserved for the GL driver
@@ -140,7 +140,7 @@ protected:
 
     void render(std::function<void(gpu::Batch& batch)> f);
 
-    bool _vsyncEnabled{ true };
+    bool _vsyncEnabled{ false };
     QThread* _presentThread{ nullptr };
     std::queue<gpu::FramePointer> _newFrameQueue;
     RateCounter<200> _droppedFrameRate;
