@@ -218,23 +218,23 @@ Item {
                     StatText {
                         visible: root.expanded;
                         text: "Avatar Mixer In: " + root.avatarMixerInKbps + " kbps, " +
-                            root.avatarMixerInPps + "pps";
+                            root.avatarMixerInPps + " pps";
                     }
                     StatText {
                         visible: root.expanded;
                         text: "Avatar Mixer Out: " + root.avatarMixerOutKbps + " kbps, " +
-                            root.avatarMixerOutPps + "pps, " +
-                            root.myAvatarSendRate.toFixed(2) + "hz";
+                            root.avatarMixerOutPps + " pps, " +
+                            root.myAvatarSendRate.toFixed(2) + " hz";
                     }
                     StatText {
                         visible: root.expanded;
                         text: "Audio Mixer In: " + root.audioMixerInKbps + " kbps, " +
-                            root.audioMixerInPps + "pps";
+                            root.audioMixerInPps + " pps";
                     }
                     StatText {
                         visible: root.expanded;
                         text: "Audio Mixer Out: " + root.audioMixerOutKbps + " kbps, " +
-                        root.audioMixerOutPps + "pps";
+                        root.audioMixerOutPps + " pps";
                     }
                     StatText {
                         visible: root.expanded;
@@ -248,7 +248,7 @@ Item {
                     }
                     StatText {
                         visible: root.expanded;
-                        text: "Audio Codec: " + root.audioCodec + " Noise Gate: " +
+                        text: "Audio Codec: " + root.audioCodec + ", Noise Gate: " +
                             root.audioNoiseGate;
                     }
                     StatText {
