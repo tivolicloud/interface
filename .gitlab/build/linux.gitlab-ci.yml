@@ -108,7 +108,8 @@ server linux arm64:
         # build
         - mkdir -p build
         - cd build
-        - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON
+        - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON
         - make domain-server assignment-client oven -j$(nproc)
 
         # make AppDir

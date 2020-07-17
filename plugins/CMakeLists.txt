@@ -45,8 +45,13 @@ if (NOT SERVER_ONLY AND NOT ANDROID)
 endif()
 
 # server-side plugins
-set(DIR "pcmCodec")
-add_subdirectory(${DIR})
+
+if (NOT DISABLE_PCM_CODEC)
+  set(DIR "pcmCodec")
+  add_subdirectory(${DIR})
+else()
+  message(STATUS "PCM codec disabled")
+endif()
 
 if (NOT DISABLE_HIFI_CODEC)
   set(DIR "hifiCodec")
