@@ -135,27 +135,30 @@ class ChatHandler extends WebEventHandler {
 
 		this.signalManager.connect(
 			Messages.messageReceived,
-			(channel, message, senderID) => {
+			(channel, messageStr, senderID) => {
 				if (channel != this.channel) return;
 
+				let message: object;
 				try {
-					const data = JSON.parse(message);
-					if (data.length < 2) throw new Error();
+					message = JSON.parse(messageStr);
+				} catch (err) {}
+				if (typeof message != "object") return;
 
-					this.emitEvent("message", data);
-				} catch (err) {
-					const user = AvatarList.getAvatar(senderID);
-					const displayName = user.displayName;
+				const user = AvatarList.getAvatar(senderID);
+				const username = user.displayName;
 
-					if (
-						displayName == "" ||
-						displayName == MyAvatar.displayName
-					) {
-						this.emitEvent("message", ["Unknown", message]);
-					} else {
-						this.emitEvent("message", [displayName, message]);
-					}
-				}
+				// // legacy support
+				// if (Array.isArray(message)) {
+				// 	if (message.length > 1) {
+				// 		this.emitEvent("message", {
+				// 			username, // message[0]
+				// 			message: message[1],
+				// 		});
+				// 	}
+				// 	return;
+				// }
+
+				this.emitEvent("message", { username, ...message });
 			},
 		);
 
@@ -185,10 +188,7 @@ class ChatHandler extends WebEventHandler {
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			case "message":
-				Messages.sendMessage(
-					this.channel,
-					JSON.stringify([AccountServices.username, data.value]),
-				);
+				Messages.sendMessage(this.channel, JSON.stringify(data.value));
 				break;
 			case "unfocus":
 				this.button.panel.window.setFocus(false);
@@ -196,6 +196,9 @@ class ChatHandler extends WebEventHandler {
 				break;
 			case "sound":
 				this.playChatSound();
+				break;
+			case "openUrl":
+				Window.openUrl(data.value);
 				break;
 		}
 	}

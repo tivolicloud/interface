@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { ScriptService } from "../../script.service";
 import { ChatService } from "../chat.service";
+import { Message } from "@angular/compiler/src/i18n/i18n_ast";
 
 @Component({
 	selector: "app-messages",
@@ -58,5 +59,9 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
 	getTime() {
 		return Date.now();
+	}
+
+	openUrl(url: string) {
+		this.scriptService.emitEvent("chat", "openUrl", url);
 	}
 }

@@ -2,21 +2,41 @@ import { Injectable } from "@angular/core";
 import { EmojiService } from "../emoji.service";
 import { ScriptService } from "../script.service";
 
+export interface MessagePart {
+	content: string;
+	html: boolean;
+	link: boolean;
+}
+
 class Message {
-	public messageParts: { html: boolean; content: string }[] = [];
+	public messageParts: MessagePart[] = [];
 
 	public imageUrl: string;
 
 	public shouldBeShowing = true;
 
 	private getImageFromText() {
+		// TODO: data uri
+
 		const matches = this.message.match(
-			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:jpg|jpeg|png|gif|webp|apng|svg)/,
+			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:jpg|jpeg|png|gif|webp|apng|svg)/i,
 		);
 
 		if (matches && matches.length > 0) {
 			this.imageUrl = matches[0];
 			this.message = this.message.replace(this.imageUrl, "");
+		}
+	}
+
+	private putSpacesBetweenEmojis() {
+		const matches = this.message.match(/:[^:]+?:(?::[^:]+?:){1,}/g);
+		if (matches == null) return;
+
+		for (const match of matches) {
+			this.message = this.message.replace(
+				match,
+				match.replace(/::/g, ": :"),
+			);
 		}
 	}
 
@@ -26,12 +46,17 @@ class Message {
 		public message: string,
 		public username?: string,
 		public noSound = false,
+		public me = false,
 	) {
 		this.getImageFromText();
+		this.putSpacesBetweenEmojis();
 
-		this.messageParts = chatService.emojiService.textToPartsWithEmojis(
-			message,
-		);
+		this.messageParts = this.message.split(" ").map(content => {
+			const link = /https?:\/\/[^]+/i.test(content);
+			return { content, html: false, link };
+		});
+
+		chatService.emojiService.processMessageParts(this.messageParts);
 
 		if (noSound == false)
 			this.chatService.scriptService.emitEvent("chat", "sound");
@@ -63,8 +88,10 @@ export class ChatService {
 						new Message(
 							this,
 							"message",
-							data.value[1],
-							data.value[0],
+							data.value.message,
+							data.value.username,
+							false,
+							data.value.me,
 						),
 					);
 					break;
@@ -97,7 +124,7 @@ export class ChatService {
 
 	sendMessage(message: string) {
 		if (message.startsWith("/")) {
-			const command = message.trim().toLowerCase().slice(1);
+			const command = message.trim().split(" ")[0].toLowerCase().slice(1);
 			const print = msg => {
 				this.messages.push(
 					new Message(this, "announcement", msg, null, true),
@@ -107,7 +134,14 @@ export class ChatService {
 			switch (command) {
 				case "help":
 					print("Here are all the commands available:");
+					print("/me - speak in third person");
 					print("/clear - clears the chat");
+					break;
+				case "me":
+					this.scriptService.emitEvent("chat", "message", {
+						message: message.replace("/me ", ""),
+						me: true,
+					});
 					break;
 				case "clear":
 					this.messages = [];
@@ -115,9 +149,10 @@ export class ChatService {
 					break;
 				default:
 					print("Command not found: " + command);
+					break;
 			}
 		} else {
-			this.scriptService.emitEvent("chat", "message", message);
+			this.scriptService.emitEvent("chat", "message", { message });
 		}
 
 		this.scriptService.emitEvent("chat", "unfocus");

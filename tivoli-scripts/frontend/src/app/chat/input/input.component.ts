@@ -67,14 +67,20 @@ export class InputComponent implements OnInit {
 		}
 	}
 
+	onEmojiShortcode(shortcode: string) {
+		this.input.nativeElement.textContent +=
+			(this.input.nativeElement.textContent.endsWith(" ") ? "" : " ") +
+			`:${shortcode}: `;
+	}
+
 	@HostListener("window:keydown", ["$event"])
 	handleKeyDown(event: KeyboardEvent) {
 		if (event.key == "Escape") return this.unfocus();
 	}
 
-	onEmojiShortcode(shortcode: string) {
-		this.input.nativeElement.textContent +=
-			(this.input.nativeElement.textContent.endsWith(" ") ? "" : " ") +
-			`:${shortcode}: `;
+	@HostListener("document:mouseup", ["$event"])
+	handleMouseDown(event: MouseEvent) {
+		this.chatService.focused = true;
+		this.input.nativeElement.focus();
 	}
 }

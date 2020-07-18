@@ -1,10 +1,10 @@
 .messages {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
-		min-height: 100%;
-		padding: 0 8px;
-		padding-bottom: 6px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	min-height: 100%;
+	padding: 0 8px;
+	padding-bottom: 6px;
 
 	background-color: red;
 	background: linear-gradient(0deg, rgba(#1d1f21, 0.8), rgba(#1d1f21, 0));
@@ -18,37 +18,41 @@
 		background-size: 100% 100%;
 	}
 
-		.message {
-			align-items: center;
-			color: #fff;
-			padding: 4px 0;
-			text-shadow: 1px 1px rgba(#1d1f21, 1), 2px 2px rgba(#1d1f21, 1);
+	.message {
+		align-items: center;
+		color: #fff;
+		padding: 4px 0;
+		text-shadow: 1px 1px rgba(#1d1f21, 1), 2px 2px rgba(#1d1f21, 1);
 
-			.avatar {
-				display: inline-block;
-				vertical-align: bottom;
-				width: 24px;
-				height: 24px;
-				border-radius: 16px;
-				// background-image: url(../../../assets/default-user-icon.jpg);
-				background-size: cover;
-				background-position: center;
-				background-repeat: no-repeat;
-				margin-right: 8px;
-			}
+		.avatar {
+			display: inline-block;
+			vertical-align: bottom;
+			width: 24px;
+			height: 24px;
+			border-radius: 16px;
+			// background-image: url(../../../assets/default-user-icon.jpg);
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			margin-right: 8px;
+		}
 
-			.username {
-				display: inline-block;
-				font-weight: 700;
-				color: #e91e63;
-				margin-right: 4px;
-			}
+		.username {
+			display: inline-block;
+			font-weight: 700;
+			color: #e91e63;
+		}
 
-			.image {
-				display: block;
-				height: 180px;
-				border-radius: 4px;
-				margin-top: 4px;
-			}
+		a {
+			color: #00b0f4; // discord link color
+			text-decoration: inherit;
+		}
+
+		.image {
+			display: block;
+			height: 180px;
+			border-radius: 4px;
+			margin-top: 4px;
 		}
 	}
+}

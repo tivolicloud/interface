@@ -1,53 +1,64 @@
-	<div
+<div
 	#messages
 	class="messages fast-transition"
 	[class.focused]="chatService.focused"
 >
+	<div
+		class="message transition"
+		*ngFor="let message of chatService.messages; let i = index"
+		[style.transitionDelay]="
+			(chatService.messages.length - 1 - i) * 10 + 'ms'
+		"
+		[style.opacity]="
+			chatService.focused || message.shouldBeShowing ? '1' : '0'
+		"
+		[style.fontStyle]="message.me ? 'italic' : ''"
+		@message
+	>
 		<div
-			class="message transition"
-			*ngFor="let message of chatService.messages; let i = index"
-			[style.transitionDelay]="
-				(chatService.messages.length - 1 - i) * 10 + 'ms'
+			class="avatar"
+			*ngIf="message.username"
+			[style.backgroundImage]="
+				'url(' +
+				scriptService.metaverseUrl +
+				'/api/user/' +
+				message.username.toLowerCase() +
+				'/image), url(./assets/default-user-icon.jpg)'
 			"
-			[style.opacity]="
-				chatService.focused || message.shouldBeShowing ? '1' : '0'
-			"
-			@message
-		>
-			<div
-				class="avatar"
-				*ngIf="message.username"
-				[style.backgroundImage]="
-					'url(' +
-					scriptService.metaverseUrl +
-					'/api/user/' +
-					message.username.toLowerCase() +
-					'/image), url(./assets/default-user-icon.jpg)'
-				"
-			></div>
-			<div class="username">
-				{{
-					message.type == "message"
-						? message.username + ":"
-						: message.message
-				}}
-			</div>
-			<ng-container *ngIf="message.type == 'message'">
-				<ng-container *ngFor="let part of message.messageParts">
-					<ng-container *ngIf="part.html == false">{{
-						part.content
-					}}</ng-container>
-					<span
-						*ngIf="part.html == true"
-						[innerHTML]="part.content"
-					></span>
-				</ng-container>
-			</ng-container>
-			<img
-				*ngIf="message.imageUrl"
-				[src]="message.imageUrl"
-				class="image"
-			/>
+		></div>
+		<div class="username" *ngIf="message.me == false">
+			{{
+				message.type == "message"
+					? message.username + ":"
+					: message.message
+			}}
 		</div>
+		<ng-container *ngIf="message.type == 'message'">
+			<span *ngIf="message.me" style="margin-left: -4px;">
+				{{ message.username }}
+			</span>
+			<ng-container *ngFor="let part of message.messageParts">
+				<ng-container *ngIf="!part.html">
+					<ng-container *ngIf="!part.link">
+						{{ part.content }}
+					</ng-container>
+					<a
+						*ngIf="part.link"
+						style="cursor: pointer;"
+						(click)="openUrl(part.content)"
+					>
+						{{ part.content }}
+					</a>
+				</ng-container>
+				<span *ngIf="part.html" [innerHTML]="part.content"></span>
+			</ng-container>
+		</ng-container>
+		<img
+			*ngIf="message.imageUrl"
+			class="image"
+			[src]="message.imageUrl"
+			style="cursor: pointer;"
+			(click)="openUrl(message.imageUrl)"
+		/>
 	</div>
 </div>

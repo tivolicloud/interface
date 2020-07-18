@@ -56,7 +56,7 @@ declare namespace Window {
 		buttons: Window.MessageBoxButton,
 		defaultButton: Window.MessageBoxButton,
 	): number;
-	function openURL(url: string): void;
+	function openUrl(url: string): void;
 	function openWebBrowser(): void;
 	function prompt(message: string, defaultText?: string): string;
 	function promptAsync(message: string, defaultText?: string): string;

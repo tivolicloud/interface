@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { MessagePart } from "./chat/chat.service";
 
 @Injectable({
 	providedIn: "root",
@@ -73,21 +74,16 @@ export class EmojiService {
 		return this.emojiSvgUrl + emoji.code + ".svg";
 	}
 
-	textToPartsWithEmojis(text: string): { html: boolean; content: string }[] {
-		return text.split(/(:[^]+?:)/g).map(content => {
-			if (content.match(/^:[^]+?:$/)) {
-				const emojiUrl = this.shortcodeToImage(content);
-				if (emojiUrl != null) {
-					return {
-						html: true,
-						content: `<img class="emoji" src="${emojiUrl}"/>`,
-					};
-				} else {
-					return { html: false, content };
-				}
-			} else {
-				return { html: false, content };
+	processMessageParts(messageParts: MessagePart[]) {
+		for (const part of messageParts) {
+			if (part.html || part.link) continue;
+			if (/^:[^]+?:$/.test(part.content) == false) continue;
+
+			const emojiUrl = this.shortcodeToImage(part.content);
+			if (emojiUrl != null) {
+				part.content = `<img class="emoji" src="${emojiUrl}"/>`;
+				part.html = true;
 			}
-		});
+		}
 	}
 }
