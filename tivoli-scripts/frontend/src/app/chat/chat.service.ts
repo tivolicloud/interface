@@ -16,15 +16,24 @@ class Message {
 	public shouldBeShowing = true;
 
 	private getImageFromText() {
-		// TODO: data uri
-
-		const matches = this.message.match(
+		const urlMatches = this.message.match(
 			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:jpg|jpeg|png|gif|webp|apng|svg)/i,
 		);
 
-		if (matches && matches.length > 0) {
-			this.imageUrl = matches[0];
+		if (urlMatches && urlMatches.length > 0) {
+			this.imageUrl = urlMatches[0].trim();
 			this.message = this.message.replace(this.imageUrl, "");
+			return;
+		}
+
+		const dataUriMatches = this.message.match(
+			/(data:image\/[^]+?;[^\s]+?)(?=$|\s)/i,
+		);
+
+		if (dataUriMatches && dataUriMatches.length > 0) {
+			this.imageUrl = dataUriMatches[0].trim();
+			this.message = this.message.replace(this.imageUrl, "");
+			return;
 		}
 	}
 
