@@ -72,6 +72,9 @@ endif()
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10.tar.gz'
                 elif issue.startswith("Ubuntu 20.04"):
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-20.04.tar.gz'
+                elif issue.startswith("Ubuntu 16.04"):
+                    # untested
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-16.04.tar.gz'
                 elif issue.startswith("Arch Linux"):
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-arch-linux.tar.gz'
                 else:
