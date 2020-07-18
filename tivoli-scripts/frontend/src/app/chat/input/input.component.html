@@ -15,9 +15,8 @@
 		(click)="emojiMenuOpen = !emojiMenuOpen"
 	/>
 	<app-emoji-menu
-		[style.opacity]="emojiMenuOpen ? '1' : '0'"
-		[style.width]="emojiMenuOpen ? '' : '0'"
-		class="emoji-menu fast-transition"
+		class="emoji-menu"
+		[open]="emojiMenuOpen"
 		(emojiShortcode)="onEmojiShortcode($event)"
 	></app-emoji-menu>
 </div>

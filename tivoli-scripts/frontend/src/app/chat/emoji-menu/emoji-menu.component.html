@@ -1,4 +1,9 @@
-<div class="menu">
+<div
+	class="menu fast-transition"
+	*ngIf="loaded"
+	[style.opacity]="open ? '1' : '0'"
+	[style.pointerEvents]="open ? 'initial' : 'none'"
+>
 	<!-- <cdk-virtual-scroll-viewport [itemSize]="100" style="height: 100%;">
 		<img
 			class="emoji"
