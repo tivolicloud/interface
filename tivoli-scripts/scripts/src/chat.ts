@@ -158,6 +158,8 @@ class ChatHandler extends WebEventHandler {
 				// 	return;
 				// }
 
+				delete message["username"]; // make sure people dont overwrite it
+
 				this.emitEvent("message", { username, ...message });
 			},
 		);
