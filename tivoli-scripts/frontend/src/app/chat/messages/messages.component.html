@@ -1,9 +1,8 @@
-<div class="messages">
 	<div
-		class="background animated"
-		[style.opacity]="chatService.focused ? '1' : '0'"
-	></div>
-	<div #messages class="content">
+	#messages
+	class="messages fast-transition"
+	[class.focused]="chatService.focused"
+>
 		<div
 			class="message transition"
 			*ngFor="let message of chatService.messages; let i = index"
