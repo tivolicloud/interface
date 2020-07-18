@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+	Component,
+	ElementRef,
+	OnInit,
+	ViewChild,
+	HostListener,
+} from "@angular/core";
 import { Subscription } from "rxjs";
 import { EmojiService } from "../../emoji.service";
 import { ScriptService } from "../../script.service";
@@ -29,6 +35,11 @@ export class InputComponent implements OnInit {
 					case "focus":
 						this.chatService.focused = true;
 						this.input.nativeElement.focus();
+						break;
+					case "unfocus":
+						this.chatService.focused = false;
+						this.input.nativeElement.blur();
+						break;
 				}
 			}),
 		);
@@ -54,7 +65,10 @@ export class InputComponent implements OnInit {
 
 			return this.unfocus();
 		}
+	}
 
+	@HostListener("window:keydown", ["$event"])
+	handleKeyDown(event: KeyboardEvent) {
 		if (event.key == "Escape") return this.unfocus();
 	}
 

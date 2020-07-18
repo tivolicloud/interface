@@ -164,6 +164,10 @@ class ChatHandler extends WebEventHandler {
 				this.emitEvent("focus");
 				this.button.panel.window.setFocus(true);
 				this.button.panel.window.setEnabled(true);
+			} else if (e.text == "ESC") {
+				this.emitEvent("unfocus");
+				this.button.panel.window.setFocus(false);
+				this.button.panel.window.setEnabled(false);
 			}
 		});
 
