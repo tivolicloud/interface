@@ -454,7 +454,7 @@ public slots:
     void resetPhysicsReadyInformation();
 
     void reloadResourceCaches();
-    void refreshScene();
+    void rejoin();
 
     void updateHeartbeat() const;
 

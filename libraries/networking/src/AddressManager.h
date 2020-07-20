@@ -27,6 +27,7 @@ extern const QString REDIRECT_HIFI_ADDRESS;
 extern const QString DEFAULT_HOME_ADDRESS;
 
 const QString SANDBOX_HIFI_ADDRESS = "hifi://localhost";
+const QString EMPTY_HIFI_ADDRESS = "file://";
 const QString INDEX_PATH = "/";
 
 const QString GET_PLACE = "/api/v1/places/%1";
@@ -226,7 +227,8 @@ public:
         Internal,
         AttemptedRefresh,
         Suggestions,
-        VisitUserFromPAL
+        VisitUserFromPAL,
+        ForceReload
     };
 
     bool isConnected();
@@ -314,6 +316,12 @@ public slots:
      */
     void goToLocalSandbox(QString path = "", LookupTrigger trigger = LookupTrigger::StartupFromSettings) {
         handleUrl(SANDBOX_HIFI_ADDRESS + path, trigger); }
+
+    /**jsdoc
+     * Reload the currently open world, the same as leaving the world for another and then returning.
+     * @function location.rejoin
+     */
+    void rejoin();
 
     /**jsdoc
      * Takes you to the default "welcome" metaverse address.

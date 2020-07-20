@@ -4520,6 +4520,7 @@ void Application::keyPressEvent(QKeyEvent* event) {
                 break;
 
             case Qt::Key_R:
+                if (isShifted) break;
                 if (isControlOrCommand && !event->isAutoRepeat()) {
                     DependencyManager::get<ScriptEngines>()->reloadAllScripts();
                     getOffscreenUI()->clearCache();
@@ -5989,49 +5990,9 @@ void Application::reloadResourceCaches() {
 }
 
 
-// Reload a domain without clearing the caches.
-void Application::refreshScene() { 
-    resetPhysicsReadyInformation();
-
-    // Query the octree to refresh everything in view
-    _queryExpiry = SteadyClock::now();
-    _octreeQuery.incrementConnectionID();
-
-    QJsonObject queryJSONParameters;
-    QJsonObject queryFlags;
-    queryFlags["includeDescendants"] = true;
-    queryFlags["includeAncestors"] = true;
-    queryJSONParameters["flags"] = queryFlags;
-    queryOctree(
-        NodeType::EntityServer,
-        PacketType::EntityQuery,
-        queryJSONParameters
-    );
-
-    getMyAvatar()->prepareAvatarEntityDataForReload();
-    // Clear the entities and their renderables
-    getEntities()->clear();
-
-    //DependencyManager::get<AssetClient>()->clearCache();
-    //DependencyManager::get<ScriptCache>()->clearCache();
-
-    // Clear all the resource caches
-    //DependencyManager::get<ResourceCacheSharedItems>()->clear();
-    DependencyManager::get<AnimationCache>()->refreshAll();
-    DependencyManager::get<SoundCache>()->refreshAll();
-    DependencyManager::get<MaterialCache>()->refreshAll();
-    DependencyManager::get<ModelCache>()->refreshAll();
-    ShaderCache::instance().refreshAll();
-    DependencyManager::get<TextureCache>()->refreshAll();
-    DependencyManager::get<recording::ClipCache>()->refreshAll();
-
-    DependencyManager::get<NodeList>()->reset("Reloading resources");  // Force redownload of .fst models
-    // DependencyManager::get<ScriptEngines>()->reloadAllScripts(); // can we make a version that doesn't reload client UI scripts?
-    //getOffscreenUI()->clearCache();
-
-    //DependencyManager::get<Keyboard>()->createKeyboard();
-
-    //getMyAvatar()->resetFullAvatarURL();
+// Reload a world without clearing the caches. 
+void Application::rejoin() { 
+    DependencyManager::get<AddressManager>()->rejoin();
 }
 
 

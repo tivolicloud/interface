@@ -157,7 +157,7 @@ namespace MenuOption {
     const QString Quit =  "Quit";
     const QString ReloadAllScripts = "Reload All Scripts";
     const QString ReloadContent = "Clear Cache && Reload (very slow)";
-    const QString RefreshScene = "Refresh Scene";
+    const QString Rejoin = "Rejoin World";
     const QString ReloadAvatar = "Reload my Avatar";
     const QString RenderClearKtxCache = "Clear KTX Cache (requires restart)";
     const QString RenderMaxTextureMemory = "Maximum Texture Memory";

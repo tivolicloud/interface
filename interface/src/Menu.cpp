@@ -154,10 +154,10 @@ Menu::Menu() {
 #endif
 
     // Edit > Reload All Content and clear caches
-    addActionToQMenuAndActionHash(editMenu, MenuOption::ReloadContent, 0, qApp, SLOT(reloadResourceCaches()));
-    
-    // Edit > Refresh scene 
-    addActionToQMenuAndActionHash(editMenu, MenuOption::RefreshScene, 0, qApp, SLOT(refreshScene()));
+    addActionToQMenuAndActionHash(editMenu, MenuOption::ReloadContent, 0, qApp, SLOT(reloadResourceCaches()));    
+
+    // Edit > Rejoin World 
+    addActionToQMenuAndActionHash(editMenu, MenuOption::Rejoin, Qt::CTRL | Qt::SHIFT | Qt::Key_R, qApp, SLOT(rejoin()));
 
     // Edit > Reload Avatar
 
@@ -314,7 +314,7 @@ Menu::Menu() {
     //    // Refresh entire scene if custom shaders were disabled in settings at startup
     //    if (TextureCache::wasLaunchedWithShadersDisabled()) {
     //        TextureCache::setWasLaunchedWithShadersDisabled(false);
-    //        qApp->refreshScene();
+    //        
     //    }
     //    else { // do a quick refresh of the shaders
     //        ShaderCache::instance().refreshAll(); // only refresh the shader cache
@@ -558,7 +558,6 @@ Menu::Menu() {
     action = addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::ForceEverythingUnlit, 0, false);
     connect(action, &QAction::triggered, [action] {
         TextureCache::setEverythingUnlit(action->isChecked());
-        //qApp->refreshScene();
 
     });
     // Developer > Assets >>>

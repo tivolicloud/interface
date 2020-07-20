@@ -222,6 +222,7 @@ QString AddressManager::currentFacingPath() const {
     }
 }
 
+
 const JSONCallbackParameters& AddressManager::apiCallbackParameters() {
     static bool hasSetupParameters = false;
     static JSONCallbackParameters callbackParams;
@@ -873,6 +874,7 @@ bool AddressManager::setDomainInfo(const QUrl& domainURL, LookupTrigger trigger)
     return emitHostChanged;
 }
 
+
 void AddressManager::goToUser(const QString& username, bool shouldMatchOrientation) {
     QString formattedUsername = QUrl::toPercentEncoding(username);
 
@@ -891,6 +893,15 @@ void AddressManager::goToUser(const QString& username, bool shouldMatchOrientati
 
 bool AddressManager::canGoBack() const {
     return (_backStack.size() > 0);
+}
+
+void AddressManager::rejoin() {
+        LookupTrigger trigger = LookupTrigger::Internal;
+        QUrl urlToRefresh = currentAddress();//_lastVisitedURL;
+        handleUrl(EMPTY_HIFI_ADDRESS, trigger); 
+        QTimer::singleShot(500, [=](){
+            handleUrl(urlToRefresh , trigger); 
+        });
 }
 
 void AddressManager::refreshPreviousLookup() {
