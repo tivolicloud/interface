@@ -37,10 +37,10 @@ Frame {
             bottomMargin: -frameMarginBottom
         }
 
-        border {
-            width: hifi.dimensions.borderWidth
-            color: hifi.colors.lightGrayText80
-        }
+        // border {
+        //     width: hifi.dimensions.borderWidth
+        //     color: hifi.colors.lightGrayText80
+        // }
         radius: hifi.dimensions.borderRadius
         color: hifi.colors.faintGray
 
