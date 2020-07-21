@@ -899,7 +899,7 @@ void AddressManager::rejoin() {
         LookupTrigger trigger = LookupTrigger::Internal;
         QUrl urlToRefresh = currentAddress();//_lastVisitedURL;
         handleUrl(EMPTY_HIFI_ADDRESS, trigger); 
-        QTimer::singleShot(500, [=](){
+        QTimer::singleShot(2000, [=](){
             handleUrl(urlToRefresh , trigger); 
         });
 }
