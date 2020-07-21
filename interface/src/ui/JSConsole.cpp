@@ -27,7 +27,7 @@
 #include "ScriptHighlighting.h"
 
 const int NO_CURRENT_HISTORY_COMMAND = -1;
-const int MAX_HISTORY_SIZE = 256;
+const int MAX_HISTORY_SIZE = 1024;
 const QString HISTORY_FILENAME = "JSConsole.history.json";
 
 const QString COMMAND_STYLE = "color: #266a9b;";
