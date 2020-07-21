@@ -4376,9 +4376,11 @@ bool Application::eventFilter(QObject* object, QEvent* event) {
     }
 
     // for overview overlay
+    auto jsConsole = DependencyManager::get<StandAloneJSConsole>();
     if (
+        (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) &&
         hasFocus() && OffscreenQmlSurface::viewportFocused &&
-        (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+        (jsConsole ? !jsConsole->getActive() : true)
     ) {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
         

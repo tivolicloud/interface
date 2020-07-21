@@ -37,3 +37,6 @@ void StandAloneJSConsole::toggleConsole()  {
     _jsConsole->setVisible(!_jsConsole->isVisible());
 }
 
+bool StandAloneJSConsole::getActive() {
+    return _jsConsole ? _jsConsole->isActiveWindow() : false;
+}

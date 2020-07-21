@@ -22,10 +22,13 @@ class QDialog;
 class StandAloneJSConsole : public QObject, public Dependency {
     Q_OBJECT
     SINGLETON_DEPENDENCY
-    
+
 public slots:
     void toggleConsole();
-    
+
+public:
+    bool getActive();
+
 private:
     StandAloneJSConsole() {}
     
