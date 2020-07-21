@@ -35,63 +35,68 @@ var EventBridge;
 		const tempEventBridge = EventBridge;
 		EventBridge = channel.objects.eventBridge;
 
-		EventBridge.audioOutputDeviceChanged.connect(async deviceName => {
-			deviceName = deviceName.trim().toLowerCase();
-			if (deviceName == "") deviceName = "default";
+		if (EventBridge.audioOutputDeviceChanged) {
+			EventBridge.audioOutputDeviceChanged.connect(async deviceName => {
+				deviceName = deviceName.trim().toLowerCase();
+				if (deviceName == "") deviceName = "default";
 
-			await navigator.mediaDevices
-				.getUserMedia({ audio: true, video: false })
-				.catch(err => {
-					console.error(
-						"Error getting media devices" +
-							err.name +
-							": " +
-							err.message,
+				await navigator.mediaDevices
+					.getUserMedia({ audio: true, video: false })
+					.catch(err => {
+						console.error(
+							"Error getting media devices" +
+								err.name +
+								": " +
+								err.message,
+						);
+					});
+
+				const devices = (
+					await navigator.mediaDevices
+						.enumerateDevices()
+						.catch(err => {
+							console.error(
+								"Error getting user media" +
+									err.name +
+									": " +
+									err.message,
+							);
+						})
+				).filter(device => device.kind == "audiooutput");
+
+				const device =
+					deviceName == "default"
+						? devices.find(device => device.deviceId == "default")
+						: devices.find(
+								device =>
+									deviceName ==
+									device.label
+										.replace(
+											/\([0-9a-f]{4}:[0-9a-f]{4}\)/gi,
+											"",
+										)
+										.trim()
+										.toLowerCase(),
+						  ) ||
+						  devices.find(device => device.deviceId == "default");
+
+				if (device == null) {
+					console.error("Failed to change HTML audio output device");
+					return;
+				} else {
+					console.log(
+						"Changing HTML audio output to device " + deviceName,
 					);
-				});
+				}
 
-			const devices = (
-				await navigator.mediaDevices.enumerateDevices().catch(err => {
-					console.error(
-						"Error getting user media" +
-							err.name +
-							": " +
-							err.message,
-					);
-				})
-			).filter(device => device.kind == "audiooutput");
-
-			const device =
-				deviceName == "default"
-					? devices.find(device => device.deviceId == "default")
-					: devices.find(
-							device =>
-								deviceName ==
-								device.label
-									.replace(
-										/\([0-9a-f]{4}:[0-9a-f]{4}\)/gi,
-										"",
-									)
-									.trim()
-									.toLowerCase(),
-					  ) || devices.find(device => device.deviceId == "default");
-
-			if (device == null) {
-				console.error("Failed to change HTML audio output device");
-				return;
-			} else {
-				console.log(
-					"Changing HTML audio output to device " + deviceName,
-				);
-			}
-
-			for (const video of document.getElementsByTagName("video")) {
-				video.setSinkId(device.deviceId);
-			}
-			for (const audio of document.getElementsByTagName("audio")) {
-				audio.setSinkId(device.deviceId);
-			}
-		});
+				for (const video of document.getElementsByTagName("video")) {
+					video.setSinkId(device.deviceId);
+				}
+				for (const audio of document.getElementsByTagName("audio")) {
+					audio.setSinkId(device.deviceId);
+				}
+			});
+		}
 
 		new WebKitMutationObserver(mutations => {
 			mutations.forEach(mutation => {
