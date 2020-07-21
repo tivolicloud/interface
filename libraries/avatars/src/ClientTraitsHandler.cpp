@@ -80,11 +80,11 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
         }
 
         // we have a mixer to send to, setup our set traits packet
-        auto traitsPacketList = NLPacketList::create(PacketType::SetAvatarTraits, QByteArray(), true, true);
+        auto traitsPacket = NLPacket::create(PacketType::SetAvatarTraits, -1, true);
 
         // bump and write the current trait version to an extended header
         // the trait version is the same for all traits in this packet list
-        traitsPacketList->writePrimitive(++_currentTraitVersion);
+        traitsPacket->writePrimitive(++_currentTraitVersion);
 
         // take a copy of the set of changed traits and clear the stored set
         auto traitStatusesCopy { _traitStatuses };
@@ -106,7 +106,7 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
             auto traitType = static_cast<AvatarTraits::TraitType>(std::distance(traitStatusesCopy.simpleCBegin(), simpleIt));
 
             if (initialSend || *simpleIt == Updated) {
-                bytesWritten += AvatarTraits::packTrait(traitType, *traitsPacketList, *_owningAvatar);
+                bytesWritten += AvatarTraits::packTrait(traitType, *traitsPacket, *_owningAvatar);
                 
                 if (traitType == AvatarTraits::SkeletonModelURL) {
                     // keep track of our skeleton version in case we get an override back
@@ -125,19 +125,19 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
                     // this is a changed trait we need to send or we haven't send out trait information yet
                     // ask the owning avatar to pack it
                     bytesWritten += AvatarTraits::packTraitInstance(instancedIt->traitType, instanceIDValuePair.id,
-                                                                    *traitsPacketList, *_owningAvatar);
+                                                                    *traitsPacket, *_owningAvatar);
 
                 } else if (!initialSend && instanceIDValuePair.value == Deleted) {
                     // pack delete for this trait instance
                     bytesWritten += AvatarTraits::packInstancedTraitDelete(instancedIt->traitType, instanceIDValuePair.id,
-                                                           *traitsPacketList);
+                                                           *traitsPacket);
                 }
             }
 
             ++instancedIt;
         }
 
-        nodeList->sendPacketList(std::move(traitsPacketList), *avatarMixer);
+        nodeList->sendPacket(std::move(traitsPacket), *avatarMixer);
     }
 
     return bytesWritten;
