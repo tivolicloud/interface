@@ -2337,9 +2337,9 @@ void AvatarData::setDisplayName(const QString& displayName) {
     if (accountManager && accountManager->getAccountInfo().getUsername().isEmpty() == false) {
         _displayName = QString(accountManager->getAccountInfo().getUsername());
     } else {
-        _displayName = displayName;
+        _displayName = "";
     }
-    
+
     _sessionDisplayName = "";
 
     qCDebug(avatars) << "Changing display name for avatar to" << displayName;
