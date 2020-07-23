@@ -1016,6 +1016,11 @@
                 Window.browseAsync("Select Model to Import", "", "*.json");
             });
 
+            addButton("importEntitiesFromURLButton", function() {
+                Window.promptTextChanged.connect(onPromptTextChanged);
+                Window.promptAsync("URL of SVO to import", "");
+            });
+
             addButton("openAssetBrowserButton", function() {
                 Window.showAssetServer();
             });

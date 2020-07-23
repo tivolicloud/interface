@@ -224,6 +224,25 @@ TabBar {
                             });
                         }
                     }
+
+                    HifiControls.Button {
+                        id: importURLButton
+                        text: "Import Entities from URL (.json)"
+                        color: hifi.buttons.black
+                        colorScheme: hifi.colorSchemes.dark
+                        anchors.right: parent.right
+                        anchors.rightMargin: 55
+                        anchors.left: parent.left
+                        anchors.leftMargin: 55
+                        anchors.top: importButton.bottom
+                        anchors.topMargin: 20
+                        onClicked: {
+                            editRoot.sendToScript({
+                                method: "newEntityButtonClicked",
+                                params: { buttonName: "importEntitiesFromURLButton" }
+                            });
+                        }
+                    }
                 }
             } // Flickable
         }
