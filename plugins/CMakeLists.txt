@@ -60,6 +60,9 @@ else()
   message(STATUS "Hifi codec disabled")
 endif()
 
+set(DIR "vorbisCodec")
+add_subdirectory(${DIR})
+
 set(DIR "teaProtocol")
 if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${DIR}")
   add_subdirectory(${DIR})
