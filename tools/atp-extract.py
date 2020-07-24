@@ -27,16 +27,16 @@ def extractFile(assetMap, filename):
 
 option = sys.argv[1]
 if option == '-l':
-    assetMap = loadMapFile("map.json")
+    assetMap = loadMapFile("mappings.json")
     for key, value in assetMap.iteritems():
         print key[1:]
 elif option == '-x':
-    assetMap = loadMapFile("map.json")
+    assetMap = loadMapFile("mappings.json")
     outputFilename = sys.argv[2]
     if not extractFile(assetMap, outputFilename):
         print("Error could not extract file: \"" + outputFilename + "\"")
 elif option == '-a':
-    assetMap = loadMapFile("map.json")
+    assetMap = loadMapFile("mappings.json")
     for key, value in assetMap.iteritems():
         print("Extracting " + key[1:])
         extractFile(assetMap, key[1:])
