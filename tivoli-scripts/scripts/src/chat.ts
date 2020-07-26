@@ -38,11 +38,12 @@ class ChatJoinAndLeave {
 			}
 
 			const avatar = AvatarList.getAvatar(requestId);
-			const username = avatar.displayName.trim();
-			if (username != "") {
+			const displayName = avatar ? avatar.displayName : null;
+
+			if (displayName != null && displayName != MyAvatar.displayName) {
 				Script.clearInterval(interval);
-				this.usernames[requestId] = username;
-				return callback(username);
+				this.usernames[requestId] = displayName;
+				return callback(displayName);
 			}
 
 			tries--;
