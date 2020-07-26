@@ -236,6 +236,7 @@ export class Chat {
 			height: this.height,
 			visible: false,
 			frameless: true,
+			enabled: false,
 			source:
 				Script.resolvePath("ui/index.html") +
 				"#/chat?metaverseUrl=" +

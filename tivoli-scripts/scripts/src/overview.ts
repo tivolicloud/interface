@@ -111,12 +111,12 @@ export class Overview {
 			height: 0,
 			visible: true,
 			frameless: true,
+			enabled: false,
 			source:
 				Script.resolvePath("ui/index.html") +
 				"#/overview?metaverseUrl=" +
 				AccountServices.metaverseServerURL,
 		});
-		this.window.setEnabled(false); // input passthrough
 		this.window.setSize(this.width, 0);
 		this.fixPosition();
 
