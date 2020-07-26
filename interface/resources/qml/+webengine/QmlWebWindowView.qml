@@ -4,6 +4,7 @@ import QtWebChannel 1.0
 
 import controlsUit 1.0 as Controls
 import stylesUit 1.0
+
 Controls.WebView {
     id: webview
     url: "about:blank"

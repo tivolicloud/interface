@@ -58,4 +58,8 @@ WebEngineView {
             root.grantFeaturePermission(securityOrigin, feature, shouldGivePermission);
         }
     }
+
+    onContextMenuRequested: {
+        request.accepted = true;
+    }
 }

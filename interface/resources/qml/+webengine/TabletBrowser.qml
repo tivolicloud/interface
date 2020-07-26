@@ -118,6 +118,10 @@ Item {
             request.openIn(webView);
         }
 
+        onContextMenuRequested: {
+            request.accepted = true;
+        }
+
         HifiControls.WebSpinner { }
     }
 
