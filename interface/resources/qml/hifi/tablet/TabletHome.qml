@@ -37,12 +37,11 @@ Item {
 
         color: "#000"
 
-        HifiAudio.MicBarApplication {
+        HifiAudio.MicBar {
             scale: 1.5
             anchors {
                 left: parent.left
-                leftMargin: 30
-                // looks bad because muted appears underneath
+                leftMargin: 0
                 verticalCenter: parent.verticalCenter
             }
         }

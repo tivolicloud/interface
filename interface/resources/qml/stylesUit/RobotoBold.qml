@@ -17,5 +17,5 @@ Text {
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignLeft
     font.family: "Roboto Bold"
-    // font.bold: true
+    font.bold: true
 }

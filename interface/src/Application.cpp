@@ -338,7 +338,6 @@ Setting::Handle<int> maxOctreePacketsPerSecond{"maxOctreePPS", DEFAULT_MAX_OCTRE
 Setting::Handle<bool> loginDialogPoppedUp{"loginDialogPoppedUp", false};
 
 static const QUrl AVATAR_INPUTS_BAR_QML = PathUtils::qmlUrl("AvatarInputsBar.qml");
-static const QUrl MIC_BAR_APPLICATION_QML = PathUtils::qmlUrl("hifi/audio/MicBarApplication.qml");
 static const QUrl BUBBLE_ICON_QML = PathUtils::qmlUrl("BubbleIcon.qml");
 
 static const QString STANDARD_TO_ACTION_MAPPING_NAME = "Standard to Action";

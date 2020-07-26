@@ -79,7 +79,7 @@
             parentJointIndex: MyAvatar.getJointIndex("_CAMERA_MATRIX"),
             localPosition: micBarLocalPosition,
             localRotation: Quat.cancelOutRollAndPitch(Quat.lookAtSimple(Camera.orientation, micBarLocalPosition)),
-            sourceUrl: Script.resourcesPath() + "qml/hifi/audio/MicBarApplication.qml",
+            sourceUrl: Script.resourcesPath() + "qml/hifi/audio/MicBar.qml",
             // cutoff alpha for detecting transparency
             alpha: 0.98,
             dimensions: MIC_BAR_DIMENSIONS,

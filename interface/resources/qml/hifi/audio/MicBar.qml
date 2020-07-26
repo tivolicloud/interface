@@ -48,10 +48,12 @@ Rectangle {
     property bool standalone: false;
     property var dragTarget: null;
 
-    width: 240;
-    height: 50;
+    property real scale: 1;
 
-    radius: 5;
+    width: 240 * scale;
+    height: 50 * scale;
+
+    radius: 4 * scale;
 
     color: "#00000000";
     border {
@@ -62,10 +64,10 @@ Rectangle {
     // borders are painted over fill, so reduce the fill to fit inside the border
     Rectangle {
         color: standalone ? colors.fill : "#00000000";
-        width: 236;
-        height: 46;
+        height: 46 * micBar.scale;
+        width: 236 * micBar.scale;
 
-        radius: 5;
+        radius: micBar.radius;
 
         anchors {
             verticalCenter: parent.verticalCenter;
@@ -120,12 +122,12 @@ Rectangle {
 
         anchors {
             left: parent.left;
-            leftMargin: 5;
+            leftMargin: 5 * micBar.scale;
             verticalCenter: parent.verticalCenter;
         }
 
-        width: 40;
-        height: 40;
+        width: 40 * micBar.scale;
+        height: 40 * micBar.scale;
 
         Item {
             Image {
@@ -144,13 +146,20 @@ Rectangle {
                     unmutedIcon
                 );
 
-                width: 30;
-                height: 30;
+                width: 29 * micBar.scale;
+                height: 32 * micBar.scale;
+                // fillMode: Image.PreserveAspectFit
+
+                 // svg antialiasing fix
+                sourceSize.width: 29 * micBar.scale;
+                sourceSize.height: 32 * micBar.scale;
+                smooth: true
+
                 anchors {
                     left: parent.left;
-                    leftMargin: 5;
+                    leftMargin: 5 * micBar.scale;
                     top: parent.top;
-                    topMargin: 5;
+                    topMargin: 5 * micBar.scale;
                 }
             }
 
@@ -169,12 +178,12 @@ Rectangle {
 
         anchors {
             left: parent.left;
-            leftMargin: 50;
+            leftMargin: 50 * micBar.scale;
             verticalCenter: parent.verticalCenter;
         }
 
-        width: 170;
-        height: 8
+        width: 170 * micBar.scale;
+        height: 8 * micBar.scale
 
         Text {
             anchors {
@@ -185,7 +194,10 @@ Rectangle {
             color: colors.icon;
 
             text: (pushToTalk && !pushingToTalk) ? (HMD.active ? "MUTED PTT" : "MUTED PTT-(T)") : (muted ? "MUTED" : "MUTE");
-            font.pointSize: 12;
+            
+            font.pixelSize: 16 * micBar.scale;
+            font.family: "Roboto Bold"
+            font.bold: true
         }
 
         Rectangle {
@@ -194,8 +206,9 @@ Rectangle {
                 verticalCenter: parent.verticalCenter;
             }
 
-            width: pushToTalk && !pushingToTalk ? (HMD.active ? 27 : 25) : 50;
-            height: 4;
+            width: (pushToTalk && !pushingToTalk ? (HMD.active ? 27 : 25) : 50) * micBar.scale;
+            height: 4 * micBar.scale;
+            radius: 2 * micBar.scale;
             color: colors.icon;
         }
 
@@ -205,8 +218,9 @@ Rectangle {
                 verticalCenter: parent.verticalCenter;
             }
 
-            width: pushToTalk && !pushingToTalk ? (HMD.active ? 27 : 25) : 50;
-            height: 4;
+            width: (pushToTalk && !pushingToTalk ? (HMD.active ? 27 : 25) : 50) * micBar.scale;
+            height: 4 * micBar.scale;
+            radius: 2 * micBar.scale;
             color: colors.icon;
         }
     }
@@ -221,7 +235,7 @@ Rectangle {
         width: status.width;
 
         Rectangle { // base
-            radius: 4;
+            radius: micBar.radius;
             anchors { fill: parent }
             color: colors.gutter;
         }
@@ -229,7 +243,7 @@ Rectangle {
         Rectangle { // mask
             id: mask;
             width: gated ? 0 : parent.width * level;
-            radius: 5;
+            radius: micBar.radius;
             anchors {
                 bottom: parent.bottom;
                 bottomMargin: 0;
@@ -244,10 +258,10 @@ Rectangle {
             anchors { fill: mask }
             source: mask
             start: Qt.point(0, 0);
-            end: Qt.point(170, 0);
+            end: Qt.point(bar.width, 0);
             gradient: Gradient {
                 GradientStop {
-                    position: 0;
+                    position: 0.0;
                     color: colors.greenStart;
                 }
                 GradientStop {
@@ -255,7 +269,7 @@ Rectangle {
                     color: colors.greenEnd;
                 }
                 GradientStop {
-                    position: 1;
+                    position: 1.0;
                     color: colors.yellow;
                 }
             }
@@ -265,7 +279,7 @@ Rectangle {
             id: gatedIndicator;
             visible: gated && !AudioScriptingInterface.clipping
 
-            radius: 4;
+            radius: micBar.radius;
             width: 2 * radius;
             height: 2 * radius;
             color: "#0080FF";
@@ -279,7 +293,7 @@ Rectangle {
             id: clippingIndicator;
             visible: AudioScriptingInterface.clipping
 
-            radius: 4;
+            radius: micBar.radius;
             width: 2 * radius;
             height: 2 * radius;
             color: colors.red;

@@ -39,14 +39,7 @@ Item {
 
     HifiAudio.MicBar {
         id: audio;
-        visible: AvatarInputs.showAudioTools && root.hmdActive;
-        standalone: true;
-        dragTarget: parent;
-    }
-
-    HifiAudio.MicBarApplication {
-        id: audioApplication;
-        visible: AvatarInputs.showAudioTools && !root.hmdActive;
+        visible: AvatarInputs.showAudioTools;
         standalone: true;
         dragTarget: parent;
     }
