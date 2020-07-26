@@ -132,7 +132,7 @@ export class ButtonManager {
 							dpi: 0,
 							visible: false,
 							showKeyboardFocusHighlight: false,
-							inputMode: "mouse",
+							inputMode: "touch",
 						},
 						"local",
 					),
