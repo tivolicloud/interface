@@ -92,6 +92,7 @@ class ChatJoinAndLeave {
 		this.signals.connect(AvatarList.avatarAddedEvent, uuid => {
 			if (this.isMovingBetweenWorlds) return;
 			this.getUsername(uuid, username => {
+				if (username == null) return;
 				this.onJoin(username);
 			});
 		});
