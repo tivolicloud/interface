@@ -1,11 +1,12 @@
+include(vcpkg_common_functions)
 
 vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO KhronosGroup/SPIRV-Cross
-    REF 2020-02-26
-    SHA512 96e4c7d8bf8603d061d1a7afac34db044842dede65f2d9328da1d99a3c8aed9f6fd64fd611e8d1618bd937b682b377d87304a4fcc9068bcffed3d275cb4dfe2c
+    REF 2018-08-07
+    SHA512 1ac6ee6b2864d950199d4e856ae1576f9435827501baa5d53821a973cd68aaa03ec428094bf74c570784997baac5b2e3802ddc7f02844e2ee546741fa726bf91
     HEAD_REF master
 )
 
