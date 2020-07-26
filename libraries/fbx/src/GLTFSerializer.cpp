@@ -1188,9 +1188,9 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 
             int indicesAccessorIdx = primitive.indices;
 
-            if (indicesAccessorIdx > _file.accessors.size()) {
+            if (indicesAccessorIdx < 0 || indicesAccessorIdx > _file.accessors.size() - 1) {
                 qWarning(modelformat) << "Indices accessor index is out of bounds for model " << _url;
-                continue;
+                return false;
             }
 
             GLTFAccessor& indicesAccessor = _file.accessors[indicesAccessorIdx];
