@@ -31,10 +31,8 @@ class QScriptContext;
  * @class OverlayWindow
  * @param {string|OverlayWindow.Properties} [titleOrProperties="WebWindow"] - The window's title or initial property values.
  * @param {string} [source] - The source of the QML to display. Not used unless the first parameter is the window title.
- * @param {number} [width=0] - The width of the window interior, in pixels. Not used unless the first parameter is the window
- *     title.
- * @param {number} [height=0] - The height of the window interior, in pixels. Not used unless the first parameter is the
- *     window title.
+ * @param {number} [width=0] - The width of the window interior, in pixels. Not used unless the first parameter is the window title.
+ * @param {number} [height=0] - The height of the window interior, in pixels. Not used unless the first parameter is the window title.
  *
  * @hifi-interface
  * @hifi-client-entity
@@ -130,7 +128,6 @@ public slots:
      */
     void setPosition(int x, int y);
 
-
     /**jsdoc
      * Gets the size of the window interior.
      * @function OverlayWindow.getSize
@@ -173,6 +170,13 @@ public slots:
      * @param {boolean} enabled - <code>true</code> to allow all input, <code>false</code> to disable.
      */
     void setEnabled(bool enabled);
+
+    /**jsdoc
+     * Gets whether the window is enabled or not
+     * @function OverlayWindow.isEnabled
+     * @returns {boolean} <code>true</> if the window allows all input, <code>false</code> if not.
+     */
+    bool isEnabled();
 
     /**jsdoc
      * Raises the window to the top.

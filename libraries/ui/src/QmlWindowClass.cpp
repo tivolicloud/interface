@@ -35,6 +35,7 @@ static const char* const WIDTH_PROPERTY = "width";
 static const char* const HEIGHT_PROPERTY = "height";
 static const char* const VISIBILE_PROPERTY = "visible";
 static const char* const FRAMELESS_PROPERTY = "frameless";
+static const char* const ENABLED_PROPERTY = "enabled";
 static const uvec2 MAX_QML_WINDOW_SIZE { 1280, 720 };
 static const uvec2 MIN_QML_WINDOW_SIZE { 120, 80 };
 
@@ -99,6 +100,7 @@ QmlWindowClass::QmlWindowClass(bool restricted) : _restricted(restricted) {
  * @property {number} [height=0] - The height of the window interior, in pixels.
  * @property {boolean} [visible=true] - <code>true</code> if the window should be visible, <code>false</code> if it shouldn't.
  * @property {boolean} [frameless=false] - <code>true</code> if the window should be frame, <code>false</code> if it shouldn't.
+ * @property {boolean} [enabled=true] - <code>true</code> to allow all input, <code>false</code> to disable.
  */
 void QmlWindowClass::initQml(QVariantMap properties) {
 #ifndef DISABLE_QML
@@ -125,6 +127,12 @@ void QmlWindowClass::initQml(QVariantMap properties) {
 
         if (properties.contains(FRAMELESS_PROPERTY)) {
             object->setProperty(FRAMELESS_PROPERTY, properties[FRAMELESS_PROPERTY].toBool());
+        }
+
+        if (properties.contains(ENABLED_PROPERTY)) {
+            QTimer::singleShot(200, [=](){
+                asQuickItem()->setEnabled(properties[ENABLED_PROPERTY].toBool());
+            });
         }
 
         const QMetaObject *metaObject = _qmlWindow->metaObject();
@@ -271,7 +279,6 @@ bool QmlWindowClass::isFrameless() {
         return result;
     }
 
-    // The tool window itself has special logic based on whether any tabs are enabled
     if (_qmlWindow.isNull()) {
         return false;
     }
@@ -374,6 +381,20 @@ void QmlWindowClass::setEnabled(bool enabled) {
     if (!_qmlWindow.isNull()) {
         asQuickItem()->setEnabled(enabled);
     }
+}
+
+bool QmlWindowClass::isEnabled() {
+    if (QThread::currentThread() != thread()) {
+        bool result = true;
+        BLOCKING_INVOKE_METHOD(this, "isEnabled", Q_RETURN_ARG(bool, result));
+        return result;
+    }
+
+    if (_qmlWindow.isNull()) {
+        return true;
+    }
+
+    return asQuickItem()->isEnabled();
 }
 
 void QmlWindowClass::close() {

@@ -18,12 +18,9 @@
  *
  * @class OverlayWebWindow
  * @param {string|OverlayWindow.Properties} [titleOrProperties="WebWindow"] - The window's title or initial property values.
- * @param {string} [source="about:blank"] - The URL of the HTML to display. Not used unless the first parameter is the window 
- *     title.
- * @param {number} [width=0] - The width of the window interior, in pixels. Not used unless the first parameter is the window 
- *     title.
- * @param {number} [height=0] - The height of the window interior, in pixels. Not used unless the first parameter is the 
- *     window title.
+ * @param {string} [source="about:blank"] - The URL of the HTML to display. Not used unless the first parameter is the window title.
+ * @param {number} [width=0] - The width of the window interior, in pixels. Not used unless the first parameter is the window title.
+ * @param {number} [height=0] - The height of the window interior, in pixels. Not used unless the first parameter is the window title.
  *
  * @hifi-interface
  * @hifi-client-entity
@@ -46,6 +43,7 @@
  * @borrows OverlayWindow.setTitle as setTitle
  * @borrows OverlayWindow.setFocus as setFocus
  * @borrows OverlayWindow.setEnabled as setEnabled
+ * @borrows OverlayWindow.isEnabled as isEnabled
  * @borrows OverlayWindow.raise as raise
  * @borrows OverlayWindow.close as close
  * @borrows OverlayWindow.getEventBridge as getEventBridge
