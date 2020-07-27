@@ -33,7 +33,9 @@ interface macos:
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
           -DOPENSSL_USE_STATIC_LIBS=$OPENSSL_USE_STATIC_LIBS
           -G Xcode ..
-        - cmake --build . --target interface --config $BUILD_TYPE
+        # - cmake --build . --target interface --config $BUILD_TYPE
+        # - cmake --build . --target interface --config $BUILD_TYPE -- -quiet
+        - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
 
         # TODO: source code doesn't show
         - sentry-cli upload-dif --include-sources -p interface interface
