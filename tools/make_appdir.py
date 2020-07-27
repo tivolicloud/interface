@@ -123,7 +123,11 @@ if program == "interface":
 
 	interface_dir = resolve(build_dir, "interface")
 
-	plugins = os.listdir(resolve(interface_dir, "plugins"))
+	plugins_dir = resolve(interface_dir, "plugins")
+	if os.path.isdir(plugins_dir):
+		plugins = os.listdir(plugins_dir)
+	else:
+		plugins = []
 	print("-- Found plugins: " + ", ".join(plugins))
 
 	# recreate appdir
@@ -139,7 +143,8 @@ if program == "interface":
 	run(interface_dir, "cp interface interface.AppDir/usr/bin")
 	run(interface_dir, "cp resources.rcc interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r jsdoc interface.AppDir/usr/bin")
-	run(interface_dir, "cp -r plugins interface.AppDir/usr/bin")
+	if os.path.isdir(plugins_dir):
+		run(interface_dir, "cp -r plugins interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r resources interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r scripts interface.AppDir/usr/bin")
 
@@ -184,7 +189,11 @@ elif program == "server":
 
 	assignment_client_dir = resolve(build_dir, "assignment-client")
 
-	plugins = os.listdir(resolve(assignment_client_dir, "plugins"))
+	plugins_dir = resolve(assignment_client_dir, "plugins")
+	if os.path.isdir(plugins_dir):
+		plugins = os.listdir(plugins_dir)
+	else:
+		plugins = []
 	print("-- Found plugins: " + ", ".join(plugins))
 
 	# recreate appdir
@@ -203,7 +212,8 @@ elif program == "server":
 	    "cp assignment-client/assignment-client server.AppDir/usr/bin"
 	)
 	run(build_dir, "cp tools/oven/oven server.AppDir/usr/bin")
-	run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
+	if os.path.isdir(plugins_dir):
+		run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
 	run(build_dir, "cp -r domain-server/resources server.AppDir/usr/bin")
 
 	# libgl is a bad name and is ignored by linuxdeployqt
