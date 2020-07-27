@@ -93,36 +93,39 @@ export class ChatService {
 		this.scriptService.event$.subscribe(data => {
 			switch (data.key) {
 				case "message":
-					this.messages.push(
-						new Message(
-							this,
-							"message",
-							data.value.message,
-							data.value.username,
-							false,
-							data.value.me,
-						),
-					);
+					if (data.value && data.value.message && data.value.username)
+						this.messages.push(
+							new Message(
+								this,
+								"message",
+								data.value.message,
+								data.value.username,
+								false,
+								data.value.me,
+							),
+						);
 					break;
 				case "join":
-					this.messages.push(
-						new Message(
-							this,
-							"announcement",
-							data.value + " joined",
-							data.value,
-						),
-					);
+					if (data.value)
+						this.messages.push(
+							new Message(
+								this,
+								"announcement",
+								data.value + " joined",
+								data.value,
+							),
+						);
 					break;
 				case "leave":
-					this.messages.push(
-						new Message(
-							this,
-							"announcement",
-							data.value + " left",
-							data.value,
-						),
-					);
+					if (data.value)
+						this.messages.push(
+							new Message(
+								this,
+								"announcement",
+								data.value + " left",
+								data.value,
+							),
+						);
 					break;
 				case "clear":
 					this.messages = [];
