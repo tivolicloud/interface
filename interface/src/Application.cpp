@@ -7178,8 +7178,10 @@ void Application::updateWindowTitle() const {
             currentWorldName = nodeList->getDomainHandler().getHostname();
         } else {
             const QString worldAuthor = addressManager->getDomainAuthor();
+            const QString worldRestriction = addressManager->getDomainRestriction();
 
             currentWorldName = (
+                (worldRestriction == "acl" ? "🔒 " : "") +
                 worldName + 
                 (!worldAuthor.isEmpty() ? " (" + worldAuthor + ")": "")
             );
