@@ -9,8 +9,8 @@ if (WIN32)
 
   ExternalProject_Add(
     ${EXTERNAL_NAME}
-    URL https://cdn.tivolicloud.com/dependencies/OVRPlatformSDK_v1.10.0.zip
-    URL_MD5 e6c8264af16d904e6506acd5172fa0a9
+    URL https://cdn.tivolicloud.com/dependencies/ovr_platform_sdk_18.0.0.zip
+    URL_MD5 38d1089e1f5f482f854475172a3f3254
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
