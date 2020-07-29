@@ -1013,12 +1013,12 @@
 
             addButton("importEntitiesButton", function() {
                 Window.browseChanged.connect(onFileOpenChanged);
-                Window.browseAsync("Select Model to Import", "", "*.json");
+                Window.browseAsync("Select entities json to import", "", "*.json");
             });
 
             addButton("importEntitiesFromURLButton", function() {
                 Window.promptTextChanged.connect(onPromptTextChanged);
-                Window.promptAsync("URL of SVO to import", "");
+                Window.promptAsync("URL of entities json to import", "");
             });
 
             addButton("openAssetBrowserButton", function() {
