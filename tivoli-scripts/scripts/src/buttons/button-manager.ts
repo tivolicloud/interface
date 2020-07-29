@@ -34,12 +34,11 @@ export class ButtonManager {
 	constructor() {}
 
 	private getOptimalWindowSize() {
+		const maxWidth = Window.innerWidth - 16;
+		const maxHeight = Window.innerHeight - 96;
 		return {
-			x:
-				Window.innerWidth > 1280 && Window.innerHeight > 720
-					? 1280
-					: 853,
-			y: Window.innerWidth > 1280 && Window.innerHeight > 720 ? 720 : 480,
+			x: maxWidth < 1280 ? maxWidth : 1280,
+			y: maxHeight < 720 ? maxHeight : 720,
 		};
 	}
 
