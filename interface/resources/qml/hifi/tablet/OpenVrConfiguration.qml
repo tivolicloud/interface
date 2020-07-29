@@ -71,6 +71,7 @@ Flickable {
 
             property int state: buttonState.disabled
             property var lastConfiguration:  null
+            property bool isConfiguring: false
 
             HifiConstants { id: hifi }
 
@@ -360,9 +361,9 @@ Flickable {
             RobotoRegular {
                 id: info
 
-                text: "See Recommended Tracker Placement"
+                text: "See Recommended Placement"
                 color: hifi.colors.blueHighlight
-                size: 10
+                size: 12
                 anchors {
                     left: additional.right
                     leftMargin: 10
@@ -415,7 +416,6 @@ Flickable {
                     id: feetBox
                     width: 15
                     height: 15
-                    boxRadius: 7
 
                     onClicked: {
                         if (!checked) {
@@ -446,7 +446,6 @@ Flickable {
                     id: hipBox
                     width: 15
                     height: 15
-                    boxRadius: 7
 
                     onClicked: {
                         if (checked) {
@@ -486,7 +485,6 @@ Flickable {
                     id: chestBox
                     width: 15
                     height: 15
-                    boxRadius: 7
 
                     onClicked: {
                         if (checked) {
@@ -524,7 +522,6 @@ Flickable {
                     id: shoulderBox
                     width: 15
                     height: 15
-                    boxRadius: 7
 
                     onClicked: {
                         if (checked) {
@@ -823,7 +820,6 @@ Flickable {
                 id: viveInDesktop
                 width: 15
                 height: 15
-                boxRadius: 7
 
                 anchors.top: advanceSettings.bottom
                 anchors.topMargin: 5
@@ -840,9 +836,71 @@ Flickable {
                 }
             }
 
+
+            HifiControls.CheckBox {
+                id: eyeTracking
+                width: 15
+                height: 15
+
+                anchors.top: viveInDesktop.bottom
+                anchors.topMargin: 5
+                anchors.left: openVrConfiguration.left
+                anchors.leftMargin: leftMargin + 10
+
+                onClicked: {
+                    sendConfigurationSettings();
+                }
+            }
+
+            RobotoBold {
+                id: eyeTrackingLabel
+                size: 12
+                text: "Use eye tracking (if available)"
+                color: hifi.colors.lightGrayText
+                anchors {
+                    left: eyeTracking.right
+                    leftMargin: 5
+                    verticalCenter: eyeTracking.verticalCenter
+                }
+            }
+
+            RobotoRegular {
+                id: privacyPolicy
+                text: "Privacy Policy"
+                color: hifi.colors.blueHighlight
+                size: 12
+                anchors {
+                    left: eyeTrackingLabel.right
+                    leftMargin: 10
+                    verticalCenter: eyeTrackingLabel.verticalCenter
+                }
+
+                Rectangle {
+                    id: privacyPolicyUnderline
+                    color: hifi.colors.blueHighlight
+                    width: privacyPolicy.width
+                    height: 1
+                    anchors {
+                        top: privacyPolicy.bottom
+                        topMargin: 1
+                        left: privacyPolicy.left
+                    }
+                    visible: false
+                }
+
+                MouseArea {
+                    anchors.fill: parent;
+                    hoverEnabled: true
+                    onEntered: privacyPolicyUnderline.visible = true;
+                    onExited: privacyPolicyUnderline.visible = false;
+                    onClicked: HiFiAbout.openUrl("https://tivolicloud.com/privacy-policy");
+                }
+            }
+
+
             Row {
                 id: outOfRangeDataStrategyRow
-                anchors.top: viveInDesktop.bottom
+                anchors.top: eyeTracking.bottom
                 anchors.topMargin: 5
                 anchors.left: openVrConfiguration.left
                 anchors.leftMargin: leftMargin + 10
@@ -966,6 +1024,8 @@ Flickable {
             }
 
             function displayConfiguration() {
+                isConfiguring = true;
+
                 var settings = InputConfiguration.configurationSettings(openVrConfiguration.pluginName);
                 var configurationType = settings["trackerConfiguration"];
                 displayTrackerConfiguration(configurationType);
@@ -982,6 +1042,7 @@ Flickable {
                 var viveController = settings["handController"];
                 var desktopMode = settings["desktopMode"];
                 var hmdDesktopPosition = settings["hmdDesktopTracking"];
+                var eyeTrackingEnabled = settings["eyeTrackingEnabled"];
 
                 armCircumference.realValue = settings.armCircumference;
                 shoulderWidth.realValue = settings.shoulderWidth;
@@ -1004,6 +1065,7 @@ Flickable {
 
                 viveInDesktop.checked = desktopMode;
                 hmdInDesktop.checked = hmdDesktopPosition;
+                eyeTracking.checked = eyeTrackingEnabled;
                 outOfRangeDataStrategyComboBox.currentIndex = outOfRangeDataStrategyComboBox.model.indexOf(settings.outOfRangeDataStrategy);
 
                 initializeButtonState();
@@ -1014,6 +1076,8 @@ Flickable {
                 };
 
                 UserActivityLogger.logAction("mocap_ui_open_dialog", data);
+
+                isConfiguring = false;
             }
 
             function displayTrackerConfiguration(type) {
@@ -1170,6 +1234,7 @@ Flickable {
                     "shoulderWidth": shoulderWidth.realValue,
                     "desktopMode": viveInDesktop.checked,
                     "hmdDesktopTracking": hmdInDesktop.checked,
+                    "eyeTrackingEnabled": eyeTracking.checked,
                     "outOfRangeDataStrategy": outOfRangeDataStrategyComboBox.model[outOfRangeDataStrategyComboBox.currentIndex]
                 }
 
@@ -1177,6 +1242,10 @@ Flickable {
             }
 
             function sendConfigurationSettings() {
+                if (isConfiguring) {
+                    // Ignore control value changes during dialog initialization.
+                    return;
+                }
                 var settings = composeConfigurationSettings();
                 InputConfiguration.setConfigurationSettings(settings, openVrConfiguration.pluginName);
                 updateCalibrationButton();
