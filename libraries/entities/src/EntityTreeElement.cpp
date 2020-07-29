@@ -658,7 +658,7 @@ void EntityTreeElement::evalEntitiesInSphereWithTag(const glm::vec3& position,
 
         QString entityTags = entity->getCustomTags();
 
- /*       QStringList parts = tagName.split('_', QString::SkipEmptyParts);
+ /*       QStringList parts = tagName.split('_', Qt::SkipEmptyParts);
         for (int i = 1; i < tagName.size(); ++i)
             tagName[i].replace(0, 1, tagName[i][0].toUpper());
         tagName = parts.join("");*/
