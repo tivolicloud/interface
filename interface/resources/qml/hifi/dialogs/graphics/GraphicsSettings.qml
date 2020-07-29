@@ -133,7 +133,7 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: worldDetailHeader
-                        text: "World Detail"
+                        text: "World detail"
                         anchors.left: parent.left
                         anchors.top: parent.top
                         width: 130
@@ -146,13 +146,13 @@ Item {
                         id: worldDetailModel
 
                         ListElement {
-                            text: "Low World Detail"
+                            text: "Low world detail"
                         }
                         ListElement {
-                            text: "Medium World Detail"
+                            text: "Medium world detail"
                         }
                         ListElement {
-                            text: "Full World Detail"
+                            text: "Full world detail"
                         }
                     }
                 
@@ -190,7 +190,7 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: renderingEffectsHeader
-                        text: "Rendering Effects"
+                        text: "Rendering effects"
                         anchors.left: parent.left
                         anchors.top: parent.top
                         width: 130
@@ -203,17 +203,17 @@ Item {
                         id: renderingEffectsModel
 
                         ListElement {
-                            text: "No Rendering Effects"
+                            text: "No rendering effects"
                             preferredRenderMethod: 1 // "FORWARD"
                             shadowsEnabled: false
                         }
                         ListElement {
-                            text: "Local Lights, Fog, Bloom"
+                            text: "Local lights, fog, bloom"
                             preferredRenderMethod: 0 // "DEFERRED"
                             shadowsEnabled: false
                         }
                         ListElement {
-                            text: "Local Lights, Fog, Bloom, Shadows"
+                            text: "Local lights, fog, bloom, shadows"
                             preferredRenderMethod: 0 // "DEFERRED"
                             shadowsEnabled: true
                         }
