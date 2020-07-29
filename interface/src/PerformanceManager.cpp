@@ -85,6 +85,8 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
 
     auto instance = RenderScriptingInterface::getInstance();
 
+    instance->setAntialiasingMethod(RenderScriptingInterface::AntialiasingMethod::NONE);
+
     switch (preset) {
         case PerformancePreset::HIGH:
             instance->setRenderMethod(isDeferredCapable ?
