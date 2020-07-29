@@ -338,10 +338,10 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: resolutionHeader
-                        text: "Supersampling " + Number.parseFloat(Render.viewportResolutionScale).toPrecision(2)
+                        text: "Resolution scale (x" + Number.parseFloat(Render.viewportResolutionScale).toPrecision(2) + ")"
                         anchors.left: parent.left
                         anchors.top: parent.top
-                        width: 130
+                        width: 160
                         height: parent.height
                         size: 16
                         color: "#FFFFFF"
@@ -353,7 +353,7 @@ Item {
                         anchors.left: resolutionHeader.right
                         anchors.leftMargin: 20
                         anchors.top: parent.top
-                        width: 280
+                        width: 250
                         height: parent.height
                         colorScheme: hifi.colorSchemes.dark
                         minimumValue: 0.1
@@ -382,7 +382,7 @@ Item {
                     }
 
                     HifiStylesUit.RobotoRegular {
-                        text: "\n\n\nWarning - Sampling over 1.0 will lower your frame rate!"
+                        text: "\n\n\nWarning - Scaling over x1.0 will lower your frame rate!"
                         Layout.maximumWidth: parent.width
                         anchors.left: parent.left
                         anchors.top: parent.top
@@ -398,10 +398,10 @@ Item {
 
                     HifiStylesUit.RobotoRegular {
                         id: antialiasingHeader
-                        text: "Anti-aliasing"
+                        text: "Anti-aliasing method"
                         anchors.left: parent.left
                         anchors.top: parent.top
-                        width: 130
+                        width: 165
                         height: parent.height
                         size: 16
                         color: "#FFFFFF"
