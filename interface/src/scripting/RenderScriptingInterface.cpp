@@ -28,18 +28,14 @@ void RenderScriptingInterface::loadSettings() {
         _renderMethod = (_renderMethodSetting.get());
         _shadowsEnabled = (_shadowsEnabledSetting.get());
         _ambientOcclusionEnabled = (_ambientOcclusionEnabledSetting.get());
-        // _antialiasingEnabled = (_antialiasingEnabledSetting.get());
+        _antialiasingMethod = (_antialiasingMethodSetting.get());
         _viewportResolutionScale = (_viewportResolutionScaleSetting.get());
     });
     forceRenderMethod((RenderMethod)_renderMethod);
     forceShadowsEnabled(_shadowsEnabled);
     forceAmbientOcclusionEnabled(_ambientOcclusionEnabled);
+    forceAntialiasingMethod((AntialiasingMethod)_antialiasingMethod);
     forceViewportResolutionScale(_viewportResolutionScale);
-
-    // antialiasing is extremely blurry in vr and the jitter is disorienting
-    // it's best to disable it until we can have better aa for vr
-    // perhaps force it on in desktop and turn it off in vr
-    forceAntialiasingEnabled(false);
 }
 
 RenderScriptingInterface::RenderMethod RenderScriptingInterface::getRenderMethod() const {
@@ -75,8 +71,8 @@ void RenderScriptingInterface::forceRenderMethod(RenderMethod renderMethod) {
 }
 
 QStringList RenderScriptingInterface::getRenderMethodNames() const {
-    static const QStringList refrenderMethodNames = { "DEFERRED", "FORWARD" };
-    return refrenderMethodNames;
+    static const QStringList renderMethodNames = { "DEFERRED", "FORWARD" };
+    return renderMethodNames;
 }
 
 bool RenderScriptingInterface::getShadowsEnabled() const {
@@ -146,21 +142,24 @@ void RenderScriptingInterface::forceAmbientOcclusionEnabled(bool enabled) {
     });
 }
 
-bool RenderScriptingInterface::getAntialiasingEnabled() const {
-    return _antialiasingEnabled;
+RenderScriptingInterface::AntialiasingMethod RenderScriptingInterface::getAntialiasingMethod() const {
+    return (AntialiasingMethod)_antialiasingMethod;
 }
 
-void RenderScriptingInterface::setAntialiasingEnabled(bool enabled) {
-    if (_antialiasingEnabled != enabled) {
-        forceAntialiasingEnabled(enabled);
+void RenderScriptingInterface::setAntialiasingMethod(AntialiasingMethod antialiasingMethod) {
+    if (isValidAntialiasingMethod(antialiasingMethod) && (_antialiasingMethod != (int)antialiasingMethod)) {
+        forceAntialiasingMethod(antialiasingMethod);
         emit settingsChanged();
     }
 }
 
-void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
+void RenderScriptingInterface::forceAntialiasingMethod(AntialiasingMethod antialiasingMethod) {
     _renderSettingLock.withWriteLock([&] {
-        _antialiasingEnabled = (enabled);
-        // _antialiasingEnabledSetting.set(enabled);
+        _antialiasingMethod = (int)antialiasingMethod;
+        _antialiasingMethodSetting.set((int)antialiasingMethod);
+
+        bool useTAA = antialiasingMethod == AntialiasingMethod::TAA;
+        bool useFXAA = antialiasingMethod == AntialiasingMethod::FXAA;
 
         auto instance = qApp->getRenderEngine()->getConfiguration();
         
@@ -176,29 +175,32 @@ void RenderScriptingInterface::forceAntialiasingEnabled(bool enabled) {
             mainAa && mainQAa && mainJitter &&
             secondAa && secondQAa && secondJitter
         ) {
-            mainAa->setDebugFXAA(false);
-            mainQAa->setProperty("constrainColor", enabled);
-            mainQAa->setProperty("feedbackColor", enabled);
-            mainQAa->setProperty("blend", enabled ? 0.25f : 1);
-            mainQAa->setProperty("sharpen", enabled ? 0.05f : 0);
+            mainAa->setDebugFXAA(useFXAA);
+            mainQAa->setProperty("constrainColor", useTAA);
+            mainQAa->setProperty("feedbackColor", useTAA);
+            mainQAa->setProperty("blend", useTAA ? 0.25f : 1);
+            mainQAa->setProperty("sharpen", useTAA ? 0.05f : 0);
 
-            secondAa->setDebugFXAA(false);
-            secondQAa->setProperty("constrainColor", enabled);
-            secondQAa->setProperty("feedbackColor", enabled);
-            secondQAa->setProperty("blend", enabled ? 0.25f : 1);
-            secondQAa->setProperty("sharpen", enabled ? 0.05f : 0);
+            secondAa->setDebugFXAA(useFXAA);
+            secondQAa->setProperty("constrainColor", useTAA);
+            secondQAa->setProperty("feedbackColor", useTAA);
+            secondQAa->setProperty("blend", useTAA ? 0.25f : 1);
+            secondQAa->setProperty("sharpen", useTAA ? 0.05f : 0);
 
-            if (enabled) {
+            if (useTAA) {
                 mainJitter->play();
                 secondJitter->play();
             } else {
                 mainJitter->none();
                 secondJitter->none();
             }
-            
-            // Menu::getInstance()->setIsOptionChecked(MenuOption::AntiAliasing, enabled);
         }
     });
+}
+
+QStringList RenderScriptingInterface::getAntialiasingMethodNames() const {
+    static const QStringList antialiasingMethodNames = { "NONE", "TAA", "FXAA" };
+    return antialiasingMethodNames;
 }
 
 float RenderScriptingInterface::getViewportResolutionScale() const {

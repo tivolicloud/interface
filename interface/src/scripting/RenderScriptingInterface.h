@@ -25,20 +25,17 @@
  *
  * @property {Render.RenderMethod} renderMethod - The render method being used.
  * @property {boolean} shadowsEnabled - <code>true</code> if shadows are enabled, <code>false</code> if they're disabled.
- * @property {boolean} ambientOcclusionEnabled - <code>true</code> if ambient occlusion is enabled, <code>false</code> if it's 
- *     disabled.
- * @property {boolean} antialiasingEnabled - <code>true</code> if anti-aliasing is enabled, <code>false</code> if it's disabled.
+ * @property {boolean} ambientOcclusionEnabled - <code>true</code> if ambient occlusion is enabled, <code>false</code> if it's disabled.
+ * @property {Render.AntialiasingMethod} antialiasingMethod - The anti-aliasing method being used.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  */
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
     Q_PROPERTY(RenderMethod renderMethod READ getRenderMethod WRITE setRenderMethod NOTIFY settingsChanged)
     Q_PROPERTY(bool shadowsEnabled READ getShadowsEnabled WRITE setShadowsEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(
-        bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(bool antialiasingEnabled READ getAntialiasingEnabled WRITE setAntialiasingEnabled NOTIFY settingsChanged)
-    Q_PROPERTY(
-        float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
+    Q_PROPERTY(bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
+    Q_PROPERTY(AntialiasingMethod antialiasingMethod READ getAntialiasingMethod WRITE setAntialiasingMethod NOTIFY settingsChanged)
+    Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -49,13 +46,22 @@ public:
      * <p>The rendering method is specified by the following values:</p>
      * <table>
      *   <thead>
-     *     <tr><th>Value</th><th>Name</th><th>Description</th>
+     *     <tr>
+     *       <th>Value</th>
+     *       <th>Name</th>
+     *       <th>Description</th>
      *   </thead>
      *   <tbody>
-     *     <tr><td><code>0</code></td><td>DEFERRED</td><td>More complex rendering pipeline where lighting is applied to the 
-     *       scene as a whole after all objects have been rendered.</td></tr>
-     *     <tr><td><code>1</code></td><td>FORWARD</td><td>Simpler rendering pipeline where each object in the scene, in turn, 
-     *       is rendered and has lighting applied.</td></tr>
+     *     <tr>
+     *       <td><code>0</code></td>
+     *       <td>DEFERRED</td>
+     *       <td>More complex rendering pipeline where lighting is applied to the scene as a whole after all objects have been rendered.</td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>1</code></td>
+     *       <td>FORWARD</td>
+     *       <td>Simpler rendering pipeline where each object in the scene, in turn, is rendered and has lighting applied.</td>
+     *     </tr>
      *   </tbody>
      * </table>
      * @typedef {number} Render.RenderMethod
@@ -69,6 +75,47 @@ public:
     Q_ENUM(RenderMethod)
     static bool isValidRenderMethod(RenderMethod value) {
         return (value >= RenderMethod::DEFERRED && value <= RenderMethod::FORWARD);
+    }
+
+    /**jsdoc
+     * <p>The anti-aliasing method is specified by the following values:</p>
+     * <table>
+     *   <thead>
+     *     <tr>
+     *       <th>Value</th>
+     *       <th>Name</th>
+     *       <th>Description</th>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *       <td><code>0</code></td>
+     *       <td>NONE</td>
+     *       <td></td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>1</code></td>
+     *       <td>TAA</td>
+     *       <td></td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>2</code></td>
+     *       <td>FXAA</td>
+     *       <td></td>
+     *     </tr>
+     *   </tbody>
+     * </table>
+     * @typedef {number} Render.antialiasingMethod
+     */
+    // AntialiasingMethod enum type
+    enum AntialiasingMethod
+    {
+        NONE,
+        TAA,
+        FXAA
+    };
+    Q_ENUM(AntialiasingMethod)
+    static bool isValidAntialiasingMethod(AntialiasingMethod value) {
+        return (value >= AntialiasingMethod::NONE && value <= AntialiasingMethod::FXAA);
     }
 
     // Load Settings
@@ -145,18 +192,34 @@ public slots:
     void setAmbientOcclusionEnabled(bool enabled);
 
     /**jsdoc
-     * Gets whether or not anti-aliasing is enabled.
-     * @function Render.getAntialiasingEnabled
-     * @returns {boolean} <code>true</code> if anti-aliasing is enabled, <code>false</code> if it's disabled.
+     * Gets the anti-aliasing method being used.
+     * @function Render.getAntialiasingMethod
+     * @returns {Render.AntialiasingMethod} The anti-aliasing method being used.
+     * @example <caption>Report the current anti-aliasing method.</caption>
+     * var antialiasingMethod = Render.getAntialiasingMethod();
+     * print("Current render method: " + Render.getAntialiasingMethodNames()[antialiasingMethod]);
      */
-    bool getAntialiasingEnabled() const;
+    AntialiasingMethod getAntialiasingMethod() const;
 
     /**jsdoc
-     * Sets whether or not anti-aliasing is enabled.
-     * @function Render.setAntialiasingEnabled
-     * @param {boolean} enabled - <code>true</code> to enable anti-aliasing, <code>false</code> to disable.
+     * Sets the anti-aliasing method to use.
+     * @function Render.setAntialiasingMethod
+     * @param {Render.AntialiasingMethod} antialiasingMethod - The anti-aliasing method to use.
      */
-    void setAntialiasingEnabled(bool enabled);
+    void setAntialiasingMethod(AntialiasingMethod antialiasingMethod);
+
+    /**jsdoc
+     * Gets the names of the possible anti-aliasing methods, per {@link Render.AntialiasingMethod}.
+     * @function Render.getAntialiasingMethodNames
+     * @returns {string[]} The names of the possible anti-aliasing methods.
+     * @example <caption>Report the names of the possible anti-aliasing methods.</caption>
+     * var antialiasingMethods = Render.getAntialiasingMethodNames();
+     * print("Anti-aliasing methods:");
+     * for (var i = 0; i < antialiasingMethods.length; i++) {
+     *     print("- " + antialiasingMethods[i]);
+     * }
+     */
+    QStringList getAntialiasingMethodNames() const;
 
     /**jsdoc
      * Gets the view port resolution scale.
@@ -198,21 +261,21 @@ private:
     };
     bool _shadowsEnabled{ true };
     bool _ambientOcclusionEnabled{ true };
-    bool _antialiasingEnabled{ false };
+    int _antialiasingMethod{ AntialiasingMethod::NONE };
     float _viewportResolutionScale{ 1.0f };
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
     Setting::Handle<bool> _shadowsEnabledSetting{ "shadowsEnabled", _shadowsEnabled };
     Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", _ambientOcclusionEnabled };
-    // Setting::Handle<bool> _antialiasingEnabledSetting{ "antialiasingEnabled", _antialiasingEnabled };
+    Setting::Handle<int> _antialiasingMethodSetting{ "antialiasingMethod", _antialiasingMethod };
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
     void forceShadowsEnabled(bool enabled);
     void forceAmbientOcclusionEnabled(bool enabled);
-    void forceAntialiasingEnabled(bool enabled);
+    void forceAntialiasingMethod(AntialiasingMethod antialiasingMethod);
     void forceViewportResolutionScale(float scale);
 
     static std::once_flag registry_flag;

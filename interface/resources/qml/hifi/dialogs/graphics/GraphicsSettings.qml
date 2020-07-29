@@ -334,6 +334,7 @@ Item {
                     Layout.preferredWidth: parent.width
                     Layout.preferredHeight: 35
                     Layout.topMargin: 16
+                    Layout.bottomMargin: 32
 
                     HifiStylesUit.RobotoRegular {
                         id: resolutionHeader
@@ -388,6 +389,71 @@ Item {
                         height: 30
                         size: 16
                         color: "#B33A3A"
+                    }
+                }
+
+                Item {
+                    Layout.preferredWidth: parent.width
+                    Layout.preferredHeight: 35
+
+                    HifiStylesUit.RobotoRegular {
+                        id: antialiasingHeader
+                        text: "Anti-aliasing"
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        width: 130
+                        height: parent.height
+                        size: 16
+                        color: "#FFFFFF"
+                    }
+
+                    RowLayout {
+                        Layout.preferredWidth: parent.width
+                        anchors.left: antialiasingHeader.right
+                        anchors.leftMargin: 20
+                        spacing: 10
+                        
+                        HifiControlsUit.RadioButton {
+                            id: antialiasingNone
+                            colorScheme: hifi.colorSchemes.dark
+                            height: 18
+                            fontSize: 16
+                            leftPadding: 0
+                            text: "None"
+                            checked: Render.antialiasingMethod === Render.getAntialiasingMethodNames().indexOf("NONE")
+                            onClicked: {
+                                Render.antialiasingMethod = Render.getAntialiasingMethodNames().indexOf("NONE")
+                                root.refreshAllDropdowns();
+                            }
+                        }
+
+                        HifiControlsUit.RadioButton {
+                            id: antialiasingTAA
+                            colorScheme: hifi.colorSchemes.dark
+                            height: 18
+                            fontSize: 16
+                            leftPadding: 0
+                            text: "TAA"
+                            checked: Render.antialiasingMethod === Render.getAntialiasingMethodNames().indexOf("TAA")
+                            onClicked: {
+                                Render.antialiasingMethod = Render.getAntialiasingMethodNames().indexOf("TAA")
+                                root.refreshAllDropdowns();
+                            }
+                        }
+
+                        HifiControlsUit.RadioButton {
+                            id: antialiasingFXAA
+                            colorScheme: hifi.colorSchemes.dark
+                            height: 18
+                            fontSize: 16
+                            leftPadding: 0
+                            text: "FXAA"
+                            checked: Render.antialiasingMethod === Render.getAntialiasingMethodNames().indexOf("FXAA")
+                            onClicked: {
+                                Render.antialiasingMethod = Render.getAntialiasingMethodNames().indexOf("FXAA")
+                                root.refreshAllDropdowns();
+                            }
+                        }
                     }
                 }
             }
