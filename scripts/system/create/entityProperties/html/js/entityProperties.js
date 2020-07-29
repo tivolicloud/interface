@@ -153,7 +153,17 @@ const GROUPS = [
                 label: "Color",
                 type: "color",
                 propertyID: "color"
-            }
+            },
+            {
+                label: "Alpha",
+                type: "number-draggable",
+                min: 0,
+                max: 1,
+                step: 0.01,
+                decimals: 2,
+                propertyID: "shapeAlpha",
+                propertyName: "alpha",
+            },
         ]
     },
     {
@@ -201,6 +211,36 @@ const GROUPS = [
                 decimals: 4,
                 unit: "m",
                 propertyID: "lineHeight"
+            },
+            {
+                label: "Font",
+                type: "string",
+                propertyID: "font",
+            },
+            {
+                label: "Effect",
+                type: "dropdown",
+                options: {
+                    none: "None",
+                    outline: "Outline",
+                    "outline fill": "Outline with fill",
+                    shadow: "Shadow"
+                },
+                propertyID: "textEffect",
+            },
+            {
+                label: "Effect Color",
+                type: "color",
+                propertyID: "textEffectColor",
+            },
+            {
+                label: "Effect Thickness",
+                type: "number-draggable",
+                min: 0.0,
+                max: 0.5,
+                step: 0.01,
+                decimals: 2,
+                propertyID: "textEffectThickness",
             },
             {
                 label: "Billboard Mode",
@@ -658,6 +698,16 @@ const GROUPS = [
                 propertyName: "color" // actual entity property name
             },
             {
+                label: "Alpha",
+                type: "number-draggable",
+                min: 0,
+                max: 1,
+                step: 0.01,
+                decimals: 2,
+                propertyID: "imageAlpha",
+                propertyName: "alpha",
+            },
+            {
                 label: "Emissive",
                 type: "bool",
                 propertyID: "emissive"
@@ -729,6 +779,27 @@ const GROUPS = [
                 decimals: 0,
                 propertyID: "maxFPS"
             },
+            {
+                label: "Billboard Mode",
+                type: "dropdown",
+                options: { none: "None", yaw: "Yaw", full: "Full"},
+                propertyID: "webBillboardMode",
+                propertyName: "billboardMode", // actual entity property name
+            },
+            {
+                label: "Input Mode",
+                type: "dropdown",
+                options: {
+                    touch: "Touch events",
+                    mouse: "Mouse events"
+                },
+                propertyID: "inputMode",
+            },
+            {
+                label: "Focus Highlight",
+                type: "bool",
+                propertyID: "showKeyboardFocusHighlight",
+            },  
             {
                 label: "Script URL",
                 type: "string",
