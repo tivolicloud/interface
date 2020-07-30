@@ -55,7 +55,7 @@ class Message {
 		public message: string,
 		public username?: string,
 		public noSound = false,
-		public me = false,
+		public extras: { me?: boolean; tts?: boolean } = {},
 	) {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
@@ -67,8 +67,9 @@ class Message {
 
 		chatService.emojiService.processMessageParts(this.messageParts);
 
-		if (noSound == false)
+		if (noSound == false && !extras.tts) {
 			this.chatService.scriptService.emitEvent("chat", "sound");
+		}
 
 		setTimeout(() => {
 			this.shouldBeShowing = false;
@@ -83,6 +84,8 @@ export class ChatService {
 	messages: Message[] = [];
 
 	focused = false;
+
+	messagesAsTts = false;
 
 	readonly messageShownTime = 1000 * 20; // how long till messages fade out
 
@@ -101,7 +104,7 @@ export class ChatService {
 								data.value.message,
 								data.value.username,
 								false,
-								data.value.me,
+								data.value,
 							),
 						);
 					break;
@@ -147,6 +150,8 @@ export class ChatService {
 				case "help":
 					print("Here are all the commands available:");
 					print("/me - speak in third person");
+					print("/tts - speak with text to speech");
+					print("/ttstoggle - toggle tts for all messages");
 					print("/clear - clears the chat");
 					break;
 				case "me":
@@ -154,6 +159,22 @@ export class ChatService {
 						message: message.replace("/me ", ""),
 						me: true,
 					});
+					break;
+				case "tts":
+					const ttsMessage = message.replace("/tts ", "");
+					this.scriptService.emitEvent("chat", "message", {
+						message: ttsMessage,
+						tts: true,
+					});
+					this.scriptService.emitEvent("chat", "tts", ttsMessage);
+					break;
+				case "ttstoggle":
+					this.messagesAsTts = !this.messagesAsTts;
+					print(
+						this.messagesAsTts
+							? "Enaled text to speech for all messages"
+							: "Disabled text to speech for all messages",
+					);
 					break;
 				case "clear":
 					this.messages = [];
@@ -164,7 +185,15 @@ export class ChatService {
 					break;
 			}
 		} else {
-			this.scriptService.emitEvent("chat", "message", { message });
+			if (this.messagesAsTts) {
+				this.scriptService.emitEvent("chat", "message", {
+					message,
+					tts: true,
+				});
+				this.scriptService.emitEvent("chat", "tts", message);
+			} else {
+				this.scriptService.emitEvent("chat", "message", { message });
+			}
 		}
 
 		this.scriptService.emitEvent("chat", "unfocus");

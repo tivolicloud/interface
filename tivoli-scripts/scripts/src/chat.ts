@@ -208,6 +208,9 @@ class ChatHandler extends WebEventHandler {
 			case "openUrl":
 				Window.openUrl(data.value);
 				break;
+			case "tts":
+				TextToSpeech.speakText(data.value);
+				break;
 		}
 	}
 

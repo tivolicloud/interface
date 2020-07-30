@@ -41,6 +41,15 @@
 			display: inline-block;
 			font-weight: 700;
 			color: #e91e63;
+
+			.badge {
+				background-color: #e91e63;
+				color: #fff;
+				border-radius: 4px;
+				text-shadow: none;
+				padding: 2px 4px;
+				font-size: 0.8em;
+			}
 		}
 
 		a {

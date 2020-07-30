@@ -26,7 +26,8 @@
 				'/image), url(./assets/default-user-icon.jpg)'
 			"
 		></div>
-		<div class="username" *ngIf="message.me == false">
+		<div class="username" *ngIf="!message.extras.me">
+			<span class="badge" *ngIf="message.extras.tts">TTS</span>
 			{{
 				message.type == "message"
 					? message.username + ":"
@@ -34,7 +35,7 @@
 			}}
 		</div>
 		<ng-container *ngIf="message.type == 'message'">
-			<span *ngIf="message.me" style="margin-left: -4px;">
+			<span *ngIf="message.extras.me" style="margin-left: -4px;">
 				{{ message.username }}
 			</span>
 			<ng-container *ngFor="let part of message.messageParts">
