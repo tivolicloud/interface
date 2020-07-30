@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:10-slim
 
 ENV HIFI_DOMAIN_SERVER_HTTP_PORT=40100
 ENV HIFI_DOMAIN_SERVER_HTTPS_PORT=40101
@@ -13,13 +13,16 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITY_SCRIPT_SERVER_PORT=48005
 ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
 # RUN pacman -Syu --noconfirm curl pm2
+
 RUN \
 apt-get update -y && \
 apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
-\
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs && \
-npm i -g pm2
+npm i -g pm2 && \
+# cleanup
+apt-get clean -y && \
+rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 COPY dist/. /root
 
