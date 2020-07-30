@@ -14,6 +14,8 @@
 
 #include <array>
 
+#include "Application.h"
+#include "MainWindow.h"
 
 static const int VR_TARGET_RATE = 90;
 
@@ -22,32 +24,33 @@ static const int VR_TARGET_RATE = 90;
  * <table>
  *   <thead>
  *     <tr>
- *       <th>Value</th><th>Description</th>
+ *       <th>Value</th>
+ *       <th>Description</th>
  *     </tr>
  *   </thead>
  *   <tbody>
  *     <tr>
  *       <td><code>"Eco"</code></td>
- *       <td>Low refresh rate, which is reduced when Interface doesn't have focus or is minimized.</td>
+ *       <td>20 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
  *     </tr>
  *     <tr>
  *       <td><code>"Interactive"</code></td>
- *       <td>Medium refresh rate, which is reduced when Interface doesn't have focus or is minimized.</td>
+ *       <td>30 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
  *     </tr>
  *     <tr>
  *       <td><code>"Realtime"</code></td>
- *       <td>High refresh rate, even when Interface doesn't have focus or is minimized.</td>
+ *       <td>60 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
  *     </tr>
  *     <tr>
- *       <td><code>"Unlimited"</code></td>
- *       <td>Unlimited refresh rate, even when Interface doesn't have focus or is minimized.</td>
+ *       <td><code>"Display-based"</code></td>
+*        <td>Targets the refresh rate of your screen, reduced when Interface doesn't have focus or is minimized</td>
  *     </tr>
  *   </tbody>
  * </table>
  * @typedef {string} RefreshRateProfileName
  */
 static const std::array<std::string, RefreshRateManager::RefreshRateProfile::PROFILE_NUM> REFRESH_RATE_PROFILE_TO_STRING = {
-    { "Eco", "Interactive", "Realtime", "Unlimited" }
+    { "Eco", "Interactive", "Realtime", "Display-based" }
 };
 
 /**jsdoc
@@ -92,7 +95,7 @@ static const std::map<std::string, RefreshRateManager::RefreshRateProfile> REFRE
     { "Eco", RefreshRateManager::RefreshRateProfile::ECO },
     { "Interactive", RefreshRateManager::RefreshRateProfile::INTERACTIVE },
     { "Realtime", RefreshRateManager::RefreshRateProfile::REALTIME },
-    { "Unlimited", RefreshRateManager::RefreshRateProfile::UNLIMITED }
+    { "Display-based", RefreshRateManager::RefreshRateProfile::DISPLAY_BASED }
 };
 
 
@@ -111,7 +114,7 @@ static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> 
     { 60, 60, 60, 2, 30, 30}
 };
 
-static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> UNLIMITED_PROFILE = {
+static const std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM> DISPLAY_BASED_PROFILE = {
     { 999, 999, 999, 2, 30, 30}
 };
 
@@ -119,7 +122,7 @@ static const std::array<
     std::array<int, RefreshRateManager::RefreshRateRegime::REGIME_NUM>,
     RefreshRateManager::RefreshRateProfile::PROFILE_NUM
 > REFRESH_RATE_PROFILES = {
-    { ECO_PROFILE, INTERACTIVE_PROFILE, REALTIME_PROFILE, UNLIMITED_PROFILE }
+    { ECO_PROFILE, INTERACTIVE_PROFILE, REALTIME_PROFILE, DISPLAY_BASED_PROFILE }
 };
 
 
@@ -179,7 +182,7 @@ void RefreshRateManager::setRefreshRateProfile(RefreshRateManager::RefreshRatePr
 }
 
 RefreshRateManager::RefreshRateProfile RefreshRateManager::getRefreshRateProfile() const {
-    RefreshRateManager::RefreshRateProfile profile = RefreshRateManager::RefreshRateProfile::UNLIMITED;
+    RefreshRateManager::RefreshRateProfile profile = RefreshRateManager::RefreshRateProfile::DISPLAY_BASED;
 
     if (getUXMode() != RefreshRateManager::UXMode::VR) {
         return _refreshRateProfile;
@@ -222,6 +225,11 @@ int RefreshRateManager::queryRefreshRateTarget(RefreshRateProfile profile, Refre
 void RefreshRateManager::updateRefreshRateController() const {
     if (_refreshRateOperator) {
         int targetRefreshRate = queryRefreshRateTarget(_refreshRateProfile, _refreshRateRegime, _uxMode);
+        
+        if (targetRefreshRate >= 900) {
+            targetRefreshRate = (int)qApp->getWindow()->windowHandle()->screen()->refreshRate();
+        }
+
         _refreshRateOperator(targetRefreshRate);
         _activeRefreshRate = targetRefreshRate;
     }

@@ -290,8 +290,8 @@ Item {
                             refreshRatePreset: 2 // RefreshRateProfile::REALTIME
                         }
                         ListElement {
-                            text: "Unlimited FPS"
-                            refreshRatePreset: 3 // RefreshRateProfile::UNLIMITED
+                            text: "Display-based FPS"
+                            refreshRatePreset: 3 // RefreshRateProfile::DISPLAY_BASED
                         }
                     }
                 

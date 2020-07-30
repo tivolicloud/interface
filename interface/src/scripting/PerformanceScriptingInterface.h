@@ -68,15 +68,32 @@ public:
      * <p>Target FPS (formerly Refresh Rate) profile.</p>
      * <table>
      *   <thead>
-     *     <tr><th>Value</th><th>Name</th><th>Description</th>
+     *     <tr>
+     *       <th>Value</th>
+     *       <th>Name</th>
+     *       <th>Description</th>
      *   </thead>
      *   <tbody>
-     *     <tr><td><code>0</code></td><td>ECO</td><td>20 FPS target rate, reduced when Interface doesn't have focus or 
-     *       is minimized</td></tr>
-     *     <tr><td><code>1</code></td><td>INTERACTIVE</td><td>30 FPS target rate, reduced when Interface doesn't have 
-     *       focus or is minimized</td></tr>
-     *     <tr><td><code>2</code></td><td>REALTIME</td><td>60 FPS or higher target rate, even when Interface doesn't have focus or is 
-     *       minimized</td></tr>
+     *     <tr>
+     *       <td><code>0</code></td>
+     *       <td>ECO</td>
+     *       <td>20 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>1</code></td>
+     *       <td>INTERACTIVE</td>
+     *       <td>30 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>2</code></td>
+     *       <td>REALTIME</td>
+     *       <td>60 FPS target rate, reduced when Interface doesn't have focus or is minimized</td>
+     *     </tr>
+     *     <tr>
+     *       <td><code>3</code></td>
+     *       <td>DISPLAY_BASED</td>
+     *       <td>Targets the refresh rate of your screen, reduced when Interface doesn't have focus or is minimized</td>
+     *     </tr>
      *   </tbody>
      * </table>
      * @typedef {number} Performance.RefreshRateProfile
@@ -86,7 +103,7 @@ public:
         ECO = RefreshRateManager::RefreshRateProfile::ECO,
         INTERACTIVE = RefreshRateManager::RefreshRateProfile::INTERACTIVE,
         REALTIME = RefreshRateManager::RefreshRateProfile::REALTIME,
-        UNLIMITED = RefreshRateManager::RefreshRateProfile::UNLIMITED,
+        DISPLAY_BASED = RefreshRateManager::RefreshRateProfile::DISPLAY_BASED,
     };
     Q_ENUM(RefreshRateProfile)
 

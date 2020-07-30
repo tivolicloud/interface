@@ -17,6 +17,7 @@
 #include <functional>
 
 #include <QTimer>
+#include <QScreen>
 
 #include <SettingHandle.h>
 #include <shared/ReadWriteLockable.h>
@@ -27,11 +28,11 @@ public:
         ECO = 0,
         INTERACTIVE,
         REALTIME,
-        UNLIMITED,
+        DISPLAY_BASED,
         PROFILE_NUM
     };
     static bool isValidRefreshRateProfile(RefreshRateProfile value) {
-        return (value >= RefreshRateProfile::ECO && value <= RefreshRateProfile::UNLIMITED);
+        return (value >= RefreshRateProfile::ECO && value <= RefreshRateProfile::DISPLAY_BASED);
     }
 
     /**jsdoc
@@ -110,13 +111,13 @@ public:
     static std::string refreshRateRegimeToString(RefreshRateRegime refreshRateRegime);
 
 private:
-    mutable int _activeRefreshRate { 20 };
-    RefreshRateProfile _refreshRateProfile { RefreshRateProfile::INTERACTIVE};
+    mutable int _activeRefreshRate { 60 };
+    RefreshRateProfile _refreshRateProfile { RefreshRateProfile::DISPLAY_BASED };
     RefreshRateRegime _refreshRateRegime { RefreshRateRegime::STARTUP };
     UXMode _uxMode;
 
     mutable ReadWriteLockable _refreshRateProfileSettingLock;
-    Setting::Handle<int> _refreshRateProfileSetting { "refreshRateProfile", RefreshRateProfile::INTERACTIVE };
+    Setting::Handle<int> _refreshRateProfileSetting { "refreshRateProfile", RefreshRateProfile::DISPLAY_BASED };
 
     std::function<void(int)> _refreshRateOperator { nullptr };
 

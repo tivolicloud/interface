@@ -43,7 +43,7 @@ PerformanceScriptingInterface::RefreshRateProfile PerformanceScriptingInterface:
 }
 
 QStringList PerformanceScriptingInterface::getRefreshRateProfileNames() const {
-    static const QStringList refreshRateProfileNames = { "ECO", "INTERACTIVE", "REALTIME", "UNLIMITED" };
+    static const QStringList refreshRateProfileNames = { "ECO", "INTERACTIVE", "REALTIME", "DISPLAY_BASED" };
     return refreshRateProfileNames;
 }
 

@@ -86,6 +86,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
     auto instance = RenderScriptingInterface::getInstance();
 
     instance->setAntialiasingMethod(RenderScriptingInterface::AntialiasingMethod::NONE);
+    qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::DISPLAY_BASED);
 
     switch (preset) {
         case PerformancePreset::HIGH:
@@ -93,8 +94,6 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::DEFERRED : 
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
-
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(true);
             // instance->setCustomShadersEnabled(true);
@@ -109,8 +108,6 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
-
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
@@ -123,12 +120,10 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
 
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
-
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(false);
             instance->setViewportResolutionScale(1.0);
-            //instance->setViewportResolutionScale(recommendedPpiScale);
+            // instance->setViewportResolutionScale(recommendedPpiScale);
 
             DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 
@@ -137,8 +132,6 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             instance->setRenderMethod(
                 RenderScriptingInterface::RenderMethod::FORWARD
             );
-
-            qApp->getRefreshRateManager().setRefreshRateProfile(RefreshRateManager::RefreshRateProfile::UNLIMITED);
 
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(false);
@@ -149,7 +142,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
        break;
         case PerformancePreset::UNKNOWN:
         default:
-            // Do nothing anymore
+            // do nothing
         break;
     }
 }
