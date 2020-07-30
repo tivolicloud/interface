@@ -2,7 +2,8 @@ finalize server:
     stage: finalize
     image: docker:latest
 
-    extends: .deploy
+    extends: .production
+    allow_failure: false
 
     variables:
         DOCKER_TLS_CERTDIR: ""
