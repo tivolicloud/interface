@@ -12,6 +12,8 @@
 #include "TTSScriptingInterface.h"
 #include "avatar/AvatarManager.h"
 
+// #include <SoundCache.h>
+
 TTSScriptingInterface::TTSScriptingInterface() {
 #ifdef WIN32
     //
@@ -138,6 +140,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     if (FAILED(hr)) {
         qDebug() << "Couldn't read from stream.";
     }
+#endif
 
     AudioInjectorOptions options;
     options.position = DependencyManager::get<AvatarManager>()->getMyAvatarPosition();
@@ -147,15 +150,20 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
         _lastSoundAudioInjectorUpdateTimer.stop();
     }
 
+#ifdef WIN32
     uint32_t numChannels = 1;
     uint32_t numSamples = (uint32_t)_lastSoundByteArray.size() / sizeof(AudioData::AudioSample);
     auto samples = reinterpret_cast<AudioData::AudioSample*>(_lastSoundByteArray.data());
     auto newAudioData = AudioData::make(numSamples, numChannels, samples);
-    _lastSoundAudioInjector = DependencyManager::get<AudioInjectorManager>()->playSound(newAudioData, options, true);
-
-    _lastSoundAudioInjectorUpdateTimer.start(INJECTOR_INTERVAL_MS);
 #else
+    // auto newAudioData = DependencyManager::get<SoundCache>()->getSound(PathUtils::resourcesUrl("sounds/sample.wav"));
     qDebug() << "Text-to-Speech isn't currently supported on non-Windows platforms.";
+    return;
+#endif
+
+#ifdef WIN32
+    _lastSoundAudioInjector = DependencyManager::get<AudioInjectorManager>()->playSound(newAudioData, options, true);
+    _lastSoundAudioInjectorUpdateTimer.start(INJECTOR_INTERVAL_MS);
 #endif
 }
 

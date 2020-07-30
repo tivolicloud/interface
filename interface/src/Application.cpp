@@ -7542,6 +7542,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
     scriptEngine->registerGlobalObject("LaserPointers", DependencyManager::get<LaserPointerScriptingInterface>().data());
     scriptEngine->registerGlobalObject("Picks", DependencyManager::get<PickScriptingInterface>().data());
     scriptEngine->registerGlobalObject("Pointers", DependencyManager::get<PointerScriptingInterface>().data());
+    scriptEngine->registerGlobalObject("TextToSpeech", DependencyManager::get<TTSScriptingInterface>().data());
 
     // Caches
     scriptEngine->registerGlobalObject("AnimationCache", DependencyManager::get<AnimationCacheScriptingInterface>().data());
@@ -8490,9 +8491,9 @@ void Application::packageModel() {
 }
 
 void Application::loadDialog() {
-    ModalDialogListener* dlg = OffscreenUi::getOpenFileNameAsync(_glWidget, tr("Open Script"),
+    ModalDialogListener* dlg = OffscreenUi::getOpenFileNameAsync(_glWidget, tr("Open script"),
                                                                  getPreviousScriptLocation(),
-                                                                 tr("JavaScript Files (*.js)"));
+                                                                 tr("JavaScript files (*.js)"));
     connect(dlg, &ModalDialogListener::response, this, [=] (QVariant answer) {
         disconnect(dlg, &ModalDialogListener::response, this, nullptr);
         const QString& response = answer.toString();

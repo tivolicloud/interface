@@ -25,6 +25,16 @@
 #include <AudioInjector.h>
 #include <AudioConstants.h>
 
+/**jsdoc
+ * The <code>TextToSpeech</code> API lets you use text to speech for your avatar in interface.
+ *
+ * @namespace TextToSpeech
+ *
+ * @hifi-interface
+ * @hifi-client-entity
+ * @hifi-avatar
+ */
+
 class TTSScriptingInterface : public QObject, public Dependency {
     Q_OBJECT
 
@@ -32,7 +42,17 @@ public:
     TTSScriptingInterface();
     ~TTSScriptingInterface();
 
+    /**jsdoc
+     * Speaks the given input text.
+     * @function TextToSpeech.speakText
+     * @param {string} textToSpeak - The text to speak.
+     */
     Q_INVOKABLE void speakText(const QString& textToSpeak);
+
+    /**jsdoc
+     * Stops the last speech.
+     * @function TextToSpeech.stopLastSpeech
+     */
     Q_INVOKABLE void stopLastSpeech();
 
 private:
