@@ -2482,10 +2482,10 @@ int AvatarData::sendIdentityPacket() {
     }
     QByteArray identityData = identityByteArray();
 
-    auto packet = NLPacket::create(PacketType::AvatarIdentity, -1, true);
-    packet->write(identityData);
-
-    nodeList->sendPacket(std::move(packet), *avatarMixer);
+    auto packetList = NLPacketList::create(PacketType::AvatarIdentity, QByteArray(), true, true);
+    packetList->write(identityData);
+    
+    nodeList->sendPacketList(std::move(packetList), *avatarMixer);
 
     _identityDataChanged = false;
     return identityData.size();
