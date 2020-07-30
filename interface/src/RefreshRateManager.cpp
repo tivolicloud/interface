@@ -17,7 +17,8 @@
 #include "Application.h"
 #include "MainWindow.h"
 
-static const int VR_TARGET_RATE = 90;
+// TODO: update using a vr plugin. valve index uses 144 hz
+static const int VR_TARGET_RATE = 144;
 
 /**jsdoc
  * <p>Refresh rate profile.</p>
