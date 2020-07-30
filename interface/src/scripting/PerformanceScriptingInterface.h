@@ -47,9 +47,9 @@ public:
      *     <tr><td><code>0</code></td><td>UNKNOWN</td><td>Custom settings of world detail, rendering effects, and refresh 
      *       rate.</td></tr>
      *     <tr><td><code>1</code></td><td>POTATO</td><td>Low world detail, forward rendering, no rendering effects, low target fps, 1/4 resolution.</td></tr>
-     *     <tr><td><code>1</code></td><td>LOW</td><td>Low world detail, forward rendering, no rendering effects, reduced resolution.</td></tr>
-     *     <tr><td><code>2</code></td><td>MID</td><td>Medium world detail, deferred rendering, some rendering effects</td></tr>
-     *     <tr><td><code>3</code></td><td>HIGH</td><td>Maximum world detail, deferred rendering, all rendering effects</td></tr>
+     *     <tr><td><code>2</code></td><td>LOW</td><td>Low world detail, forward rendering, no rendering effects, reduced resolution.</td></tr>
+     *     <tr><td><code>3</code></td><td>MID</td><td>Medium world detail, deferred rendering, some rendering effects</td></tr>
+     *     <tr><td><code>4</code></td><td>HIGH</td><td>Maximum world detail, deferred rendering, all rendering effects</td></tr>
      *   </tbody>
      * </table>
      * @typedef {number} Performance.PerformancePreset
