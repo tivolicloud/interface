@@ -144,6 +144,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
 
     AudioInjectorOptions options;
     options.position = DependencyManager::get<AvatarManager>()->getMyAvatarPosition();
+    options.volume = 0.7;
 
     if (_lastSoundAudioInjector) {
         DependencyManager::get<AudioInjectorManager>()->stop(_lastSoundAudioInjector);
