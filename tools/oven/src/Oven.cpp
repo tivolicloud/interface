@@ -26,6 +26,7 @@
 #include <hfm/ModelFormatRegistry.h>
 #include <FBXSerializer.h>
 #include <OBJSerializer.h>
+#include <GLTFSerializer.h>
 
 #include "MaterialBaker.h"
 
@@ -53,6 +54,7 @@ Oven::Oven() {
         auto modelFormatRegistry = DependencyManager::set<ModelFormatRegistry>();
         modelFormatRegistry->addFormat(FBXSerializer());
         modelFormatRegistry->addFormat(OBJSerializer());
+        modelFormatRegistry->addFormat(GLTFSerializer());
     }
 }
 

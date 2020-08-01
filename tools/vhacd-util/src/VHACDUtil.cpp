@@ -17,6 +17,7 @@
 #include <NumericalConstants.h>
 #include <FBXSerializer.h>
 #include <OBJSerializer.h>
+#include <GLTFSerializer.h>
 
 
 // FBXSerializer jumbles the order of the meshes by reading them back out of a hashtable.  This will put
@@ -50,6 +51,8 @@ bool vhacd::VHACDUtil::loadFBX(const QString filename, HFMModel& result) {
             hfmModel = OBJSerializer().read(fbxContents, mapping, filename);
         } else if (filename.toLower().endsWith(".fbx")) {
             hfmModel = FBXSerializer().read(fbxContents, mapping, filename);
+        } else if (filename.toLower().endsWith(".gltf") || filename.toLower().endsWith(".glb")) {
+            hfmModel = GLTFSerializer().read(fbxContents, mapping, filename);
         } else {
             qWarning() << "file has unknown extension" << filename;
             return false;
