@@ -19,48 +19,62 @@
     var CONTROLLER_MAPPING_NAME = "com.highfidelity.editMode";
 
     Script.include([
-        "../libraries/stringHelpers.js" + "?" + +new Date(),
-        "../libraries/dataViewHelpers.js" + "?" + +new Date(),
-        "../libraries/progressDialog.js" + "?" + +new Date(),
-        "../libraries/ToolTip.js" + "?" + +new Date(),
-        "../libraries/entityCameraTool.js" + "?" + +new Date(),
-        "../libraries/utils.js" + "?" + +new Date(),
-        "../libraries/entityIconOverlayManager.js" + "?" + +new Date(),
-        "../libraries/gridTool.js" + "?" + +new Date(),
-        "entityList/entityList.js" + "?" + +new Date(),
-        "entitySelectionTool/entitySelectionTool.js" + "?" + +new Date()
+        "../libraries/stringHelpers.js?" + Date.now(),
+        "../libraries/dataViewHelpers.js?" + Date.now(),
+        "../libraries/progressDialog.js?" + Date.now(),
+        "../libraries/ToolTip.js?" + Date.now(),
+        "../libraries/entityCameraTool.js?" + Date.now(),
+        "../libraries/utils.js?" + Date.now(),
+        "../libraries/entityIconOverlayManager.js?" + Date.now(),
+        "../libraries/gridTool.js?" + Date.now(),
+        "entityList/entityList.js?" + Date.now(),
+        "entitySelectionTool/entitySelectionTool.js?" + Date.now()
     ]);
 
-    var CreateWindow = Script.require("./modules/createWindow.js");
+    var createToolsWindow;
 
-    var TITLE_OFFSET = 60;
-    var CREATE_TOOLS_WIDTH = 640;
-    var MAX_DEFAULT_ENTITY_LIST_HEIGHT = 850;
+    if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+        var CREATE_TOOLS_WIDTH = 540;
+    
+        createToolsWindow = new OverlayWindow({
+            source: Script.resolvePath("qml/EditTools.qml"),
+            visible: false,
+            frameless: true,
+        });
+        createToolsWindow.setPosition(Window.innerWidth - CREATE_TOOLS_WIDTH, 0);
+        createToolsWindow.setSize(CREATE_TOOLS_WIDTH, Window.innerHeight);
+    } else {
+        var CreateWindow = Script.require("./modules/createWindow.js");
 
-    var DEFAULT_IMAGE = "qrc:///images/empty-image-entity.png";
+        var TITLE_OFFSET = 60;
+        var CREATE_TOOLS_WIDTH = 640;
+        var MAX_DEFAULT_ENTITY_LIST_HEIGHT = 850;
 
-    var createToolsWindow = new CreateWindow(
-        Script.resolvePath("qml/EditTools.qml"),
-        "Create Tools",
-        "com.highfidelity.create.createToolsWindow",
-        function() {
-            var windowHeight = Window.innerHeight - TITLE_OFFSET;
-            if (windowHeight > MAX_DEFAULT_ENTITY_LIST_HEIGHT) {
-                windowHeight = MAX_DEFAULT_ENTITY_LIST_HEIGHT;
-            }
-            return {
-                size: {
-                    x: CREATE_TOOLS_WIDTH,
-                    y: windowHeight
-                },
-                position: {
-                    x: Window.x + Window.innerWidth - CREATE_TOOLS_WIDTH,
-                    y: Window.y + TITLE_OFFSET
+        var DEFAULT_IMAGE = "qrc:///images/empty-image-entity.png";
+
+        createToolsWindow = new CreateWindow(
+            Script.resolvePath("qml/EditTools.qml"),
+            "Create Tools",
+            "com.highfidelity.create.createToolsWindow",
+            function() {
+                var windowHeight = Window.innerHeight - TITLE_OFFSET;
+                if (windowHeight > MAX_DEFAULT_ENTITY_LIST_HEIGHT) {
+                    windowHeight = MAX_DEFAULT_ENTITY_LIST_HEIGHT;
                 }
-            };
-        },
-        false
-    );
+                return {
+                    size: {
+                        x: CREATE_TOOLS_WIDTH,
+                        y: windowHeight
+                    },
+                    position: {
+                        x: Window.x + Window.innerWidth - CREATE_TOOLS_WIDTH,
+                        y: Window.y + TITLE_OFFSET
+                    }
+                };
+            },
+            false
+        );
+    }
 
     // set styles
     // Selection.enableListHighlight("CurrentlySelectedHighlight", {
@@ -993,7 +1007,11 @@
                 }
             });
             tablet.fromQml.connect(fromQml);
-            createToolsWindow.fromQml.addListener(fromQml);
+            if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+                createToolsWindow.fromQml.connect(fromQml);
+            } else {
+                createToolsWindow.fromQml.addListener(fromQml);
+            }
 
             createButton.clicked.connect(function() {
                 if (
@@ -1109,23 +1127,26 @@
                 createNewEntityDialogButtonCallback("Material")
             );
 
-            var deactivateCreateIfDesktopWindowsHidden = function() {
-                if (
-                    !shouldUseEditTabletApp() &&
-                    !entityListTool.isVisible() &&
-                    !createToolsWindow.isVisible()
-                ) {
-                    that.setActive(false);
-                }
-            };
-            entityListTool.interactiveWindowHidden.addListener(
-                this,
-                deactivateCreateIfDesktopWindowsHidden
-            );
-            createToolsWindow.interactiveWindowHidden.addListener(
-                this,
-                deactivateCreateIfDesktopWindowsHidden
-            );
+            if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+            } else {            
+                var deactivateCreateIfDesktopWindowsHidden = function() {
+                    if (
+                        !shouldUseEditTabletApp() &&
+                        !entityListTool.isVisible() &&
+                        !createToolsWindow.isVisible()
+                    ) {
+                        that.setActive(false);
+                    }
+                };
+                entityListTool.interactiveWindowHidden.addListener(
+                    this,
+                    deactivateCreateIfDesktopWindowsHidden
+                );
+                createToolsWindow.interactiveWindowHidden.addListener(
+                    this,
+                    deactivateCreateIfDesktopWindowsHidden
+                );
+            }
 
             that.setActive(false);
         }
@@ -3387,10 +3408,16 @@
             });
         });
 
-        createToolsWindow.webEventReceived.addListener(
-            this,
-            onWebEventReceived
-        );
+        if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+            createToolsWindow.webEventReceived.connect(
+                onWebEventReceived
+            );
+        } else {
+            createToolsWindow.webEventReceived.addListener(
+                this,
+                onWebEventReceived
+            );
+        }
 
         webView.webEventReceived.connect(this, onWebEventReceived);
 

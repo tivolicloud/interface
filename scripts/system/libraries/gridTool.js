@@ -297,7 +297,11 @@ GridTool = function(opts) {
     };
 
     webView.webEventReceived.connect(webEventReceived);
-    createToolsWindow.webEventReceived.addListener(webEventReceived);
+    if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+        createToolsWindow.webEventReceived.connect(webEventReceived);
+    } else {
+        createToolsWindow.webEventReceived.addListener(webEventReceived);
+    }
 
     that.addListener = function(callback) {
         listeners.push(callback);

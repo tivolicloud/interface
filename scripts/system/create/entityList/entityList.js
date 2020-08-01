@@ -43,33 +43,47 @@ const PROFILE = !PROFILING_ENABLED
 EntityListTool = function(shouldUseEditTabletApp) {
 	var that = {};
 
-	var CreateWindow = Script.require("../modules/createWindow.js");
+	var entityListWindow;
 
-	var TITLE_OFFSET = 30;
-	var ENTITY_LIST_WIDTH = 495;
-	var MAX_DEFAULT_CREATE_TOOLS_HEIGHT = 900;
-	var entityListWindow = new CreateWindow(
-		Script.resolvePath("./qml/EditEntityList.qml"),
-		"Entity List",
-		"com.highfidelity.create.entityListWindow",
-		function() {
-			var windowHeight = Window.innerHeight - TITLE_OFFSET;
-			if (windowHeight > MAX_DEFAULT_CREATE_TOOLS_HEIGHT) {
-				windowHeight = MAX_DEFAULT_CREATE_TOOLS_HEIGHT;
-			}
-			return {
-				size: {
-					x: ENTITY_LIST_WIDTH,
-					y: windowHeight
-				},
-				position: {
-					x: Window.x,
-					y: Window.y + TITLE_OFFSET
+	if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+		var ENTITY_LIST_WIDTH = 460;
+
+		entityListWindow = new OverlayWindow({
+			source: Script.resolvePath("qml/EditEntityList.qml"),
+			visible: false,
+			frameless: true,
+		});
+		entityListWindow.setPosition(0, 0);
+		entityListWindow.setSize(ENTITY_LIST_WIDTH, Window.innerHeight);
+	} else {
+		var CreateWindow = Script.require("../modules/createWindow.js");
+
+		var TITLE_OFFSET = 30;
+		var ENTITY_LIST_WIDTH = 495;
+		var MAX_DEFAULT_CREATE_TOOLS_HEIGHT = 900;
+		entityListWindow = new CreateWindow(
+			Script.resolvePath("./qml/EditEntityList.qml"),
+			"Entity List",
+			"com.highfidelity.create.entityListWindow",
+			function() {
+				var windowHeight = Window.innerHeight - TITLE_OFFSET;
+				if (windowHeight > MAX_DEFAULT_CREATE_TOOLS_HEIGHT) {
+					windowHeight = MAX_DEFAULT_CREATE_TOOLS_HEIGHT;
 				}
-			};
-		},
-		false
-	);
+				return {
+					size: {
+						x: ENTITY_LIST_WIDTH,
+						y: windowHeight
+					},
+					position: {
+						x: Window.x,
+						y: Window.y + TITLE_OFFSET
+					}
+				};
+			},
+			false
+		);
+	}
 
 	var webView = null;
 	webView = Tablet.getTablet("com.highfidelity.interface.tablet.system");
@@ -101,8 +115,14 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		});
 		PROFILE("Script-emitScriptEvent", function() {
 			webView.emitScriptEvent(dataString);
-			if (entityListWindow.window) {
-				entityListWindow.window.emitScriptEvent(dataString);
+			if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+				if (entityListWindow) {
+					entityListWindow.emitScriptEvent(dataString);
+				}
+			} else {
+				if (entityListWindow.window) {
+					entityListWindow.window.emitScriptEvent(dataString);
+				}
 			}
 		});
 	}
@@ -376,7 +396,11 @@ EntityListTool = function(shouldUseEditTabletApp) {
 	};
 
 	webView.webEventReceived.connect(onWebEventReceived);
-	entityListWindow.webEventReceived.addListener(onWebEventReceived);
+	if (Settings.getValue("experimentalCreateToolsRepositioning")) {
+		entityListWindow.webEventReceived.connect(onWebEventReceived);
+	} else {
+		entityListWindow.webEventReceived.addListener(onWebEventReceived);
+	}
 	that.interactiveWindowHidden = entityListWindow.interactiveWindowHidden;
 
 	return that;
