@@ -12,7 +12,7 @@
 		[style.opacity]="
 			chatService.focused || message.shouldBeShowing ? '1' : '0'
 		"
-		[style.fontStyle]="message.me ? 'italic' : ''"
+		[style.fontStyle]="message.extras.me ? 'italic' : ''"
 		@message
 	>
 		<div
