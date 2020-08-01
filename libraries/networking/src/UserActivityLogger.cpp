@@ -35,6 +35,8 @@ void UserActivityLogger::disable(bool disable) {
 }
 
 void UserActivityLogger::logAction(QString action, QJsonObject details, JSONCallbackParameters params) {
+    return; // we're not going to use this
+    
     if (_disabled.get()) {
         return;
     }
