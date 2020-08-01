@@ -54,8 +54,8 @@ class Message {
 		public type: "message" | "announcement",
 		public message: string,
 		public username?: string,
-		public noSound = false,
 		public extras: { me?: boolean; tts?: boolean } = {},
+		public forceEnableSound = false,
 	) {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
@@ -67,7 +67,7 @@ class Message {
 
 		chatService.emojiService.processMessageParts(this.messageParts);
 
-		if (noSound == false && !extras.tts) {
+		if (forceEnableSound || (type == "message" && !extras.tts)) {
 			this.chatService.scriptService.emitEvent("chat", "sound");
 		}
 
@@ -103,7 +103,6 @@ export class ChatService {
 								"message",
 								data.value.message,
 								data.value.username,
-								false,
 								data.value,
 							),
 						);
@@ -119,7 +118,8 @@ export class ChatService {
 									" " +
 									(data.key == "join" ? "joined" : "left"),
 								data.value,
-								false,
+								{},
+								true,
 							),
 						);
 					break;
@@ -133,9 +133,9 @@ export class ChatService {
 	sendMessage(message: string) {
 		if (message.startsWith("/")) {
 			const command = message.trim().split(" ")[0].toLowerCase().slice(1);
-			const print = msg => {
+			const print = (msg: string) => {
 				this.messages.push(
-					new Message(this, "announcement", msg, null, true),
+					new Message(this, "announcement", msg, null),
 				);
 			};
 
