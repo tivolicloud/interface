@@ -92,8 +92,7 @@ class ChatJoinAndLeave {
 		this.signals.connect(AvatarList.avatarAddedEvent, uuid => {
 			if (this.isMovingBetweenWorlds) return;
 			this.getUsername(uuid, username => {
-				if (username == null) return;
-				this.onJoin(username);
+				this.onJoin(username == null ? "Someone" : username);
 			});
 		});
 
@@ -101,7 +100,7 @@ class ChatJoinAndLeave {
 			if (this.isMovingBetweenWorlds) return;
 			const username = this.usernames[uuid];
 			delete this.usernames[uuid];
-			this.onLeave(username);
+			this.onLeave(username == null ? "Someone" : username);
 		});
 	}
 

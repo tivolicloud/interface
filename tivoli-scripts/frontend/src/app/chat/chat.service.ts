@@ -109,24 +109,17 @@ export class ChatService {
 						);
 					break;
 				case "join":
-					if (data.value)
-						this.messages.push(
-							new Message(
-								this,
-								"announcement",
-								data.value + " joined",
-								data.value,
-							),
-						);
-					break;
 				case "leave":
 					if (data.value)
 						this.messages.push(
 							new Message(
 								this,
 								"announcement",
-								data.value + " left",
+								data.value +
+									" " +
+									(data.key == "join" ? "joined" : "left"),
 								data.value,
+								false,
 							),
 						);
 					break;
