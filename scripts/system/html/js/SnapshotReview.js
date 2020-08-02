@@ -253,7 +253,8 @@ function createShareBar(parentID, isLoggedIn, canShare, isGif, blastButtonDisabl
         document.getElementById(parentID + 'img').onclick = function () { selectImageWithHelpText(parentID, true); };
     }
 
-    shareBar.innerHTML = shareBarInnerHTML;
+    // disable sharing since we dont have a snapshot bucket
+    // shareBar.innerHTML = shareBarInnerHTML;
 
     return shareBar;
 }
