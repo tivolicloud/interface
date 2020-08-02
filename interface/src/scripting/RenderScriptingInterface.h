@@ -104,7 +104,7 @@ public:
      *     </tr>
      *   </tbody>
      * </table>
-     * @typedef {number} Render.antialiasingMethod
+     * @typedef {number} Render.AntialiasingMethod
      */
     // AntialiasingMethod enum type
     enum AntialiasingMethod
