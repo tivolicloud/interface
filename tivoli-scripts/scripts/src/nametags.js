@@ -220,7 +220,7 @@ export function initNametags() {
 	location.hostChanged.connect(hostChanged);
 	Users.usernameFromIDReply.connect(usernameFromIDReply);
 
-	Script.scriptEnding.connect(function() {
+	var cleanup = function() {
 		Script.clearInterval(updateIntervalLocal);
 		Script.clearInterval(updateIntervalAPI);
 
@@ -233,5 +233,7 @@ export function initNametags() {
 		Object.keys(nametags).forEach(function(id) {
 			Entities.deleteEntity(nametags[id].entity);
 		});
-	});
+	}
+
+	return { cleanup };
 }

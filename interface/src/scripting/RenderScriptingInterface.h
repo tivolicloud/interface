@@ -28,6 +28,7 @@
  * @property {boolean} ambientOcclusionEnabled - <code>true</code> if ambient occlusion is enabled, <code>false</code> if it's disabled.
  * @property {Render.AntialiasingMethod} antialiasingMethod - The anti-aliasing method being used.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
+ * @property {boolean} nametagsEnabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
  */
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
@@ -36,6 +37,7 @@ class RenderScriptingInterface : public QObject {
     Q_PROPERTY(bool ambientOcclusionEnabled READ getAmbientOcclusionEnabled WRITE setAmbientOcclusionEnabled NOTIFY settingsChanged)
     Q_PROPERTY(AntialiasingMethod antialiasingMethod READ getAntialiasingMethod WRITE setAntialiasingMethod NOTIFY settingsChanged)
     Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
+    Q_PROPERTY(bool nametagsEnabled READ getNametagsEnabled WRITE setNametagsEnabled NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -235,6 +237,19 @@ public slots:
      */
     void setViewportResolutionScale(float resolutionScale);
 
+    /**jsdoc
+     * Gets whether nametags are enabled.
+     * @function Render.getNametagsEnabled
+     * @returns {boolean} <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
+     */
+    bool getNametagsEnabled() const;
+
+    /**jsdoc
+     * Sets whether nametags are enabled.
+     * @function Render.setNametagsEnabled
+     * @param {boolean} enabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
+     */
+    void setNametagsEnabled(bool enabled);
 signals:
 
     /**jsdoc
@@ -263,6 +278,7 @@ private:
     bool _ambientOcclusionEnabled{ true };
     int _antialiasingMethod{ AntialiasingMethod::NONE };
     float _viewportResolutionScale{ 1.0f };
+    bool _nametagsEnabled{ true };
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
@@ -270,6 +286,7 @@ private:
     Setting::Handle<bool> _ambientOcclusionEnabledSetting{ "ambientOcclusionEnabled", _ambientOcclusionEnabled };
     Setting::Handle<int> _antialiasingMethodSetting{ "antialiasingMethod", _antialiasingMethod };
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
+    Setting::Handle<bool> _nametagsEnabledSetting{ "nametagsEnabled", _nametagsEnabled };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
@@ -277,6 +294,7 @@ private:
     void forceAmbientOcclusionEnabled(bool enabled);
     void forceAntialiasingMethod(AntialiasingMethod antialiasingMethod);
     void forceViewportResolutionScale(float scale);
+    void forceNametagsEnabled(bool enabled);
 
     static std::once_flag registry_flag;
 };

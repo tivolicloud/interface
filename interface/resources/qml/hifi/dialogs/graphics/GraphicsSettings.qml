@@ -456,6 +456,38 @@ Item {
                         }
                     }
                 }
+
+                Item {
+                    Layout.preferredWidth: parent.width
+                    Layout.preferredHeight: 35
+
+                    HifiStylesUit.RobotoRegular {
+                        id: nametagsHeader
+                        text: "Nametags enabled"
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        width: 165
+                        height: parent.height
+                        size: 16
+                        color: "#FFFFFF"
+                    }
+
+                    RowLayout {
+                        Layout.preferredWidth: parent.width
+                        anchors.left: nametagsHeader.right
+                        anchors.leftMargin: 20
+                        spacing: 10
+                        
+                        HifiControlsUit.CheckBox {
+                            colorScheme: hifi.colorSchemes.dark
+                            height: 18
+                            checked: Render.getNametagsEnabled()
+                            onClicked: {
+                                Render.setNametagsEnabled(checked);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

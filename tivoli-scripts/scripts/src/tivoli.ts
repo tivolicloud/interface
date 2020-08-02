@@ -5,7 +5,7 @@ import { initNametags } from "./nametags";
 import { Optimize } from "./optimize";
 import { Overview } from "./overview";
 
-const tryInit = (func: () => any) => {
+const tryInit = <T>(func: () => T) => {
 	try {
 		return func();
 	} catch (err) {
@@ -20,6 +20,9 @@ class Tivoli {
 	buttons = tryInit(() => new Buttons());
 	chat = tryInit(() => new Chat());
 	overview = tryInit(() => new Overview());
+
+	nametags: { cleanup: () => any } = null;
+	nametagsEnabled = Render.getNametagsEnabled();
 
 	private forceRemoveScript(scriptFilename: string) {
 		const runningScripts = ScriptDiscoveryService.getRunning();
@@ -39,8 +42,21 @@ class Tivoli {
 			nametagsScriptUrl.split("/").pop().split("?")[0],
 		);
 
-		// TODO: finish rewriting
-		tryInit(initNametags);
+		// TODO: finish rewriting nametags to typescript with qml for tags
+		if (this.nametagsEnabled) this.nametags = tryInit(initNametags);
+		this.signals.connect(Render.settingsChanged, () => {
+			if (Render.getNametagsEnabled()) {
+				if (!this.nametagsEnabled) {
+					this.nametags = tryInit(initNametags);
+					this.nametagsEnabled = true;
+				}
+			} else {
+				if (this.nametagsEnabled) {
+					this.nametags.cleanup();
+					this.nametagsEnabled = false;
+				}
+			}
+		});
 
 		this.signals.connect(Script.scriptEnding, this.cleanup);
 	}

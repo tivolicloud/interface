@@ -30,12 +30,14 @@ void RenderScriptingInterface::loadSettings() {
         _ambientOcclusionEnabled = (_ambientOcclusionEnabledSetting.get());
         _antialiasingMethod = (_antialiasingMethodSetting.get());
         _viewportResolutionScale = (_viewportResolutionScaleSetting.get());
+        _nametagsEnabled = (_nametagsEnabledSetting.get());
     });
     forceRenderMethod((RenderMethod)_renderMethod);
     forceShadowsEnabled(_shadowsEnabled);
     forceAmbientOcclusionEnabled(_ambientOcclusionEnabled);
     forceAntialiasingMethod((AntialiasingMethod)_antialiasingMethod);
     forceViewportResolutionScale(_viewportResolutionScale);
+    forceNametagsEnabled(_nametagsEnabled);
 }
 
 RenderScriptingInterface::RenderMethod RenderScriptingInterface::getRenderMethod() const {
@@ -236,4 +238,23 @@ void RenderScriptingInterface::forceViewportResolutionScale(float scale) {
             forwardView->setProperty("resolutionScale", _viewportResolutionScale);
         }
     });
+}
+
+bool RenderScriptingInterface::getNametagsEnabled() const {
+    return _nametagsEnabled;
+}
+
+void RenderScriptingInterface::setNametagsEnabled(bool enabled) {
+    if (_nametagsEnabled != enabled) {
+        forceNametagsEnabled(enabled);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceNametagsEnabled(bool enabled) {
+    _nametagsEnabled = (enabled);
+    _nametagsEnabledSetting.set(enabled);
+
+    // put nametags logic here when implementing in cpp
+    // code is in javascript right now and uses these functions
 }
