@@ -618,6 +618,30 @@ function handleCaptureSetting(setting) {
     };
 
 }
+
+function handleNametagsSetting(setting) {
+    var nametagsEnabled = document.getElementById('nametagsEnabled'),
+        nametagsDisabled = document.getElementById('nametagsDisabled');
+
+    nametagsEnabled.checked = setting;
+    nametagsDisabled.checked = !setting;
+
+    nametagsEnabled.onclick = function () {
+        EventBridge.emitWebEvent(JSON.stringify({
+            type: "snapshot",
+            action: "nametagsEnabled"
+        }));
+    };
+
+    nametagsDisabled.onclick = function () {
+        EventBridge.emitWebEvent(JSON.stringify({
+            type: "snapshot",
+            action: "nametagsDisabled"
+        }));
+    };
+
+}
+
 window.onload = function () {
     // Uncomment the line below to test functionality in a browser.
     // See definition of "testInBrowser()" to modify tests.
@@ -690,6 +714,9 @@ window.onload = function () {
                     break;
                 case 'captureSettings':
                     handleCaptureSetting(message.setting);
+                    break;              
+                case 'nametagsSettings':
+                    handleNametagsSetting(message.setting);
                     break;              
                 case 'setPrintButtonEnabled':
                     setPrintButtonEnabled();

@@ -18,6 +18,7 @@ var AppUi = Script.require('appUi');
 var SNAPSHOT_DELAY = 500; // 500ms
 var FINISH_SOUND_DELAY = 350;
 var resetOverlays;
+var resetNametags;
 var reticleVisible;
 
 var snapshotOptions = {};
@@ -77,6 +78,11 @@ function onMessage(message) {
                 action: "captureSettings",
                 setting: Settings.getValue("alsoTakeAnimatedSnapshot", true)
             });
+            ui.sendMessage({
+                type: "snapshot",
+                action: "nametagsSettings",
+                setting: Settings.getValue("shapshotNametagsEnabled", true)
+            });
             if (Snapshot.getSnapshotsLocation() !== "") {
                 isDomainOpen(Settings.getValue("previousSnapshotDomainID"), function (canShare) {
                     ui.sendMessage({
@@ -126,6 +132,12 @@ function onMessage(message) {
         case 'captureStillOnly':
             print("Changing Snapshot Capture Settings to Capture Still Only");
             Settings.setValue("alsoTakeAnimatedSnapshot", false);
+            break;
+        case 'nametagsEnabled':
+            Settings.setValue("shapshotNametagsEnabled", true);
+            break;
+        case 'nametagsDisabled':
+            Settings.setValue("shapshotNametagsEnabled", false);
             break;
         case 'takeSnapshot':
             takeSnapshot();
@@ -331,7 +343,7 @@ function printToPolaroid(image_url) {
     Audio.playSound(POLAROID_PRINT_SOUND, {
         position: model_pos,
         localOnly: false,
-        volume: 0.2
+        volume: 0.1
     });
 }
 
@@ -451,7 +463,11 @@ function takeSnapshot() {
     if (!HMD.active) {
         Reticle.allowMouseCapture = false;
     }
-    
+    resetNametags = Render.getNametagsEnabled();
+    if (Settings.getValue("shapshotNametagsEnabled", true)) {
+        resetNametags = false;
+    }
+
     var includeAnimated = Settings.getValue("alsoTakeAnimatedSnapshot", true);
     if (includeAnimated) {
         Window.processingGifStarted.connect(processingGifStarted);
@@ -462,6 +478,9 @@ function takeSnapshot() {
     // hide overlays if they are on
     if (resetOverlays) {
         Menu.setIsOptionChecked("Show Overlays", false);
+    }
+    if (resetNametags) {
+        Render.setNametagsEnabled(false);
     }
 
     var snapActivateSound = SoundCache.getSound(Script.resourcesPath() + "sounds/snapshot/snap.wav");
@@ -520,6 +539,9 @@ function stillSnapshotTaken(pathStillSnapshot, notify) {
     if (resetOverlays) {
         Menu.setIsOptionChecked("Show Overlays", true);
     }
+    if (resetNametags) {
+        Render.setNametagsEnabled(true);
+    }
     Window.stillSnapshotTaken.disconnect(stillSnapshotTaken);
 
     // A Snapshot Review dialog might be left open indefinitely after taking the picture,
@@ -568,6 +590,9 @@ function processingGifStarted(pathStillSnapshot) {
     // show overlays if they were on
     if (resetOverlays) {
         Menu.setIsOptionChecked("Show Overlays", true);
+    }
+    if (resetNametags) {
+        Render.setNametagsEnabled(true);
     }
     Settings.setValue("previousStillSnapPath", pathStillSnapshot);
 

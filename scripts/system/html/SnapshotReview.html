@@ -24,14 +24,20 @@
             <form action="">
                 <input type="radio" name="cameraCaptures" id="stillAndGif" value="stillAndGif" /><label for="stillAndGif"><span><span></span></span>Still + GIF</label>
                 <br />
-                <input type="radio" name="cameraCaptures" id="stillOnly" value="stillOnly" /><label for="stillOnly"><span><span></span></span>Still Only</label>
+                <input type="radio" name="cameraCaptures" id="stillOnly" value="stillOnly" /><label for="stillOnly"><span><span></span></span>Still only</label>
             </form>
         </div>
         <input type="button" id="snap-button" onclick="takeSnapshot()" />
         <div id="snap-settings-right">
-            <button type="image" class="blueButton" id="print-button" onclick="printToPolaroid()">
+            <!-- <button type="image" class="blueButton" id="print-button" onclick="printToPolaroid()">
                 <div id="print-icon" class="print-icon print-icon-default">
-            </button>
+            </button> -->
+            <label>SHOW NAMETAGS</label><br />
+            <form action="">
+                <input type="radio" name="showNametags" id="nametagsEnabled" value="nametagsEnabled" /><label for="nametagsEnabled"><span><span></span></span>Enabled</label>
+                <br />
+                <input type="radio" name="showNametags" id="nametagsDisabled" value="nametagsDisabled" /><label for="nametagsDisabled"><span><span></span></span>Disabled</label>
+            </form>
         </div>
     </div>
 </body>
