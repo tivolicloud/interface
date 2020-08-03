@@ -98,16 +98,22 @@ var EventBridge;
 			});
 		}
 
-		new WebKitMutationObserver(mutations => {
-			mutations.forEach(mutation => {
-				for (const node of mutation.addedNodes) {
-					if (node.nodeName == "VIDEO" || node.nodeName == "AUDIO")
-						EventBridge.forceHtmlAudioOutputDeviceUpdate();
-				}
+		if (document.body) {
+			new WebKitMutationObserver(mutations => {
+				mutations.forEach(mutation => {
+					for (const node of mutation.addedNodes) {
+						if (
+							node.nodeName == "VIDEO" ||
+							node.nodeName == "AUDIO"
+						) {
+							EventBridge.forceHtmlAudioOutputDeviceUpdate();
+						}
+					}
+				});
+			}).observe(document.body, {
+				childList: true,
 			});
-		}).observe(document.body, {
-			childList: true,
-		});
+		}
 
 		window.addEventListener("DOMContentLoaded", () => {
 			EventBridge.forceHtmlAudioOutputDeviceUpdate();
