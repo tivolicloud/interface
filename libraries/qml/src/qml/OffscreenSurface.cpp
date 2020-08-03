@@ -35,20 +35,23 @@ using namespace hifi::qml;
 using namespace hifi::qml::impl;
 
 QmlUrlValidator OffscreenSurface::validator = [](const QUrl& url) -> bool { 
-    if (url.isRelative()) {
-        return true;
-    }
+    // if (url.isRelative()) {
+    //     return true;
+    // }
 
-    if (url.isLocalFile()) {
-        return true;
-    }
+    // if (url.isLocalFile()) {
+    //     return true;
+    // }
 
-    if (url.scheme() == URL_SCHEME_QRC) {
-        return true;
-    }
+    // if (url.scheme() == URL_SCHEME_QRC) {
+    //     return true;
+    // }
 
-    // By default, only allow local QML, either from the local filesystem or baked into the QRC
-    return false;
+    // // By default, only allow local QML, either from the local filesystem or baked into the QRC
+    // return false;
+
+    // does this need to be filtered to local only?
+    return true;
 };
 
 static uvec2 clampSize(const uvec2& size, uint32_t maxDimension) {
