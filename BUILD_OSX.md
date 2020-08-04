@@ -89,7 +89,7 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2t -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl/1.0.2t/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
+cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
 ```
 
 **Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
