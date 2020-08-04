@@ -19,6 +19,24 @@ if (BUILD_TOOLS AND NPM_EXECUTABLE)
   add_custom_qrc_path(CUSTOM_INTERFACE_QRC_PATHS "${CMAKE_SOURCE_DIR}/tools/jsdoc/out/doclets.json" "auto-complete/doclets.json")
 endif ()
 
+# download squirrel nut cafe content
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe)
+  message(STATUS "Downloading \"Squirrel Nut Cafe\" content")
+  file(DOWNLOAD
+    https://cdn.tivolicloud.com/assets/public-content/squirrel-nut-cafe.zip 
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
+    TIMEOUT 60
+    TLS_VERIFY ON
+  )
+  file(ARCHIVE_EXTRACT 
+    INPUT ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/resources
+  )
+  file(REMOVE
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
+  )
+endif()
+
 set(RESOURCES_QRC ${CMAKE_CURRENT_BINARY_DIR}/resources.qrc)
 set(RESOURCES_RCC ${CMAKE_CURRENT_SOURCE_DIR}/compiledResources/resources.rcc)
 generate_qrc(OUTPUT ${RESOURCES_QRC} PATH ${CMAKE_CURRENT_SOURCE_DIR}/resources CUSTOM_PATHS ${CUSTOM_INTERFACE_QRC_PATHS} GLOBS *)
