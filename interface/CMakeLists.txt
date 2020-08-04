@@ -23,17 +23,17 @@ endif ()
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe)
   message(STATUS "Downloading \"Squirrel Nut Cafe\" content")
   file(DOWNLOAD
-    https://cdn.tivolicloud.com/assets/public-content/squirrel-nut-cafe.zip 
-    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
+    https://cdn.tivolicloud.com/assets/public-content/squirrel-nut-cafe.tar.gz 
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.tar.gz
     TIMEOUT 60
     TLS_VERIFY ON
   )
-  file(ARCHIVE_EXTRACT 
-    INPUT ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
-    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/resources
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.tar.gz
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
   )
   file(REMOVE
-    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.zip
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.tar.gz
   )
 endif()
 
