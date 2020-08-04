@@ -165,7 +165,7 @@ export class ChatService {
 					this.messagesAsTts = !this.messagesAsTts;
 					print(
 						this.messagesAsTts
-							? "Enaled text to speech for all messages"
+							? "Enabled text to speech for all messages"
 							: "Disabled text to speech for all messages",
 					);
 					break;
