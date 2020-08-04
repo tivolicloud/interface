@@ -27,8 +27,11 @@ Download and install these programs:
 
     Once installed, open the terminal and run:
 
+    The last command will install OpenSSL 1.0.2t
+
     ```bash
-    brew install cmake openssl python
+    brew install cmake python
+    brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/64555220bfbf4a25598523c2e4d3a232560eaad7/Formula/openssl.rb -f
     ```
 
 ## Step 2. Configuring environment variables
@@ -89,7 +92,7 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
+cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2t -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl/1.0.2t/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
 ```
 
 **Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
