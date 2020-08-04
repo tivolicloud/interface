@@ -6,7 +6,16 @@
 #  See the accompanying file LICENSE or http:#www.apache.org/licenses/LICENSE-2.0.html
 #
 
-if ((WIN32 OR UNIX AND NOT APPLE) AND NOT USE_GLES)
+if (
+    (
+        WIN32 OR
+        (UNIX AND NOT APPLE AND (
+            CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64" OR
+            CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "AMD64"
+        ))
+    ) AND 
+    NOT USE_GLES
+)
     set(TARGET_NAME openvr)
     setup_hifi_plugin(Gui Qml Multimedia)
     link_hifi_libraries(shared task gl qml networking controllers ui 
