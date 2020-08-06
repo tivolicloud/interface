@@ -1427,7 +1427,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  * @property {string} scriptURL="" - The URL of a JavaScript file to inject into the web page.
  * @property {number} maxFPS=120 - The maximum update rate for the web content, in frames/second.
  * @property {WebInputMode} inputMode="touch" - The user input mode to use.
- * @property {boolean} showKeyboardFocusHighlight=true - <code>true</code> if the entity is highlighted when it has keyboard 
+ * @property {boolean} showKeyboardFocusHighlight=true - <code>true</code> if the entity is highlighted when it has keyboard focus, <code>false</code> if it isn't.
  * @property {boolean} transparentBackground=false - <code>true</code> if the web entity uses a transparent background, <code>false</code> if it doesnt.
  * @example <caption>Create a Web entity displaying at 1920 x 1080 resolution.</caption>
  * var METERS_TO_INCHES = 39.3701;
