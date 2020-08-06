@@ -60,6 +60,7 @@ EntityItemProperties WebEntityItem::getProperties(const EntityPropertyFlags& des
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(maxFPS, getMaxFPS);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(inputMode, getInputMode);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(showKeyboardFocusHighlight, getShowKeyboardFocusHighlight);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(transparentBackground, getTransparentBackground);
     return properties;
 }
 
@@ -81,6 +82,7 @@ bool WebEntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(maxFPS, setMaxFPS);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(inputMode, setInputMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(showKeyboardFocusHighlight, setShowKeyboardFocusHighlight);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(transparentBackground, setTransparentBackground);
 
     somethingChanged = true;
 
@@ -123,6 +125,7 @@ int WebEntityItem::readEntitySubclassDataFromBuffer(const unsigned char* data, i
     READ_ENTITY_PROPERTY(PROP_MAX_FPS, uint8_t, setMaxFPS);
     READ_ENTITY_PROPERTY(PROP_INPUT_MODE, WebInputMode, setInputMode);
     READ_ENTITY_PROPERTY(PROP_SHOW_KEYBOARD_FOCUS_HIGHLIGHT, bool, setShowKeyboardFocusHighlight);
+    READ_ENTITY_PROPERTY(PROP_TRANSPARENT_BACKGROUND, bool, setTransparentBackground);
 
     return bytesRead;
 }
@@ -140,6 +143,7 @@ EntityPropertyFlags WebEntityItem::getEntityProperties(EncodeBitstreamParams& pa
     requestedProperties += PROP_MAX_FPS;
     requestedProperties += PROP_INPUT_MODE;
     requestedProperties += PROP_SHOW_KEYBOARD_FOCUS_HIGHLIGHT;
+    requestedProperties += PROP_TRANSPARENT_BACKGROUND;
     return requestedProperties;
 }
 
@@ -166,6 +170,7 @@ void WebEntityItem::appendSubclassData(OctreePacketData* packetData, EncodeBitst
     APPEND_ENTITY_PROPERTY(PROP_MAX_FPS, getMaxFPS());
     APPEND_ENTITY_PROPERTY(PROP_INPUT_MODE, (uint32_t)getInputMode());
     APPEND_ENTITY_PROPERTY(PROP_SHOW_KEYBOARD_FOCUS_HIGHLIGHT, getShowKeyboardFocusHighlight());
+    APPEND_ENTITY_PROPERTY(PROP_TRANSPARENT_BACKGROUND, getTransparentBackground());
 }
 
 glm::vec3 WebEntityItem::getRaycastDimensions() const {
@@ -363,6 +368,19 @@ void WebEntityItem::setShowKeyboardFocusHighlight(bool value) {
 
 bool WebEntityItem::getShowKeyboardFocusHighlight() const {
     return _showKeyboardFocusHighlight;
+}
+
+void WebEntityItem::setTransparentBackground(bool value) {    
+    withWriteLock([&] {
+        _needsRenderUpdate |= _transparentBackground != value;
+        _transparentBackground = value;
+    });
+}
+
+bool WebEntityItem::getTransparentBackground() const {
+    return resultWithReadLock<bool>([&] {
+        return _transparentBackground;
+    });
 }
 
 PulsePropertyGroup WebEntityItem::getPulseProperties() const {

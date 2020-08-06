@@ -29,6 +29,8 @@ Item {
 
     property bool blurOnCtrlShift: true
 
+    property bool transparentBackground: false
+
     onUrlChanged: {
         permissionPopupBackground.visible = false;
     }
@@ -103,6 +105,8 @@ Item {
         settings.pluginsEnabled: true
         settings.touchIconsEnabled: true
         settings.allowRunningInsecureContent: true
+
+        backgroundColor: flick.transparentBackground ? "transparent" : {}
 
         // creates a global EventBridge object.
         WebEngineScript {

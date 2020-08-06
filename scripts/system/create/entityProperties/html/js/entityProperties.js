@@ -801,6 +801,11 @@ const GROUPS = [
                 propertyID: "showKeyboardFocusHighlight",
             },  
             {
+                label: "Transparent Background",
+                type: "bool",
+                propertyID: "transparentBackground",
+            },  
+            {
                 label: "Script URL",
                 type: "string",
                 propertyID: "scriptURL",

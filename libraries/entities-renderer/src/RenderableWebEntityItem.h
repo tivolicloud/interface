@@ -94,6 +94,7 @@ private:
     QString _scriptURL;
     uint8_t _maxFPS;
     WebInputMode _inputMode;
+    bool _transparentBackground;
 
     glm::vec3 _contextPosition;
 

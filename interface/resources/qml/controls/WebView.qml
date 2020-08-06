@@ -23,6 +23,7 @@ Item {
     property bool passwordField: false
     property alias flickable: webroot.interactive
     property alias blurOnCtrlShift: webroot.blurOnCtrlShift
+    property alias transparentBackground: webroot.transparentBackground
 
     function stop() {
         webroot.stop();

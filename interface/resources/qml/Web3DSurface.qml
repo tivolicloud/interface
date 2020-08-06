@@ -17,22 +17,31 @@ Item {
     anchors.fill: parent
     property string url: ""
     property string scriptUrl: null
+    property bool transparentBackground: false
 
     onUrlChanged: {
-        load(root.url, root.scriptUrl);
+        load(root.url, root.scriptUrl, root.transparentBackground);
     }
 
     onScriptUrlChanged: {
         if (root.item) {
             root.item.scriptUrl = root.scriptUrl;
         } else {
-            load(root.url, root.scriptUrl);
+            load(root.url, root.scriptUrl, root.transparentBackground);
+        }
+    }
+
+    onTransparentBackgroundChanged: {
+        if (root.item) {
+            root.item.transparentBackground = root.transparentBackground;
+        } else {
+            load(root.url, root.scriptUrl, root.transparentBackground);
         }
     }
 
     property var item: null
 
-    function load(url, scriptUrl) {
+    function load(url, scriptUrl, transparentBackground) {
         // Ensure we reset any existing item to "about:blank" to ensure web audio stops: DEV-2375
         if (root.item != null) {
             root.item.url = "about:blank"
@@ -43,11 +52,12 @@ Item {
             root.item = newItem
             root.item.url = url
             root.item.scriptUrl = scriptUrl
+            root.item.transparentBackground = transparentBackground
         })
     }
 
     Component.onCompleted: {
-        load(root.url, root.scriptUrl);
+        load(root.url, root.scriptUrl, root.transparentBackground);
     }
 
     signal sendToScript(var message);

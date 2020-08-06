@@ -40,7 +40,7 @@ std::function<void(QSharedPointer<OffscreenQmlSurface>&, bool&, std::vector<QMet
 
 static int MAX_WINDOW_SIZE = 4096;
 const float METERS_TO_INCHES = 39.3701f;
-static float OPAQUE_ALPHA_THRESHOLD = 0.99f;
+static float OPAQUE_ALPHA_THRESHOLD = 0.999f;
 
 // If a web-view hasn't been rendered for 30 seconds, de-allocate the framebuffer
 static uint64_t MAX_NO_RENDER_INTERVAL = 30 * USECS_PER_SECOND;
@@ -105,7 +105,7 @@ WebEntityRenderer::~WebEntityRenderer() {
 
 bool WebEntityRenderer::isTransparent() const {
     float fadeRatio = _isFading ? Interpolate::calculateFadeRatio(_fadeStartTime) : 1.0f;
-    return fadeRatio < OPAQUE_ALPHA_THRESHOLD || _alpha < 1.0f || _pulseProperties.getAlphaMode() != PulseMode::NONE;
+    return _transparentBackground || fadeRatio < OPAQUE_ALPHA_THRESHOLD || _alpha < 1.0f || _pulseProperties.getAlphaMode() != PulseMode::NONE;
 }
 
 bool WebEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPointer& entity) const {
@@ -211,9 +211,18 @@ void WebEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene
 
                 {
                     auto scriptURL = entity->getScriptURL();
-                    if (_scriptURL != scriptURL) {
-                        _webSurface->getRootItem()->setProperty("scriptURL", _scriptURL);
+                    if (_scriptURL != scriptURL) {                
+                        _webSurface->getRootItem()->setProperty("scriptURL", scriptURL);
                         _scriptURL = scriptURL;
+                    }
+                }
+
+                {
+                    auto transparentBackground = entity->getTransparentBackground();
+                    if (_transparentBackground != transparentBackground) {
+                        _webSurface->getRootItem()->setProperty("transparentBackground", false); // otherwise it doesnt always update
+                        _webSurface->getRootItem()->setProperty("transparentBackground", transparentBackground);
+                        _transparentBackground = transparentBackground;
                     }
                 }
 
@@ -312,7 +321,7 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 
     // Turn off jitter for these entities
     batch.pushProjectionJitter();
-    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, color.a < OPAQUE_ALPHA_THRESHOLD, forward);
+    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, _transparentBackground || color.a < OPAQUE_ALPHA_THRESHOLD, forward);
     DependencyManager::get<GeometryCache>()->renderQuad(batch, topLeft, bottomRight, texMin, texMax, color, _geometryId);
     batch.popProjectionJitter();
     batch.setResourceTexture(0, nullptr);
@@ -343,7 +352,6 @@ void WebEntityRenderer::buildWebSurface(const EntityItemPointer& entity, const Q
     _connections.push_back(QObject::connect(_webSurface.data(), &OffscreenQmlSurface::fromQml, this, [entityItemID](const QVariant& message) {
         emit DependencyManager::get<EntityScriptingInterface>()->fromQml(entityItemID, message);
     }));
-
 
     _tryingToBuildURL = newSourceURL;
 }

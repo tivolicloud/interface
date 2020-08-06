@@ -86,6 +86,9 @@ public:
     bool getShowKeyboardFocusHighlight() const;
     void setShowKeyboardFocusHighlight(bool value);
 
+    bool getTransparentBackground() const;
+    void setTransparentBackground(bool value);
+
     PulsePropertyGroup getPulseProperties() const;
 
 protected:
@@ -100,6 +103,7 @@ protected:
     uint8_t _maxFPS;
     WebInputMode _inputMode;
     bool _showKeyboardFocusHighlight;
+    bool _transparentBackground;
     bool _localSafeContext { false };
 };
 

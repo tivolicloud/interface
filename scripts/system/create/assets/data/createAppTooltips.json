@@ -246,6 +246,9 @@
     "showKeyboardFocusHighlight": {
         "tooltip": "If enabled, highlights when it has keyboard focus."
     },    
+    "transparentBackground": {
+        "tooltip": "If enabled, web entities will have a transparent background."
+    },    
     "isEmitting": {
         "tooltip": "If enabled, then particles are emitted."
     },

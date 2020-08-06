@@ -792,6 +792,7 @@ declare namespace Entities {
 		maxFPS: number;
 		inputMode: WebInputMode;
 		showKeyboardFocusHighlight: boolean;
+		transparentBackground: boolean;
 	}
 
 	interface EntityPropertiesZone extends EntityProperties {

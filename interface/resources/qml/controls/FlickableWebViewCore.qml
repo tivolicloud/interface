@@ -27,6 +27,8 @@ Item {
 
     property bool blurOnCtrlShift: true
 
+    property bool transparentBackground: false
+
     StylesUIt.HifiConstants {
         id: hifi
     }
