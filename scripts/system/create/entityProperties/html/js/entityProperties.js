@@ -1527,6 +1527,12 @@ const GROUPS = [
                 showPropertyRule: { cloneable: "true" }
             },
             {
+                label: "Clone Grabbable",
+                type: "bool",
+                propertyID: "cloneGrabbable",
+                showPropertyRule: { cloneable: "true" }
+            },
+            {
                 label: "Triggerable",
                 type: "bool",
                 propertyID: "grab.triggerable"

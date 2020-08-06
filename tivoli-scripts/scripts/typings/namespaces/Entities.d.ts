@@ -585,6 +585,7 @@ declare namespace Entities {
 		cloneLimit: number;
 		cloneDynamic: boolean;
 		cloneAvatarEntity: boolean;
+		cloneGrabbable: boolean;
 		cloneOriginID: Uuid;
 		grab: Grab;
 		itemName: string;

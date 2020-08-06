@@ -135,6 +135,7 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_CLONE_DYNAMIC;
     requestedProperties += PROP_CLONE_AVATAR_ENTITY;
     requestedProperties += PROP_CLONE_ORIGIN_ID;
+    requestedProperties += PROP_CLONE_GRABBABLE;
 
     // Scripts
     requestedProperties += PROP_SCRIPT;
@@ -338,6 +339,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(
         APPEND_ENTITY_PROPERTY(PROP_CLONE_DYNAMIC, getCloneDynamic());
         APPEND_ENTITY_PROPERTY(PROP_CLONE_AVATAR_ENTITY, getCloneAvatarEntity());
         APPEND_ENTITY_PROPERTY(PROP_CLONE_ORIGIN_ID, getCloneOriginID());
+        APPEND_ENTITY_PROPERTY(PROP_CLONE_GRABBABLE, getCloneGrabbable());
 
         // Scripts
         APPEND_ENTITY_PROPERTY(PROP_SCRIPT, getScript());
@@ -953,6 +955,7 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
     READ_ENTITY_PROPERTY(PROP_CLONE_DYNAMIC, bool, setCloneDynamic);
     READ_ENTITY_PROPERTY(PROP_CLONE_AVATAR_ENTITY, bool, setCloneAvatarEntity);
     READ_ENTITY_PROPERTY(PROP_CLONE_ORIGIN_ID, QUuid, setCloneOriginID);
+    READ_ENTITY_PROPERTY(PROP_CLONE_GRABBABLE, bool, setCloneGrabbable);
 
     // Scripts
     READ_ENTITY_PROPERTY(PROP_SCRIPT, QString, setScript);
@@ -1430,6 +1433,7 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(cloneDynamic, getCloneDynamic);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(cloneAvatarEntity, getCloneAvatarEntity);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(cloneOriginID, getCloneOriginID);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(cloneGrabbable, getCloneGrabbable);
 
     // Scripts
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(script, getScript);
@@ -1581,6 +1585,7 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(cloneDynamic, setCloneDynamic);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(cloneAvatarEntity, setCloneAvatarEntity);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(cloneOriginID, setCloneOriginID);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(cloneGrabbable, setCloneGrabbable);
 
     // Scripts
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(script, setScript);
@@ -3304,6 +3309,16 @@ const QUuid EntityItem::getCloneOriginID() const {
 
 void EntityItem::setCloneOriginID(const QUuid& value) {
     withWriteLock([&] { _cloneOriginID = value; });
+}
+
+bool EntityItem::getCloneGrabbable() const {
+    bool result;
+    withReadLock([&] { result = _cloneGrabbable; });
+    return result;
+}
+
+void EntityItem::setCloneGrabbable(bool value) {
+    withWriteLock([&] { _cloneGrabbable = value; });
 }
 
 void EntityItem::addCloneID(const QUuid& cloneID) {

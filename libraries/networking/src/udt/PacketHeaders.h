@@ -281,7 +281,8 @@ enum class EntityVersion : PacketVersion {
     CustomTags, // caitlyn
     EntityPriority, // caitlyn
     ModelBlendshapes, // hifiexperiments
-
+    CloneGrabbable, // maki
+    
     // Add new versions above here
     NUM_PACKET_TYPE,
     LAST_PACKET_TYPE = NUM_PACKET_TYPE - 1

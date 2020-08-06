@@ -88,6 +88,7 @@ enum EntityPropertyList
     PROP_CLONE_DYNAMIC,
     PROP_CLONE_AVATAR_ENTITY,
     PROP_CLONE_ORIGIN_ID,
+    PROP_CLONE_GRABBABLE,
 
     // Scripts
     PROP_SCRIPT,

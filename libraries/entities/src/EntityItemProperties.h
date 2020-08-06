@@ -227,6 +227,7 @@ public:
     DEFINE_PROPERTY(PROP_CLONE_DYNAMIC, CloneDynamic, cloneDynamic, bool, ENTITY_ITEM_DEFAULT_CLONE_DYNAMIC);
     DEFINE_PROPERTY(PROP_CLONE_AVATAR_ENTITY, CloneAvatarEntity, cloneAvatarEntity, bool, ENTITY_ITEM_DEFAULT_CLONE_AVATAR_ENTITY);
     DEFINE_PROPERTY_REF(PROP_CLONE_ORIGIN_ID, CloneOriginID, cloneOriginID, QUuid, ENTITY_ITEM_DEFAULT_CLONE_ORIGIN_ID);
+    DEFINE_PROPERTY_REF(PROP_CLONE_GRABBABLE, CloneGrabbable, cloneGrabbable, bool, ENTITY_ITEM_DEFAULT_CLONE_GRABBABLE);
 
     // Scripts
     DEFINE_PROPERTY_REF(PROP_SCRIPT, Script, script, QString, ENTITY_ITEM_DEFAULT_SCRIPT);
@@ -684,6 +685,7 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneDynamic, cloneDynamic, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneAvatarEntity, cloneAvatarEntity, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneOriginID, cloneOriginID, "");
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneGrabbable, cloneGrabbable, "");
 
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, VoxelVolumeSize, voxelVolumeSize, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, VoxelData, voxelData, "");

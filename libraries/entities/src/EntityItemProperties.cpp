@@ -508,6 +508,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_CLONE_DYNAMIC, cloneDynamic);
     CHECK_PROPERTY_CHANGE(PROP_CLONE_AVATAR_ENTITY, cloneAvatarEntity);
     CHECK_PROPERTY_CHANGE(PROP_CLONE_ORIGIN_ID, cloneOriginID);
+    CHECK_PROPERTY_CHANGE(PROP_CLONE_GRABBABLE, cloneGrabbable);
 
     // Scripts
     CHECK_PROPERTY_CHANGE(PROP_SCRIPT, script);
@@ -855,6 +856,8 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  *     <code>dynamic</code> property set to <code>true</code>, <code>false</code> if they won't.
  * @property {boolean} cloneAvatarEntity=false - <code>true</code> if clones created from this entity will be created as 
  *     avatar entities, <code>false</code> if they won't be.
+ * @property {boolean} cloneGrabbable=false - <code>true</code> if clones created from this entity will have their 
+ *     <code>grabbable</code> property set to <code>true</code>, <code>false</code> if they won't.
  * @property {Uuid} cloneOriginID - The ID of the entity that this entity was cloned from.
  *
  * @property {Entities.Grab} grab - The entity's grab-related properties.
@@ -1682,6 +1685,7 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CLONE_DYNAMIC, cloneDynamic);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CLONE_AVATAR_ENTITY, cloneAvatarEntity);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CLONE_ORIGIN_ID, cloneOriginID);
+    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CLONE_GRABBABLE, cloneGrabbable);
 
     // Scripts
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_SCRIPT, script);
@@ -2107,6 +2111,7 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE(cloneDynamic, bool, setCloneDynamic);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(cloneAvatarEntity, bool, setCloneAvatarEntity);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(cloneOriginID, QUuid, setCloneOriginID);
+    COPY_PROPERTY_FROM_QSCRIPTVALUE(cloneGrabbable, bool, setCloneGrabbable);
 
     // Scripts
     COPY_PROPERTY_FROM_QSCRIPTVALUE(script, QString, setScript);
@@ -2402,6 +2407,7 @@ void EntityItemProperties::merge(const EntityItemProperties& other) {
     COPY_PROPERTY_IF_CHANGED(cloneDynamic);
     COPY_PROPERTY_IF_CHANGED(cloneAvatarEntity);
     COPY_PROPERTY_IF_CHANGED(cloneOriginID);
+    COPY_PROPERTY_IF_CHANGED(cloneGrabbable);
 
     // Scripts
     COPY_PROPERTY_IF_CHANGED(script);
@@ -2728,6 +2734,7 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_CLONE_DYNAMIC, CloneDynamic, cloneDynamic, bool);
         ADD_PROPERTY_TO_MAP(PROP_CLONE_AVATAR_ENTITY, CloneAvatarEntity, cloneAvatarEntity, bool);
         ADD_PROPERTY_TO_MAP(PROP_CLONE_ORIGIN_ID, CloneOriginID, cloneOriginID, QUuid);
+        ADD_PROPERTY_TO_MAP(PROP_CLONE_GRABBABLE, CloneGrabbable, cloneGrabbable, bool);
 
         // Scripts
         ADD_PROPERTY_TO_MAP(PROP_SCRIPT, Script, script, QString);
@@ -3197,6 +3204,7 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_CLONE_DYNAMIC, properties.getCloneDynamic());
             APPEND_ENTITY_PROPERTY(PROP_CLONE_AVATAR_ENTITY, properties.getCloneAvatarEntity());
             APPEND_ENTITY_PROPERTY(PROP_CLONE_ORIGIN_ID, properties.getCloneOriginID());
+            APPEND_ENTITY_PROPERTY(PROP_CLONE_GRABBABLE, properties.getCloneGrabbable());
 
             // Scripts
             APPEND_ENTITY_PROPERTY(PROP_SCRIPT, properties.getScript());
@@ -3696,6 +3704,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CLONE_DYNAMIC, bool, setCloneDynamic);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CLONE_AVATAR_ENTITY, bool, setCloneAvatarEntity);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CLONE_ORIGIN_ID, QUuid, setCloneOriginID);
+    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CLONE_GRABBABLE, bool, setCloneGrabbable);
 
     // Scripts
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_SCRIPT, QString, setScript);
@@ -4119,6 +4128,7 @@ void EntityItemProperties::markAllChanged() {
     _cloneDynamicChanged = true;
     _cloneAvatarEntityChanged = true;
     _cloneOriginIDChanged = true;
+    _cloneGrabbableChanged = true;
 
     // Scripts
     _scriptChanged = true;
@@ -4574,6 +4584,9 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     }
     if (cloneOriginIDChanged()) {
         out += "cloneOriginID";
+    }
+    if (cloneGrabbableChanged()) {
+        out += "cloneGrabbable";
     }
 
     // Scripts
@@ -5205,6 +5218,8 @@ void EntityItemProperties::convertToCloneProperties(const EntityItemID& entityID
         setEntityHostType(entity::HostType::LOCAL);
         setCollisionless(true);
     }
+    getGrab().setGrabbable(getCloneGrabbable());
+    
     uint64_t now = usecTimestampNow();
     setCreated(now);
     setLastEdited(now);

@@ -413,6 +413,8 @@ public:
     void setCloneAvatarEntity(bool value);
     const QUuid getCloneOriginID() const;
     void setCloneOriginID(const QUuid& value);
+    bool getCloneGrabbable() const;
+    void setCloneGrabbable(bool value);
 
     // TODO: get rid of users of getRadius()...
     float getRadius() const;
@@ -780,6 +782,7 @@ protected:
     bool _cloneDynamic { ENTITY_ITEM_DEFAULT_CLONE_DYNAMIC };
     bool _cloneAvatarEntity { ENTITY_ITEM_DEFAULT_CLONE_AVATAR_ENTITY };
     QUuid _cloneOriginID;
+    bool _cloneGrabbable;
     QVector<QUuid> _cloneIDs;
 
     GrabPropertyGroup _grabProperties;
