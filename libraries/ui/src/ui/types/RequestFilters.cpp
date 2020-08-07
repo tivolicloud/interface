@@ -88,7 +88,9 @@ void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& i
         }
     }
     
-    const QString defaultUserAgent = QWebEngineProfile::defaultProfile()->httpUserAgent();
+    // line below causes crashes so i set it manually but platform agnostic
+    // const QString defaultUserAgent = QWebEngineProfile::defaultProfile()->httpUserAgent();
+    const QString defaultUserAgent = "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.0 Chrome/80.0.3987.163 Safari/537.36";
 
     info.setHttpHeader(
         "User-Agent",
