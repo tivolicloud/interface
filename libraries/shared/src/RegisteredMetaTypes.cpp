@@ -169,15 +169,7 @@ glm::vec2 vec2FromVariant(const QVariant &object) {
 }
 
 QScriptValue vec3ToScriptValue(QScriptEngine* engine, const glm::vec3& vec3) {
-
-    QScriptValue prototype;
-    QScriptValue value = engine->newObject();
-
-    try {
-        prototype = engine->globalObject().property("__hifi_vec3__");
-    } catch (...) {
-        qDebug() << "ERROR: RegisteredMetaTypes.cpp vec3ToScriptValue";
-    }
+    auto prototype = engine->globalObject().property("__hifi_vec3__");
     if (!prototype.property("defined").toBool()) {
         prototype = engine->evaluate(
             "__hifi_vec3__ = Object.defineProperties({}, { "
@@ -193,11 +185,12 @@ QScriptValue vec3ToScriptValue(QScriptEngine* engine, const glm::vec3& vec3) {
             "blue: { set: function(nv) { return this.z = nv; }, get: function() { return this.z; } }"
             "})"
         );
-        value.setPrototype(prototype);
     }
+    QScriptValue value = engine->newObject();
     value.setProperty("x", vec3.x);
     value.setProperty("y", vec3.y);
     value.setProperty("z", vec3.z);
+    value.setPrototype(prototype);
     return value;
 }
 
