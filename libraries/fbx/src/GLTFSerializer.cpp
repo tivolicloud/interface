@@ -1771,6 +1771,9 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
             hfmMat.useAlbedoMap = true;
         }
         if (material.pbrMetallicRoughness.defined["metallicRoughnessTexture"]) {
+            hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.occlusionTexture.sourceChannel = image::ColorChannel::RED;
+            hfmMat.useOcclusionMap = true;
             hfmMat.roughnessTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
             hfmMat.roughnessTexture.sourceChannel = image::ColorChannel::GREEN;
             hfmMat.useRoughnessMap = true;
