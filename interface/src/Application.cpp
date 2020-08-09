@@ -4394,11 +4394,7 @@ bool Application::eventFilter(QObject* object, QEvent* event) {
     return false;
 }
 
-static bool _altPressed{ false };
-
 void Application::keyPressEvent(QKeyEvent* event) {
-    _altPressed = event->key() == Qt::Key_Alt;
-
     if (!event->isAutoRepeat()) {
         _keysPressed.insert(event->key(), *event);
     }
@@ -4721,9 +4717,6 @@ void Application::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void Application::mousePressEvent(QMouseEvent* event) {
-    // Inhibit the menu if the user is using alt-mouse dragging
-    _altPressed = false;
-
 #if !defined(DISABLE_QML)
     auto offscreenUi = getOffscreenUI();
     // If we get a mouse press event it means it wasn't consumed by the offscreen UI,
@@ -4820,8 +4813,6 @@ void Application::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 void Application::touchUpdateEvent(QTouchEvent* event) {
-    _altPressed = false;
-
     if (event->type() == QEvent::TouchUpdate) {
         TouchEvent thisEvent(*event, _lastTouchEvent);
         _controllerScriptingInterface->emitTouchUpdateEvent(thisEvent); // send events to any registered scripts
@@ -4845,7 +4836,6 @@ void Application::touchUpdateEvent(QTouchEvent* event) {
 }
 
 void Application::touchBeginEvent(QTouchEvent* event) {
-    _altPressed = false;
     TouchEvent thisEvent(*event); // on touch begin, we don't compare to last event
     _controllerScriptingInterface->emitTouchBeginEvent(thisEvent); // send events to any registered scripts
 
@@ -4870,7 +4860,6 @@ void Application::touchBeginEvent(QTouchEvent* event) {
 }
 
 void Application::touchEndEvent(QTouchEvent* event) {
-    _altPressed = false;
     TouchEvent thisEvent(*event, _lastTouchEvent);
     _controllerScriptingInterface->emitTouchEndEvent(thisEvent); // send events to any registered scripts
     _lastTouchEvent = thisEvent;
@@ -4905,7 +4894,6 @@ void Application::touchGestureEvent(QGestureEvent* event) {
 }
 
 void Application::wheelEvent(QWheelEvent* event) const {
-    _altPressed = false;
     _controllerScriptingInterface->emitWheelEvent(event); // send events to any registered scripts
 
     // if one of our scripts have asked to capture this event, then stop processing it
