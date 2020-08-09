@@ -17,7 +17,7 @@ Script.include("/~/system/libraries/controllerDispatcherUtils.js");
 Script.include("/~/system/libraries/cloneEntityUtils.js");
 Script.include("/~/system/libraries/controllers.js");
 
-(function() {
+(function () {
 	function NearGrabEntity(hand) {
 		this.hand = hand;
 		this.targetEntityID = null;
@@ -32,7 +32,7 @@ Script.include("/~/system/libraries/controllers.js");
 			100
 		);
 
-		this.startGrab = function(targetProps) {
+		this.startGrab = function (targetProps) {
 			if (this.grabID) {
 				MyAvatar.releaseGrab(this.grabID);
 			}
@@ -72,7 +72,7 @@ Script.include("/~/system/libraries/controllers.js");
 			);
 		};
 
-		this.startNearGrabEntity = function(targetProps) {
+		this.startNearGrabEntity = function (targetProps) {
 			Controller.triggerHapticPulse(
 				HAPTIC_PULSE_STRENGTH,
 				HAPTIC_PULSE_DURATION,
@@ -99,14 +99,14 @@ Script.include("/~/system/libraries/controllers.js");
 			this.grabbing = true;
 		};
 
-		this.endGrab = function() {
+		this.endGrab = function () {
 			if (this.grabID) {
 				MyAvatar.releaseGrab(this.grabID);
 				this.grabID = null;
 			}
 		};
 
-		this.endNearGrabEntity = function() {
+		this.endNearGrabEntity = function () {
 			this.endGrab();
 
 			var args = [
@@ -127,7 +127,7 @@ Script.include("/~/system/libraries/controllers.js");
 			this.targetEntityID = null;
 		};
 
-		this.getTargetProps = function(controllerData) {
+		this.getTargetProps = function (controllerData) {
 			// nearbyEntityProperties is already sorted by length from controller
 			var nearbyEntityProperties =
 				controllerData.nearbyEntityProperties[this.hand];
@@ -164,7 +164,7 @@ Script.include("/~/system/libraries/controllers.js");
 			return null;
 		};
 
-		this.isReady = function(controllerData, deltaTime) {
+		this.isReady = function (controllerData, deltaTime) {
 			this.targetEntityID = null;
 			this.grabbing = false;
 
@@ -176,14 +176,16 @@ Script.include("/~/system/libraries/controllers.js");
 				return makeRunningValues(false, [], []);
 			}
 
-			// grab scale grab scaling hand scale hand scaling
 			var scaleModuleName =
 				this.hand === RIGHT_HAND
 					? "RightScaleEntity"
 					: "LeftScaleEntity";
 			var scaleModule = getEnabledModuleByName(scaleModuleName);
-			// if ( scaleModule && (scaleModule.grabbedThingID | scaleModule.isReady(controllerData).active) ) {
-            if (scaleModule.grabbedThingID || scaleModule.isReady(controllerData).active) {
+			if (
+				scaleModule &&
+				(scaleModule.grabbedThingID ||
+					scaleModule.isReady(controllerData).active)
+			) {
 				// we're rescaling -- don't start a grab.
 				return makeRunningValues(false, [], []);
 			}
@@ -197,7 +199,7 @@ Script.include("/~/system/libraries/controllers.js");
 			}
 		};
 
-		this.run = function(controllerData, deltaTime) {
+		this.run = function (controllerData, deltaTime) {
 			if (this.grabbing) {
 				if (
 					!controllerData.triggerClicks[this.hand] &&
@@ -273,7 +275,7 @@ Script.include("/~/system/libraries/controllers.js");
 			return makeRunningValues(true, [this.targetEntityID], []);
 		};
 
-		this.cleanup = function() {
+		this.cleanup = function () {
 			if (this.targetEntityID) {
 				this.endNearGrabEntity();
 			}
