@@ -5887,11 +5887,21 @@ void Application::changeViewAsNeeded(float boomLength) {
     // This is called when the boom length has changed
     bool boomLengthGreaterThanMinimum = (boomLength > MyAvatar::ZOOM_MIN);
 
-    if (_myCamera.getMode() == CAMERA_MODE_FIRST_PERSON_LOOK_AT && boomLengthGreaterThanMinimum) {
+    if (
+        (
+            _myCamera.getMode() == CAMERA_MODE_FIRST_PERSON_LOOK_AT ||
+            _myCamera.getMode() == CAMERA_MODE_FIRST_PERSON
+        ) && boomLengthGreaterThanMinimum
+    ) {
         Menu::getInstance()->setIsOptionChecked(MenuOption::FirstPersonLookAt, false);
         Menu::getInstance()->setIsOptionChecked(MenuOption::LookAtCamera, true);
         cameraMenuChanged();
-    } else if (_myCamera.getMode() == CAMERA_MODE_LOOK_AT && !boomLengthGreaterThanMinimum) {
+    } else if (
+        (
+            _myCamera.getMode() == CAMERA_MODE_LOOK_AT ||
+            _myCamera.getMode() == CAMERA_MODE_THIRD_PERSON
+        ) && !boomLengthGreaterThanMinimum
+    ) {
         Menu::getInstance()->setIsOptionChecked(MenuOption::FirstPersonLookAt, true);
         Menu::getInstance()->setIsOptionChecked(MenuOption::LookAtCamera, false);
         cameraMenuChanged();

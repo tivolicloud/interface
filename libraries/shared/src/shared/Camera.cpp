@@ -169,8 +169,19 @@ void Camera::setOrientation(const glm::quat& orientation) {
 }
 
 void Camera::setMode(CameraMode mode) {
-    _mode = mode;
-    emit modeUpdated(modeToString(mode));
+    if (_disableLookAt) {
+        if (mode == CameraMode::CAMERA_MODE_FIRST_PERSON_LOOK_AT) {
+            _mode = CameraMode::CAMERA_MODE_FIRST_PERSON;
+        } else if (mode == CameraMode::CAMERA_MODE_LOOK_AT) {
+            _mode = CameraMode::CAMERA_MODE_THIRD_PERSON;
+        } else {
+            _mode = mode;
+        }
+    } else {
+        _mode = mode;
+    }
+
+    emit modeUpdated(modeToString(_mode));
 }
 
 void Camera::setProjection(const glm::mat4& projection) {
@@ -201,6 +212,24 @@ void Camera::keepLookingAt(const glm::vec3& point) {
     lookAt(point);
     _isKeepLookingAt = true;
     _lookingAt = point;
+}
+
+bool Camera::getDisableLookAt() {
+    return _disableLookAt;
+}
+
+void Camera::setDisableLookAt(const bool disabled) {
+    _disableLookAt = disabled;
+
+    if (disabled) {
+        setMode(_mode); // will force to not look at
+    } else {
+        if (_mode == CameraMode::CAMERA_MODE_FIRST_PERSON) {
+            setMode(CameraMode::CAMERA_MODE_FIRST_PERSON_LOOK_AT);
+        } else if (_mode == CAMERA_MODE_THIRD_PERSON) {
+            setMode(CameraMode::CAMERA_MODE_LOOK_AT);
+        }
+    }
 }
 
 void Camera::loadViewFrustum(ViewFrustum& frustum) const {

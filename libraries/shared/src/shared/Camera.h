@@ -43,6 +43,7 @@ class Camera : public QObject {
     Q_PROPERTY(glm::quat orientation READ getOrientation WRITE setOrientation)
     Q_PROPERTY(QString mode READ getModeString WRITE setModeString NOTIFY modeUpdated)
     Q_PROPERTY(QVariantMap frustum READ getViewFrustum CONSTANT)
+    Q_PROPERTY(bool disableLookAt READ getDisableLookAt WRITE setDisableLookAt)
 
 public:
     Camera();
@@ -166,6 +167,19 @@ public slots:
      */
     void stopLooking() { _isKeepLookingAt = false; }
 
+    /**jsdoc
+     * Gets whether "look at" is disabled which will make the camera rotate with the avatar's orientation.
+     * @function Camera.getDisableLookAt
+     * @returns {boolean} 
+     */
+    bool getDisableLookAt();
+
+    /**jsdoc
+     * Sets whether "look at" is disabled which will make the camera rotate with the avatar's orientation.
+     * @function Camera.setDisableLookAt
+     * @param {boolean} disabled - 
+     */
+    void setDisableLookAt(const bool disabled);
 signals:
     /**jsdoc
      * Triggered when the camera mode changes.
@@ -194,6 +208,7 @@ private:
     glm::quat _orientation;
     bool _isKeepLookingAt{ false };
     glm::vec3 _lookingAt;
+    bool _disableLookAt{ false };
 };
 
 #endif // hifi_Camera_h
