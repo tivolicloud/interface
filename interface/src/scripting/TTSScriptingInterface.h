@@ -13,6 +13,7 @@
 
 #include <QtCore/QObject>
 #include <QTimer>
+#include <QSharedPointer>
 #include <DependencyManager.h>
 #ifdef WIN32
 #pragma warning(disable : 4996)
@@ -98,6 +99,8 @@ private:
     // Default voice token
     CComPtr<ISpObjectToken> m_voiceToken;
 #endif
+
+    QSharedPointer<Resource> _tempResource;
 
     QByteArray _lastSoundByteArray;
     AudioInjectorPointer _lastSoundAudioInjector;
