@@ -88,15 +88,14 @@ void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& i
         }
     }
     
-    // line below causes crashes so i set it manually but platform agnostic
+    // line below causes crashes so i set it to what windows 10 would use
     // const QString defaultUserAgent = QWebEngineProfile::defaultProfile()->httpUserAgent();
-    const QString defaultUserAgent = "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.0 Chrome/80.0.3987.163 Safari/537.36";
+    const QString defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.0 Chrome/80.0.3987.163 Safari/537.36";
 
     info.setHttpHeader(
         "User-Agent",
         (
-            defaultUserAgent +
-            " TivoliCloudVR/" +
+            defaultUserAgent + " TivoliCloudVR/" +
             (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
         ).toLocal8Bit()
     );
