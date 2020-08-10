@@ -61,9 +61,8 @@ launcher windows:
     extends: .production
 
     needs:
-        - interface windows
-    dependencies:
-        - interface windows
+        - job: interface windows
+          artifacts: true
 
     variables:
         CSC_LINK: C:\Users\maki\tivoli-cloud-vr.ci.pfx
