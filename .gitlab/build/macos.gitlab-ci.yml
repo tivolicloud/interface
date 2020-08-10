@@ -58,6 +58,8 @@ launcher macos:
 
     extends: .production
 
+    needs:
+        - interface macos
     dependencies:
         - interface macos
 

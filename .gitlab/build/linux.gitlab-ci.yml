@@ -126,6 +126,8 @@ launcher linux:
 
     extends: .production
 
+    needs:
+        - all linux
     dependencies:
         - all linux
 

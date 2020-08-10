@@ -8,7 +8,7 @@ finalize server:
     variables:
         DOCKER_TLS_CERTDIR: ""
 
-    dependencies:
+    needs:
         - upload server
         - upload server arm64
 

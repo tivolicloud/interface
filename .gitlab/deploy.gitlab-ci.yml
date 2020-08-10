@@ -41,6 +41,8 @@ upload server:
 
     extends: .deploy
 
+    needs:
+        - all linux
     dependencies:
         - all linux
 
@@ -89,6 +91,8 @@ upload server arm64:
 
     extends: .deploy
 
+    needs:
+        - server linux arm64
     dependencies:
         - server linux arm64
 
@@ -124,6 +128,10 @@ upload launcher:
 
     extends: .deploy
 
+    needs:
+        - launcher windows
+        - launcher macos
+        - launcher linux
     dependencies:
         - launcher windows
         - launcher macos
