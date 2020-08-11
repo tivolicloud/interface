@@ -516,39 +516,44 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         for (const EntityItemID& entityId : changedEntities) {
             // quint16 t = 0; 
             const EntityRendererPointer& renderable = renderableForEntityId(entityId);
-            if (getSceneIsReady()) 
-            {  // no priority optimization until everything's loaded
-                EntityItemPointer _entity = getEntity(entityId);
-               
-                if ( !_entity || _entity->isDead()) continue;  
-                if ( !renderable ) continue;
+             if (getSceneIsReady()) 
+             {  // no priority optimization until everything's loaded
+                 EntityItemPointer _entity = getEntity(entityId);
+             
+                 if ( !_entity || _entity->isDead()) continue;  
+                 if ( !renderable ) continue;
 
-                EntityPriority _entityPriority = _entity->getEntityPriority();
+                 EntityPriority _entityPriority = _entity->getEntityPriority();
 
-                // Make sure avatar entities and shapes aren't somehow set to static
-                if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
-                    _entity->isPrimitiveShapeType() ) ) 
-                {
-                    _entityPriority = EntityPriority::AUTOMATIC;
-                }
+                 if ( _isEditMode || getBypassPrioritySorting() ) {
+                     _entityPriority == EntityPriority::AUTOMATIC;
+                 }
 
-                if (  _entityPriority == EntityPriority::PRIORITIZED ) 
-                {
+                 // Make sure avatar entities and shapes aren't somehow set to static
+                 if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
+                     _entity->isPrimitiveShapeType() ) ) 
+                 {
+                     _entityPriority = EntityPriority::AUTOMATIC;
+                 }
+                                  
+                 if ( _entityPriority == EntityPriority::AUTOMATIC ) 
+                 { 
+                    _renderablesToUpdate.insert(renderable);
+                 } 
+                 else if (_entityPriority == EntityPriority::PRIORITIZED) 
+                 {
                     _priorityRenderablesToUpdate.insert(renderable);
-                } 
-                else if ( _isEditMode || _entityPriority == EntityPriority::AUTOMATIC ) 
-                { // Static entities are added to automatic updates if in edit mode
-                        _renderablesToUpdate.insert(renderable);
-                }
-                else if ( _entityPriority == EntityPriority::STATIC )
-                {
-                        _staticRenderablesToUpdate.insert(renderable); 
-                }                 
-            }
-            else 
-            {
-                _renderablesToUpdate.insert(renderable);
-            }
+                 } 
+                 else if ( _entityPriority == EntityPriority::STATIC )
+                 {
+                    _staticRenderablesToUpdate.insert(renderable); 
+                 }                 
+             }
+             else 
+             {
+                 _renderablesToUpdate.insert(renderable);
+             }
+            
         }
     }
 

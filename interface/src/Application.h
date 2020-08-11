@@ -231,7 +231,10 @@ public:
     // Shortcircuits the code that does priority sorting in EntityTreeRenderer for faster
     // load and batch operations like zone culling all at once
     bool getForcedBypassPrioritySorting() { return _bypassPrioritySortingSetting.get(); }
-    void setForcedBypassPrioritySorting(bool value);
+    void setForcedBypassPrioritySorting(bool value) {
+        _bypassPrioritySortingSetting.set(value); 
+        DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(value);
+    }
 
     bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
     void setPreferAvatarFingerOverStylus(bool value);

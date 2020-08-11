@@ -80,6 +80,13 @@ public:
     bool getZoneCullStatus() { return _zoneCullingActive; }
     void updateZoneContentsLists(EntityItemID& zoneItem, bool hasCompoundShape);
 
+    bool _bypassPrioritySorting = false;
+    bool getBypassPrioritySorting() { return _bypassPrioritySorting; }
+    void setBypassPrioritySorting(bool enabled) {
+        qDebug() << "CPM - SET BPS " << enabled;
+        _bypassPrioritySorting = enabled;
+    }
+
     static void setEntitiesShouldFadeFunction(std::function<bool()> func) { _entitiesShouldFadeFunction = func; }
     static std::function<bool()> getEntitiesShouldFadeFunction() { return _entitiesShouldFadeFunction; }
 

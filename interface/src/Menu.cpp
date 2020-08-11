@@ -361,15 +361,19 @@ Menu::Menu() {
     MenuWrapper* tivoliOptionsMenu = developerMenu->addMenu("Tivoli Options");
 
     addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::StopRendering);
+
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::LoadCompleteEntityTree, 0,
                                                     qApp->getLoadCompleteEntityTreeSetting());
  
-    /* action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
-        qApp->getForcedBypassPrioritySorting());*/
-    
 
     //// Developer > Tivoli Options > Test Zone Culling (test)
     //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);
+
+    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
+        qApp->getForcedBypassPrioritySorting());
+    connect(action, &QAction::triggered, [action] { 
+        qApp->setForcedBypassPrioritySorting(action->isChecked());
+     });
 
     // Developer > Scripting >>>
     MenuWrapper* scriptingOptionsMenu = developerMenu->addMenu("Scripting");

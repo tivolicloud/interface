@@ -237,7 +237,7 @@ namespace MenuOption {
     const QString UseAvatarPlaceholders = "Use Avatar Placeholders";
     const QString ForceEverythingUnlit = "Force Everything Unlit";
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
-    const QString BypassPrioritySorting = "Force Bypass Priority Sorting";
+    const QString BypassPrioritySorting = "Bypass Entity Priority Sorting";
 
     }
 
