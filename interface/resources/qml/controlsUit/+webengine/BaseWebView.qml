@@ -48,7 +48,7 @@ WebEngineView {
         permissionPopupBackground.securityOrigin = securityOrigin;
         permissionPopupBackground.feature = feature;
 
-        permissionPopupBackground.visible = feature != WebEngineView.MediaAudioCapture;
+        permissionPopupBackground.visible = true;
     }
 
     ControlsUit.PermissionPopupBackground {
