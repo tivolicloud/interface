@@ -1,4 +1,4 @@
-# Building Qt 5.15 for macOS
+# Building Qt 5.15.0 for macOS
 
 ## Install depenencies
 
@@ -14,7 +14,7 @@ sudo xcode-select --switch /Applications/Xcode.app
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.0 --single-branch
 ```
 
 ### Apply patches:
@@ -60,7 +60,7 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15-macos.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-macos.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.

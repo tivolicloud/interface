@@ -188,14 +188,6 @@ endif()
             downloadVcpkg = True
 
         if downloadVcpkg:
-            # if (
-            #     platform.system() == "Linux" and
-            #     open("/etc/issue", "r").read().startswith("Debian GNU/Linux 10")
-            # ):
-            #     print("Fetching vcpkg from {} to {}".format(self.vcpkgUrl, self.path))
-            #     hifi_utils.downloadAndExtract(self.vcpkgUrl, self.path)
-            # else:
-
             # print("Cloning vcpkg from github to {}".format(self.path))
             # hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
             

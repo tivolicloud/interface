@@ -29,7 +29,7 @@ endif()
     def __init__(self, args):
         self.args = args
         self.configFilePath = os.path.join(args.build_root, 'qt.cmake')
-        self.version = '5.15-1'
+        self.version = '5.15.0'
 
         defaultBasePath = os.path.expanduser('~/tivoli/qt')
         self.basePath = os.getenv('TIVOLI_QT_BASE', defaultBasePath)
@@ -63,20 +63,17 @@ endif()
 
         if arch == "x86_64" or arch == "amd64":
             if system == 'Windows':
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-windows.tar.gz'
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-windows.tar.gz'
             elif system == 'Darwin':
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-macos.tar.gz'
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-macos.tar.gz'
             elif system == 'Linux':
                 issue = open("/etc/issue", "r").read()
-                if issue.startswith("Debian GNU/Linux 10"):
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10.tar.gz'
+                if issue.startswith("Ubuntu 18.04"):
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-ubuntu-18.04.tar.gz'
                 elif issue.startswith("Ubuntu 20.04"):
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-20.04.tar.gz'
-                elif issue.startswith("Ubuntu 16.04"):
-                    # untested
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-ubuntu-16.04.tar.gz'
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-ubuntu-20.04.tar.gz'
                 elif issue.startswith("Arch Linux"):
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-arch-linux.tar.gz'
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-arch-linux.tar.gz'
                 else:
                     raise Exception('Unsupported Linux version')
             else:
@@ -85,8 +82,8 @@ endif()
         elif arch == "aarch64":
             if system == 'Linux':
                 issue = open("/etc/issue", "r").read()
-                if issue.startswith("Debian GNU/Linux 10"): 
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15-1-debian-10-arm64v8.tar.gz'
+                if issue.startswith("Ubuntu 18.04"): 
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-ubuntu-18.04-arm64v8.tar.gz'
                 else:
                     raise Exception('Unsupported arm64 Linux version')
             else:

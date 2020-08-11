@@ -6,8 +6,9 @@ Tivoli uses a custom version of Qt that needs to be compiled for a list of distr
 
 Currently we support building on:
 
--   Ubuntu 20.04 _(untested)_
--   Debian 10 _(production builds use this)_
+-   Ubuntu 18.04 _(production builds use this)_
+-   Ubuntu 18.04 arm64v8 _(production builds use this)_
+-   Ubuntu 20.04
 -   Arch Linux
 
 We're looking into ways to make this easier. Compiling Qt yourself takes a very long time, therefore it's not viable to put it in our build pipeline.
