@@ -20,6 +20,7 @@ cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/chromium-missing-import.patch
 git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
 
 cd ..
 ```

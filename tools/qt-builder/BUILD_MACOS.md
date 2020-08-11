@@ -25,6 +25,7 @@ cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/mac-web-video.patch
 git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
 
 cd ..
 ```
