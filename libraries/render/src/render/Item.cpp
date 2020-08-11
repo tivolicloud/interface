@@ -76,7 +76,7 @@ void Item::update(const UpdateFunctorPointer& updateFunctor) {
     if (updateFunctor) {
         _payload->update(updateFunctor);
     }
-    _key = _payload->getKey();
+    if (_payload->_status) _key = _payload->getKey();
 }
 
 void Item::resetPayload(const PayloadPointer& payload) {
