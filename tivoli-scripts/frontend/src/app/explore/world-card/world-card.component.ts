@@ -11,7 +11,7 @@ export class WorldCardComponent implements OnInit {
 	@Input() world: World;
 
 	constructor(
-		private readonly exploreService: ExploreService,
+		public readonly exploreService: ExploreService,
 		public readonly scriptService: ScriptService,
 	) {}
 

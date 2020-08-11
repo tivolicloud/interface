@@ -17,7 +17,12 @@ export interface World {
 
 	networkAddress: string;
 	networkPort: string;
+
+	protocol: string;
+	version: string;
+
 	path: string;
+	url: string;
 }
 
 export interface Friend {
@@ -35,19 +40,32 @@ export interface Friend {
 	providedIn: "root",
 })
 export class ExploreService {
-	constructor(
-		private scriptService: ScriptService,
-		private http: HttpClient,
-	) {}
-
 	loading = false;
 
 	worlds: World[] = [];
 	type: "popular" | "liked" | "private" = "popular";
 	search = "";
 	page = 1;
+	protocol = "";
 
 	friends$ = new Subject<Friend[]>();
+
+	constructor(
+		private scriptService: ScriptService,
+		private http: HttpClient,
+	) {
+		this.scriptService.event$.subscribe(({ key, value }) => {
+			switch (key) {
+				case "getCurrentProtocol":
+					this.protocol = value;
+					this.loadWorlds();
+					break;
+			}
+		});
+
+		this.scriptService.emitEvent("explore", "getCurrentProtocol");
+		this.loadFriends();
+	}
 
 	loadWorlds(reset = true) {
 		this.loading = true;
@@ -67,7 +85,8 @@ export class ExploreService {
 					params: new HttpParams()
 						.set("page", this.page + "")
 						.set("amount", 50 + "")
-						.set("search", this.search),
+						.set("search", this.search)
+						.set("protocol", this.protocol),
 				},
 			)
 			.subscribe(

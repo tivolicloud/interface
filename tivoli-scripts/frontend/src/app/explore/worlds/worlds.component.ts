@@ -12,8 +12,13 @@ export class WorldsComponent implements OnInit {
 	constructor(public readonly exploreService: ExploreService) {}
 
 	ngOnInit(): void {
-		console.log(this.anchorRef);
+		let ignoreInitial = true;
+		setTimeout(() => {
+			ignoreInitial = false;
+		}, 500);
+
 		const observer = new IntersectionObserver(([entry]) => {
+			if (ignoreInitial) return;
 			if (entry.isIntersecting) {
 				this.exploreService.loadWorlds(false);
 			}
