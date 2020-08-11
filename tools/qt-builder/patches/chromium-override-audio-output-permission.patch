@@ -1,0 +1,18 @@
+diff --git a/qtwebengine/src/3rdparty/chromium/content/browser/media/media_devices_permission_checker.cc b/qtwebengine/src/3rdparty/chromium/content/browser/media/media_devices_permission_checker.cc
+index f3fcd754c7e..e7690061d68 100644
+--- a/qtwebengine/src/3rdparty/chromium/content/browser/media/media_devices_permission_checker.cc
++++ b/qtwebengine/src/3rdparty/chromium/content/browser/media/media_devices_permission_checker.cc
+@@ -52,9 +52,11 @@ MediaDevicesManager::BoolDeviceTypes DoCheckPermissionsOnUIThread(
+   // Speakers.
+   // TODO(guidou): use specific permission for audio output when it becomes
+   // available. See http://crbug.com/556542.
++  // result[blink::MEDIA_DEVICE_TYPE_AUDIO_OUTPUT] =
++  //     requested_device_types[blink::MEDIA_DEVICE_TYPE_AUDIO_OUTPUT] &&
++  //     audio_permission;
+   result[blink::MEDIA_DEVICE_TYPE_AUDIO_OUTPUT] =
+-      requested_device_types[blink::MEDIA_DEVICE_TYPE_AUDIO_OUTPUT] &&
+-      audio_permission;
++      requested_device_types[blink::MEDIA_DEVICE_TYPE_AUDIO_OUTPUT];
+ 
+   // Mic.
+   result[blink::MEDIA_DEVICE_TYPE_AUDIO_INPUT] =

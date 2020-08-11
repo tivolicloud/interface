@@ -41,8 +41,9 @@ upload server:
 
     extends: .deploy
 
-    dependencies:
-        - all linux
+    needs:
+        - job: all linux
+          artifacts: true
 
     variables:
         DOCKER_TLS_CERTDIR: ""
@@ -89,8 +90,9 @@ upload server arm64:
 
     extends: .deploy
 
-    dependencies:
-        - server linux arm64
+    needs:
+        - job: server linux arm64
+          artifacts: true
 
     variables:
         DOCKER_TLS_CERTDIR: ""
@@ -124,10 +126,13 @@ upload launcher:
 
     extends: .deploy
 
-    dependencies:
-        - launcher windows
-        - launcher macos
-        - launcher linux
+    needs:
+        - job: launcher windows
+          artifacts: true
+        - job: launcher macos
+          artifacts: true
+        - job: launcher linux
+          artifacts: true
 
     script:
         - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON

@@ -1,4 +1,4 @@
-# Building Qt 5.15 for Linux
+# Building Qt 5.15.0 for Linux
 
 https://wiki.qt.io/Building_Qt_5_from_Git
 
@@ -12,13 +12,13 @@ If you want to run a Docker ARM image on x86_64 hardware, run this once on the h
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```
 
-### Debian 10 (Buster) and Ubuntu 20.04
+### Ubuntu 18.04 or 20.04
 
 ```bash
 grep '^deb ' /etc/apt/sources.list | perl -pe 's/deb /deb-src /' >> /etc/apt/sources.list
 apt-get update -y
 apt-get build-dep -y qt5-default
-apt-get install -y build-essential perl python git '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev flex bison gperf libicu-dev libxslt-dev ruby libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libproxy-dev xinput libopenal-dev ninja-build libre2-dev libminizip-dev libevent-dev libprotobuf-dev liblcms2-dev libharfbuzz-dev
+DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential perl python git '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev flex bison gperf libicu-dev libxslt-dev ruby libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libproxy-dev xinput libopenal-dev ninja-build libre2-dev libminizip-dev libevent-dev libprotobuf-dev liblcms2-dev libharfbuzz-dev
 ```
 
 ### Arch Linux
@@ -36,7 +36,7 @@ pacman -Syu --noconfirm git libxcb xcb-proto xcb-util xcb-util-cursor xcb-util-i
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.0 --single-branch
 ```
 
 ### Apply patches:
@@ -46,6 +46,7 @@ cp -r patches qt5
 cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
 
 cd ..
 ```
@@ -79,10 +80,10 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15-debian-10.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15-debian-10-arm64v8.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15-ubuntu-20.04.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15-arch-linux.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-ubuntu-18.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-ubuntu-18.04-arm64v8.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-ubuntu-20.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-arch-linux.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.

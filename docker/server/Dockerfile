@@ -1,4 +1,4 @@
-FROM debian:10-slim
+FROM ubuntu:18.04
 
 ENV HIFI_DOMAIN_SERVER_HTTP_PORT=40100
 ENV HIFI_DOMAIN_SERVER_HTTPS_PORT=40101
@@ -16,7 +16,7 @@ ENV HIFI_ASSIGNMENT_CLIENT_ENTITIES_SERVER_PORT=48006
 
 RUN \
 apt-get update -y && \
-apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs && \
 npm i -g pm2 && \

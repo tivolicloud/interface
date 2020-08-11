@@ -58,8 +58,9 @@ launcher macos:
 
     extends: .production
 
-    dependencies:
-        - interface macos
+    needs:
+        - job: interface macos
+          artifacts: true
 
     # variables:
     # TODO: code signing

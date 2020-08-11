@@ -16,7 +16,17 @@
 			}"
 			(click)="onJoinWorld()"
 		>
-			<p>{{ world.label }}</p>
+			<p
+				class="incompatible"
+				*ngIf="
+					exploreService.protocol
+						? world.protocol != exploreService.protocol
+						: false
+				"
+			>
+				Incompatible protocol {{ world.version }}
+			</p>
+			<p class="label">{{ world.label }}</p>
 		</div>
 	</div>
 	<mat-card-header>

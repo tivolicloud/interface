@@ -100,6 +100,11 @@ export class ExploreHandler extends WebEventHandler {
 					"getCurrentDomainUserCount",
 					AvatarManager.getAvatarIdentifiers().length,
 				);
+			case "getCurrentProtocol":
+				this.emitEvent(
+					"getCurrentProtocol",
+					Window.protocolSignature(),
+				);
 		}
 	}
 }

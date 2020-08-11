@@ -12,7 +12,10 @@
 #include "TTSScriptingInterface.h"
 #include "avatar/AvatarManager.h"
 
-// #include <SoundCache.h>
+#include <QProcess>
+#include <QThreadPool>
+
+#include <Sound.h>
 
 TTSScriptingInterface::TTSScriptingInterface() {
 #ifdef WIN32
@@ -74,6 +77,10 @@ void TTSScriptingInterface::updateLastSoundAudioInjector() {
 }
 
 void TTSScriptingInterface::speakText(const QString& textToSpeak) {
+#if !(defined(WIN32) || defined(Q_OS_LINUX))
+    return;
+#endif
+
 #ifdef WIN32
     WAVEFORMATEX fmt;
     fmt.wFormatTag = WAVE_FORMAT_PCM;
@@ -140,6 +147,74 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     if (FAILED(hr)) {
         qDebug() << "Couldn't read from stream.";
     }
+
+    uint32_t numChannels = 1;
+    uint32_t numSamples = (uint32_t)_lastSoundByteArray.size() / sizeof(AudioData::AudioSample);
+    auto samples = reinterpret_cast<AudioData::AudioSample*>(_lastSoundByteArray.data());
+    auto newAudioData = AudioData::make(numSamples, numChannels, samples);
+    
+#elif defined(Q_OS_LINUX)    
+    QString filePath = QDir::tempPath() + QDir::separator() + "tivoli-tts.wav";
+
+    // -- piping espeak to sox 
+
+    // QString command = (
+    //     "espeak --stdout -v female3 \"" + textToSpeak + "\" | " +
+    //     "sox -t wav - -t wav - " +
+    //     "overdrive 10 " +
+    //     "echo 0.8 0.8 5 0.7 " +
+    //     "echo 0.8 0.7 6 0.7 " +
+    //     "echo 0.8 0.7 10 0.7 " +
+    //     "echo 0.8 0.7 12 0.7 " +
+    //     "echo 0.8 0.88 12 0.7 " +
+    //     "echo 0.8 0.88 30 0.7 " +
+    //     "echo 0.6 0.6 60 0.7 " +
+    //     "gain 8 > " + filePath
+    // );
+
+    // QProcess process;
+    // process.start("sh", QStringList() << "-c" << command);
+
+    // -- espeak
+
+    // QStringList args;
+    // args << "-w" << fileName;
+    // args << textToSpeak;
+
+    // QProcess process;
+    // process.start("espeak", args);
+
+    // -- festival
+
+    QStringList args;
+    args << "--batch";
+    // args << "(voice_cmu_us_slt_cg)";
+    args << "(set! textToSpeak (Utterance Text \"" + QString(textToSpeak).replace("\"", "\\\"") + "\"))";
+    args << "(utt.synth textToSpeak)";
+    args << "(utt.save.wave textToSpeak \"" + QString(filePath).replace("\"", "\\\"") + "\")";
+    args << textToSpeak;
+
+    QProcess process;
+    process.start("festival", args);
+
+    if (!process.waitForFinished(5000)) {
+        process.kill();
+        return;
+    }
+
+    QFile* file = new QFile(filePath);
+    if (file->open(QIODevice::ReadOnly)) {
+
+        _tempResource = QSharedPointer<Resource>::create(QUrl::fromLocalFile(filePath));
+        auto soundProcessor = new SoundProcessor(_tempResource, file->readAll());
+
+        QObject::connect(soundProcessor, &SoundProcessor::onError, this, [=](int error, QString str){
+            qDebug() << "Text to speech wav processing failed" << error << str;
+            file->remove();
+        });
+
+        QObject::connect(soundProcessor, &SoundProcessor::onSuccess, this, [=](AudioDataPointer newAudioData){
+            file->remove();
 #endif
 
     AudioInjectorOptions options;
@@ -151,20 +226,16 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
         _lastSoundAudioInjectorUpdateTimer.stop();
     }
 
-#ifdef WIN32
-    uint32_t numChannels = 1;
-    uint32_t numSamples = (uint32_t)_lastSoundByteArray.size() / sizeof(AudioData::AudioSample);
-    auto samples = reinterpret_cast<AudioData::AudioSample*>(_lastSoundByteArray.data());
-    auto newAudioData = AudioData::make(numSamples, numChannels, samples);
-#else
-    // auto newAudioData = DependencyManager::get<SoundCache>()->getSound(PathUtils::resourcesUrl("sounds/sample.wav"));
-    qDebug() << "Text-to-Speech isn't currently supported on non-Windows platforms.";
-    return;
-#endif
-
-#ifdef WIN32
     _lastSoundAudioInjector = DependencyManager::get<AudioInjectorManager>()->playSound(newAudioData, options, true);
     _lastSoundAudioInjectorUpdateTimer.start(INJECTOR_INTERVAL_MS);
+       
+#if defined(Q_OS_LINUX)
+        });
+       
+        QThreadPool::globalInstance()->start(soundProcessor);
+    } else {
+        file->remove();
+    }
 #endif
 }
 

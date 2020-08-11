@@ -105,8 +105,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.refresh();
-
 		this.subs.push(
 			this.scriptService.event$.subscribe(data => {
 				switch (data.key) {

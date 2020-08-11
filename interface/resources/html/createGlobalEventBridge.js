@@ -40,23 +40,25 @@ var EventBridge;
 				deviceName = deviceName.trim().toLowerCase();
 				if (deviceName == "") deviceName = "default";
 
-				await navigator.mediaDevices
-					.getUserMedia({ audio: true, video: false })
-					.catch(err => {
-						console.error(
-							"Error getting media devices" +
-								err.name +
-								": " +
-								err.message,
-						);
-					});
+				// qt-builder/patches/chromium-override-audio-output-permission.patch
+				// allows enumerating output devices without the microphone permission
+				// await navigator.mediaDevices
+				// 	.getUserMedia({ audio: true, video: false })
+				// 	.catch(err => {
+				// 		console.error(
+				// 			"Error getting media devices " +
+				// 				err.name +
+				// 				": " +
+				// 				err.message,
+				// 		);
+				// 	});
 
 				const devices = (
 					await navigator.mediaDevices
 						.enumerateDevices()
 						.catch(err => {
 							console.error(
-								"Error getting user media" +
+								"Error enumerating devices " +
 									err.name +
 									": " +
 									err.message,

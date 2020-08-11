@@ -9,7 +9,7 @@ You will find compiling support for several operating systems and architectures.
 
 # Documentation
 
-Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.com), if something is missing, please suggest it on our [roadmap.tivolicloud.com](https://roadmap.tivolicloud.com). If there is a technical issue that is much lower level than the roadmap, post it on our [git issues](https://git.tivolicloud.com/tivolicloud/issues/-/issues).
+Documentation is available at [docs.tivolicloud.com](https://docs.tivolicloud.com). If something is missing or there's an issue, post it on our [git issues](https://git.tivolicloud.com/tivolicloud/issues/-/issues).
 
 The JavaScript API reference can be found under [apidocs.tivolicloud.com](https://apidocs.tivolicloud.com).
 

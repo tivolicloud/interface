@@ -1,4 +1,4 @@
-# Building Qt 5.15 for Windows
+# Building Qt 5.15.0 for Windows
 
 ## Install depenencies from [old readme](README.old.md). Make sure to install Visual Studio 2019 instead! (I recommend using [Chocolatey](https://chocolatey.org))
 
@@ -7,7 +7,7 @@
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.0 --single-branch
 ```
 
 ### Apply patches:
@@ -20,6 +20,7 @@ cd qt5
 
 git apply --ignore-space-change --ignore-whitespace patches/chromium-missing-import.patch
 git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
+git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
 
 cd ..
 ```
@@ -56,7 +57,7 @@ cd ..
 ### Archiving (in WSL):
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15-windows.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.0-windows.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.

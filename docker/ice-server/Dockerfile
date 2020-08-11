@@ -1,8 +1,8 @@
-FROM debian:10-slim
+FROM ubuntu:18.04
 
 RUN \
 apt-get update -y && \
-apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin && \
 # cleanup
 apt-get clean -y && \
 rm -rf /var/lib/apt/lists/* /var/cache/apt/*
