@@ -75,8 +75,8 @@ void Item::PayloadInterface::addStatusGetters(const Status::Getters& getters) {
 void Item::update(const UpdateFunctorPointer& updateFunctor) {
     if (updateFunctor) {
         _payload->update(updateFunctor);
-    }
-    if (_payload->_status) _key = _payload->getKey();
+    }   
+   _key = _payload->getKey();
 }
 
 void Item::resetPayload(const PayloadPointer& payload) {
