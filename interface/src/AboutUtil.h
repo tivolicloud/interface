@@ -16,10 +16,10 @@
 #include <QObject>
 
 /**jsdoc
- * The <code>TivoliAbout</code> API provides information about the version of Interface that is currently running. It also
+ * The <code>About</code> API provides information about the version of Interface that is currently running. It also
  * has the functionality to open a web page in an Interface browser window.
  *
- * @namespace TivoliAbout
+ * @namespace About
  *
  * @hifi-interface
  * @hifi-client-entity
@@ -28,11 +28,13 @@
  * @property {string} buildDate - The build date of Tivoli Interface that is currently running. <em>Read-only.</em>
  * @property {string} buildVersion - The build version of Tivoli Interface that is currently running. <em>Read-only.</em>
  * @property {string} qtVersion - The Qt version used in Tivoli Interface that is currently running. <em>Read-only.</em>
+ * @property {string} platform - The name of the platform that is currently running, usually "tivoli". <em>Read-only.</em>
  *
  * @example <caption>Report build information for the version of Interface currently running.</caption>
- * print("Tivoli build date: " + TivoliAbout.buildDate);  // Returns the build date of the version of Interface currently running on your machine.
- * print("Tivoli version: " + TivoliAbout.buildVersion);  // Returns the build version of Interface currently running on your machine.
- * print("Qt version: " + TivoliAbout.qtVersion);  // Returns the Qt version details of the version of Interface currently running on your machine.
+ * print("Tivoli build date: " + About.buildDate);  // Returns the build date of the version of Interface currently running on your machine.
+ * print("Tivoli version: " + About.buildVersion);  // Returns the build version of Interface currently running on your machine.
+ * print("Qt version: " + About.qtVersion);  // Returns the Qt version details of the version of Interface currently running on your machine.
+ * print("Platform: " + About.platform);  // Returns the platform that is currently running on your machine, usually "tivoli".
  */
 
 class AboutUtil : public QObject {
@@ -41,6 +43,7 @@ class AboutUtil : public QObject {
     Q_PROPERTY(QString buildDate READ getBuildDate CONSTANT)
     Q_PROPERTY(QString buildVersion READ getBuildVersion CONSTANT)
     Q_PROPERTY(QString qtVersion READ getQtVersion CONSTANT)
+    Q_PROPERTY(QString platform READ getPlatform CONSTANT)
 public:
     static AboutUtil* getInstance();
     ~AboutUtil() {}
@@ -48,11 +51,8 @@ public:
     QString getBuildDate() const;
     QString getBuildVersion() const;
     QString getQtVersion() const;
+    QString getPlatform() { return "tivoli"; };
 
-public slots:
-
-    // THIS WAS CRASHING
-    // void openUrl(const QString &url) const;
 private:
     AboutUtil(QObject* parent = nullptr);
     QString _dateConverted;

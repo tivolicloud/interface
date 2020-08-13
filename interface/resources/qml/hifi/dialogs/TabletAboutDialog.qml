@@ -29,12 +29,12 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 70
             RobotoRegular {
-                text: "Build " + TivoliAbout.buildVersion
+                text: "Build " + About.buildVersion
                 size: 16
                 color: "white"
             }
             RobotoRegular {
-                text: "Released " + TivoliAbout.buildDate
+                text: "Released " + About.buildDate
                 size: 16
                 color: "white"
             }
@@ -49,10 +49,10 @@ Rectangle {
             textFormat: Text.StyledText
             linkColor: "#00B4EF"
             color: "white"
-            text: "<a href=\"https:/www.tivolicloud.com\">www.tivolicloud.com</a>."
+            text: "<a href=\"https://tivolicloud.com\">tivolicloud.com</a>."
             size: 20
             onLinkActivated: {
-                TivoliAbout.openUrl("https:/www.tivolicloud.com");
+                Window.openUrl("https://tivolicloud.com");
             }
         }
         Item { height: 40; width: 1 }
@@ -65,13 +65,13 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        TivoliAbout.openUrl("https://www.qt.io/");
+                        Window.openUrl("https://qt.io");
                     }
                 }
             }
             RobotoRegular {
                 color: "white"
-                text: "Built with HiFi core, OpenGL & Qt " + TivoliAbout.qtVersion
+                text: "Built with HiFi core, OpenGL & Qt " + About.qtVersion
                 size: 12
                 anchors.verticalCenter: parent.verticalCenter
             }

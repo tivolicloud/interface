@@ -893,7 +893,7 @@ Flickable {
                     hoverEnabled: true
                     onEntered: privacyPolicyUnderline.visible = true;
                     onExited: privacyPolicyUnderline.visible = false;
-                    onClicked: HiFiAbout.openUrl("https://tivolicloud.com/privacy-policy");
+                    onClicked: Window.openUrl("https://tivolicloud.com/privacy-policy");
                 }
             }
 
