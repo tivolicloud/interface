@@ -1875,6 +1875,7 @@ public slots:
      *   ...
      * }</code></pre>
      * @function Entities.sendToQml
+     * @param {Uuid} entityID - The ID of the Web entity to send the message to.
      * @param {string | object} message - The message to send to the QML.
      * @example <caption>Send and receive messages with QML in a web entity.</caption>
      * // JavaScript file
