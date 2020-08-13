@@ -96,10 +96,9 @@ Open the terminal
 
 ```bash
 cd /path/to/interface/build
-make interface -j4
-```
 
-Replace 4 with your physical CPU core count.
+cmake --build . --target interface --config RelWithDebInfo
+```
 
 Some available targets are: `interface`, `domain-server`, `assignment-client`
 
