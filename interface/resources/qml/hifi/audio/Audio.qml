@@ -561,6 +561,7 @@ Rectangle {
                         checkable: !checked
                         text: devicename
                         fontSize: 16
+                        wrap: false
                         onPressed: {
                             if (!checked) {
                                 AudioScriptingInterface.setOutputDevice(info, bar.currentIndex === 1);
@@ -630,6 +631,7 @@ Rectangle {
                         isRound: true
                         text: devicename
                         fontSize: 16;
+                        wrap: false
                         onPressed: {
                             if (!checked) {
                                 stereoInput.checked = false;
