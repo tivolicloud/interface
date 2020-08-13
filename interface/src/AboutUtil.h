@@ -28,13 +28,13 @@
  * @property {string} buildDate - The build date of Tivoli Interface that is currently running. <em>Read-only.</em>
  * @property {string} buildVersion - The build version of Tivoli Interface that is currently running. <em>Read-only.</em>
  * @property {string} qtVersion - The Qt version used in Tivoli Interface that is currently running. <em>Read-only.</em>
- * @property {string} platform - The name of the platform that is currently running, usually "tivoli". <em>Read-only.</em>
+ * @property {string} platform - The name of the platform that is currently running, usually "Tivoli Cloud VR". <em>Read-only.</em>
  *
  * @example <caption>Report build information for the version of Interface currently running.</caption>
  * print("Tivoli build date: " + About.buildDate);  // Returns the build date of the version of Interface currently running on your machine.
  * print("Tivoli version: " + About.buildVersion);  // Returns the build version of Interface currently running on your machine.
  * print("Qt version: " + About.qtVersion);  // Returns the Qt version details of the version of Interface currently running on your machine.
- * print("Platform: " + About.platform);  // Returns the platform that is currently running on your machine, usually "tivoli".
+ * print("Platform: " + About.platform);  // Returns the platform that is currently running on your machine, usually "Tivoli Cloud VR".
  */
 
 class AboutUtil : public QObject {
@@ -51,7 +51,7 @@ public:
     QString getBuildDate() const;
     QString getBuildVersion() const;
     QString getQtVersion() const;
-    QString getPlatform() { return "tivoli"; };
+    QString getPlatform() { return "Tivoli Cloud VR"; };
 
 private:
     AboutUtil(QObject* parent = nullptr);
