@@ -53,9 +53,9 @@ Item {
         onNewViewRequestedCallback: {
             // desktop is not defined for web-entities or tablet
             if (typeof desktop !== "undefined") {
-                desktop.openBrowserWindow(request, profile);
+                desktop.openBrowserWindow(request, viewProfile);
             } else {
-                tabletRoot.openBrowserWindow(request, profile);
+                tabletRoot.openBrowserWindow(request, viewProfile);
             }
         }
     }
