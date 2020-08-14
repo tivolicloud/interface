@@ -223,7 +223,7 @@ Item {
         font.family: "Roboto Condensed"
         font.pixelSize: isTablet ? 22 : 12
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
+        anchors.bottomMargin: -1
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
     }
