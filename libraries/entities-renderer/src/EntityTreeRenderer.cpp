@@ -526,7 +526,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                  EntityPriority _entityPriority = _entity->getEntityPriority();
 
                  if ( _isEditMode || getBypassPrioritySorting() ) {
-                     _entityPriority == EntityPriority::AUTOMATIC;
+                     _entityPriority = EntityPriority::AUTOMATIC;
                  }
 
                  // Make sure avatar entities and shapes aren't somehow set to static
