@@ -1128,20 +1128,27 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     installNativeEventFilter(&MyNativeEventFilter::getInstance());
 #endif
 
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "styles/Inconsolata.otf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/fontawesome-webfont.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/hifi-glyphs.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoMono-Regular.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoConsensed-Regular.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Light.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Regular.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/rawline-500.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Bold.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Medium.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Cairo-SemiBold.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Graphik-SemiBold.ttf");
-    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Graphik-Regular.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/fontawesome-webfont.ttf");
     QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Graphik-Medium.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Graphik-Regular.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Graphik-SemiBold.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/hifi-glyphs.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/rawline-500.ttf");
+
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Bold.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Light.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Medium.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/Roboto-Regular.ttf");
+
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoCondensed-Bold.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoCondensed-Light.ttf");
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoCondensed-Regular.ttf");
+    
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "fonts/RobotoMono-Regular.ttf");
+
+    QFontDatabase::addApplicationFont(PathUtils::resourcesPath() + "styles/Inconsolata.otf");
+    
     _window->setWindowTitle("Tivoli Cloud VR");
 
     Model::setAbstractViewStateInterface(this); // The model class will sometimes need to know view state details from us
