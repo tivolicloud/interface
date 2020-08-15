@@ -43,32 +43,7 @@ export class ExploreHandler extends WebEventHandler {
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			case "joinDomain":
-				// hack to make sure user lands at corrent path instead of 0,0,0
-				// TODO: fix handleLookupString
-
 				Window.location.handleLookupString(data.value);
-
-				let hasDisconnected = false;
-
-				const interval = Script.setInterval(() => {
-					Stats.forceUpdateStats();
-
-					if (hasDisconnected == false) {
-						if (Stats.serverCount <= 0) hasDisconnected = true;
-					} else {
-						if (Stats.serverCount > 0) {
-							Script.setTimeout(() => {
-								Window.location.handleLookupString(data.value);
-							}, 500);
-							Script.clearInterval(interval);
-						}
-					}
-				}, 100);
-
-				Script.setTimeout(() => {
-					Script.clearInterval(interval);
-				}, 1000 * 10);
-
 				break;
 
 			case "joinUser":
