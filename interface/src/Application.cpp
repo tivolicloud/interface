@@ -7359,19 +7359,19 @@ void Application::nodeKilled(SharedNodePointer node) {
     // the frequency of things getting lost and use that to determine when
     // to show the user a message that they need a better network connection
 
-    if (node->getType() == NodeType::DomainServer) qDebug() <<"*** DOMAIN SERVER LOST ***";
-    if (node->getType() == NodeType::AvatarMixer) qDebug() << "*** AVATAR MIXER LOST ***";
-    if (node->getType() == NodeType::MessagesMixer) qDebug() << "*** MESSAGES MIXER LOST ***";
-    if (node->getType() == NodeType::EntityScriptServer) qDebug() << "*** ENTITY SCRIPT SERVER LOST ***";
+    if (node->getType() == NodeType::DomainServer) qDebug() <<"*** DOMAIN SERVER LOST ***" << usecTimestampNow();
+    if (node->getType() == NodeType::AvatarMixer) qDebug() << "*** AVATAR MIXER LOST ***" << usecTimestampNow();
+    if (node->getType() == NodeType::MessagesMixer) qDebug() << "*** MESSAGES MIXER LOST ***" << usecTimestampNow();
+    if (node->getType() == NodeType::EntityScriptServer) qDebug() << "*** ENTITY SCRIPT SERVER LOST ***" << usecTimestampNow();
     if (node->getType() == NodeType::AudioMixer) {
-        qDebug() << "*** AUDIO MIXER LOST ***";
+        qDebug() << "*** AUDIO MIXER LOST ***" << usecTimestampNow();
         QMetaObject::invokeMethod(DependencyManager::get<AudioClient>().data(), "audioMixerKilled");
     } else if (node->getType() == NodeType::EntityServer) {
-        // clearDomainOctreeDetails(false); // CPM No. Terrible user experience.
-        qDebug() << "*** ENTITY SERVER LOST ***";
+        clearDomainOctreeDetails(false); // CPM No. Terrible user experience.
+        qDebug() << "*** ENTITY SERVER LOST *** " << usecTimestampNow();
     } else if (node->getType() == NodeType::AssetServer) {
         // asset server going away - check if we have the asset browser showing
-        qDebug() << "*** ASSET SERVER LOST ***";
+        qDebug() << "*** ASSET SERVER LOST ***" << usecTimestampNow();
 
 #if !defined(DISABLE_QML)
         auto offscreenUi = getOffscreenUI();
