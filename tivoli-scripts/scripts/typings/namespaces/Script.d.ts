@@ -6,6 +6,7 @@ declare namespace Script {
 	function include(filenames: string[], callback?: () => void): void;
 	function require<T>(module: string): T;
 	function resolvePath(path: string): string;
+	function resourcesPath(): string;
 	function setInterval(callback: () => void, interval: number): Timer;
 	function setTimeout(callback: () => void, interval: number): Timer;
 	function clearInterval(timer: Timer): void;

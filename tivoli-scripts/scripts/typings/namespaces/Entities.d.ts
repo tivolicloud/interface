@@ -201,6 +201,7 @@ declare namespace Entities {
 		entityID: Uuid,
 		event: PointerEvent,
 	): void;
+	function sendToQml(entityID: Uuid, message: string | object);
 	function serversExist(): boolean;
 	function setAbsoluteJointRotationInObjectFrame(
 		entityID: Uuid,
@@ -332,6 +333,7 @@ declare namespace Entities {
 	const deletingEntity: Signal<(entityID: Uuid) => any>;
 	const deletingWearable: Signal<(entityID: Uuid) => any>;
 	const enterEntity: Signal<(entityID: Uuid) => any>;
+	const fromQml: Signal<(message: string | object) => any>;
 	const holdingClickOnEntity: Signal<(
 		entityID: Uuid,
 		event: PointerEvent,
@@ -587,7 +589,7 @@ declare namespace Entities {
 		cloneAvatarEntity: boolean;
 		cloneGrabbable: boolean;
 		cloneOriginID: Uuid;
-		grab: Grab;
+		grab: Partial<Grab>;
 		itemName: string;
 		itemDescription: string;
 		itemCategories: string;
