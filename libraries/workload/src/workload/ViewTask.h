@@ -26,14 +26,11 @@ QVariantList toVariantList(const QList<T> &list)
 namespace workload {
 
     const std::vector<glm::vec2> MIN_VIEW_BACK_FRONTS = {
-         { 200.0f, 1600.0f },
-         { 250.0f, 10000.0f },
-         { 350.0f, 16000.0f }
-    };
-       /* { 3.0f, 4.0f },
+
+        { 3.0f, 4.0f },
         { 6.0f, 8.0f },
         { 9.0f, 12.0f }
-    };*/
+    };
 
     const std::vector<glm::vec2> MAX_VIEW_BACK_FRONTS = {
         { 211.0f, 1701.0f },

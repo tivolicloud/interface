@@ -435,7 +435,7 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
             if (checkType == EntityTypes::Grid) return;
             if (checkType == EntityTypes::Material) return;
             // if (checkType == EntityTypes::Shape) return;
-            // const bool hasChanged = evaluateEntityZoneCullState(entity);
+            const bool hasChanged = evaluateEntityZoneCullState(entity); 
         }
 
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
