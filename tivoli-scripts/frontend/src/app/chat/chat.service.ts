@@ -60,7 +60,7 @@ class Message {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
 
-		this.messageParts = this.message.split(" ").map(content => {
+		this.messageParts = this.message.split(/\s/g).map(content => {
 			const link = /https?:\/\/[^]+/i.test(content);
 			return { content, html: false, link };
 		});
