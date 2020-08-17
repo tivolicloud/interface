@@ -130,6 +130,10 @@ export class ChatService {
 		});
 	}
 
+	private removeUrlFromString(text: string) {
+		return text.replace(/https?:\/\/[^]+?(\s|$)/gi, "");
+	}
+
 	sendMessage(message: string) {
 		if (message.startsWith("/")) {
 			const command = message.trim().split(" ")[0].toLowerCase().slice(1);
@@ -156,7 +160,7 @@ export class ChatService {
 				case "tts":
 					const ttsMessage = message.replace("/tts ", "");
 					this.scriptService.emitEvent("chat", "message", {
-						message: ttsMessage,
+						message: this.removeUrlFromString(ttsMessage),
 						tts: true,
 					});
 					this.scriptService.emitEvent("chat", "tts", ttsMessage);
@@ -183,7 +187,11 @@ export class ChatService {
 					message,
 					tts: true,
 				});
-				this.scriptService.emitEvent("chat", "tts", message);
+				this.scriptService.emitEvent(
+					"chat",
+					"tts",
+					this.removeUrlFromString(message),
+				);
 			} else {
 				this.scriptService.emitEvent("chat", "message", { message });
 			}
