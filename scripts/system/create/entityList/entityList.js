@@ -14,12 +14,12 @@
 
 var PROFILING_ENABLED = false;
 var profileIndent = "";
-const PROFILE_NOOP = function(_name, fn, args) {
+const PROFILE_NOOP = function (_name, fn, args) {
 	fn.apply(this, args);
 };
 const PROFILE = !PROFILING_ENABLED
 	? PROFILE_NOOP
-	: function(name, fn, args) {
+	: function (name, fn, args) {
 			console.log(
 				"PROFILE-Script " + profileIndent + "(" + name + ") Begin"
 			);
@@ -40,7 +40,7 @@ const PROFILE = !PROFILING_ENABLED
 			);
 	  };
 
-EntityListTool = function(shouldUseEditTabletApp) {
+EntityListTool = function (shouldUseEditTabletApp) {
 	var that = {};
 
 	var entityListWindow;
@@ -51,7 +51,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		entityListWindow = new OverlayWindow({
 			source: Script.resolvePath("qml/EditEntityList.qml"),
 			visible: false,
-			frameless: true,
+			frameless: true
 		});
 		entityListWindow.setPosition(0, 0);
 		entityListWindow.setSize(ENTITY_LIST_WIDTH, Window.innerHeight);
@@ -65,7 +65,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 			Script.resolvePath("./qml/EditEntityList.qml"),
 			"Entity List",
 			"com.highfidelity.create.entityListWindow",
-			function() {
+			function () {
 				var windowHeight = Window.innerHeight - TITLE_OFFSET;
 				if (windowHeight > MAX_DEFAULT_CREATE_TOOLS_HEIGHT) {
 					windowHeight = MAX_DEFAULT_CREATE_TOOLS_HEIGHT;
@@ -87,7 +87,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 
 	var webView = null;
 	webView = Tablet.getTablet("com.highfidelity.interface.tablet.system");
-	webView.setVisible = function(value) {};
+	webView.setVisible = function (value) {};
 
 	var filterInView = false;
 	var searchRadius = 100;
@@ -96,13 +96,13 @@ EntityListTool = function(shouldUseEditTabletApp) {
 
 	that.webView = webView;
 
-	that.setVisible = function(newVisible) {
+	that.setVisible = function (newVisible) {
 		visible = newVisible;
 		webView.setVisible(shouldUseEditTabletApp() && visible);
 		entityListWindow.setVisible(!shouldUseEditTabletApp() && visible);
 	};
 
-	that.isVisible = function() {
+	that.isVisible = function () {
 		return entityListWindow.isVisible();
 	};
 
@@ -110,10 +110,10 @@ EntityListTool = function(shouldUseEditTabletApp) {
 
 	function emitJSONScriptEvent(data) {
 		var dataString;
-		PROFILE("Script-JSON.stringify", function() {
+		PROFILE("Script-JSON.stringify", function () {
 			dataString = JSON.stringify(data);
 		});
-		PROFILE("Script-emitScriptEvent", function() {
+		PROFILE("Script-emitScriptEvent", function () {
 			webView.emitScriptEvent(dataString);
 			if (Settings.getValue("experimentalCreateToolsRepositioning")) {
 				if (entityListWindow) {
@@ -127,11 +127,11 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		});
 	}
 
-	that.toggleVisible = function() {
+	that.toggleVisible = function () {
 		that.setVisible(!visible);
 	};
 
-	selectionManager.addEventListener(function(isSelectionUpdate, caller) {
+	selectionManager.addEventListener(function (isSelectionUpdate, caller) {
 		if (caller === that) {
 			// ignore events that we emitted from the entity list itself
 			return;
@@ -148,20 +148,20 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		});
 	});
 
-	that.setSpaceMode = function(spaceMode) {
+	that.setSpaceMode = function (spaceMode) {
 		emitJSONScriptEvent({
 			type: "setSpaceMode",
 			spaceMode: spaceMode
 		});
 	};
 
-	that.clearEntityList = function() {
+	that.clearEntityList = function () {
 		emitJSONScriptEvent({
 			type: "clearEntityList"
 		});
 	};
 
-	that.removeEntities = function(deletedIDs, selectedIDs) {
+	that.removeEntities = function (deletedIDs, selectedIDs) {
 		emitJSONScriptEvent({
 			type: "removeEntities",
 			deletedIDs: deletedIDs,
@@ -169,7 +169,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		});
 	};
 
-	that.deleteEntities = function(deletedIDs) {
+	that.deleteEntities = function (deletedIDs) {
 		emitJSONScriptEvent({
 			type: "deleted",
 			ids: deletedIDs
@@ -205,12 +205,12 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		}
 	}
 
-	that.sendUpdate = function() {
-		PROFILE("Script-sendUpdate", function() {
+	that.sendUpdate = function () {
+		PROFILE("Script-sendUpdate", function () {
 			var entities = [];
 
 			var ids;
-			PROFILE("findEntities", function() {
+			PROFILE("findEntities", function () {
 				if (filterInView) {
 					ids = Entities.findEntitiesInFrustum(Camera.frustum);
 				} else {
@@ -222,7 +222,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 			});
 
 			var cameraPosition = Camera.position;
-			PROFILE("getMultipleProperties", function() {
+			PROFILE("getMultipleProperties", function () {
 				var multipleProperties = Entities.getMultipleEntityProperties(
 					ids,
 					[
@@ -329,7 +329,7 @@ EntityListTool = function(shouldUseEditTabletApp) {
 		}
 	}
 
-	var onWebEventReceived = function(data) {
+	var onWebEventReceived = function (data) {
 		try {
 			data = JSON.parse(data);
 		} catch (e) {
@@ -354,9 +354,14 @@ EntityListTool = function(shouldUseEditTabletApp) {
 			}
 		} else if (data.type === "refresh") {
 			that.sendUpdate();
-		} else if (data.type === "teleport") {
+		} else if (data.type === "teleport" || data.type === "avatarToEntity") {
+			print("AVATAR TO ENTITY");
 			if (selectionManager.hasSelection()) {
 				MyAvatar.position = selectionManager.worldPosition;
+			}
+		} else if (data.type === "entityToAvatar") {
+			if (selectionManager.hasSelection()) {
+				moveSelectedEntitiesToAvatar();
 			}
 		} else if (data.type === "export") {
 			if (!selectionManager.hasSelection()) {
@@ -392,6 +397,10 @@ EntityListTool = function(shouldUseEditTabletApp) {
 			SelectionDisplay.toggleSpaceMode();
 		} else if (data.type === "keyUpEvent") {
 			keyUpEventFromUIWindow(data.keyUpEvent);
+		} else if (data.type === "avatarToEntity") {
+			SelectionManager.avatarToEntity();
+		} else if (data.type === "entityToAvatar") {
+			moveSelectedEntitiesToAvatar();
 		}
 	};
 
