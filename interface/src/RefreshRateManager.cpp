@@ -230,7 +230,7 @@ void RefreshRateManager::updateRefreshRateController() const {
         if (targetRefreshRate >= 900) {
             targetRefreshRate = (int)qApp->getWindow()->windowHandle()->screen()->refreshRate();
             // incase refreshRate() is incorrect
-            if (targetRefreshRate <= 0) {
+            if (targetRefreshRate < 60) {
                 targetRefreshRate = 60;
             }
         }
