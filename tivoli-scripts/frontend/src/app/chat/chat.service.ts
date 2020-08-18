@@ -60,10 +60,17 @@ class Message {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
 
-		this.messageParts = this.message.split(/\s/g).map(content => {
-			const link = /https?:\/\/[^]+/i.test(content);
-			return { content, html: false, link };
-		});
+		this.messageParts = this.message
+			.split(/([\s\n])/g)
+			.filter(content => content == "\n" || content.trim() != "")
+			.map(content => {
+				if (content == "\n") {
+					return { content: "</br>", html: true, link: false };
+				} else {
+					const link = /https?:\/\/[^]+/i.test(content);
+					return { content, html: false, link };
+				}
+			});
 
 		chatService.emojiService.processMessageParts(this.messageParts);
 

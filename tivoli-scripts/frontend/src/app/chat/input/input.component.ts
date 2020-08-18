@@ -55,15 +55,31 @@ export class InputComponent implements OnInit {
 		this.emojiMenuOpen = false;
 
 		if (event.key == "Enter") {
-			event.preventDefault();
+			if (
+				event.ctrlKey == false &&
+				event.altKey == false &&
+				event.shiftKey == true
+			) {
+				// make new line which happens automatically
+				return;
+			} else {
+				event.preventDefault();
+			}
 
-			const message = this.input.nativeElement.textContent.trim();
-			if (message.length == 0) return this.unfocus();
+			if (
+				event.ctrlKey == false &&
+				event.altKey == false &&
+				event.shiftKey == false
+			) {
+				// send message
+				const message = this.input.nativeElement.innerText.trim();
+				if (message.length == 0) return this.unfocus();
 
-			this.chatService.sendMessage(message);
-			this.input.nativeElement.textContent = "";
+				this.chatService.sendMessage(message);
+				this.input.nativeElement.innerText = "";
 
-			return this.unfocus();
+				return this.unfocus();
+			}
 		}
 	}
 

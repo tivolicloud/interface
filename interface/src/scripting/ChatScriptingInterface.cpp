@@ -21,14 +21,16 @@ ChatScriptingInterface::ChatScriptingInterface() {
     {
         auto command = qvariant_cast<ChatCommand*>(addCommand("help", "shows this"));
         QObject::connect(command, &ChatCommand::running, [&](const QString& params){
-            showMessage("Here are all the commands available:");
+            QString help = "Here are all the commands available:\n";
             foreach(auto commandPtr, _commands) {
-                showMessage(
+                help += (
                     "/" + commandPtr.data()->getCommand() + 
                     " - " +
-                    commandPtr.data()->getDescription()
+                    commandPtr.data()->getDescription() + 
+                    "\n"
                 );
             }
+            showMessage(help);
         });
     }
     {
