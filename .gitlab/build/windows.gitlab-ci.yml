@@ -37,16 +37,19 @@ interface windows:
         - mkdir build
         - cd build
 
-        # -DCLIENT_ONLY:BOOLEAN=TRUE
         - cmake -DCMAKE_BUILD_TYPE=Release -A x64 ..
-        - cmake --build . --parallel --config Release --target interface
+        - cmake --build . --parallel --config Release --target
+          interface domain-server assignment-client
 
         - sentry-cli upload-dif --include-sources -p interface interface
 
         - cd interface\Release
-        - del interface.exp
-        - del interface.lib
-        - del interface.pdb
+        - xcopy /s /e /y ..\..\domain-server\Release\* .
+        - xcopy /s /e /y ..\..\assignment-client\Release\* .
+
+        - del *.exp
+        - del *.lib
+        - del *.pdb
 
     artifacts:
         expire_in: 1 day
