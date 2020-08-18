@@ -157,8 +157,7 @@ public:
     void run();
 
     QString getFilename() const;
-
-
+   
     QList<EntityItemID> getListOfEntityScriptIDs();
 
     /**jsdoc

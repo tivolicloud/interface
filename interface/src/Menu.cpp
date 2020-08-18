@@ -375,6 +375,14 @@ Menu::Menu() {
         qApp->setForcedBypassPrioritySorting(action->isChecked());
      });
 
+
+    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassScriptThrottling, 0,
+        qApp->getBypassScriptThrottling());
+    connect(action, &QAction::triggered, [action] { 
+        qApp->setBypassScriptThrottling(action->isChecked());
+     });
+
+
     // Developer > Scripting >>>
     MenuWrapper* scriptingOptionsMenu = developerMenu->addMenu("Scripting");
     

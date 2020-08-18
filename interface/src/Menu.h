@@ -238,6 +238,7 @@ namespace MenuOption {
     const QString ForceEverythingUnlit = "Force Everything Unlit";
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
     const QString BypassPrioritySorting = "Bypass Entity Priority Sorting";
+    const QString BypassScriptThrottling = "Bypass Script Engine Throttling";
 
     }
 

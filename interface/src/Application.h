@@ -39,6 +39,7 @@
 #include <plugins/Forward.h>
 #include <ui-plugins/PluginContainer.h>
 #include <ScriptEngine.h>
+#include <ScriptEngines.h>
 #include <ShapeManager.h>
 #include <SimpleMovingAverage.h>
 #include <StDev.h>
@@ -234,6 +235,13 @@ public:
     void setForcedBypassPrioritySorting(bool value) {
         _bypassPrioritySortingSetting.set(value); 
         DependencyManager::get<EntityTreeRenderer>()->setBypassPrioritySorting(value);
+    }
+    
+    // Bypass the script engine throttling
+    bool getBypassScriptThrottling() { return _bypassScriptThrottling.get(); }
+    void setBypassScriptThrottling(bool value) {
+        _bypassScriptThrottling.set(value); 
+        DependencyManager::get<ScriptEngines>()->setBypassScriptThrottling(value);
     }
 
     bool getPreferAvatarFingerOverStylus() { return _preferAvatarFingerOverStylusSetting.get(); }
@@ -700,6 +708,7 @@ private:
     // TIVOLI SPECIFIC
     Setting::Handle<bool> _loadCompleteEntityTreeSetting; 
     Setting::Handle<bool> _bypassPrioritySortingSetting;
+    Setting::Handle<bool> _bypassScriptThrottling;
 
     float _scaleMirror;
     float _mirrorYawOffset;

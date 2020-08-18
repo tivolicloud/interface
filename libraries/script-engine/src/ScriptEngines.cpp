@@ -478,6 +478,13 @@ void ScriptEngines::reloadAllScripts() {
     stopAllScripts(true);
 }
 
+void ScriptEngines::setBypassScriptThrottling(bool value) { 
+    qCDebug(scriptengine) << "Bypass Script Engine Throttling " << value;
+    _bypassScriptThrottling = value; 
+};
+
+bool ScriptEngines::getBypassScriptThrottling(){ return _bypassScriptThrottling; };
+
 ScriptEnginePointer ScriptEngines::loadScript(const QUrl& scriptFilename, bool isUserLoaded, bool loadScriptFromEditor,
                                               bool activateMainWindow, bool reload, bool quitWhenFinished) {
     if (thread() != QThread::currentThread()) {

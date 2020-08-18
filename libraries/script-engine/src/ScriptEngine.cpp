@@ -1177,6 +1177,7 @@ QScriptValue ScriptEngine::evaluate(const QString& sourceCode, const QString& fi
     return result;
 }
 
+
 void ScriptEngine::run() {
     if (QThread::currentThread() != qApp->thread() && _context == Context::CLIENT_SCRIPT) {
         // Flag that we're allowed to access local HTML files on UI created from C++ calls on this thread
@@ -1199,6 +1200,7 @@ void ScriptEngine::run() {
         init();
     }
 
+    
     _isRunning = true;
     emit runningStateChanged();
 
@@ -1222,7 +1224,6 @@ void ScriptEngine::run() {
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
 
     _lastUpdate = usecTimestampNow();
-
     std::chrono::microseconds totalUpdates(0);
 
     // TODO: Integrate this with signals/slots instead of reimplementing throttling for ScriptEngine
@@ -1256,7 +1257,7 @@ void ScriptEngine::run() {
             PROFILE_RANGE(script, "processEvents-sleep");
             std::chrono::milliseconds sleepFor =
                 std::chrono::duration_cast<std::chrono::milliseconds>(sleepUntil - clock::now());
-            if (sleepFor > std::chrono::milliseconds(0)) {
+            if (!scriptEngines->getBypassScriptThrottling() && sleepFor > std::chrono::milliseconds(0)) {
                 QEventLoop loop;
                 QTimer timer;
                 timer.setSingleShot(true);

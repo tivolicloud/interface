@@ -69,6 +69,11 @@ public:
     void loadDefaultScripts();
     void reloadLocalFiles();
 
+    bool _bypassScriptThrottling = false;
+    
+    void setBypassScriptThrottling(bool value);    
+    bool getBypassScriptThrottling();
+
     QStringList getRunningScripts();
     ScriptEnginePointer getScriptEngine(const QUrl& scriptHash);
 
