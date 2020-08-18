@@ -60,10 +60,17 @@ class Message {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
 
-		this.messageParts = this.message.split(/\s/g).map(content => {
-			const link = /https?:\/\/[^]+/i.test(content);
-			return { content, html: false, link };
-		});
+		this.messageParts = this.message
+			.split(/([\s\n])/g)
+			.filter(content => content == "\n" || content.trim() != "")
+			.map(content => {
+				if (content == "\n") {
+					return { content: "</br>", html: true, link: false };
+				} else {
+					const link = /https?:\/\/[^]+/i.test(content);
+					return { content, html: false, link };
+				}
+			});
 
 		chatService.emojiService.processMessageParts(this.messageParts);
 
@@ -85,8 +92,6 @@ export class ChatService {
 
 	focused = false;
 
-	messagesAsTts = false;
-
 	readonly messageShownTime = 1000 * 20; // how long till messages fade out
 
 	constructor(
@@ -95,7 +100,7 @@ export class ChatService {
 	) {
 		this.scriptService.event$.subscribe(data => {
 			switch (data.key) {
-				case "message":
+				case "sendMessage":
 					if (data.value && data.value.message && data.value.username)
 						this.messages.push(
 							new Message(
@@ -104,6 +109,16 @@ export class ChatService {
 								data.value.message,
 								data.value.username,
 								data.value,
+							),
+						);
+					break;
+				case "showMessage":
+					if (data.value && data.value.message)
+						this.messages.push(
+							new Message(
+								this,
+								"announcement",
+								data.value.message,
 							),
 						);
 					break;
@@ -130,71 +145,17 @@ export class ChatService {
 		});
 	}
 
-	private removeUrlFromString(text: string) {
-		return text.replace(/https?:\/\/[^]+?(\s|$)/gi, "");
-	}
-
 	sendMessage(message: string) {
 		if (message.startsWith("/")) {
 			const command = message.trim().split(" ")[0].toLowerCase().slice(1);
-			const print = (msg: string) => {
-				this.messages.push(
-					new Message(this, "announcement", msg, null),
-				);
-			};
+			const params = message.slice(("/" + command + " ").length);
 
-			switch (command) {
-				case "help":
-					print("Here are all the commands available:");
-					print("/me - speak in third person");
-					print("/tts - speak with text to speech");
-					print("/ttstoggle - toggle tts for all messages");
-					print("/clear - clears the chat");
-					break;
-				case "me":
-					this.scriptService.emitEvent("chat", "message", {
-						message: message.replace("/me ", ""),
-						me: true,
-					});
-					break;
-				case "tts":
-					const ttsMessage = message.replace("/tts ", "");
-					this.scriptService.emitEvent("chat", "message", {
-						message: this.removeUrlFromString(ttsMessage),
-						tts: true,
-					});
-					this.scriptService.emitEvent("chat", "tts", ttsMessage);
-					break;
-				case "ttstoggle":
-					this.messagesAsTts = !this.messagesAsTts;
-					print(
-						this.messagesAsTts
-							? "Enabled text to speech for all messages"
-							: "Disabled text to speech for all messages",
-					);
-					break;
-				case "clear":
-					this.messages = [];
-					print("You cleared the chat");
-					break;
-				default:
-					print("Command not found: " + command);
-					break;
-			}
+			this.scriptService.emitEvent("chat", "command", {
+				command,
+				params,
+			});
 		} else {
-			if (this.messagesAsTts) {
-				this.scriptService.emitEvent("chat", "message", {
-					message,
-					tts: true,
-				});
-				this.scriptService.emitEvent(
-					"chat",
-					"tts",
-					this.removeUrlFromString(message),
-				);
-			} else {
-				this.scriptService.emitEvent("chat", "message", { message });
-			}
+			this.scriptService.emitEvent("chat", "message", message);
 		}
 
 		this.scriptService.emitEvent("chat", "unfocus");

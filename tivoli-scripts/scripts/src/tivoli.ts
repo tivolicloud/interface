@@ -1,5 +1,5 @@
 import { Buttons } from "./buttons/buttons";
-import { Chat } from "./chat";
+import { ChatUI } from "./chat";
 import { SignalManager } from "./lib/signal-manager";
 import { initNametags } from "./nametags";
 import { Optimize } from "./optimize";
@@ -18,7 +18,7 @@ class Tivoli {
 
 	optimize = tryInit(() => new Optimize());
 	buttons = tryInit(() => new Buttons());
-	chat = tryInit(() => new Chat());
+	chat = tryInit(() => new ChatUI());
 	overview = tryInit(() => new Overview());
 
 	nametags: { cleanup: () => any } = null;

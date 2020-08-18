@@ -28,13 +28,9 @@
 		></div>
 		<div class="username" *ngIf="!message.extras.me">
 			<span class="badge" *ngIf="message.extras.tts">TTS</span>
-			{{
-				message.type == "message"
-					? message.username + ":"
-					: message.message
-			}}
+			{{ message.type == "message" ? message.username + ":" : "" }}
 		</div>
-		<ng-container *ngIf="message.type == 'message'">
+		<span [class.username]="message.type == 'announcement'">
 			<span *ngIf="message.extras.me" style="margin-left: -4px;">
 				{{ message.username }}
 			</span>
@@ -53,7 +49,7 @@
 				</ng-container>
 				<span *ngIf="part.html" [innerHTML]="part.content"></span>
 			</ng-container>
-		</ng-container>
+		</span>
 		<img
 			*ngIf="message.imageUrl"
 			class="image"

@@ -218,6 +218,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
 #endif
 
     AudioInjectorOptions options;
+    // TODO: keep audio position up to date with avatar
     options.position = DependencyManager::get<AvatarManager>()->getMyAvatarPosition();
     options.volume = 0.7;
 
