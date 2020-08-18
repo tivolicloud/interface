@@ -1,0 +1,58 @@
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_color_space.h b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_color_space.h
+index 392ccaf5639..aec76efbac3 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_color_space.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_color_space.h
+@@ -16,10 +16,6 @@
+ // #ifdef unless needed and tested.
+ #ifdef WEBRTC_USE_H264
+ 
+-#if defined(WEBRTC_WIN) && !defined(__clang__)
+-#error "See: bugs.webrtc.org/9213#c13."
+-#endif
+-
+ #include "api/video/color_space.h"
+ 
+ extern "C" {
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_decoder_impl.h b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_decoder_impl.h
+index 3c038e6425c..80892de63bf 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_decoder_impl.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_decoder_impl.h
+@@ -17,10 +17,6 @@
+ // #ifdef unless needed and tested.
+ #ifdef WEBRTC_USE_H264
+ 
+-#if defined(WEBRTC_WIN) && !defined(__clang__)
+-#error "See: bugs.webrtc.org/9213#c13."
+-#endif
+-
+ #include <memory>
+ 
+ #include "modules/video_coding/codecs/h264/include/h264.h"
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h
+index ba996366a35..7fb87eae9d0 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/modules/video_coding/codecs/h264/h264_encoder_impl.h
+@@ -17,10 +17,6 @@
+ // #ifdef unless needed and tested.
+ #ifdef WEBRTC_USE_H264
+ 
+-#if defined(WEBRTC_WIN) && !defined(__clang__)
+-#error "See: bugs.webrtc.org/9213#c13."
+-#endif
+-
+ #include <memory>
+ #include <vector>
+ 
+diff --git a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/webrtc.gni b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
+index 56a1b0deca0..c07b63983f8 100644
+--- a/qtwebengine/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
++++ b/qtwebengine/src/3rdparty/chromium/third_party/webrtc/webrtc.gni
+@@ -150,7 +150,7 @@ declare_args() {
+   # Enabling H264 when building with MSVC is currently not supported, see
+   # bugs.webrtc.org/9213#c13 for more info.
+   rtc_use_h264 =
+-      proprietary_codecs && !is_android && !is_ios && !(is_win && !is_clang)
++      proprietary_codecs && !is_android && !is_ios
+ 
+   # By default, use normal platform audio support or dummy audio, but don't
+   # use file-based audio playout and record.

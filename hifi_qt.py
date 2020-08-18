@@ -63,7 +63,7 @@ endif()
 
         if arch == "x86_64" or arch == "amd64":
             if system == 'Windows':
-                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-windows.tar.gz'
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-1-windows.tar.gz'
             elif system == 'Darwin':
                 self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-macos.tar.gz'
             elif system == 'Linux':
