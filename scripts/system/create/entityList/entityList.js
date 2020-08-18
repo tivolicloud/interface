@@ -355,7 +355,6 @@ EntityListTool = function (shouldUseEditTabletApp) {
 		} else if (data.type === "refresh") {
 			that.sendUpdate();
 		} else if (data.type === "teleport" || data.type === "avatarToEntity") {
-			print("AVATAR TO ENTITY");
 			if (selectionManager.hasSelection()) {
 				MyAvatar.position = selectionManager.worldPosition;
 			}
