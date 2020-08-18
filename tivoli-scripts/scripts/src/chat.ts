@@ -120,6 +120,8 @@ class ChatHandler extends WebEventHandler {
 		SoundCache.getSound(Script.resolvePath("assets/chat2.wav")),
 	];
 
+	private commands: ChatCommand[] = [];
+
 	private playChatSound() {
 		const sound = this.chatSounds[this.currentChatSound];
 
@@ -140,32 +142,23 @@ class ChatHandler extends WebEventHandler {
 
 		this.signalManager.connect(
 			Messages.messageReceived,
-			(channel, messageStr, senderID) => {
+			(channel, messageStr, senderID, localOnly) => {
 				if (channel != this.channel) return;
 
-				let message: object;
+				let data: object;
 				try {
-					message = JSON.parse(messageStr);
+					data = JSON.parse(messageStr);
 				} catch (err) {}
-				if (typeof message != "object") return;
+				if (typeof data != "object") return;
 
-				const user = AvatarList.getAvatar(senderID);
-				const username = user.displayName;
-
-				// // legacy support
-				// if (Array.isArray(message)) {
-				// 	if (message.length > 1) {
-				// 		this.emitEvent("message", {
-				// 			username, // message[0]
-				// 			message: message[1],
-				// 		});
-				// 	}
-				// 	return;
-				// }
-
-				delete message["username"]; // make sure people dont overwrite it
-
-				this.emitEvent("message", { username, ...message });
+				if (localOnly && data["local"]) {
+					this.emitEvent("showMessage", data);
+				} else {
+					const user = AvatarList.getAvatar(senderID);
+					const username = user.displayName;
+					delete data["username"]; // make sure people dont overwrite it
+					this.emitEvent("sendMessage", { username, ...data });
+				}
 			},
 		);
 
@@ -190,12 +183,32 @@ class ChatHandler extends WebEventHandler {
 		this.joinAndLeave.onNewWorld = () => {
 			this.emitEvent("clear");
 		};
+
+		const clearCommand = Chat.addCommand(
+			"clear",
+			"clears the chat for yourself",
+		);
+		this.signalManager.connect(clearCommand.running, params => {
+			this.emitEvent("clear");
+			Chat.showMessage("You cleared the chat for yourself.");
+		});
+		this.commands.push(clearCommand);
 	}
 
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			case "message":
-				Messages.sendMessage(this.channel, JSON.stringify(data.value));
+				Chat.sendMessage(data.value);
+				break;
+			case "command":
+				const command = Chat.getCommand(data.value.command);
+				if (command == null) {
+					Chat.showMessage(
+						"Command not found: " + data.value.command,
+					);
+				} else {
+					command.run(data.value.params);
+				}
 				break;
 			case "unfocus":
 				this.button.panel.window.setFocus(false);
@@ -207,9 +220,6 @@ class ChatHandler extends WebEventHandler {
 			case "openUrl":
 				Window.openUrl(data.value);
 				break;
-			case "tts":
-				TextToSpeech.speakText(data.value);
-				break;
 		}
 	}
 
@@ -217,10 +227,14 @@ class ChatHandler extends WebEventHandler {
 		Messages.unsubscribe(this.channel);
 		this.joinAndLeave.cleanup();
 		this.signalManager.cleanup();
+
+		for (const command of this.commands) {
+			Chat.removeCommand(command);
+		}
 	}
 }
 
-export class Chat {
+export class ChatUI {
 	signals = new SignalManager();
 
 	window: OverlayWebWindow;
@@ -273,6 +287,7 @@ export class Chat {
 	}
 
 	cleanup() {
+		this.handler.cleanup();
 		this.signals.cleanup();
 	}
 }

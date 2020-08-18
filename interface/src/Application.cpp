@@ -198,6 +198,7 @@
 #include "scripting/KeyboardScriptingInterface.h"
 #include "scripting/PerformanceScriptingInterface.h"
 #include "scripting/RenderScriptingInterface.h"
+#include "scripting/ChatScriptingInterface.h"
 
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
@@ -938,6 +939,7 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     DependencyManager::set<WalletScriptingInterface>();
     DependencyManager::set<TTSScriptingInterface>();
     DependencyManager::set<QmlCommerce>();
+    DependencyManager::set<ChatScriptingInterface>();
 
     DependencyManager::set<FadeEffect>();
     DependencyManager::set<ResourceRequestObserver>();
@@ -7550,6 +7552,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
     scriptEngine->registerGlobalObject("Picks", DependencyManager::get<PickScriptingInterface>().data());
     scriptEngine->registerGlobalObject("Pointers", DependencyManager::get<PointerScriptingInterface>().data());
     scriptEngine->registerGlobalObject("TextToSpeech", DependencyManager::get<TTSScriptingInterface>().data());
+    scriptEngine->registerGlobalObject("Chat", DependencyManager::get<ChatScriptingInterface>().data());
 
     // Caches
     scriptEngine->registerGlobalObject("AnimationCache", DependencyManager::get<AnimationCacheScriptingInterface>().data());
