@@ -125,8 +125,9 @@ server linux arm64:
         # build
         - mkdir -p build
         - cd build
-        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-          -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON
+        # TODO: first configure fails but works second time
+        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON
+        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON
         - make domain-server assignment-client oven -j$(nproc)
 
         # make AppDir
