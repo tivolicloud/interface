@@ -193,12 +193,12 @@ endif()
             
             print("Download vcpkg from GitHub to {}".format(self.path))
             hifi_utils.downloadAndExtract(
-                "https://codeload.github.com/microsoft/vcpkg/zip/master", self.path, isZip=True
+                "https://codeload.github.com/microsoft/vcpkg/zip/2020.04", self.path, isZip=True
             )
-            vcpkg_master = os.path.join(self.path, "vcpkg-master")
-            for filename in os.listdir(vcpkg_master):
-                shutil.move(os.path.join(vcpkg_master, filename), os.path.join(self.path, filename))
-            os.rmdir(vcpkg_master)
+            vcpkg = os.path.join(self.path, "vcpkg-2020.04")
+            for filename in os.listdir(vcpkg):
+                shutil.move(os.path.join(vcpkg, filename), os.path.join(self.path, filename))
+            os.rmdir(vcpkg)
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
 
