@@ -39,7 +39,7 @@ all linux:
         # ninja 1.10.0+ is required
         - git clone git://github.com/ninja-build/ninja.git && cd ninja
         - git checkout release
-        - ./configure.py --bootstrap
+        - python3 configure.py --bootstrap
         - mv ninja /usr/bin/ninja
         - cd ..
 
@@ -113,7 +113,7 @@ server linux arm64:
         # ninja 1.10.0+ is required
         - git clone git://github.com/ninja-build/ninja.git && cd ninja
         - git checkout release
-        - ./configure.py --bootstrap
+        - python3 configure.py --bootstrap
         - mv ninja /usr/bin/ninja
         - cd ..
 
