@@ -195,10 +195,10 @@ endif()
             hifi_utils.downloadAndExtract(
                 "https://codeload.github.com/microsoft/vcpkg/zip/2020.04", self.path, isZip=True
             )
-            vcpkg = os.path.join(self.path, "vcpkg-2020.04")
-            for filename in os.listdir(vcpkg):
-                shutil.move(os.path.join(vcpkg, filename), os.path.join(self.path, filename))
-            os.rmdir(vcpkg)
+            vcpkg_2020_04 = os.path.join(self.path, "vcpkg-2020.04")
+            for filename in os.listdir(vcpkg_2020_04):
+                shutil.move(os.path.join(vcpkg_2020_04, filename), os.path.join(self.path, filename))
+            os.rmdir(vcpkg_2020_04)
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
 
@@ -228,7 +228,9 @@ endif()
         shutil.copytree(self.sourcePortsPath, portsPath)
 
     def run(self, commands):
-        actualCommands = [self.exe, '--vcpkg-root', self.path]
+        # TODO: causes Error: Invalid vcpkg root directory /interface/build/TIVOLI_VCPKG/5317b356-release/interface/build/TIVOLI_VCPKG/5317b356-release: No such file or directory
+        # actualCommands = [self.exe, '--vcpkg-root', self.path]
+        actualCommands = [self.exe]
         actualCommands.extend(commands)
         print("Running command")
         print(actualCommands)
