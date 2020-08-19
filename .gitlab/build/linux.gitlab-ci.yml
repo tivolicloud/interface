@@ -115,6 +115,7 @@ server linux arm64:
         - git checkout release
         - python3 configure.py --bootstrap
         - mv ninja /usr/bin/ninja
+        - ninja --version
         - cd ..
 
         # install nodejs 12
