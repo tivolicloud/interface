@@ -76,11 +76,8 @@ void TTSScriptingInterface::updateLastSoundAudioInjector() {
     }
 }
 
+#if defined(WIN32) || defined(Q_OS_LINUX)
 void TTSScriptingInterface::speakText(const QString& textToSpeak) {
-#if !(defined(WIN32) || defined(Q_OS_LINUX))
-    return;
-#endif
-
 #ifdef WIN32
     WAVEFORMATEX fmt;
     fmt.wFormatTag = WAVE_FORMAT_PCM;
@@ -239,6 +236,11 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     }
 #endif
 }
+#else
+void TTSScriptingInterface::speakText(const QString& textToSpeak) {
+    qDebug() << "Text to speech only works on Windows and Linux";
+}
+#endif
 
 void TTSScriptingInterface::stopLastSpeech() {
     if (_lastSoundAudioInjector) {
