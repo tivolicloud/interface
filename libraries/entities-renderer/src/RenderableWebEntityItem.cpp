@@ -333,10 +333,7 @@ void WebEntityRenderer::buildWebSurface(const EntityItemPointer& entity, const Q
         return;
     }
 
-    if (_contentType == ContentType::HtmlContent) {
-        ++_currentWebCount;
-    }
-
+    ++_currentWebCount;
     WebEntityRenderer::acquireWebSurface(newSourceURL, _contentType == ContentType::HtmlContent, _webSurface, _cachedWebSurface);
     _fadeStartTime = usecTimestampNow();
     _webSurface->resume();
@@ -363,15 +360,12 @@ void WebEntityRenderer::destroyWebSurface() {
     QSharedPointer<OffscreenQmlSurface> webSurface;
     withWriteLock([&] {
         webSurface.swap(_webSurface);
-        
+        _contentType = ContentType::NoContent;
+
         if (webSurface) {
-            if (_contentType == ContentType::HtmlContent) {
-                --_currentWebCount;
-            }
+            --_currentWebCount;
             WebEntityRenderer::releaseWebSurface(webSurface, _cachedWebSurface, _connections);
         }
-
-        _contentType = ContentType::NoContent;
     });
 }
 
