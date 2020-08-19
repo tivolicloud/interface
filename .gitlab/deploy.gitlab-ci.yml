@@ -25,6 +25,8 @@ pages:
 
     extends: .deploy
 
+    # needs: []
+
     script:
         - cd tools/jsdoc
         - npm install
