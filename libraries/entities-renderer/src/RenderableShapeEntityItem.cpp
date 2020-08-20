@@ -125,10 +125,14 @@ void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoint
             materialChanged = true;
         }
 
-        if (materialChanged) {
-            auto materials = _materials.find("0");
-            if (materials != _materials.end()) {
+        auto materials = _materials.find("0");
+        if (materials != _materials.end()) {
+            if (materialChanged) {
                 materials->second.setNeedsUpdate(true);
+            }
+
+            if (materials->second.shouldUpdate()) {
+                RenderPipelines::updateMultiMaterial(materials->second);
                 emit requestRenderUpdate();
             }
         }
