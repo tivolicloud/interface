@@ -804,6 +804,38 @@ void ScriptEngine::init() {
     qScriptRegisterMetaType(this, animVarMapToScriptValue, animVarMapFromScriptValue);
     qScriptRegisterMetaType(this, resultHandlerToScriptValue, resultHandlerFromScriptValue);
 
+    /**jsdoc
+     * Encodes text to base64.
+     * @function btoa
+     * @param {string} text - The text you want to encode.
+     */
+    globalObject().setProperty("btoa", newFunction(
+        [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
+            QString text = context->argumentCount() > 0 ? context->argument(0).toString() : QString();
+            if (text.isEmpty()) {
+                return QScriptValue(QString());
+            } else {
+                return QScriptValue(QString(text.toUtf8().toBase64()));
+            }
+        }
+    ));
+    
+    /**jsdoc
+     * Decodes base64 to text.
+     * @function atob
+     * @param {string} base64 - The base64 you want to decode.
+     */
+    globalObject().setProperty("atob", newFunction(
+        [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
+            QString base64 = context->argumentCount() > 0 ? context->argument(0).toString() : QString();
+            if (base64.isEmpty()) {
+                return QScriptValue(QString());
+            } else {
+                return QScriptValue(QString(QByteArray::fromBase64(base64.toUtf8())));
+            }
+        }
+    ));
+
     // Scriptable cache access
     auto resourcePrototype = createScriptableResourcePrototype(qSharedPointerCast<ScriptEngine>(sharedFromThis()));
     globalObject().setProperty("Resource", resourcePrototype);
