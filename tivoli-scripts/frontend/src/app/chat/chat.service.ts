@@ -89,6 +89,7 @@ class Message {
 })
 export class ChatService {
 	messages: Message[] = [];
+	messageHistory: string[] = [];
 
 	focused = false;
 
@@ -146,6 +147,8 @@ export class ChatService {
 	}
 
 	sendMessage(message: string) {
+		this.messageHistory.push(message);
+
 		if (message.startsWith("/")) {
 			const command = message.trim().split(" ")[0].toLowerCase().slice(1);
 			const params = message.slice(("/" + command + " ").length);
