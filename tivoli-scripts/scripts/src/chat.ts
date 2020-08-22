@@ -208,22 +208,10 @@ class ChatHandler extends WebEventHandler {
 					const html = req.responseText;
 					let metaTags = [];
 
-					const addTags = (name: string, closes = false) => {
-						const matches = html.match(
-							closes
-								? new RegExp(
-										`<${name}[^]*?>[^]+?</${name}>`,
-										"gi",
-								  )
-								: new RegExp(`<${name} [^]+?>`, "gi"),
-						);
-						if (matches != null)
-							metaTags = [...metaTags, ...matches];
-					};
-
-					addTags("meta");
-					addTags("link");
-					addTags("title", true);
+					const matches = html.match(
+						/(?:<meta [^]+?>)|(?:<link [^]+?>)|(?:<title[^]*?>[^]+?<\/title>)/gi,
+					);
+					if (matches != null) metaTags = matches;
 
 					return callback(metaTags.join("\n"));
 				} else {
