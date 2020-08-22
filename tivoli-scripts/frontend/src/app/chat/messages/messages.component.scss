@@ -57,6 +57,40 @@
 			text-decoration: inherit;
 		}
 
+		.metadata {
+			$height: 115px;
+			width: 100%;
+			height: $height;
+			background: rgba(#1d1f21, 0.8);
+			border-radius: 4px;
+			display: flex;
+			flex-direction: row;
+			margin: 0;
+			padding: 6px 12px;
+			overflow: hidden;
+			margin-top: 4px;
+
+			.title {
+				margin: 0;
+				color: #00b0f4;
+			}
+			.description {
+				margin: 0;
+			}
+			.image {
+				width: $height * 4/3;
+				min-width: $height * 4/3;
+				height: calc(100% - 4px);
+				margin: 2px 0;
+				margin-left: 12px;
+				margin-right: -4px;
+				background-color: #1d1f21;
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+		}
+
 		.image {
 			display: block;
 			height: 180px;

@@ -195,6 +195,46 @@ class ChatHandler extends WebEventHandler {
 		this.commands.push(clearCommand);
 	}
 
+	getMetaTags(url: string, callback: (headContent: string) => any) {
+		const req = new XMLHttpRequest();
+		req.onreadystatechange = function () {
+			if (req.readyState >= 4) {
+				const contentType = req.getResponseHeader("content-type");
+				if (
+					req.status == 200 &&
+					contentType != null &&
+					contentType.indexOf("text/html") > -1
+				) {
+					const html = req.responseText;
+					let metaTags = [];
+
+					const addTags = (name: string, closes = false) => {
+						const matches = html.match(
+							closes
+								? new RegExp(
+										`<${name}[^]*?>[^]+?</${name}>`,
+										"gi",
+								  )
+								: new RegExp(`<${name} [^]+?>`, "gi"),
+						);
+						if (matches != null)
+							metaTags = [...metaTags, ...matches];
+					};
+
+					addTags("meta");
+					addTags("link");
+					addTags("title", true);
+
+					return callback(metaTags.join("\n"));
+				} else {
+					return callback(null);
+				}
+			}
+		};
+		req.open("GET", url, true);
+		req.send();
+	}
+
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			case "message":
@@ -220,6 +260,14 @@ class ChatHandler extends WebEventHandler {
 			case "openUrl":
 				Window.openUrl(data.value);
 				break;
+			case "getMetaTags":
+				this.getMetaTags(data.value, metaTags => {
+					if (metaTags == null) return;
+					this.emitEvent("getMetaTags", {
+						url: data.value,
+						metaTags,
+					});
+				});
 		}
 	}
 

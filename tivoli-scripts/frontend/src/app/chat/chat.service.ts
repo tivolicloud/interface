@@ -1,4 +1,6 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { filter } from "rxjs/operators";
 import { EmojiService } from "../emoji.service";
 import { ScriptService } from "../script.service";
 
@@ -12,6 +14,12 @@ class Message {
 	public messageParts: MessagePart[] = [];
 
 	public imageUrl: string;
+	public metadata: {
+		url: string;
+		title: string;
+		description: string;
+		imageUrl: string;
+	};
 
 	public shouldBeShowing = true;
 
@@ -49,6 +57,108 @@ class Message {
 		}
 	}
 
+	private getMetadata(url: string) {
+		const eventsSub = this.chatService.scriptService.event$
+			.pipe(
+				filter(
+					data =>
+						data.key == "getMetaTags" &&
+						typeof data.value == "object" &&
+						data.value.url == url,
+				),
+			)
+			.subscribe(data => {
+				eventsSub.unsubscribe();
+
+				const metaTags = data.value.metaTags;
+
+				const parser = new DOMParser();
+				const parsedTags = parser.parseFromString(
+					metaTags,
+					"text/html",
+				);
+
+				const getMeta = (names: string[]) => {
+					for (const name of names) {
+						const keysPairs =
+							name == "image_src" || name == "icon"
+								? [["link", "rel", "href"]]
+								: [
+										["meta", "name", "content"],
+										["meta", "property", "content"],
+								  ];
+						for (const keys of keysPairs) {
+							const meta: HTMLMetaElement = parsedTags.querySelector(
+								keys[0] + "[" + keys[1] + '="' + name + '"]',
+							);
+							if (meta && meta.getAttribute(keys[2]) != null) {
+								return meta.getAttribute(keys[2]);
+							}
+						}
+					}
+					return null;
+				};
+
+				const getTitle = () => {
+					let title = getMeta([
+						"title",
+						"og:site_name",
+						"twitter:title",
+					]);
+
+					if (title == null) {
+						const titleEl = parsedTags.querySelector("title");
+						if (titleEl != null) title = titleEl.textContent;
+					}
+					if (title == null) title = url;
+					return title;
+				};
+
+				const getDescription = () => {
+					return getMeta([
+						"description",
+						"og:description",
+						"twitter:description",
+					]);
+				};
+
+				const getImageUrl = () => {
+					let imageUrl = getMeta([
+						"image_src",
+						"og:image",
+						"twitter:image",
+						"icon",
+					]);
+
+					const baseUrlMatches = url.match(
+						/^(https?:\/\/[^]+?)(?:\/|$)/i,
+					);
+					if (baseUrlMatches == null) return imageUrl;
+					const baseUrl = baseUrlMatches[1];
+
+					if (imageUrl == null) imageUrl = "/favicon.ico";
+					if (imageUrl.toLowerCase().indexOf("http") != 0) {
+						imageUrl = baseUrl + imageUrl;
+					}
+
+					return imageUrl;
+				};
+
+				this.metadata = {
+					url,
+					title: getTitle(),
+					description: getDescription(),
+					imageUrl: getImageUrl(),
+				};
+			});
+
+		this.chatService.scriptService.emitEvent("chat", "getMetaTags", url);
+
+		setTimeout(() => {
+			eventsSub.unsubscribe();
+		}, 1000 * 5);
+	}
+
 	constructor(
 		private readonly chatService: ChatService,
 		public type: "message" | "announcement",
@@ -68,6 +178,9 @@ class Message {
 					return { content: "</br>", html: true, link: false };
 				} else {
 					const link = /https?:\/\/[^]+/i.test(content);
+					if (link && this.metadata == null) {
+						this.getMetadata(content);
+					}
 					return { content, html: false, link };
 				}
 			});
@@ -98,6 +211,7 @@ export class ChatService {
 	constructor(
 		public readonly scriptService: ScriptService,
 		public readonly emojiService: EmojiService,
+		public readonly http: HttpClient,
 	) {
 		this.scriptService.event$.subscribe(data => {
 			switch (data.key) {
