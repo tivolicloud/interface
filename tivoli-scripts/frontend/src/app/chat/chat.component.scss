@@ -4,8 +4,13 @@
 	display: flex;
 	overflow: hidden;
 	flex-direction: column;
+	user-select: text;
 
 	font-size: 1.2em;
+}
+
+::ng-deep *::selection {
+	background: #2196f3;
 }
 
 *::-webkit-scrollbar {

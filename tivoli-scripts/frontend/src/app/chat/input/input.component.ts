@@ -142,9 +142,9 @@ export class InputComponent implements OnInit {
 		if (event.key == "Escape") return this.unfocus();
 	}
 
-	@HostListener("document:mouseup", ["$event"])
-	handleMouseDown(event: MouseEvent) {
-		this.chatService.focused = true;
-		this.input.nativeElement.focus();
-	}
+	// @HostListener("document:mouseup", ["$event"])
+	// handleMouseDown(event: MouseEvent) {
+	// 	this.chatService.focused = true;
+	// 	this.input.nativeElement.focus();
+	// }
 }
