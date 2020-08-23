@@ -37,9 +37,9 @@ namespace workload {
 
 
     const std::vector<glm::vec2> MAX_VIEW_BACK_FRONTS = {
-        { 101.0f, 1601.0f },
-        { 151.0f, 10001.0f },
-        { 251.0f, 16001.0f }
+        { 201.0f, 1601.0f },
+        { 251.0f, 10001.0f },
+        { 351.0f, 16001.0f }
     };
 
     const float RELATIVE_STEP_DOWN = 0.11f;
