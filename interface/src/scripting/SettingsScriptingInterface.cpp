@@ -13,6 +13,8 @@
 
 #include <SettingHandle.h>
 
+#include <QJsonValue>
+
 SettingsScriptingInterface* SettingsScriptingInterface::getInstance() {
     static SettingsScriptingInterface sharedInstance;
     return &sharedInstance;
@@ -49,6 +51,8 @@ void SettingsScriptingInterface::setValue(const QString& setting, const QVariant
     // Make a deep-copy of the string.
     // Dangling pointers can occur with QStrings that are implicitly shared from a QScriptEngine.
     QString deepCopy = QString::fromUtf16(setting.utf16());
-    Setting::Handle<QVariant>(deepCopy).set(value);
-    emit valueChanged(setting, value);
+    // pointers in the QVariant that doesnt exist anymore can crash when getValue is run
+    QVariant sanitizedValue = QVariant(QJsonValue::fromVariant(value));
+    Setting::Handle<QVariant>(deepCopy).set(sanitizedValue);
+    emit valueChanged(setting, sanitizedValue);
 }
