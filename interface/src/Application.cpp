@@ -330,7 +330,7 @@ static const int ENTITY_SERVER_ADDED_TIMEOUT = 5000;
 static const int ENTITY_SERVER_CONNECTION_TIMEOUT = 5000;
 static const int WATCHDOG_TIMER_TIMEOUT = 100;
 
-static const float INITIAL_QUERY_RADIUS = 300.0f;  // priority radius for entities before physics enabled
+static const float INITIAL_QUERY_RADIUS = 10.0f;  // priority radius for entities before physics enabled
 
 static const QString DESKTOP_LOCATION = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
@@ -6676,7 +6676,7 @@ void Application::update(float deltaTime) {
 
 
         // if it's been a while since our last query or the view has significantly changed then send a query, otherwise suppress it
-        static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
+        static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 2 };
         auto now = SteadyClock::now();
         if (now > _queryExpiry || viewIsDifferentEnough) {
             if (
@@ -6979,8 +6979,8 @@ void Application::queryOctree(
 
     const bool isModifiedQuery = !_physicsEnabled;
     
-    // if (isModifiedQuery) {
-    if (true) {
+    if (isModifiedQuery) {   
+
         if (!_octreeProcessor.safeLandingIsActive()) {
             // don't send the octreeQuery until SafeLanding knows it has started
             return;
@@ -7010,7 +7010,7 @@ void Application::queryOctree(
                // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
                 _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
                 _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-               // _octreeQuery.setConicalViews({ sphericalView, farView });
+                _octreeQuery.setConicalViews({ sphericalView, farView });
             }
         } else {
             _octreeQuery.setConicalViews({ sphericalView });
