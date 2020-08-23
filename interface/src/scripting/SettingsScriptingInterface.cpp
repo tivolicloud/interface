@@ -48,11 +48,16 @@ void SettingsScriptingInterface::setValue(const QString& setting, const QVariant
             qInfo() << "SettingsScriptingInterface::setValue -- allowing restricted write: " << setting << value;
         }
     }
+    
     // Make a deep-copy of the string.
     // Dangling pointers can occur with QStrings that are implicitly shared from a QScriptEngine.
     QString deepCopy = QString::fromUtf16(setting.utf16());
-    // pointers in the QVariant that doesnt exist anymore can crash when getValue is run
-    QVariant sanitizedValue = QVariant(QJsonValue::fromVariant(value));
+
+    // pointers in the QVariant that dont exist anymore can crash when getValue is run
+    QVariant sanitizedValue = value.type() == QVariant::Type::Map ?
+        QVariant(QJsonValue::fromVariant(value)) :
+        value;
+
     Setting::Handle<QVariant>(deepCopy).set(sanitizedValue);
     emit valueChanged(setting, sanitizedValue);
 }
