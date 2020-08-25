@@ -139,6 +139,37 @@ public:
      */
     Q_INVOKABLE void removeCommand(ChatCommand* command);
 
+signals:
+    /**jsdoc
+     * Triggered when a chat message is received.
+     * @function Chat.messageReceived
+     * @param {object} data - The message received, usually <code>{message: "This is a message!"}</code>
+     *     but can also include extras like:
+     *     <ul>
+     *         <li><code>{message: "This is a local announcement", local: true}</code> from {@link Chat.showMessage}</li>
+     *         <li><code>{message: "Hello world!", tts: true}</code></li>
+     *         <li><code>{message: "is thinking", me: true}</code></li>
+     *     </ul>
+     * @param {Uuid} senderID - The UUID of the sender: the user's session UUID if sent by an Interface or client entity 
+     *     script, the UUID of the entity script server if sent by a server entity script, or the UUID of the assignment client 
+     *     instance if sent by an assignment client script.
+     * @example
+     * Chat.messageReceived.connect(function (data, senderID) {
+     *     if (data.local) {
+     *         console.log(data.message);
+     *     } else {
+     *         var avatar = AvatarList.getAvatar(senderID);
+     *         console.log(
+     *             avatar.displayName + 
+     *             (data.me ? " " : ": ") + 
+     *             data.message
+     *         );
+     *     }
+     * })
+     * @returns {Signal}
+     */
+    void messageReceived(QVariantMap data, QUuid senderID);
+
 private:
     std::vector<QSharedPointer<ChatCommand>> _commands;
     bool _ttsForAllMessages = false; 

@@ -138,29 +138,16 @@ class ChatHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData) {
 		super(uuid, button);
 
-		Messages.subscribe(this.channel);
-
-		this.signalManager.connect(
-			Messages.messageReceived,
-			(channel, messageStr, senderID, localOnly) => {
-				if (channel != this.channel) return;
-
-				let data: object;
-				try {
-					data = JSON.parse(messageStr);
-				} catch (err) {}
-				if (typeof data != "object") return;
-
-				if (localOnly && data["local"]) {
-					this.emitEvent("showMessage", data);
-				} else {
-					const user = AvatarList.getAvatar(senderID);
-					const username = user.displayName;
-					delete data["username"]; // make sure people dont overwrite it
-					this.emitEvent("sendMessage", { username, ...data });
-				}
-			},
-		);
+		this.signalManager.connect(Chat.messageReceived, (data, senderID) => {
+			if (data.local) {
+				this.emitEvent("showMessage", data);
+			} else {
+				const user = AvatarList.getAvatar(senderID);
+				const username = user.displayName;
+				delete data["username"]; // make sure people dont overwrite it
+				this.emitEvent("sendMessage", { username, ...data });
+			}
+		});
 
 		this.signalManager.connect(Controller.keyPressEvent, (e: KeyEvent) => {
 			if (e.text == "\r" || e.text == "/") {
@@ -260,7 +247,6 @@ class ChatHandler extends WebEventHandler {
 	}
 
 	cleanup() {
-		Messages.unsubscribe(this.channel);
 		this.joinAndLeave.cleanup();
 		this.signalManager.cleanup();
 

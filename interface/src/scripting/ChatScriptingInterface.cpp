@@ -55,6 +55,26 @@ ChatScriptingInterface::ChatScriptingInterface() {
             );
         });
     }
+
+    auto messages = DependencyManager::get<MessagesClient>();
+    messages->subscribe("chat");
+
+    QObject::connect(messages.data(), &MessagesClient::messageReceived,
+        [&](const QString& channel, const QString& message, const QUuid& senderID, const bool localOnly){
+            if (channel != "chat") return;
+
+            QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
+            QJsonObject object = doc.object();
+            if (object.isEmpty()) return;
+            if (object.find("message")->isUndefined()) return;
+
+            if (localOnly == false && object.find("local")->isUndefined() == false) {
+                object.remove("local");
+            }
+
+            emit messageReceived(object.toVariantMap(), senderID);           
+        }
+    );
 }
 
 void ChatScriptingInterface::sendMessage(
