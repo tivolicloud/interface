@@ -54,6 +54,7 @@
 		var MAX_DEFAULT_ENTITY_LIST_HEIGHT = 850;
 
 		var DEFAULT_IMAGE = "qrc:///images/empty-image-entity.png";
+		var DEFAULT_PARTICLE = "qrc:///images/wispy-smoke.png";
 
 		createToolsWindow = new CreateWindow(
 			Script.resolvePath("qml/EditTools.qml"),
@@ -519,8 +520,7 @@
 			name: "Particle System",
 			lifespan: 1.5,
 			maxParticles: 10,
-			textures:
-				"https://content.highfidelity.com/DomainContent/production/Particles/wispy-smoke.png",
+			textures: DEFAULT_PARTICLE,
 			emitRate: 5.5,
 			emitSpeed: 0,
 			speedSpread: 0,
