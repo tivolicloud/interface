@@ -52,7 +52,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
 	scrollToBottom() {
 		try {
-			const parent = this.messages.nativeElement.parentElement;
+			const parent = this.messages.nativeElement.parentElement
+				.parentElement;
 			parent.scrollTop = parent.scrollHeight;
 		} catch (err) {}
 	}
