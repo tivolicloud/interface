@@ -163,8 +163,8 @@ class ChatHandler extends WebEventHandler {
 		);
 
 		this.signalManager.connect(Controller.keyPressEvent, (e: KeyEvent) => {
-			if (e.text == "\r") {
-				this.emitEvent("focus");
+			if (e.text == "\r" || e.text == "/") {
+				this.emitEvent("focus", e.text == "/" ? { command: true } : {});
 				this.button.panel.window.setFocus(true);
 				this.button.panel.window.setEnabled(true);
 			} else if (e.text == "ESC") {

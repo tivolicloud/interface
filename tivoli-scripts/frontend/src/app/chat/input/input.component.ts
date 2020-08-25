@@ -35,7 +35,23 @@ export class InputComponent implements OnInit {
 				switch (data.key) {
 					case "focus":
 						this.chatService.focused = true;
-						this.input.nativeElement.focus();
+						if (
+							typeof data.value == "object" &&
+							data.value.command == true
+						) {
+							this.input.nativeElement.innerText = "/";
+						}
+
+						try {
+							this.input.nativeElement.focus();
+							const range = document.createRange();
+							range.selectNodeContents(this.input.nativeElement);
+							range.collapse(false);
+							const selection = window.getSelection();
+							selection.removeAllRanges();
+							selection.addRange(range);
+						} catch (err) {}
+
 						break;
 					case "unfocus":
 						this.chatService.focused = false;
