@@ -13,6 +13,14 @@
 #include <functional>
 #include <QtCore/QObject>
 
+/**jsdoc
+ * @namespace Test
+ *
+ * @hifi-interface
+ * @hifi-client-entity
+ * @hifi-avatar
+ */
+
 class QScriptValue;
 
 class TestScriptingInterface : public QObject {
