@@ -829,10 +829,10 @@ exports.publish = function(taffyData, opts, tutorials) {
 	var files = find({ kind: "file" });
 	var packages = find({ kind: "package" });
 
-	// add release number to readme
+	// add build version to readme
 	opts.readme = opts.readme.replace(
-		/{{\s*?version\s*?}}/gi,
-		process.env.RELEASE_NUMBER || "unknown",
+		/{{\s*?build_version\s*?}}/gi,
+		process.env.BUILD_VERSION || "unknown",
 	);
 
 	generate(
