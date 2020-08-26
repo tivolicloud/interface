@@ -10,20 +10,20 @@
 
 /**jsdoc
  * Options for the {@link request} function.
- * @typedef {object} RequestOptions
- * @property {string} uri - URI to be requested.
+ * @typedef {Object} RequestOptions
+ * @property {string} [uri] - URI to be requested.
  * @property {string} [url] - URI to be requested. (alias to <code>uri</code>)
- * @property {string} method - Find {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods all HTTP methods here}.
- * @property {boolean} json - Whether to expect the response as JSON which will be parsed.
- * @property {object} body - Object of body parameters to send.
- * @property {object} headers - Object of headers to send.
+ * @property {string} [method] - Find {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods all HTTP methods here}.
+ * @property {boolean} [json] - Whether to expect the response as JSON which will be parsed.
+ * @property {Object.<string, string>} [body] - Object of body parameters to send.
+ * @property {Object.<string, string>} [headers] - Object of headers to send.
  */
 
 /**jsdoc
  * Response for the {@link request} function.
- * @typedef {object} RequestResponse
+ * @typedef {Object} RequestResponse
  * @property {number} statusCode - Find {@link https://www.restapitutorial.com/httpstatuscodes.html all HTTP status codes here}.
- * @property {object} headers - Reponse headers where each key is lowercase, e.g. <code>headers["content-type"]</code>.
+ * @property {Object.<string, string>} headers - Reponse headers where each key is lowercase, e.g. <code>headers["content-type"]</code>.
  */
 
 /**jsdoc
@@ -31,7 +31,7 @@
  * @callback RequestCallback
  * @param {string} error
  * @param {RequestResponse} response
- * @param {string|object} body - Returns the response body or object if <code>json</code> was enabled in the request options.
+ * @param {string|Object} body - Returns the response body or object if <code>json</code> was enabled in the request options.
  */
 
 /**jsdoc
