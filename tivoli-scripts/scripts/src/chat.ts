@@ -183,31 +183,20 @@ class ChatHandler extends WebEventHandler {
 	}
 
 	getMetaTags(url: string, callback: (headContent: string) => any) {
-		const req = new XMLHttpRequest();
-		req.onreadystatechange = function () {
-			if (req.readyState >= 4) {
-				const contentType = req.getResponseHeader("content-type");
-				if (
-					req.status == 200 &&
-					contentType != null &&
-					contentType.indexOf("text/html") > -1
-				) {
-					const html = req.responseText;
-					let metaTags = [];
+		request<string>(url, (error, response, html) => {
+			if (error) return callback(null);
+			if (response.headers["content-type"].indexOf("text/html") == -1)
+				return callback(null);
 
-					const matches = html.match(
-						/(?:<meta [^]+?>)|(?:<link [^]+?>)|(?:<title[^]*?>[^]+?<\/title>)/gi,
-					);
-					if (matches != null) metaTags = matches;
+			let metaTags = [];
 
-					return callback(metaTags.join("\n"));
-				} else {
-					return callback(null);
-				}
-			}
-		};
-		req.open("GET", url, true);
-		req.send();
+			const matches = html.match(
+				/(?:<meta [^]+?>)|(?:<link [^]+?>)|(?:<title[^]*?>[^]+?<\/title>)/gi,
+			);
+			if (matches != null) metaTags = matches;
+
+			return callback(metaTags.join("\n"));
+		});
 	}
 
 	handleEvent(data: { key: string; value: any }) {
