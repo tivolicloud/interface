@@ -31,8 +31,8 @@ namespace controller {
         // 1 indicates no smoothing at all, poses are passed through unaltered.
         // Values near 1 are less smooth with lower latency.
         // Values near 0 are more smooth with higher latency.
-        float _translationConstant { 0.375f };
-        float _rotationConstant { 0.375f };
+        float _translationConstant { 1.0f };
+        float _rotationConstant { 1.0f };
 
         mutable Pose _prevSensorValue { Pose() };  // sensor space
     };

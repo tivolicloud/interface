@@ -3,35 +3,35 @@ import { SignalManager } from "./lib/signal-manager";
 export class Optimize {
 	signals = new SignalManager();
 
-	private disableTrackingSmoothing() {
-		const mapping = Controller.parseMapping(
-			JSON.stringify({
-				name: "com.tivolicloud.disableTrackingSmoothing",
-				channels: [
-					"LeftHand",
-					"RightHand",
-					"LeftFoot",
-					"RightFoot",
-					"Hips",
-					"Spine2",
-					"Head",
-				].map(function (channel) {
-					return {
-						from: "Standard." + channel,
-						to: "Actions." + channel,
-						filters: [
-							{
-								type: "exponentialSmoothing",
-								translation: 1,
-								rotation: 1,
-							},
-						],
-					};
-				}),
-			}),
-		);
-		mapping.enable();
-	}
+	// private disableTrackingSmoothing() {
+	// 	const mapping = Controller.parseMapping(
+	// 		JSON.stringify({
+	// 			name: "com.tivolicloud.disableTrackingSmoothing",
+	// 			channels: [
+	// 				"LeftHand",
+	// 				"RightHand",
+	// 				"LeftFoot",
+	// 				"RightFoot",
+	// 				"Hips",
+	// 				"Spine2",
+	// 				"Head",
+	// 			].map(function (channel) {
+	// 				return {
+	// 					from: "Standard." + channel,
+	// 					to: "Actions." + channel,
+	// 					filters: [
+	// 						{
+	// 							type: "exponentialSmoothing",
+	// 							translation: 1,
+	// 							rotation: 1,
+	// 						},
+	// 					],
+	// 				};
+	// 			}),
+	// 		}),
+	// 	);
+	// 	mapping.enable();
+	// }
 
 	private forceFirstPersonInHMD() {
 		const forceFirstPerson = () => {
@@ -50,7 +50,7 @@ export class Optimize {
 	};
 
 	constructor() {
-		this.disableTrackingSmoothing();
+		// this.disableTrackingSmoothing();
 		this.forceFirstPersonInHMD();
 
 		Window.interstitialModeEnabled = false;
