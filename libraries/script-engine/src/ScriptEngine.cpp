@@ -66,6 +66,7 @@
 #include "EventTypes.h"
 #include "FileScriptingInterface.h" // unzip project
 #include "MenuItemProperties.h"
+#include "RequestFunction.h"
 #include "ScriptAudioInjector.h"
 #include "ScriptAvatarData.h"
 #include "ScriptCache.h"
@@ -835,6 +836,13 @@ void ScriptEngine::init() {
             }
         }
     ));
+
+    
+    // globalObject().setProperty("request", newFunction(requestFunction));
+    QScriptProgram requestFunctionProgram { requestFunction };
+    if (requestFunctionProgram.isNull() == false) {
+        BaseScriptEngine::evaluate(requestFunctionProgram);
+    }
 
     // Scriptable cache access
     auto resourcePrototype = createScriptableResourcePrototype(qSharedPointerCast<ScriptEngine>(sharedFromThis()));
