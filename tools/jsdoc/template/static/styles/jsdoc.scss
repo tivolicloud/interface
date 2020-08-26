@@ -810,3 +810,23 @@ span.param-type,
 #disqus_thread {
     margin-left: 30px;
 }
+
+// dark mode!
+
+html.dark {
+    &, body, section {
+        background-color: #1d1f21;
+        color: #fff;
+    }
+
+    table tr td {
+        background-color: mix(#fff, #1d1f21, 10%);
+        &:nth-child(even) {
+            background-color: mix(#fff, #1d1f21, 15%);
+        }
+    }
+
+    td {
+        border-color: mix(#fff, #1d1f21, 30%);
+    }
+}
