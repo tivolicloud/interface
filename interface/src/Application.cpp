@@ -5946,7 +5946,9 @@ void Application::cameraMenuChanged() {
     }
 }
 
-void Application::requeryOctree() {    
+void Application::requeryOctree() {        
+    auto now = SteadyClock::now();
+    static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
     _queryExpiry = SteadyClock::now();
     _octreeQuery.incrementConnectionID();
     QJsonObject queryJSONParameters;
@@ -5959,6 +5961,7 @@ void Application::requeryOctree() {
         PacketType::EntityQuery,
         queryJSONParameters
     );
+    _queryExpiry = now + MIN_PERIOD_BETWEEN_QUERIES;
 }
 
 void Application::resetPhysicsReadyInformation() {
@@ -6700,7 +6703,7 @@ void Application::update(float deltaTime) {
 
         bool enoughTimePassed = now > _queryExpiry;
         if (enoughTimePassed) requeryOctree();
-        
+
         if (viewIsDifferentEnough) {            
             if (DependencyManager::get<SceneScriptingInterface>()
             ->shouldRenderEntities()
