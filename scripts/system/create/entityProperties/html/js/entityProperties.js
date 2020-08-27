@@ -567,10 +567,9 @@ const GROUPS = [
 				type: "dropdown",
 				// const char * zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
 				options: {
-					inherit: "Ignore",
-					on_exclusive: "Cull Everything Outside",
-					on_inclusive: "Cull and Inherit Outside",
-					off_exclusive: "Disable all zone culling"
+					inherit: "Inherit",
+					on_exclusive: "Cull Outside",
+					off_exclusive: "Disabled"
 				},
 				propertyID: "zoneCullingMode"
 			},
