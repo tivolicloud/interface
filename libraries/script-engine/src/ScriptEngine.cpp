@@ -66,6 +66,7 @@
 #include "EventTypes.h"
 #include "FileScriptingInterface.h" // unzip project
 #include "MenuItemProperties.h"
+#include "RequestFunction.h"
 #include "ScriptAudioInjector.h"
 #include "ScriptAvatarData.h"
 #include "ScriptCache.h"
@@ -808,6 +809,7 @@ void ScriptEngine::init() {
      * Encodes text to base64.
      * @function btoa
      * @param {string} text - The text you want to encode.
+     * @returns {string} base64
      */
     globalObject().setProperty("btoa", newFunction(
         [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
@@ -824,6 +826,7 @@ void ScriptEngine::init() {
      * Decodes base64 to text.
      * @function atob
      * @param {string} base64 - The base64 you want to decode.
+     * @returns {string} text
      */
     globalObject().setProperty("atob", newFunction(
         [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
@@ -835,6 +838,13 @@ void ScriptEngine::init() {
             }
         }
     ));
+
+    
+    // globalObject().setProperty("request", newFunction(requestFunction));
+    QScriptProgram requestFunctionProgram { requestFunction };
+    if (requestFunctionProgram.isNull() == false) {
+        BaseScriptEngine::evaluate(requestFunctionProgram);
+    }
 
     // Scriptable cache access
     auto resourcePrototype = createScriptableResourcePrototype(qSharedPointerCast<ScriptEngine>(sharedFromThis()));

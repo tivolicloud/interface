@@ -104,27 +104,27 @@
 
         {
             "from": "Vive.LeftFoot", "to" : "Standard.LeftFoot",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
         {
             "from": "Vive.RightFoot", "to" : "Standard.RightFoot",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
         {
             "from": "Vive.Hips", "to" : "Standard.Hips",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
         {
             "from": "Vive.Spine2", "to" : "Standard.Spine2",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
         {
             "from": "Vive.RightArm", "to" : "Standard.RightArm",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
         {
             "from": "Vive.LeftArm", "to" : "Standard.LeftArm",
-            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 0.15, "translation": 0.15}]
+            "filters" : [{"type" :  "exponentialSmoothing", "rotation" : 1.0, "translation": 1.0}]
         },
 
         { "from": "Vive.TrackedObject00", "to" : "Standard.TrackedObject00" },

@@ -825,7 +825,7 @@ Menu::Menu() {
     
 
     // Developer > Show Statistics
-    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, Qt::Key_Slash, true);
+    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, Qt::Key_F3, true);
 
     // Developer > Show Animation Statistics
     addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::AnimStats);

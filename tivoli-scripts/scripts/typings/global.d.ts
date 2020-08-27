@@ -1,5 +1,3 @@
-declare function print(...message: any): void;
-
 declare interface AACube {
 	x: number;
 	y: number;
@@ -355,6 +353,26 @@ declare type RefreshRateRegimeName =
 	| "StartUp"
 	| "ShutDown";
 
+declare type RequestCallback<T> = (
+	error: string,
+	response: RequestResponse,
+	body: T,
+) => any;
+
+declare interface RequestOptions {
+	uri?: string;
+	url?: string;
+	method?: string;
+	json?: boolean;
+	body?: { [key: string]: string };
+	headers?: { [key: string]: string };
+}
+
+declare interface RequestResponse {
+	statusCode: number;
+	headers: { [key: string]: string };
+}
+
 declare type RGBS = [number, number, number, boolean?];
 
 declare interface Shape {
@@ -512,3 +530,16 @@ declare interface WheelEvent {
 	isControl: boolean;
 	isAlt: boolean;
 }
+
+// functions
+
+declare function atob(base64: string): string;
+
+declare function btoa(text: string): string;
+
+declare function print(...message: any): void;
+
+declare function request<T>(
+	options: RequestOptions | string,
+	callback: RequestCallback<T>,
+): void;

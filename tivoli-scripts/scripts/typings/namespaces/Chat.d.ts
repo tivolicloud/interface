@@ -6,4 +6,15 @@ declare namespace Chat {
 	function removeCommand(command: ChatCommand): void;
 	function sendMessage(message: string, me?: boolean, tts?: boolean): void;
 	function showMessage(message: string): void;
+
+	// signals
+	const messageReceived: Signal<(
+		data: {
+			message: string;
+			me?: boolean;
+			tts?: boolean;
+			local?: boolean;
+		},
+		senderID: string,
+	) => any>;
 }
