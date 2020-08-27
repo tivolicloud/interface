@@ -316,7 +316,7 @@ void EntityRenderer::removeFromScene(const ScenePointer& scene, Transaction& tra
 
 void EntityRenderer::updateInScene(const ScenePointer& scene, Transaction& transaction) {
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
-    if (this == nullptr || !isValidRenderItem()) {
+    if (this == nullptr || !isValidRenderItem()) {       
         return;
     }
     _updateTime = usecTimestampNow();
@@ -435,16 +435,16 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
             if (checkType == EntityTypes::Grid) return;
             if (checkType == EntityTypes::Material) return;
             // if (checkType == EntityTypes::Shape) return;
-            // const bool hasChanged = evaluateEntityZoneCullState(entity);
         }
 
+        const bool hasChanged = evaluateEntityZoneCullState(entity); // must be called even if bool not used
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());
         _canCastShadow = entity->getCanCastShadow();
         setCullWithParent(entity->getCullWithParent());
         _cauterized = entity->getCauterized();
-        entity->setNeedsRenderUpdate(false);
+        entity->setNeedsRenderUpdate(hasChanged);
     });
 }
 
@@ -472,9 +472,8 @@ bool EntityRenderer::evaluateEntityZoneCullState(const EntityItemPointer& entity
             {
                 _visible = true;  // show again if it was zone-culled previously
                 hasChanged = true;
-                setPreviouslyVisible(false);
-                entity->setNeedsRenderUpdate(true);              
-            } else if (entity->getType() != EntityTypes::Model) hasChanged = true;  // Non-models need this to update. Why? Position in render pipeline? 
+                setPreviouslyVisible(false);    
+            }
         }
         else 
         {
@@ -484,12 +483,11 @@ bool EntityRenderer::evaluateEntityZoneCullState(const EntityItemPointer& entity
                 _visible = false;
                 hasChanged = true;
                 setPreviouslyVisible(true); // remember it wasn't visible to ben if it was zone-culled previously
-                entity->setNeedsRenderUpdate(true); 
             } 
             else 
             {
                 setPreviouslyVisible(false);
-                if (entity->getType() != EntityTypes::Model) hasChanged = true;   // Non-models need this to update. Why? Position in render pipeline?
+                hasChanged = true;   // Non-models need this to update. Why? Position in render pipeline?
             }
         }
 
@@ -501,12 +499,11 @@ bool EntityRenderer::evaluateEntityZoneCullState(const EntityItemPointer& entity
         {
             _visible = true;  // show again if it was zone-culled previously
             hasChanged = true;
-            setPreviouslyVisible(true); // remember it wasn't visible to ben if it was zone-culled previously
-            entity->setNeedsRenderUpdate(true);
+            setPreviouslyVisible(true); // remember it wasn't visible to ben if it was zone-culled previously     
             // Non-model entities (lights, etc) need to be marked changed in order to update.  I don't know why.
             // May have to do with their position in the render pipeline.  
         } 
-        else if (entity->getType() != EntityTypes::Model) hasChanged = true;
+        //else if (entity->getType() != EntityTypes::Model) hasChanged = true;
     }
 
     return hasChanged;

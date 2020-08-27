@@ -4249,6 +4249,7 @@ void MyAvatar::goToLocation(const glm::vec3& newPosition,
 
     resetLookAtRotation(_goToPosition, _goToOrientation);
     emit transformChanged();
+    qApp->requeryOctree(); // Quickly refresh octree so formerly faraway entities redraw promptly
 }
 
 void MyAvatar::goToLocationAndEnableCollisions(const glm::vec3& position) { // See use case in safeLanding.

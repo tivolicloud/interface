@@ -273,6 +273,7 @@ void EntityTreeRenderer::stopDomainAndNonOwnedEntities() {
 void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
 
     stopDomainAndNonOwnedEntities();
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
     auto sessionUUID = getTree()->getMyAvatarSessionUUID();
     std::unordered_map<EntityItemID, EntityRendererPointer> savedEntities;
@@ -311,6 +312,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
 void EntityTreeRenderer::clear() {
 
     leaveAllEntities();
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     // unload and stop the engine
     if (_entitiesScriptEngine) 
     {
@@ -400,6 +402,8 @@ void EntityTreeRenderer::init() {
     connect(entityTree.get(), &EntityTree::addingEntity, this, &EntityTreeRenderer::addingEntity, Qt::QueuedConnection);
     connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging,
             Qt::QueuedConnection);
+            
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
 }
 
@@ -567,7 +571,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const auto& renderable : _priorityRenderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) {                    
+                    renderable->getEntity()->setNeedsRenderUpdate(true);
+                    renderable->updateInScene(scene, transaction);
+                }
             }
         }
 
@@ -581,7 +588,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const EntityRendererPointer& renderable : _renderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) {
+                    renderable->getEntity()->setNeedsRenderUpdate(true);
+                    renderable->updateInScene(scene, transaction);
+                }
             }
 
             size_t numRenderables = _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
@@ -643,7 +653,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                         break;
                     }
                     const auto& renderable = sortedRenderable.getRenderer();
-                    if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                    if (renderable != nullptr) {                        
+                        renderable->getEntity()->setNeedsRenderUpdate(true);
+                        renderable->updateInScene(scene, transaction);
+                    }
                     _renderablesToUpdate.erase(renderable);
                 }
 
@@ -836,7 +849,7 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         if (!zoneItem) continue;
         // to do -- make seond parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
-        
+    
         switch (_zoneMode) {
             case inherit:  // do nothing
                 break;

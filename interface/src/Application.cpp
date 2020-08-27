@@ -5608,7 +5608,7 @@ void Application::init() {
     connect(_entitySimulation.get(), &PhysicalEntitySimulation::entityCollisionWithEntity,
             getEntities().data(), &EntityTreeRenderer::entityCollisionWithEntity);
 
-    // connect the _entities (EntityTreeRenderer) to our script engine's EntityScriptingInterface for firing
+     // connect the _entities (EntityTreeRenderer) to our script engine's EntityScriptingInterface for firing
     // of events related clicking, hovering over, and entering entities
     getEntities()->connectSignalsToSlots(entityScriptingInterface.data());
 
@@ -5943,6 +5943,21 @@ void Application::cameraMenuChanged() {
     }
 }
 
+void Application::requeryOctree() {    
+    _queryExpiry = SteadyClock::now();
+    _octreeQuery.incrementConnectionID();
+    QJsonObject queryJSONParameters;
+    QJsonObject queryFlags;
+    queryFlags["includeDescendants"] = true;
+    queryFlags["includeAncestors"] = true;
+    queryJSONParameters["flags"] = queryFlags;
+    queryOctree(
+        NodeType::EntityServer,
+        PacketType::EntityQuery,
+        queryJSONParameters
+    );
+}
+
 void Application::resetPhysicsReadyInformation() {
     // we've changed domains or cleared out caches or something.  we no longer know enough about the
     // collision information of nearby entities to make running bullet be safe.
@@ -6238,6 +6253,7 @@ void Application::tryToEnablePhysics() {
             myAvatar->updateMotionBehaviorFromMenu();
             qDebug() << "TRY TO ENABLE PHYSICS 4";
             DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
+            requeryOctree(); // hit it with a quick refresh to make sure everything is drawn
         }
     }
 }
@@ -6678,10 +6694,13 @@ void Application::update(float deltaTime) {
         // if it's been a while since our last query or the view has significantly changed then send a query, otherwise suppress it
         static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 2 };
         auto now = SteadyClock::now();
-        if (now > _queryExpiry || viewIsDifferentEnough) {
-            if (
-                DependencyManager::get<SceneScriptingInterface>()
-                ->shouldRenderEntities()
+
+        bool enoughTimePassed = now > _queryExpiry;
+        if (enoughTimePassed) requeryOctree();
+        
+        if (viewIsDifferentEnough) {            
+            if (DependencyManager::get<SceneScriptingInterface>()
+            ->shouldRenderEntities()
             ) {
                 QJsonObject queryJSONParameters;
                 QJsonObject queryFlags;

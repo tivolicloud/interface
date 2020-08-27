@@ -464,6 +464,7 @@ public slots:
 
     void resetPhysicsReadyInformation();
 
+    void requeryOctree();
     void reloadResourceCaches();
     void rejoin();
 

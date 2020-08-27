@@ -369,6 +369,10 @@ Menu::Menu() {
     //// Developer > Tivoli Options > Test Zone Culling (test)
     //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);
 
+
+    // Edit > Redraw Tree 
+    addActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::Redraw, Qt::CTRL | Qt::SHIFT | Qt::Key_T, qApp, SLOT(requeryOctree()));
+
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
         qApp->getForcedBypassPrioritySorting());
     connect(action, &QAction::triggered, [action] { 
