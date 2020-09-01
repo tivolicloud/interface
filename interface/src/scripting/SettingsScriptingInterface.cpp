@@ -54,10 +54,13 @@ void SettingsScriptingInterface::setValue(const QString& setting, const QVariant
     QString deepCopy = QString::fromUtf16(setting.utf16());
 
     // pointers in the QVariant that dont exist anymore can crash when getValue is run
-    QVariant sanitizedValue = value.type() == QVariant::Type::Map ?
-        QVariant(QJsonValue::fromVariant(value)) :
-        value;
+    // QVariant sanitizedValue = value.type() == QVariant::Type::Map ?
+    //     QJsonValue::fromVariant(value).toVariant() :
+    //     value;
+    // Setting::Handle<QVariant>(deepCopy).set(sanitizedValue);
+    // emit valueChanged(setting, sanitizedValue);
+    // TODO: the above code needs testing
 
-    Setting::Handle<QVariant>(deepCopy).set(sanitizedValue);
-    emit valueChanged(setting, sanitizedValue);
+    Setting::Handle<QVariant>(deepCopy).set(value);
+    emit valueChanged(setting, value);
 }

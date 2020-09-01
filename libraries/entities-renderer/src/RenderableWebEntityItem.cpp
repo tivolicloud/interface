@@ -302,12 +302,14 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
     glm::vec4 color;
     Transform transform;
     bool forward;
+    bool transparent;
     withReadLock([&] {
         float fadeRatio = _isFading ? Interpolate::calculateFadeRatio(_fadeStartTime) : 1.0f;
         color = glm::vec4(toGlm(_color), _alpha * fadeRatio);
         color = EntityRenderer::calculatePulseColor(color, _pulseProperties, _created);
         transform = _renderTransform;
         forward = _renderLayer != RenderLayer::WORLD || args->_renderMethod == render::Args::FORWARD;
+        transparent = isTransparent();
     });
 
     if (color.a == 0.0f) {
@@ -321,7 +323,7 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 
     // Turn off jitter for these entities
     batch.pushProjectionJitter();
-    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, _transparentBackground || color.a < OPAQUE_ALPHA_THRESHOLD, forward);
+    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, transparent, forward);
     DependencyManager::get<GeometryCache>()->renderQuad(batch, topLeft, bottomRight, texMin, texMax, color, _geometryId);
     batch.popProjectionJitter();
     batch.setResourceTexture(0, nullptr);
