@@ -211,6 +211,8 @@ void HFMModel::computeKdops() {
 
 void hfm::Model::debugDump() const {
     qCDebug(modelformat) << "---------------- hfmModel ----------------";
+    qCDebug(modelformat) << "  originalURL =" << originalURL;
+
     qCDebug(modelformat) << "  hasSkeletonJoints =" << hasSkeletonJoints;
     qCDebug(modelformat) << "  offset =" << offset;
 
@@ -218,6 +220,8 @@ void hfm::Model::debugDump() const {
 
     qCDebug(modelformat) << "  bindExtents.size() = " << bindExtents.size();
     qCDebug(modelformat) << "  meshExtents.size() = " << meshExtents.size();
+
+    qCDebug(modelformat) << "  jointIndices.size() =" << jointIndices.size();
 
     qCDebug(modelformat) << "---------------- Shapes ----------------";
     qCDebug(modelformat) << "  shapes.size() =" << shapes.size();
