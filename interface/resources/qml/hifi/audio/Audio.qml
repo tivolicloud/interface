@@ -303,7 +303,8 @@ Rectangle {
                         checked: AudioScriptingInterface.isStereoInput;
                         onCheckedChanged: {
                             AudioScriptingInterface.isStereoInput = checked;
-                            checked = Qt.binding(function() { return AudioScriptingInterface.isStereoInput; }); // restore binding
+                            // causes issues on Linux where it checks and unchecks repeatedly
+                            // checked = Qt.binding(function() { return AudioScriptingInterface.isStereoInput; }); // restore binding
                         }
                     }
                 }
