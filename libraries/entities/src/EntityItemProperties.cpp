@@ -228,6 +228,7 @@ const QHash<QString, WebInputMode> stringToWebInputModeLookup = [] {
     QHash<QString, WebInputMode> toReturn;
     addWebInputMode(toReturn, WebInputMode::TOUCH);
     addWebInputMode(toReturn, WebInputMode::MOUSE);
+    addWebInputMode(toReturn, WebInputMode::NONE);
     return toReturn;
 }();
 QString EntityItemProperties::getInputModeAsString() const { return WebInputModeHelpers::getNameForWebInputMode(_inputMode); }

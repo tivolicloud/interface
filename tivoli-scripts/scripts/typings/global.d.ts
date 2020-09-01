@@ -515,7 +515,7 @@ declare interface ViewFrustrum {
 	projection: Mat4;
 }
 
-declare type WebInputMode = "touch" | "mouse";
+declare type WebInputMode = "touch" | "mouse" | "none";
 
 declare interface WheelEvent {
 	x: number;
