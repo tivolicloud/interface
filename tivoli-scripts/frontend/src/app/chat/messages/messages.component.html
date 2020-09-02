@@ -31,7 +31,7 @@
 				{{ message.username }}
 			</span>
 			<ng-container *ngFor="let part of message.messageParts">
-				<ng-container *ngIf="!part.html">
+				<ng-container *ngIf="!part.html && !part.code">
 					<ng-container *ngIf="!part.link">
 						{{ part.content }}
 					</ng-container>
@@ -44,6 +44,7 @@
 					</a>
 				</ng-container>
 				<span *ngIf="part.html" [innerHTML]="part.content"></span>
+				<pre *ngIf="part.code" class="code">{{ part.content }}</pre>
 			</ng-container>
 		</span>
 		<div

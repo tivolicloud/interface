@@ -76,7 +76,7 @@ export class EmojiService {
 
 	processMessageParts(messageParts: MessagePart[]) {
 		for (const part of messageParts) {
-			if (part.html || part.link) continue;
+			if (part.html || part.link || part.code) continue;
 			if (/^:[^]+?:$/.test(part.content) == false) continue;
 
 			const emojiUrl = this.shortcodeToImage(part.content);

@@ -85,5 +85,15 @@
 			border-radius: 4px;
 			margin-top: 4px;
 		}
+
+		.code {
+			margin: 0;
+			margin-top: 4px;
+			background: rgba(#1d1f21, 0.8);
+			border-radius: 8px;
+			padding: 8px 12px;
+			font-family: "Roboto Mono", monospace;
+			font-size: 1rem;
+		}
 	}
 }

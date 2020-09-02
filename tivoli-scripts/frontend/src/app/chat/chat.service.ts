@@ -8,6 +8,7 @@ export interface MessagePart {
 	content: string;
 	html: boolean;
 	link: boolean;
+	code: boolean;
 }
 
 class Message {
@@ -159,6 +160,26 @@ class Message {
 		}, 1000 * 5);
 	}
 
+	private processCodeBlocks(
+		messageParts: MessagePart[],
+		codeBlocks: string[],
+	) {
+		for (const part of messageParts) {
+			if (part.html || part.link || part.code) continue;
+
+			const match = part.content.match(/^```([0-9]+)```$/);
+			if (match == null) continue;
+
+			const codeBlock = codeBlocks[match[1]];
+			if (codeBlock == null) continue;
+
+			part.content = codeBlock
+				.replace(/^[\s\n]*```[\s\n]*/, "")
+				.replace(/[\s\n]*```[\s\n]*$/, "");
+			part.code = true;
+		}
+	}
+
 	constructor(
 		private readonly chatService: ChatService,
 		public type: "message" | "announcement",
@@ -170,20 +191,37 @@ class Message {
 		this.getImageFromText();
 		this.putSpacesBetweenEmojis();
 
+		const codeBlocks =
+			this.message.match(/[\s\n]*```[^]+?```[\s\n]*/g) || [];
+
+		for (let i = 0; i < codeBlocks.length; i++) {
+			this.message = this.message.replace(
+				codeBlocks[i],
+				" ```" + i + "``` ",
+			);
+		}
+
 		this.messageParts = this.message
 			.split(/([\s\n])/g)
 			.filter(content => content == "\n" || content.trim() != "")
 			.map(content => {
 				if (content == "\n") {
-					return { content: "</br>", html: true, link: false };
+					return {
+						content: "</br>",
+						html: true,
+						link: false,
+						code: false,
+					};
 				} else {
 					const link = /https?:\/\/[^]+/i.test(content);
 					if (link && this.metadata == null) {
 						this.getMetadata(content);
 					}
-					return { content, html: false, link };
+					return { content, html: false, link, code: false };
 				}
 			});
+
+		this.processCodeBlocks(this.messageParts, codeBlocks);
 
 		chatService.emojiService.processMessageParts(this.messageParts);
 
