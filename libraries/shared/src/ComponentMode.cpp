@@ -47,28 +47,50 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
  *   </thead>
  *   <tbody>
  *     <tr><td><code>"inherit"</code></td><td>Inherits whatever zone culling paroperties are outside this zone.</td></tr>
- *     <tr><td><code>"onInclusive"</code></td><td>Culls everything outside of this + any outer zones.</td></tr>
- *     <tr><td><code>"onExclusive"</code></td><td>Culls everything outside of this zone.</td></tr>
- *     <tr><td><code>"offExclusive"</code></td><td>Culls nothing, including overriding outer zone culling..</td></tr>
+ *     <tr><td><code>"outside"</code></td><td>Culls everything outside of this + any outer zones.</td></tr>
+ *     <tr><td><code>"disabled"</code></td><td>Culls nothing, including overriding outer zone culling..</td></tr>
  *   </tbody>
  * </table>
  * @typedef {string} Entities.ZoneCullingMode
  */
-const char* zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
+const char* zoneCullingModeNames[] = { "inherit", "outside", "disabled" };
 
 
 QString ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(ZoneCullingComponentMode mode) {
-    if (((int)mode <= 0) || ((int)mode >= (int)ZONECULLING_MODE_ITEM_COUNT)) {
+    if (((int)mode <= 0) || ((int)mode >= (int)ZONE_CULLING_MODE_ITEM_COUNT)) {
         mode = (ZoneCullingComponentMode)0;
     }
 
     return zoneCullingModeNames[(int)mode];
 }
 
-    //inherit,            // Do not change the skiplist
-    //onInclusive,   // Add my entities to existing skiplist.
-    //onExclusive,   // Overwrite skiplist with my entities.
-    //offExclusive,  // Clear skiplist completely.
+/**jsdoc
+ * <p>How Tone Mapping is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
+ * <table>
+ *   <thead>
+ *     <tr><th>Value</th><th>Description</th></tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr><td><code>"inherit"</code></td><td>Inherits whatever tone mapping curve paroperties are outside this zone.</td></tr>
+ *     <tr><td><code>"rgb"</code></td><td>Apply RGB tone mapping in the zone.</td></tr>
+ *     <tr><td><code>"srgb"</code></td><td>Apply SRGB tone mapping in the zone.</td></tr>
+ *     <tr><td><code>"reinhard"</code></td><td>Apply Reinhard tone mapping in the zone.</td></tr>
+ *     <tr><td><code>"filmic"</code></td><td>Apply filmic tone mapping in the zone.</td></tr>
+ *   </tbody>
+ * </table>
+ * @typedef {string} Entities.ToneMappingMode
+ */
+
+const char* ToneMappingModeNames[] = { "inherit", "rgb", "srgb", "reinhard", "filmic" };
+
+
+QString ToneMappingModeHelpers::getNameForToneMappingComponentMode(ToneMappingComponentMode mode) {
+    if (((int)mode <= 0) || ((int)mode >= (int)TONE_MAPPING_MODE_ITEM_COUNT)) {
+        mode = (ToneMappingComponentMode)0;
+    }
+
+    return ToneMappingModeNames[(int)mode];
+}
 
     /**jsdoc
  * <p>The priority of updates from avatars in a zone to other clients.</p>
@@ -97,13 +119,3 @@ QString AvatarPriorityModeHelpers::getNameForAvatarPriorityMode(AvatarPriorityMo
 
     return avatarPriorityModeNames[(int)mode];
 }
-
-//const char* entityPriorityModeNames[] = { "static", "automatic", "prioritized" };
-//
-//QString EntityPriorityModeHelpers::getNameForEntityPriorityComponentMode(EntityPriorityComponentMode mode) {
-//    if (((int)mode <= 0) || ((int)mode >= (int)ENTITY_PRIORITY_ITEM_COUNT)) {
-//        mode = (EntityPriorityComponentMode)0;
-//    }
-//
-//    return entityPriorityModeNames[(int)mode];
-//}

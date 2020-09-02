@@ -565,13 +565,33 @@ const GROUPS = [
 			{
 				label: "Zone Culling",
 				type: "dropdown",
-				// const char * zoneCullingModeNames[] = { "inherit", "on_inclusive", "on_exclusive", "off_exclusive" };
 				options: {
 					inherit: "Inherit",
-					on_exclusive: "Cull Outside",
-					off_exclusive: "Disabled"
+					outside: "Cull Outside",
+					disabled: "Disabled"
 				},
 				propertyID: "zoneCullingMode"
+			},
+			{
+				label: "Tone Mapping",
+				type: "dropdown",
+				options: {
+					inherit: "Inherit",
+					rgb: "RGB",
+					srgb: "SRGB",
+					reinhard: "Reinhard",
+					filmic: "Filmic"
+				},
+				propertyID: "toneMappingMode"
+			},
+			{
+				label: "Exposure",
+				type: "number-draggable",
+				min: -4,
+				max: 4,
+				step: 0.25,
+				decimals: 2,
+				propertyID: "toneMapping.exposure"
 			},
 			{
 				label: "Avatar Priority",

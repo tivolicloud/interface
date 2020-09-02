@@ -474,6 +474,7 @@
 			shapeType: "box",
 			bloomMode: "inherit",
 			zoneCullingMode: "inherit",
+			toneMappingMode: "inherit",
 			avatarPriority: "inherit"
 		},
 		Model: {

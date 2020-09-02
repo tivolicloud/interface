@@ -18,25 +18,31 @@ enum ComponentMode {
     COMPONENT_MODE_INHERIT,
     COMPONENT_MODE_DISABLED,
     COMPONENT_MODE_ENABLED,
-
     COMPONENT_MODE_ITEM_COUNT
 };
 
-enum ZoneCullingComponentMode  // TIVOLI
+enum ZoneCullingComponentMode 
 {
-    inherit,           // Do not change the skiplist
-    onInclusive,      // Add my entities to existing skiplist.
-    onExclusive,      // Overwrite skiplist with my entities.
-    offExclusive,     // Clear skiplist completely.
+    ZONE_CULLING_INHERIT,
+    ZONE_CULLING_OUTSIDE,
+    ZONE_CULLING_DISABLED,
+    ZONE_CULLING_MODE_ITEM_COUNT
+};
 
-    ZONECULLING_MODE_ITEM_COUNT
+enum ToneMappingComponentMode
+{
+    TONE_MAPPING_INHERIT,  
+    TONE_MAPPING_RGB,
+    TONE_MAPPING_SRGB,
+    TONE_MAPPING_REINHARD,
+    TONE_MAPPING_FILMIC,
+    TONE_MAPPING_MODE_ITEM_COUNT
 };
 
 enum AvatarPriorityMode {
     AVATAR_PRIORITY_INHERIT,
     AVATAR_PRIORITY_CROWD,
     AVATAR_PRIORITY_HERO,
-
     AVATAR_PRIORITY_ITEM_COUNT
 };
 
@@ -44,7 +50,6 @@ enum EntityPriorityComponentMode {
     ENTITY_PRIORITY_STATIC,
     ENTITY_PRIORITY_AUTOMATIC,
     ENTITY_PRIORITY_PRIORITIZED,
-
     ENTITY_PRIORITY_ITEM_COUNT
 };
 
@@ -56,6 +61,11 @@ public:
 class ZoneCullingModeHelpers {
 public:
     static QString getNameForZoneCullingComponentMode(ZoneCullingComponentMode mode);
+};
+
+class ToneMappingModeHelpers {
+public:
+    static QString getNameForToneMappingComponentMode(ToneMappingComponentMode mode);
 };
 
 class AvatarPriorityModeHelpers {
