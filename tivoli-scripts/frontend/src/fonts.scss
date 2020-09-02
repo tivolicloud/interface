@@ -42,6 +42,20 @@
   font-weight: 700;
   src: url('fonts/roboto-condensed-v18-latin-700.woff2') format('woff2');
 }
+/* roboto-mono-regular - latin */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/roboto-mono-v12-latin-regular.woff2') format('woff2');
+}
+/* roboto-mono-700 - latin */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/roboto-mono-v12-latin-700.woff2') format('woff2');
+}
 
 // https://google.github.io/material-design-icons
 
