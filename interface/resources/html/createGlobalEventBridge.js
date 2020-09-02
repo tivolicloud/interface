@@ -104,6 +104,7 @@ var EventBridge;
 			new WebKitMutationObserver(mutations => {
 				mutations.forEach(mutation => {
 					for (const node of mutation.addedNodes) {
+						if (node == null) continue;
 						if (
 							node.nodeName == "VIDEO" ||
 							node.nodeName == "AUDIO"
