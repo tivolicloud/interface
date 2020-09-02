@@ -420,10 +420,10 @@ void WebEntityRenderer::hoverLeaveEntity(const PointerEvent& event) {
 }
 
 void WebEntityRenderer::handlePointerEvent(const PointerEvent& event) {
+    if (_inputMode == WebInputMode::NONE) return;
+    
     withReadLock([&] {
-        if (!_webSurface) {
-            return;
-        }
+        if (!_webSurface) return;
 
         if (_inputMode == WebInputMode::TOUCH) {
             handlePointerEventAsTouch(event);

@@ -814,8 +814,9 @@ const GROUPS = [
 				label: "Input Mode",
 				type: "dropdown",
 				options: {
-					touch: "Touch events",
-					mouse: "Mouse events"
+					touch: "Touch-based",
+					mouse: "Mouse-based",
+					none: "None"
 				},
 				propertyID: "inputMode"
 			},
