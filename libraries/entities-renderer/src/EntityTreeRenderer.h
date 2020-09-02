@@ -62,6 +62,7 @@ public:
     bool _zoneCullingActive = false;
     bool _updateStaticEntities = false;
     bool _isEditMode = false;
+    bool _ghostingAllowed = true;
 
     void setCurrentlySelectedItems(QList<EntityItemID>& value) { _currentlySelectedEntities = value;}
     bool checkIfEntityIsSelected(const EntityItemID& value) { return _currentlySelectedEntities.contains(value); }
@@ -73,6 +74,7 @@ public:
     bool getSceneIsReady() { return _sceneIsReady; }
 
     void setIsEditMode(bool modeState) { _isEditMode = modeState; }
+    bool getGhostingAllowed() { return _ghostingAllowed; }
 
     ReadWriteLockable _getZoneCullSkiplistGuard;
     QVector<QUuid> getZoneCullSkiplist();

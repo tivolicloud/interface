@@ -5960,7 +5960,8 @@ void Application::requeryOctree() {
         NodeType::EntityServer,
         PacketType::EntityQuery,
         queryJSONParameters
-    );
+    );    
+    DependencyManager::get<EntityTreeRenderer>()->evaluateZoneCullingStack();
     _queryExpiry = now + MIN_PERIOD_BETWEEN_QUERIES;
 }
 
@@ -6240,24 +6241,20 @@ static bool domainLoadingInProgress = false;
 
 void Application::tryToEnablePhysics() {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-    qDebug() << "TRY TO ENABLE PHYSICS 1";
     if (gpuTextureMemSizeStable() || !enableInterstitial) {
         _fullSceneCounterAtLastPhysicsCheck = _fullSceneReceivedCounter;
         _lastQueriedViews.clear();  // Force new view.
-        qDebug() << "TRY TO ENABLE PHYSICS 2";
-
         // process octree stats packets are sent in between full sends of a scene (this isn't currently true).
         // We keep physics disabled until we've received a full scene and everything near the avatar in that
         // scene is ready to compute its collision shape.
         auto myAvatar = getMyAvatar();
         if (myAvatar->isReadyForPhysics()) {
-            qDebug() << "TRY TO ENABLE PHYSICS 31";
             myAvatar->getCharacterController()->setPhysicsEngine(_physicsEngine);
             _octreeProcessor.resetSafeLanding();
             _physicsEnabled = true;
             setIsInterstitialMode(false);
             myAvatar->updateMotionBehaviorFromMenu();
-            qDebug() << "TRY TO ENABLE PHYSICS 4";
+            qDebug() << "Physics enabled";
             DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
             requeryOctree(); // hit it with a quick refresh to make sure everything is drawn
         }
@@ -6289,16 +6286,9 @@ void Application::update(float deltaTime) {
             }
         } else {
             _octreeProcessor.updateSafeLanding();
-
-            //qDebug() << "UPDATE SAFE LANDING";
-            //DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
-            if (_octreeProcessor.safeLandingIsComplete()) {
-                // DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
-
-                qDebug() << "SAFELANDING COMPLETE. NEXT TRY TO ENABLE PHYSICS 1";
-                // weird this is just constantly called over and over rather than once... what?
-                // also look into interstitail mode, how its frustum works, its jsonqueryparameters, and 
-                // where it's designated in domain settings, and see if we can get it working again
+            
+            if (DependencyManager::get<EntityTreeRenderer>()->getGhostingAllowed() 
+             || _octreeProcessor.safeLandingIsComplete()) { 
                 tryToEnablePhysics();
             }
         }

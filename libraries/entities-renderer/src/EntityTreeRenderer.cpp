@@ -851,22 +851,20 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
     
         switch (_zoneMode) {
-            case inherit:  // do nothing
+            case ZONE_CULLING_INHERIT:  // do nothing
                 break;
-            case onInclusive:
+            case ZONE_CULLING_OUTSIDE:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
-            case onExclusive:
-                updateZoneContentsLists(_zoneCullingStack[i], false); 
-                _zoneCullSkipList.clear();
-                _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
-                break;
-            case offExclusive:
+            case ZONE_CULLING_DISABLED:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;
         }
+
+        _ghostingAllowed = zoneItem->getGhostingAllowed();
+
     }
 
     auto scene = _viewState->getMain3DScene();
