@@ -24,16 +24,14 @@
 	// "system/audioMuteOverlay.js", // the big text that appears when you're muted
 	"system/keyboardShortcuts/keyboardShortcuts.js",
 
-	"system/controllers/controllerScripts.js",
+	"system/controllers/controllerScripts.js"
 	// "system/interstitialPage.js"
-].forEach(function(script) {
+].forEach(function (script) {
 	Script.include("file:///~/" + script);
 });
 
 // loaded scripts
-[
-	"tivoli/tivoli.js"
-].forEach(function(script) {
+["tivoli/tivoli.js", "system/inspect.js"].forEach(function (script) {
 	var runningScripts = ScriptDiscoveryService.getRunning();
 
 	for (var i = 0; i < runningScripts.length; i++) {
