@@ -17,7 +17,6 @@
 	// "system/notifications.js",
 	// "system/commerce/wallet.js",
 	"system/create/edit.js",
-	"system/dialTone.js", // join and leave sounds
 	"system/tablet-ui/tabletUI.js",
 	"system/emote.js",
 	// "system/miniTablet.js",
