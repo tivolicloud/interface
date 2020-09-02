@@ -453,17 +453,10 @@ uint32_t ZoneEntityItem::getBloomMode() const {
     return _bloomMode;
 }
 
-      
-/*
-    inherit,           // Do not change the skiplist
-    onInclusive,      // Add my entities to existing skiplist.
-    onExclusive,      // Overwrite skiplist with my entities.
-    offExclusive,     // Clear skiplist completely.
-*/
 
 // TIVOLI Added zone culling mode
 void ZoneEntityItem::setZoneCullingMode(const uint32_t value) {
-    if (value < ZONECULLING_MODE_ITEM_COUNT && value != _zoneCullingMode) {
+    if (value < ZONE_CULLING_MODE_ITEM_COUNT && value != _zoneCullingMode) {
         _zoneCullingMode = value;
         _zoneCullingPropertiesChanged = true;
     }

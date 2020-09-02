@@ -256,7 +256,6 @@ void EntityItemProperties::setGizmoTypeFromString(const QString& gizmoType) {
 }
 
 inline void addComponentMode(QHash<QString, ComponentMode>& lookup, ComponentMode mode) { lookup[ComponentModeHelpers::getNameForComponentMode(mode)] = mode; }
-
 const QHash<QString, ComponentMode> stringToComponentMode = [] {
     QHash<QString, ComponentMode> toReturn;
     addComponentMode(toReturn, ComponentMode::COMPONENT_MODE_INHERIT);
@@ -264,26 +263,20 @@ const QHash<QString, ComponentMode> stringToComponentMode = [] {
     addComponentMode(toReturn, ComponentMode::COMPONENT_MODE_ENABLED);
     return toReturn;
 }();
-
+QString EntityItemProperties::getComponentModeAsString(uint32_t mode) {
+    return ComponentModeHelpers::getNameForComponentMode((ComponentMode)mode);
+}
 
 inline void addZoneCullingComponentMode(QHash<QString, ZoneCullingComponentMode>& lookup, ZoneCullingComponentMode mode) {
     lookup[ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(mode)] = mode;
 }
-
-    //inherit,        // Do not change the skiplist
-    //onInclusive,   // Add my entities to existing skiplist.
-    //onExclusive,   // Overwrite skiplist with my entities.
-    //offExclusive,  // Clear skiplist completely.
 const QHash<QString, ZoneCullingComponentMode> stringToZoneCullingComponentMode = [] {
     QHash<QString, ZoneCullingComponentMode> toReturn;
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::inherit);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onInclusive);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onExclusive);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::offExclusive);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_INHERIT);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_OUTSIDE);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_DISABLED);
     return toReturn;
 }();
-
-QString EntityItemProperties::getComponentModeAsString(uint32_t mode) { return ComponentModeHelpers::getNameForComponentMode((ComponentMode)mode); }
 QString EntityItemProperties::getZoneCullingComponentModeAsString(uint32_t mode) {
     return ZoneCullingModeHelpers::getNameForZoneCullingComponentMode((ZoneCullingComponentMode)mode);
 }

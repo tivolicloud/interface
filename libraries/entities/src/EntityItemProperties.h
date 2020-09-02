@@ -350,7 +350,7 @@ public:
     DEFINE_PROPERTY_REF_ENUM(PROP_AMBIENT_LIGHT_MODE, AmbientLightMode, ambientLightMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_HAZE_MODE, HazeMode, hazeMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_BLOOM_MODE, BloomMode, bloomMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
-    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t, (uint32_t)inherit);  // TIVOLI
+    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t, (uint32_t)ZONE_CULLING_INHERIT);  // TIVOLI
     DEFINE_PROPERTY_REF_ENUM(PROP_AVATAR_PRIORITY, AvatarPriority, avatarPriority, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
 
     // Polyvox

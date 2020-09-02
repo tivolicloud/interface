@@ -109,8 +109,7 @@ private:
     ComponentMode _hazeMode{ COMPONENT_MODE_INHERIT };
     ComponentMode _bloomMode{ COMPONENT_MODE_INHERIT };
 
-
-    ZoneCullingComponentMode _zoneCullingMode{ inherit };
+    ZoneCullingComponentMode _zoneCullingMode{ ZONE_CULLING_INHERIT };
 
     indexed_container::Index _sunIndex{ LightStage::INVALID_INDEX };
     indexed_container::Index _ambientIndex{ LightStage::INVALID_INDEX };
