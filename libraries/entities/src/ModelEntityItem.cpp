@@ -756,7 +756,7 @@ void ModelEntityItem::setModelScale(const glm::vec3& modelScale) {
 
 QString ModelEntityItem::getBlendshapeCoefficients() const {
     return resultWithReadLock<QString>([&] {
-        return QJsonDocument::fromVariant(_blendshapeCoefficientsMap).toJson();
+        return QJsonDocument::fromVariant(_blendshapeCoefficientsMap).toJson(QJsonDocument::Compact);
     });
 }
 
