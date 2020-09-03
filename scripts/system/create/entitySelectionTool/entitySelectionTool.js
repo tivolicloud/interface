@@ -48,7 +48,7 @@ function emissiveShader(r, g, b) {
 	return JSON.stringify({
 		ProceduralEntity: {
 			version: 3,
-			shaderUrl: Script.resolvePath("../assets/emissive.fs"),
+			shaderUrl: Script.resolvePath("../../assets/shaders/emissive.fs"),
 			uniforms: {
 				color: [r / 255, g / 255, b / 255]
 			}
