@@ -72,8 +72,6 @@ var control = false;
 
 var isActive = false;
 
-var overlayID = null;
-
 var oldMode = Camera.mode;
 var noMode = 0;
 var orbitMode = 1;
@@ -116,6 +114,52 @@ var startPosition, startOrientation, startTime, timeDelta, timer;
 var timeDiv = 0.01;
 
 var previousReticleEnabled;
+
+var POINTER_SIZE = 0.01;
+
+var pointerEntityID = Entities.addEntity({
+    type: "Sphere",
+    visible: false,
+    position: {x: 0, y: 0, z: 0},
+    dimensions: {x: 0, y: 0, z: 0},
+    canCastShadow: false,
+    isVisibleInSecondaryCamera: false,
+    // renderLayer: "front",
+    userData: JSON.stringify({
+        ProceduralEntity: {
+            version: 3,
+            shaderUrl: Script.resolvePath("assets/shaders/emissive.fs"),
+            uniforms: {
+                color: [1, 1, 1],
+            }
+        }
+    })
+}, "local");
+
+function enablePointer(center) {
+    Entities.editEntity(pointerEntityID, {
+        visible: true,
+        position: center,
+        dimensions: { x: POINTER_SIZE, y: POINTER_SIZE, z: POINTER_SIZE },
+    });
+}
+
+function disablePointer() {
+    Entities.editEntity(pointerEntityID, {
+        visible: false,
+        position: { x: 0, y: 0, z: 0 },
+        dimensions: { x: 0, y: 0, z: 0 },
+    })
+}
+
+function updatePointer(center, dist) {
+    Entities.editEntity(pointerEntityID, {
+        position: center,
+        dimensions: Vec3.multiply(
+            dist, { x: POINTER_SIZE, y: POINTER_SIZE, z: POINTER_SIZE }
+        )
+    });
+}
 
 function orientationOf(vector) {
     var direction,
@@ -351,7 +395,7 @@ function mousePressEvent(event) {
             timer = Script.setInterval(lerpCam, 10);
 
             isActive = true;
-            overlayID = Overlays.addOverlay("sphere", {position: center, dimensions: {x: 0.1, y: 0.1, z: 0.1}});
+            enablePointer(center);
             
             previousReticleEnabled = Reticle.enabled;
             Reticle.scale = 0;
@@ -379,7 +423,7 @@ function mouseReleaseEvent(event) {
         Reticle.enabled = previousReticleEnabled;
         Reticle.scale = 1;
 
-        Overlays.deleteOverlay(overlayID);
+        disablePointer();
     }
 }
 
@@ -413,10 +457,7 @@ function mouseMoveEvent(event) {
             Camera.setOrientation(timeQLerp(startOrientation, orientationOf(vector)));
 
             var dist = Vec3.distance(center, position);
-            Overlays.editOverlay(overlayID, {
-                dimensions: Vec3.multiply(dist, {x: 0.01, y: 0.01, z: 0.01}),
-                position: center
-            });
+            updatePointer(center, dist);
         }
     }
     mouseLastX = event.x;
@@ -439,6 +480,7 @@ function scriptEnding() {
     if (mode != noMode) {
         restoreCameraState();
     }
+    Entities.deleteEntity(pointerEntityID);
 }
 
 Controller.keyPressEvent.connect(keyPressEvent);
