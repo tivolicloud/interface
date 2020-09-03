@@ -26,11 +26,13 @@
 //  - Make camera move on first click
 //
 //	Flame Soulis's modifications:
-//	- Ignore Invisible
+//	- Ignore invisible
 //
-//  Fluffy Jenkin's Modifications:
+//  Fluffy Jenkin's modifications:
 //  - Switch to RayPick method
 //  - Can now cam on avatars!
+//
+//  Tivoli was here and thanks the above! <3
 
 var id = RayPick.createRayPick({
     joint: 'Mouse',
@@ -112,6 +114,8 @@ var oldPosition, oldOrientation;
 
 var startPosition, startOrientation, startTime, timeDelta, timer;
 var timeDiv = 0.01;
+
+var previousReticleEnabled;
 
 function orientationOf(vector) {
     var direction,
@@ -295,8 +299,6 @@ function keyReleaseEvent(event) {
     }
 }
 
-var retScale = 1;
-
 function mousePressEvent(event) {
     if (alt && !isActive) {
         mouseLastX = event.x;
@@ -350,7 +352,10 @@ function mousePressEvent(event) {
 
             isActive = true;
             overlayID = Overlays.addOverlay("sphere", {position: center, dimensions: {x: 0.1, y: 0.1, z: 0.1}});
-            scaleRet(0);
+            
+            previousReticleEnabled = Reticle.enabled;
+            Reticle.scale = 0;
+            if (!previousReticleEnabled) Reticle.enabled = true;
         }
         mouseMoveEvent(event);
     }
@@ -366,19 +371,15 @@ function lerpCam() {
     Camera.setOrientation(timeQLerp(startOrientation, orientationOf(vector)));
 }
 
-function scaleRet(scale) {
-    if (retScale !== scale) {
-        retScale = scale;
-        Reticle.scale = retScale;
-    }
-}
-
 function mouseReleaseEvent(event) {
     if (isActive) {
         isActive = false;
+
         Reticle.setPosition(Vec3.multiply(0.5, {x: Window.innerWidth, y: Window.innerHeight}));
+        Reticle.enabled = previousReticleEnabled;
+        Reticle.scale = 1;
+
         Overlays.deleteOverlay(overlayID);
-        scaleRet(1);
     }
 }
 
@@ -417,8 +418,6 @@ function mouseMoveEvent(event) {
                 position: center
             });
         }
-    } else {
-        scaleRet(1);
     }
     mouseLastX = event.x;
     mouseLastY = event.y;
