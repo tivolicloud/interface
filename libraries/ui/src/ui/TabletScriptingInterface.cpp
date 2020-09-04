@@ -44,11 +44,16 @@ static QString getUsername() {
     return username;
 }
 
-static Setting::Handle<QStringList> tabletSoundsButtonClick("TabletSounds", QStringList { "/sounds/Button06.wav",
-                                                                               "/sounds/Button04.wav",
-                                                                               "/sounds/Button07.wav",
-                                                                               "/sounds/Tab01.wav",
-                                                                               "/sounds/Tab02.wav" });
+static Setting::Handle<QStringList> tabletSoundsButtonClick(
+    "TabletSounds",
+    QStringList { 
+        "/sounds/ButtonClick.wav",
+        "/sounds/ButtonHover.wav",
+        "/sounds/TabletOpen.wav",
+        "/sounds/TabletHandsIn.wav",
+        "/sounds/TabletHandsOut.wav"
+    }
+);
 
 TabletButtonListModel::TabletButtonListModel() {
 
