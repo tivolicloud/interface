@@ -3,6 +3,8 @@ import { SignalManager } from "./lib/signal-manager";
 export class Optimize {
 	signals = new SignalManager();
 
+	mappings: MappingObject[] = [];
+
 	// private disableTrackingSmoothing() {
 	// 	const mapping = Controller.parseMapping(
 	// 		JSON.stringify({
@@ -45,15 +47,52 @@ export class Optimize {
 		forceFirstPerson();
 	}
 
-	cleanup = () => {
-		this.signals.cleanup();
-	};
+	private hideCursorWhenRMB() {
+		const mapping = Controller.newMapping(
+			"com.tivolicloud.hideCursorWhenRMB",
+		);
+		this.mappings.push(mapping);
+
+		let previousReticleEnabled: boolean;
+
+		mapping
+			.from(Controller.Hardware.Keyboard.RightMouseButton)
+			.to((rmbDown: number) => {
+				if (rmbDown) {
+					previousReticleEnabled = Reticle.enabled;
+					Reticle.visible = false;
+					Reticle.enabled = true;
+				} else {
+					if (previousReticleEnabled != null) {
+						Reticle.enabled = previousReticleEnabled;
+					}
+					Reticle.visible = true;
+					Reticle.setPosition(
+						Vec3.multiply(0.5, {
+							x: Window.innerWidth,
+							y: Window.innerHeight,
+						}),
+					);
+				}
+			});
+
+		mapping.enable();
+	}
 
 	constructor() {
 		// this.disableTrackingSmoothing();
-		this.forceFirstPersonInHMD();
+		// this.forceFirstPersonInHMD();
+		this.hideCursorWhenRMB();
 
 		Window.interstitialModeEnabled = false;
 		MyAvatar.setOtherAvatarsCollisionsEnabled(false);
 	}
+
+	cleanup = () => {
+		for (const mapping of this.mappings) {
+			mapping.disable();
+		}
+
+		this.signals.cleanup();
+	};
 }
