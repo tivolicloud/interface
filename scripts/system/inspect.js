@@ -398,10 +398,16 @@ function mousePressEvent(event) {
             enablePointer(center);
             
             previousReticleEnabled = Reticle.enabled;
-            Reticle.scale = 0;
+            Reticle.visible = false;
             if (!previousReticleEnabled) Reticle.enabled = true;
         }
         mouseMoveEvent(event);
+    }
+
+    if (mode !== noMode && !alt && !control && !shift && event.isRightButton) {
+        mode = noMode;
+        restoreCameraState();
+        handleModes();
     }
 }
 
@@ -421,7 +427,7 @@ function mouseReleaseEvent(event) {
 
         Reticle.setPosition(Vec3.multiply(0.5, {x: Window.innerWidth, y: Window.innerHeight}));
         Reticle.enabled = previousReticleEnabled;
-        Reticle.scale = 1;
+        Reticle.visible = true;
 
         disablePointer();
     }
