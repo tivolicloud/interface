@@ -224,6 +224,7 @@ public:
      /**jsdoc
      * Gets whether the reticle circle is enabled.
      * @function Reticle.getEnabled
+     * @returns {boolean} enabled
      */
     Q_INVOKABLE bool getEnabled() const;
 
