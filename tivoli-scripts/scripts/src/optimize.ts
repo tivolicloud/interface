@@ -5,41 +5,14 @@ export class Optimize {
 
 	mappings: MappingObject[] = [];
 
-	// private disableTrackingSmoothing() {
-	// 	const mapping = Controller.parseMapping(
-	// 		JSON.stringify({
-	// 			name: "com.tivolicloud.disableTrackingSmoothing",
-	// 			channels: [
-	// 				"LeftHand",
-	// 				"RightHand",
-	// 				"LeftFoot",
-	// 				"RightFoot",
-	// 				"Hips",
-	// 				"Spine2",
-	// 				"Head",
-	// 			].map(function (channel) {
-	// 				return {
-	// 					from: "Standard." + channel,
-	// 					to: "Actions." + channel,
-	// 					filters: [
-	// 						{
-	// 							type: "exponentialSmoothing",
-	// 							translation: 1,
-	// 							rotation: 1,
-	// 						},
-	// 					],
-	// 				};
-	// 			}),
-	// 		}),
-	// 	);
-	// 	mapping.enable();
-	// }
-
 	private forceFirstPersonInHMD() {
 		const forceFirstPerson = () => {
 			if (HMD.mounted == false) return;
 			if (Camera.getModeString() == "first person look at") return;
 			Camera.setModeString("first person look at");
+			Script.setTimeout(() => {
+				Camera.setModeString("first person look at");
+			}, 500);
 		};
 
 		this.signals.connect(HMD.displayModeChanged, forceFirstPerson);
@@ -80,9 +53,8 @@ export class Optimize {
 	}
 
 	constructor() {
-		// this.disableTrackingSmoothing();
-		// this.forceFirstPersonInHMD();
-		this.hideCursorWhenRMB();
+		this.forceFirstPersonInHMD();
+		// this.hideCursorWhenRMB();
 
 		Window.interstitialModeEnabled = false;
 		MyAvatar.setOtherAvatarsCollisionsEnabled(false);
