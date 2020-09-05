@@ -281,7 +281,9 @@ enum class EntityVersion : PacketVersion {
     CustomTags, // caitlyn
     EntityPriority, // caitlyn
     ModelBlendshapes, // hifiexperiments
-    CloneGrabbable, // maki
+    CloneGrabbable, // maki    
+    // TO DO - reinstate with tonemapping in zones
+   // ToneMappingMode, // caitlyn
     
     // Add new versions above here
     NUM_PACKET_TYPE,

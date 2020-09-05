@@ -5946,7 +5946,8 @@ void Application::cameraMenuChanged() {
     }
 }
 
-void Application::requeryOctree() {        
+void Application::requeryOctree() {      
+    DependencyManager::get<EntityTreeRenderer>()->forceRecheckEntities();
     auto now = SteadyClock::now();
     static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
     _queryExpiry = SteadyClock::now();
@@ -5961,8 +5962,12 @@ void Application::requeryOctree() {
         PacketType::EntityQuery,
         queryJSONParameters
     );    
-    DependencyManager::get<EntityTreeRenderer>()->evaluateZoneCullingStack();
     _queryExpiry = now + MIN_PERIOD_BETWEEN_QUERIES;
+}
+
+// TO DO: Get this out of Application and create a proper tonemapping stage, move it there
+// or ToneMapAndResampleTask
+void Application::setTonemappingMode(int toneCurve, float exposure) {
 }
 
 void Application::resetPhysicsReadyInformation() {

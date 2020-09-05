@@ -1,14 +1,14 @@
 //
-//  ZoneCullingPropertyGroup.h
+//  ToneMappingPropertyGroup.h
 //  libraries/entities/src
 //
-//  Created by Caitlyn Meeks on 12/23/2019
-//  Copyright 2019, Tivoli Cloud VR
+//  Created by Caitlyn Meeks on 8/28/2020
+//  Copyright 2020 Tivoli Cloud VR, Inc.
+//
+//  Licensed under AGPL-3
 
-
-#ifndef hifi_ZoneCullingPropertyGroup_h
-#define hifi_ZoneCullingPropertyGroup_h
-
+#ifndef hifi_ToneMappingPropertyGroup_h
+#define hifi_ToneMappingPropertyGroup_h
 
 #include <stdint.h>
 #include <glm/glm.hpp>
@@ -24,21 +24,22 @@ class OctreePacketData;
 class EntityTreeElementExtraEncodeData;
 class ReadBitstreamToTreeParams;
 
+static const float INITIAL_EXPOSURE { 0.0f };
+
 /**jsdoc
- * Zone Culling is defined by the following properties:
- * @typedef {object} Entities.ZoneCulling
+ * Tone Mapping is defined by the following properties:
+ * @typedef {object} Entities.ToneMapping
+ * @property {number} exposure=0.0 - The amount of exposure used in tone mappinpg.
  */
-class ZoneCullingPropertyGroup : public PropertyGroup {
+class ToneMappingPropertyGroup : public PropertyGroup {
 public:
     // EntityItemProperty related helpers
-    virtual void copyToScriptValue(const EntityPropertyFlags& desiredProperties,
-                                   QScriptValue& properties,
-                                   QScriptEngine* engine,
-                                   bool skipDefaults,
+    virtual void copyToScriptValue(const EntityPropertyFlags& desiredProperties, QScriptValue& properties,
+                                   QScriptEngine* engine, bool skipDefaults,
                                    EntityItemProperties& defaultEntityProperties) const override;
     virtual void copyFromScriptValue(const QScriptValue& object, bool& _defaultSettings) override;
 
-    void merge(const ZoneCullingPropertyGroup& other);
+    void merge(const ToneMappingPropertyGroup& other);
 
     virtual void debugDump() const override;
     virtual void listChangedProperties(QList<QString>& out) override;
@@ -51,8 +52,7 @@ public:
                                     OctreeElement::AppendState& appendState) const override;
 
     virtual bool decodeFromEditPacket(EntityPropertyFlags& propertyFlags,
-                                      const unsigned char*& dataAt,
-                                      int& processedBytes) override;
+                                      const unsigned char*& dataAt, int& processedBytes) override;
     virtual void markAllChanged() override;
     virtual EntityPropertyFlags getChangedProperties() const override;
 
@@ -65,8 +65,7 @@ public:
 
     virtual EntityPropertyFlags getEntityProperties(EncodeBitstreamParams& params) const override;
 
-    virtual void appendSubclassData(OctreePacketData* packetData,
-                                    EncodeBitstreamParams& params,
+    virtual void appendSubclassData(OctreePacketData* packetData, EncodeBitstreamParams& params,
                                     EntityTreeElementExtraEncodeDataPointer entityTreeElementExtraEncodeData,
                                     EntityPropertyFlags& requestedProperties,
                                     EntityPropertyFlags& propertyFlags,
@@ -74,13 +73,14 @@ public:
                                     int& propertyCount,
                                     OctreeElement::AppendState& appendState) const override;
 
-    virtual int readEntitySubclassDataFromBuffer(const unsigned char* data,
-                                                 int bytesLeftToRead,
-                                                 ReadBitstreamToTreeParams& args,
-                                                 EntityPropertyFlags& propertyFlags,
-                                                 bool overwriteLocalData,
-                                                 bool& somethingChanged) override;
+    virtual int readEntitySubclassDataFromBuffer(const unsigned char* data, int bytesLeftToRead,
+                                                ReadBitstreamToTreeParams& args,
+                                                EntityPropertyFlags& propertyFlags, bool overwriteLocalData,
+                                                bool& somethingChanged) override;
+
+    DEFINE_PROPERTY(PROP_TONE_MAPPING_EXPOSURE, Exposure, exposure, float, INITIAL_EXPOSURE);
+    
 
 };
 
-#endif  // hifi_ZoneCullingPropertyGroup_h
+#endif // hifi_ToneMappingPropertyGroup_h

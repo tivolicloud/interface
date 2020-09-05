@@ -391,10 +391,7 @@ void EntityTreeRenderer::init() {
     DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
     connect(&domainHandler, &DomainHandler::settingsReceived, this, &EntityTreeRenderer::connectedToDomain);
     
-    if (_wantScripts) 
-    {
-        resetEntitiesScriptEngine();
-    }
+    if (_wantScripts) resetEntitiesScriptEngine();
 
     forceRecheckEntities();  // setup our state to force checking our inside/outsideness of entities
 
@@ -839,8 +836,9 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist()
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
 
-    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
-
+    if (_zoneCullingStack != _prevZoneCullingStack) QMetaObject::invokeMethod(qApp, "requeryOctree"); 
+    if (!_forceRecheckEntities && _zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
+    _forceRecheckEntities = false;
     _zoneCullSkipList.clear();    
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
@@ -906,7 +904,6 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
         {
             _avatarPosition = avatarPosition;
             _lastZoneCheck = now;
-            _forceRecheckEntities = false;
 
             QSet<EntityItemID> entitiesContainingAvatar;
 
@@ -918,7 +915,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
             // for entity IDs that no longer exist.
-
+            
             if (_entitiesScriptEngine) 
             {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
@@ -956,7 +953,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                             }
                        }
                     }
-                }
+                }                
                 _currentEntitiesInside = entitiesContainingAvatar;
             }
         }

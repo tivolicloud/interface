@@ -152,6 +152,11 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
         }
     }
 
+    {
+        if (_needToneMappingUpdate) {
+            _needToneMappingUpdate = false;
+        }
+    }
 
     if (_visible) {
         // Finally, push the lights visible in the frame
@@ -197,7 +202,40 @@ void ZoneEntityRenderer::doRender(RenderArgs* args) {
             _bloomStage->_currentFrame.pushBloom(_bloomIndex);
         }
         
+        // TO DO:  Finish this.
+        // Move actual implementation via invoke away from qApp and over to a new tone mapping stage
+        // following the same example used in bloom and haze
+        if (false) { // for now, disable
+            storeOldToneMappingMode();
+            if (toneMappingModeChanged()) {             
+                if (_toneMappingMode == TONE_MAPPING_INHERIT) { // do nothing
+                    //instance->setTonemappingMode()
+                    //instance->setAntialiasingMethod(RenderScriptingInterface::AntialiasingMethod::NONE); 
+                } else if (_toneMappingMode == TONE_MAPPING_RGB) {
+                    QMetaObject::invokeMethod(qApp, "setTonemappingMode", Q_ARG(int, 0), Q_ARG(float, 0));
+                    qDebug() << "TONE MAPPING RGB";
+                } else if (_toneMappingMode == TONE_MAPPING_SRGB) {
+                    QMetaObject::invokeMethod(qApp, "setTonemappingMode", Q_ARG(int, 1), Q_ARG(float, 0));
+                    // instance->setTonemappingMode(1,0);
+                    qDebug() << "TONE MAPPING SRGB";
+                } else if (_toneMappingMode == TONE_MAPPING_REINHARD) {
+                    QMetaObject::invokeMethod(qApp, "setTonemappingMode", Q_ARG(int, 2), Q_ARG(float, 0));
+                    qDebug() << "TONE MAPPING REINHARD";
+                } else if (_toneMappingMode == TONE_MAPPING_FILMIC) {
+                    QMetaObject::invokeMethod(qApp, "setTonemappingMode", Q_ARG(int, 3), Q_ARG(float, 0));
+                    qDebug() << "TONE MAPPING FILMIC";
+                }
+            }        
+        }
     }
+}
+
+void ZoneEntityRenderer::storeOldToneMappingMode() {
+    _prevToneMappingMode = _toneMappingMode;
+}
+
+bool ZoneEntityRenderer::toneMappingModeChanged() {
+    return _prevToneMappingMode == _toneMappingMode;
 }
 
 void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene,
@@ -226,6 +264,7 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
     bool hazeChanged = entity->hazePropertiesChanged();
     bool bloomChanged = entity->bloomPropertiesChanged();
     bool zoneCullingChanged = entity->zoneCullingPropertiesChanged();
+    bool toneMappingChanged = entity->toneMappingPropertiesChanged();
     entity->resetRenderingPropertiesChanged();
 
     if (transformChanged) {
@@ -268,6 +307,11 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
     if (zoneCullingChanged) {
         _zoneCullingProperties = entity->getZoneCullingProperties();
         updateZoneCullingFromEntity(entity);
+    }
+
+    if (toneMappingChanged) {
+        _toneMappingProperties = entity->getToneMappingProperties();
+        updateToneMappingFromEntity(entity);
     }
 
     bool visuallyReady = true;
@@ -393,12 +437,15 @@ void ZoneEntityRenderer::updateHazeFromEntity(const TypedEntityPointer& entity) 
 
 void ZoneEntityRenderer::updateBloomFromEntity(const TypedEntityPointer& entity) {
     setBloomMode((ComponentMode)entity->getBloomMode());
-
     const auto& bloom = editBloom();
-
     bloom->setBloomIntensity(_bloomProperties.getBloomIntensity());
     bloom->setBloomThreshold(_bloomProperties.getBloomThreshold());
     bloom->setBloomSize(_bloomProperties.getBloomSize());
+}
+
+void ZoneEntityRenderer::updateToneMappingFromEntity(const TypedEntityPointer& entity) {
+    setToneMappingMode((ToneMappingComponentMode)entity->getToneMappingMode());
+    setToneMappingExposure(_toneMappingProperties.getExposure());
 }
 
 void ZoneEntityRenderer::updateZoneCullingFromEntity(const TypedEntityPointer& entity) {
@@ -529,6 +576,17 @@ void ZoneEntityRenderer::setBloomMode(ComponentMode mode) {
 
 void ZoneEntityRenderer::setZoneCullingMode(ZoneCullingComponentMode mode) {
     _zoneCullingMode = mode;
+}
+
+void ZoneEntityRenderer::setToneMappingMode(ToneMappingComponentMode mode) {
+    //  qDebug() << "CPM - SET TONE MAPPING MODE TO " << mode;
+    _toneMappingMode = mode;
+}
+
+void ZoneEntityRenderer::setToneMappingExposure(const float value) {
+    // qDebug() << "CPM - SET TONE MAPPING EXPOSURE TO " << value;
+    _toneMappingExposure = value;
+    //editSkybox()->setColor(color);
 }
 
 void ZoneEntityRenderer::setSkyboxColor(const glm::vec3& color) {

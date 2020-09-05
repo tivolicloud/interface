@@ -464,9 +464,12 @@ public slots:
 
     void resetPhysicsReadyInformation();
 
-    void requeryOctree();
+    Q_INVOKABLE void requeryOctree();
+
     void reloadResourceCaches();
     void rejoin();
+
+    Q_INVOKABLE void setTonemappingMode(int toneCurve, float exposure);
 
     void updateHeartbeat() const;
 

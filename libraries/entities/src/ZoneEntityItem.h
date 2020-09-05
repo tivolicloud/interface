@@ -22,7 +22,8 @@
 #include "SkyboxPropertyGroup.h"
 #include "HazePropertyGroup.h"
 #include "BloomPropertyGroup.h"
-#include "ZoneCullingPropertyGroup.h"  // TIVOLI
+#include "ZoneCullingPropertyGroup.h"
+#include "ToneMappingPropertyGroup.h"
 
 class ZoneEntityItem : public EntityItem {
 public:
@@ -100,6 +101,9 @@ public:
     void setZoneCullingMode(const uint32_t value);
     uint32_t getZoneCullingMode() const;
 
+    void setToneMappingMode(const uint32_t value);
+    uint32_t getToneMappingMode() const;
+
     SkyboxPropertyGroup getSkyboxProperties() const {
         return resultWithReadLock<SkyboxPropertyGroup>([&] { return _skyboxProperties; });
     }
@@ -107,6 +111,7 @@ public:
     const HazePropertyGroup& getHazeProperties() const { return _hazeProperties; }
     const BloomPropertyGroup& getBloomProperties() const { return _bloomProperties; }
     const ZoneCullingPropertyGroup& getZoneCullingProperties() const { return _zoneCullingProperties; }
+    const ToneMappingPropertyGroup& getToneMappingProperties() const { return _toneMappingProperties; }
 
     bool getFlyingAllowed() const { return _flyingAllowed; }
     void setFlyingAllowed(bool value) { _flyingAllowed = value; }
@@ -123,7 +128,8 @@ public:
     bool skyboxPropertiesChanged() const { return _skyboxPropertiesChanged; }
     bool hazePropertiesChanged() const { return _hazePropertiesChanged; }
     bool bloomPropertiesChanged() const { return _bloomPropertiesChanged; }
-    bool zoneCullingPropertiesChanged() const { return _zoneCullingPropertiesChanged; }  // TIVOLI
+    bool zoneCullingPropertiesChanged() const { return _zoneCullingPropertiesChanged; }
+    bool toneMappingPropertiesChanged() const { return _toneMappingPropertiesChanged; }
 
     void resetRenderingPropertiesChanged();
 
@@ -170,12 +176,14 @@ protected:
 
     uint32_t _hazeMode{ COMPONENT_MODE_INHERIT };
     uint32_t _bloomMode{ COMPONENT_MODE_INHERIT };
-    uint32_t _zoneCullingMode{ ZONE_CULLING_INHERIT };  // TIVOLI
+    uint32_t _zoneCullingMode{ ZONE_CULLING_INHERIT };
+    uint32_t _toneMappingMode{ TONE_MAPPING_INHERIT };
 
     SkyboxPropertyGroup _skyboxProperties;
     HazePropertyGroup _hazeProperties;
     BloomPropertyGroup _bloomProperties;
-    ZoneCullingPropertyGroup _zoneCullingProperties;  // TIVOLI
+    ZoneCullingPropertyGroup _zoneCullingProperties;
+    ToneMappingPropertyGroup _toneMappingProperties;
 
     bool _flyingAllowed{ DEFAULT_FLYING_ALLOWED };
     bool _ghostingAllowed{ DEFAULT_GHOSTING_ALLOWED };
@@ -191,6 +199,7 @@ protected:
     bool _hazePropertiesChanged{ false };
     bool _bloomPropertiesChanged{ false };
     bool _zoneCullingPropertiesChanged{ false };  // TIVOLI
+    bool _toneMappingPropertiesChanged{ false };  // TIVOLI
 
     static bool _drawZoneBoundaries;
     static bool _zonesArePickable;

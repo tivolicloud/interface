@@ -56,7 +56,8 @@
 #include "SkyboxPropertyGroup.h"
 #include "HazePropertyGroup.h"
 #include "BloomPropertyGroup.h"
-#include "ZoneCullingPropertyGroup.h" // TIVOLI
+#include "ZoneCullingPropertyGroup.h"
+#include "ToneMappingPropertyGroup.h"
 #include "PulsePropertyGroup.h"
 #include "RingGizmoPropertyGroup.h"
 
@@ -333,13 +334,13 @@ public:
     DEFINE_PROPERTY_REF(PROP_TEXT_EFFECT_COLOR, TextEffectColor, textEffectColor, u8vec3Color, TextEntityItem::DEFAULT_TEXT_COLOR);
     DEFINE_PROPERTY(PROP_TEXT_EFFECT_THICKNESS, TextEffectThickness, textEffectThickness, float, TextEntityItem::DEFAULT_TEXT_EFFECT_THICKNESS);
 
-    // Zone getZoneCullingModeAsString
     DEFINE_PROPERTY_GROUP(KeyLight, keyLight, KeyLightPropertyGroup);
     DEFINE_PROPERTY_GROUP(AmbientLight, ambientLight, AmbientLightPropertyGroup);
     DEFINE_PROPERTY_GROUP(Skybox, skybox, SkyboxPropertyGroup);
     DEFINE_PROPERTY_GROUP(Haze, haze, HazePropertyGroup);
     DEFINE_PROPERTY_GROUP(Bloom, bloom, BloomPropertyGroup);
-    DEFINE_PROPERTY_GROUP(ZoneCulling, zoneCulling, ZoneCullingPropertyGroup); // TIVOLI
+    DEFINE_PROPERTY_GROUP(ZoneCulling, zoneCulling, ZoneCullingPropertyGroup);
+    DEFINE_PROPERTY_GROUP(ToneMapping, toneMapping, ToneMappingPropertyGroup);
 
     DEFINE_PROPERTY(PROP_FLYING_ALLOWED, FlyingAllowed, flyingAllowed, bool, ZoneEntityItem::DEFAULT_FLYING_ALLOWED);
     DEFINE_PROPERTY(PROP_GHOSTING_ALLOWED, GhostingAllowed, ghostingAllowed, bool, ZoneEntityItem::DEFAULT_GHOSTING_ALLOWED);
@@ -350,7 +351,8 @@ public:
     DEFINE_PROPERTY_REF_ENUM(PROP_AMBIENT_LIGHT_MODE, AmbientLightMode, ambientLightMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_HAZE_MODE, HazeMode, hazeMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_BLOOM_MODE, BloomMode, bloomMode, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
-    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t, (uint32_t)ZONE_CULLING_INHERIT);  // TIVOLI
+    DEFINE_PROPERTY_REF_ENUM(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t, (uint32_t)ZONE_CULLING_INHERIT);
+    DEFINE_PROPERTY_REF_ENUM(PROP_TONE_MAPPING_MODE, ToneMappingMode, toneMappingMode, uint32_t, (uint32_t)TONE_MAPPING_INHERIT);
     DEFINE_PROPERTY_REF_ENUM(PROP_AVATAR_PRIORITY, AvatarPriority, avatarPriority, uint32_t, (uint32_t)COMPONENT_MODE_INHERIT);
 
     // Polyvox
@@ -416,6 +418,7 @@ public:
 
     static QString getComponentModeAsString(uint32_t mode);
     static QString getZoneCullingComponentModeAsString(uint32_t mode);
+    static QString getToneMappingComponentModeAsString(uint32_t mode);
     static QString getEntityPriorityComponentModeAsString(uint32_t mode);
 
 public:
@@ -678,6 +681,7 @@ inline QDebug operator<<(QDebug debug, const EntityItemProperties& properties) {
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, SkyboxMode, skyboxMode, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, BloomMode, bloomMode, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, ZoneCullingMode, zoneCullingMode, "");
+    DEBUG_PROPERTY_IF_CHANGED(debug, properties, ToneMappingMode, toneMappingMode, "");
 
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, Cloneable, cloneable, "");
     DEBUG_PROPERTY_IF_CHANGED(debug, properties, CloneLifetime, cloneLifetime, "");
