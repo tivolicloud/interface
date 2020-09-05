@@ -4054,7 +4054,7 @@ bool Application::isServerlessMode() const {
 
 void Application::setIsInterstitialMode(bool interstitialMode) {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-    if (enableInterstitial) {  // cpm force true to turn on ism
+    if (enableInterstitial) {
         if (_interstitialMode != interstitialMode) {
             _interstitialMode = interstitialMode;
             emit interstitialModeChanged(_interstitialMode);

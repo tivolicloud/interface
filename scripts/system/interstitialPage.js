@@ -323,12 +323,12 @@
                 text: domainName,
                 leftMargin: domainNameLeftMargin
             };
-
+            
             // check to be sure we are going to look for an actual domain
             if (!domain) {
                 doRequest = false;
             }
-
+            
             if (doRequest) {
                 var url = Account.metaverseServerURL + '/api/v1/places/' + domain;
                 request({
@@ -369,7 +369,7 @@
         }
     }
 
-    var THE_PLACE = (TivoliAbout.buildVersion === "dev") ? "hifi://plaza-dev" : "hifi://plaza";
+    var THE_PLACE = (About.buildVersion === "dev") ? "hifi://plaza-dev" : "hifi://plaza";
     function clickedOnOverlay(overlayID, event) {
         if (loadingToTheSpotHoverID === overlayID) {
             location.handleLookupString(THE_PLACE);
