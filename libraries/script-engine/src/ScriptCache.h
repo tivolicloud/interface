@@ -14,6 +14,7 @@
 
 #include <mutex>
 #include <ResourceCache.h>
+#include <SettingHandle.h>
 
 using contentAvailableCallback = std::function<void(const QString& scriptOrURL, const QString& contents, bool isURL, bool contentAvailable, const QString& status)>;
 
@@ -62,6 +63,8 @@ private:
     
     QHash<QUrl, QString> _scriptCache;
     QMultiMap<QUrl, ScriptUser*> _scriptUsers;
+
+    Setting::Handle<QVariantMap> _scriptUrlHashes{ "com.tivolicloud.scriptUrlHashes", QVariantMap() };
 };
 
 #endif // hifi_ScriptCache_h

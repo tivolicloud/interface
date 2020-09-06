@@ -136,11 +136,39 @@ void ScriptCache::scriptContentAvailable(int maxRetries) {
             auto& scriptRequest = _activeScriptRequests[url];
 
             if (success) {
-                allCallbacks = scriptRequest.scriptUsers;
+                scriptContent = req->getData();
+
+                // hash all online scripts and ask if it's allowed to update
+                if (url.scheme().startsWith("file", Qt::CaseInsensitive) == false) {
+                    QString hashKey = url.toString();
+
+                    QString oldHash = _scriptUrlHashes.get()[hashKey].toString();
+                    QString newHash = QCryptographicHash::hash(
+                        scriptContent.toLocal8Bit(),
+                        QCryptographicHash::Sha256
+                    ).toHex();
+
+                    bool allowed = true;
+
+                    if (oldHash.isEmpty() == false && oldHash != newHash) {
+                        // ask for perm
+                        allowed = true;
+                    }
+                    
+                    if (allowed) {
+                        auto scriptUrlHashes = _scriptUrlHashes.get();
+                        scriptUrlHashes[hashKey] = newHash;
+                        _scriptUrlHashes.set(scriptUrlHashes);
+
+                        allCallbacks = scriptRequest.scriptUsers;
+                        _scriptCache[url] = scriptContent;
+                    }
+                } else {
+                    allCallbacks = scriptRequest.scriptUsers;
+                    _scriptCache[url] = scriptContent;
+                }
 
                 _activeScriptRequests.remove(url);
-
-                _scriptCache[url] = scriptContent = req->getData();
             } else {
                 auto result = req->getResult();
                 bool irrecoverable =
