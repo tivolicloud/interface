@@ -153,6 +153,7 @@ signals:
      * @param {Uuid} senderID - The UUID of the sender: the user's session UUID if sent by an Interface or client entity 
      *     script, the UUID of the entity script server if sent by a server entity script, or the UUID of the assignment client 
      *     instance if sent by an assignment client script.
+     * @returns {Signal}
      * @example
      * Chat.messageReceived.connect(function (data, senderID) {
      *     if (data.local) {
@@ -165,10 +166,27 @@ signals:
      *             data.message
      *         );
      *     }
-     * })
-     * @returns {Signal}
+     * });
      */
     void messageReceived(QVariantMap data, QUuid senderID);
+
+    /**jsdoc
+     * Triggered when the user sends a message.
+     * @function Chat.messageSent
+     * @param {string} message - The message sent
+     * @returns {Signal}
+     * @example
+     * var huggiesSound = SoundCache.getSound("https://files.tivolicloud.com/maki/sounds/huggies.wav");
+     * Chat.messageSent.connect(function (message) {
+     *     if (message.toLowerCase().indexOf("huggies") > -1 && huggiesSound.downloaded) {
+     *         Audio.playSound(huggiesSound, {
+     *             position: MyAvatar.position,
+     *             volume: 0.25
+     *         });
+     *     }
+     * });
+     */
+    void messageSent(QString message);
 
 private:
     std::vector<QSharedPointer<ChatCommand>> _commands;

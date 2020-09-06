@@ -17,4 +17,6 @@ declare namespace Chat {
 		},
 		senderID: string,
 	) => any>;
+
+	const messageSent: Signal<(message: string) => any>;
 }

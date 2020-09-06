@@ -203,6 +203,7 @@ class ChatHandler extends WebEventHandler {
 		switch (data.key) {
 			case "message":
 				Chat.sendMessage(data.value);
+				(Chat.messageSent as any)(data.value);
 				break;
 			case "command":
 				const command = Chat.getCommand(data.value.command);
