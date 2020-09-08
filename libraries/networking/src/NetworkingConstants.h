@@ -40,5 +40,6 @@ const QString HIFI_URL_SCHEME_HTTP = "http";
 const QString HIFI_URL_SCHEME_HTTPS = "https";
 const QString HIFI_URL_SCHEME_FTP = "ftp";
 const QString URL_SCHEME_ATP = "atp";
+const QString URL_SCHEME_TEA = "tea";
 
 #endif // hifi_NetworkingConstants_h

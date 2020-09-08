@@ -60,6 +60,13 @@ else()
   message(STATUS "Hifi codec disabled")
 endif()
 
+set(DIR "teaProtocol")
+if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${DIR}")
+  add_subdirectory(${DIR})
+else()
+  message(STATUS "Downloading teaProtocol")
+endif()
+
 # example plugins
 # set(DIR "examplePlugin")
 # add_subdirectory(${DIR})

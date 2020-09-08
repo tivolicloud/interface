@@ -223,6 +223,22 @@ const OculusPlatformPluginPointer PluginManager::getOculusPlatformPlugin() {
     return oculusPlatformPlugin;
 }
 
+const TeaProtocolPluginPointer PluginManager::getTeaProtocolPlugin() {
+    static TeaProtocolPluginPointer teaProtocolPlugin;
+    static std::once_flag once;
+    std::call_once(once, [&] {
+        // Now grab the dynamic plugins
+        for (auto loader : getLoadedPlugins()) {
+            TeaProtocolProvider* teaProtocolProvider = qobject_cast<TeaProtocolProvider*>(loader->instance());
+            if (teaProtocolProvider) {
+                teaProtocolPlugin = teaProtocolProvider->getTeaProtocolPlugin();
+                break;
+            }
+        }
+    });
+    return teaProtocolPlugin;
+}
+
 DisplayPluginList PluginManager::getAllDisplayPlugins() {
     return _displayPlugins;
 }

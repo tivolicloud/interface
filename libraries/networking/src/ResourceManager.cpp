@@ -19,6 +19,8 @@
 #include <QFileInfo>
 
 #include <SharedUtil.h>
+#include <plugins/PluginManager.h>
+#include <plugins/TeaProtocolPlugin.h>
 
 #include "AssetResourceRequest.h"
 #include "FileResourceRequest.h"
@@ -87,6 +89,7 @@ const QSet<QString>& getKnownUrls() {
         knownUrls.insert(HIFI_URL_SCHEME_HTTPS);
         knownUrls.insert(HIFI_URL_SCHEME_FTP);
         knownUrls.insert(URL_SCHEME_ATP);
+        knownUrls.insert(URL_SCHEME_TEA);
     });
     return knownUrls;
 }
@@ -134,6 +137,14 @@ ResourceRequest* ResourceManager::createResourceRequest(
             return nullptr;
         }
         request = new AssetResourceRequest(normalizedURL, isObservable, callerId, extra);
+    } else if (scheme == URL_SCHEME_TEA) {
+        auto pluginManager = DependencyManager::get<PluginManager>();
+        TeaProtocolPluginPointer teaProtocolPlugin = pluginManager->getTeaProtocolPlugin();
+        if (teaProtocolPlugin) {
+            request = teaProtocolPlugin->initRequest(normalizedURL, isObservable, callerId, extra);
+        } else {
+            return nullptr;
+        }
     } else {
         qCDebug(networking) << "Unknown scheme (" << scheme << ") for URL: " << url.url();
         return nullptr;
