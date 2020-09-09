@@ -22,30 +22,30 @@
 const QString STAT_ATP_REQUEST_STARTED = "StartedATPRequest";
 const QString STAT_HTTP_REQUEST_STARTED = "StartedHTTPRequest";
 const QString STAT_FILE_REQUEST_STARTED = "StartedFileRequest";
-const QString STAT_TEA_REQUEST_STARTED = "StartedTivoliRequest";
+const QString STAT_TEA_REQUEST_STARTED = "StartedTeaRequest";
 
 const QString STAT_ATP_REQUEST_SUCCESS = "SuccessfulATPRequest";
 const QString STAT_HTTP_REQUEST_SUCCESS = "SuccessfulHTTPRequest";
 const QString STAT_FILE_REQUEST_SUCCESS = "SuccessfulFileRequest";
-const QString STAT_TEA_REQUEST_SUCCESS = "SuccessfulTivoliRequest";
+const QString STAT_TEA_REQUEST_SUCCESS = "SuccessfulTeaRequest";
 
 const QString STAT_ATP_REQUEST_FAILED = "FailedATPRequest";
 const QString STAT_HTTP_REQUEST_FAILED = "FailedHTTPRequest";
 const QString STAT_FILE_REQUEST_FAILED = "FailedFileRequest";
-const QString STAT_TEA_REQUEST_FAILED = "FailedTivoliRequest";
+const QString STAT_TEA_REQUEST_FAILED = "FailedTeaRequest";
 
 const QString STAT_ATP_REQUEST_CACHE = "CacheATPRequest";
 const QString STAT_HTTP_REQUEST_CACHE = "CacheHTTPRequest";
-const QString STAT_TEA_REQUEST_CACHE = "CacheTivoliRequest";
+const QString STAT_TEA_REQUEST_CACHE = "CacheTeaRequest";
 
 const QString STAT_ATP_MAPPING_REQUEST_STARTED = "StartedATPMappingRequest";
 const QString STAT_ATP_MAPPING_REQUEST_FAILED = "FailedATPMappingRequest";
 const QString STAT_ATP_MAPPING_REQUEST_SUCCESS = "SuccessfulATPMappingRequest";
 
-const QString STAT_HTTP_RESOURCE_TOTAL_BYTES = "HTTPBytesDownloaded";
 const QString STAT_ATP_RESOURCE_TOTAL_BYTES = "ATPBytesDownloaded";
-const QString STAT_FILE_RESOURCE_TOTAL_BYTES = "FILEBytesDownloaded";
-const QString STAT_TEA_RESOURCE_TOTAL_BYTES = "TivoliBytesDownloaded";
+const QString STAT_HTTP_RESOURCE_TOTAL_BYTES = "HTTPBytesDownloaded";
+const QString STAT_FILE_RESOURCE_TOTAL_BYTES = "FileBytesDownloaded";
+const QString STAT_TEA_RESOURCE_TOTAL_BYTES = "TeaBytesDownloaded";
 
 class ResourceRequest : public QObject {
     Q_OBJECT
