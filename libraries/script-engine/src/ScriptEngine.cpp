@@ -2654,7 +2654,7 @@ void ScriptEngine::refreshFileScript(const EntityItemID& entityID) {
 // global values for different entity scripts).
 void ScriptEngine::doWithEnvironment(const EntityItemID& entityID, const QUrl& sandboxURL, std::function<void()> operation) {
     EntityItemID oldIdentifier = currentEntityIdentifier;
-    QUrl oldSandboxURL = "";
+    QUrl oldSandboxURL;
     if (currentSandboxURL.isValid()) oldSandboxURL = currentSandboxURL;
     currentEntityIdentifier = entityID;
     if (sandboxURL.isValid()) currentSandboxURL = sandboxURL;
