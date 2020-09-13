@@ -144,6 +144,7 @@ LogDialog::LogDialog(QWidget* parent, AbstractLoggerInterface* logger) : BaseLog
     _filterDropdown->addItem("hifi.shared");
     _filterDropdown->addItem("hifi.ui");
     _filterDropdown->addItem("qml");
+    _filterDropdown->addItem("tivoli.tea");
     connect(_filterDropdown, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &LogDialog::handleFilterDropdownChanged);
 
     _leftPad += COMBOBOX_WIDTH + MARGIN_LEFT + MARGIN_LEFT;
