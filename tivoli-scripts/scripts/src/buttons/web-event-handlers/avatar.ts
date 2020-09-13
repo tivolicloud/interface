@@ -142,6 +142,9 @@ export class AvatarHandler extends WebEventHandler {
 						break;
 					}
 				}
+			case "username":
+				this.emitEvent("username", AccountServices.username);
+				break;
 		}
 	}
 }

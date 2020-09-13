@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
-import { AvatarService, TivoliFile } from "../avatar.service";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ScriptService } from "../../script.service";
+import { AvatarService, TivoliFile } from "../avatar.service";
 
 @Component({
 	selector: "app-tivoli-files",
@@ -10,20 +10,26 @@ import { ScriptService } from "../../script.service";
 })
 export class TivoliFilesComponent implements OnInit {
 	constructor(
-		private avatarService: AvatarService,
-		private scriptService: ScriptService,
-		private dialogRef: MatDialogRef<TivoliFilesComponent>,
+		private readonly avatarService: AvatarService,
+		private readonly scriptService: ScriptService,
+		private readonly dialogRef: MatDialogRef<TivoliFilesComponent>,
+		@Inject(MAT_DIALOG_DATA)
+		public readonly data: {
+			usingTea: boolean;
+		},
 	) {}
 
 	loading = true;
 	error = "";
 	avatars: TivoliFile[] = [];
+	avatarBaseUrl = "";
 
 	ngOnInit() {
 		this.avatarService.getAvatarsFromFiles().subscribe(
-			avatars => {
+			data => {
 				this.loading = false;
-				this.avatars = avatars;
+				this.avatars = data.files;
+				this.avatarBaseUrl = data.url;
 			},
 			err => {
 				this.loading = false;
@@ -32,8 +38,12 @@ export class TivoliFilesComponent implements OnInit {
 		);
 	}
 
-	onUpdate(url: string) {
-		this.scriptService.emitEvent("avatar", "setAvatarUrl", url);
+	onUpdate(isTea: any, key: string) {
+		const avatarUrl = isTea
+			? "tea://" + this.avatarService.username.toLowerCase() + key
+			: this.avatarBaseUrl + key;
+
+		this.scriptService.emitEvent("avatar", "setAvatarUrl", avatarUrl);
 		this.scriptService.emitEvent("avatar", "close");
 		this.dialogRef.close();
 	}
