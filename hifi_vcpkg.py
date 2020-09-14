@@ -192,13 +192,21 @@ endif()
             # hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
             
             print("Download vcpkg from GitHub to {}".format(self.path))
+
+            vcpkg_version = "2020.07"
+            if platform.machine() == "aarch64":
+                vcpkg_version = "2020.04"
+
             hifi_utils.downloadAndExtract(
-                "https://codeload.github.com/microsoft/vcpkg/zip/2020.04", self.path, isZip=True
+                "https://codeload.github.com/microsoft/vcpkg/zip/" + vcpkg_version, self.path, isZip=True
             )
-            vcpkg_2020_04 = os.path.join(self.path, "vcpkg-2020.04")
-            for filename in os.listdir(vcpkg_2020_04):
-                shutil.move(os.path.join(vcpkg_2020_04, filename), os.path.join(self.path, filename))
-            os.rmdir(vcpkg_2020_04)
+            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + vcpkg_version)
+
+            for filename in os.listdir(vcpkg_extract_dir):
+                shutil.move(os.path.join(vcpkg_extract_dir, filename), os.path.join(self.path, filename))
+            
+            os.rmdir(vcpkg_extract_dir)
+
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
 
