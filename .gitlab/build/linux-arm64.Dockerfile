@@ -35,4 +35,4 @@ rm -rf cmake-3.14.2 cmake-3.14.2.tar.gz && \
 # install nodejs 12
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs && \
-npm i -g @sentry/cli
+# npm i -g @sentry/cli
