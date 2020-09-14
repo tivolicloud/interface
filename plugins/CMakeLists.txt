@@ -64,7 +64,8 @@ set(DIR "teaProtocol")
 if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${DIR}")
   add_subdirectory(${DIR})
 else()
-  message(STATUS "Downloading teaProtocol")
+  set(DIR "teaProtocolPrebuilt")
+  add_subdirectory(${DIR})
 endif()
 
 # example plugins
