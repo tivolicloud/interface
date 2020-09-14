@@ -19,6 +19,7 @@
 #include <QFileInfo>
 
 #include <SharedUtil.h>
+#include <plugins/Forward.h>
 #include <plugins/PluginManager.h>
 #include <plugins/TeaProtocolPlugin.h>
 
