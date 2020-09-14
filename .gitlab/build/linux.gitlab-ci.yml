@@ -14,7 +14,7 @@ linux build image:
 
     script:
         - docker system info
-        - docker build -t $CI_REGISTRY_IMAGE/build:linux .gitlab/build/linux.Dockerfile
+        - docker build -t $CI_REGISTRY_IMAGE/build:linux - < .gitlab/build/linux.Dockerfile
         - docker image ls
         - docker login registry.tivolicloud.com --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker push $CI_REGISTRY_IMAGE/build:linux
@@ -37,7 +37,7 @@ linux arm64 build image:
 
     script:
         - docker system info
-        - docker build -t $CI_REGISTRY_IMAGE/build:linux-arm64 .gitlab/build/linux-arm64.Dockerfile
+        - docker build -t $CI_REGISTRY_IMAGE/build:linux-arm64 - < .gitlab/build/linux-arm64.Dockerfile
         - docker image ls
         - docker login registry.tivolicloud.com --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker push $CI_REGISTRY_IMAGE/build:linux-arm64
