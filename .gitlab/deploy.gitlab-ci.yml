@@ -156,10 +156,6 @@ publish to aur:
 
     extends: .deploy
 
-    needs:
-        - job: upload launcher
-          artifacts: false
-
     script:
         - mkdir -p ~/.ssh
         - cp $AUR_SSH_KEY ~/.ssh/id_rsa
