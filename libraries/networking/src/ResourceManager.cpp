@@ -169,7 +169,7 @@ bool ResourceManager::resourceExists(const QUrl& url) {
         QNetworkRequest request{ url };
 
         request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-        request.setHeader(QNetworkRequest::UserAgentHeader, HIGH_FIDELITY_USER_AGENT);
+        request.setHeader(QNetworkRequest::UserAgentHeader, TIVOLI_CLOUD_VR_USER_AGENT);
 
         auto reply = networkAccessManager.head(request);
 

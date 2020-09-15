@@ -84,7 +84,7 @@ typedef unsigned char colorPart;
 typedef unsigned char nodeColor[BYTES_PER_COLOR + BYTES_PER_FLAGS];
 
 // Use a custom User-Agent to avoid ModSecurity filtering, e.g. by hosting providers.
-const QByteArray HIGH_FIDELITY_USER_AGENT = QString(
+const QByteArray TIVOLI_CLOUD_VR_USER_AGENT = QString(
     "TivoliCloudVR/" + 
     (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
 ).toLocal8Bit();
