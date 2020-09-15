@@ -153,36 +153,6 @@ launcher linux:
         - yarn install
         - yarn build
         - yarn package
-        - cd ..
-
-        # publish to aur
-
-        - mkdir -p ~/.ssh
-        - cp $AUR_SSH_KEY ~/.ssh/id_rsa
-        - chmod 600 ~/.ssh/id_rsa
-
-        - echo "Host aur.archlinux.org" > ~/.ssh/config
-        - echo "    StrictHostKeyChecking no" >> ~/.ssh/config
-        - git clone ssh://aur@aur.archlinux.org/tivoli-cloud-vr-bin.git
-        - git config --global user.name "Tivoli Cloud VR"
-        - git config --global user.email "maki@tivolicloud.com"
-
-        - cd tivoli-cloud-vr-bin
-        - mv ../.gitlab/aur/* .
-        - 'sed -i ''s/$VERSION/''"$CI_COMMIT_TAG"''/g'' PKGBUILD'
-
-        - useradd -m tivoli && usermod -L tivoli
-        - 'echo "tivoli ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
-        - 'echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
-        - chown -R tivoli:tivoli .
-        - su tivoli
-        - makepkg --printsrcinfo > .SRCINFO
-        - exit
-        - chown -R root:root .
-
-        - git add -A
-        - git commit -am "Updated to version $CI_COMMIT_TAG"
-        - git push --force
 
     artifacts:
         expire_in: 1 day
