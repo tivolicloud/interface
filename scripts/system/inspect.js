@@ -43,7 +43,7 @@ var id = RayPick.createRayPick({
 var PI = Math.PI;
 var RAD_TO_DEG = 180.0 / PI;
 
-var AZIMUTH_RATE = 90.0;
+var AZIMUTH_RATE = 200.0;
 var ALTITUDE_RATE = 200.0;
 var RADIUS_RATE = 1.0 / 100.0;
 var PAN_RATE = 250.0;
@@ -111,11 +111,11 @@ var targetCamOrientation;
 var oldPosition, oldOrientation;
 
 var startPosition, startOrientation, startTime, timeDelta, timer;
-var timeDiv = 0.01;
+var timeDiv = 0.004;
 
 var previousReticleEnabled;
 
-var POINTER_SIZE = 0.01;
+var POINTER_SIZE = 0.001;
 
 var pointerEntityID = Entities.addEntity({
     type: "Sphere",
