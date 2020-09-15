@@ -490,7 +490,7 @@ function takeSnapshot() {
         Audio.playSound(snapActivateSound, {
             position: { x: MyAvatar.position.x, y: MyAvatar.position.y, z: MyAvatar.position.z },
             localOnly: true,
-            volume: 1.0
+            volume: 0.6
         });
         HMD.closeTablet();
         var DOUBLE_RENDER_TIME_TO_MS = 2000; // If rendering is bogged down, allow double the render time to close the tablet.
