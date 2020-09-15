@@ -591,7 +591,10 @@ const GROUPS = [
 				max: 4,
 				step: 0.25,
 				decimals: 2,
-				propertyID: "toneMapping.exposure"
+				propertyID: "toneMapping.exposure",
+				showPropertyRule: {
+					toneMappingMode: "rgb,srgb,reinhard,filmic"
+				}
 			},
 			{
 				label: "Avatar Priority",
@@ -4633,9 +4636,9 @@ function handleEntitySelectionUpdate(selections, isPropertiesToolUpdate) {
 				for (let propertyToShow in showPropertyRules) {
 					let showIfThisPropertyValue =
 						showPropertyRules[propertyToShow];
-					let show =
-						String(propertyValue) ===
-						String(showIfThisPropertyValue);
+					let show = showIfThisPropertyValue.includes(
+						String(propertyValue)
+					);
 					showPropertyElement(propertyToShow, show);
 				}
 			}
