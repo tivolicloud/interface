@@ -43,7 +43,7 @@ var id = RayPick.createRayPick({
 var PI = Math.PI;
 var RAD_TO_DEG = 180.0 / PI;
 
-var AZIMUTH_RATE = 200.0;
+var AZIMUTH_RATE = 200.0; // was 90.0
 var ALTITUDE_RATE = 200.0;
 var RADIUS_RATE = 1.0 / 100.0;
 var PAN_RATE = 250.0;
@@ -111,11 +111,11 @@ var targetCamOrientation;
 var oldPosition, oldOrientation;
 
 var startPosition, startOrientation, startTime, timeDelta, timer;
-var timeDiv = 0.004;
+var timeDiv = 0.004; // was 0.01
 
 var previousReticleEnabled;
 
-var POINTER_SIZE = 0.001;
+var POINTER_SIZE = 0.01;
 
 var pointerEntityID = Entities.addEntity({
     type: "Sphere",
@@ -411,14 +411,67 @@ function mousePressEvent(event) {
     }
 }
 
+function clamp(n, min, max) {
+	return n <= min ? min : n >= max ? max : n;
+}
+
+function lerp(a, b, n) {
+    return (1 - n) * a + n * b;
+}
+
+function lerp2D(a, b, n) {
+	return [lerp(a[0], b[0], n), lerp(a[1], b[1], n)];
+}
+
+// https://www.cubic.org/docs/bezier.htm
+
+function cubicBezier(_1, _2, _3, _4, n) {
+	const a = [0, 0];
+	const b = [_1, _2];
+	const c = [_3, _4];
+	const d = [1, 1];
+
+	const ab = lerp2D(a, b, n);
+	const bc = lerp2D(b, c, n);
+	const cd = lerp2D(c, d, n);
+	const abbc = lerp2D(ab, bc, n);
+	const bccd = lerp2D(bc, cd, n);
+	const dest = lerp2D(abbc, bccd, n);
+
+	return clamp(dest[1], 0, 1);
+}
+
+function timeVCubicBezier(vecA, vecB, _1, _2, _3, _4) {
+    var interpolatedTimeDelta = cubicBezier(_1, _2, _3, _4, timeDelta);
+    if (interpolatedTimeDelta > 1) return vecB;
+    return Vec3.mix(vecA, vecB, interpolatedTimeDelta);
+}
+
+function timeQCubicBezier(quatA, quatB, _1, _2, _3, _4) {
+    var interpolatedTimeDelta = cubicBezier(_1, _2, _3, _4, timeDelta);
+    if (interpolatedTimeDelta > 1) return quatB;
+    return Quat.mix(quatA, quatB, interpolatedTimeDelta);
+}
+
+// https://material.io/design/motion/speed.html#easing
+// standard    0.4, 0, 0.2, 1
+// decelerate  0,   0, 0.2, 1
+// accelerate  0.4, 0,   1, 1
+
 function lerpCam() {
     timeDelta = (Date.now() - startTime) * timeDiv;
     if (timeDelta > 1 || !isActive) {
         Script.clearInterval(timer);
         return;
     }
-    Camera.setPosition(timeVLerp(startPosition, position));
-    Camera.setOrientation(timeQLerp(startOrientation, orientationOf(vector)));
+    Camera.setPosition(timeVCubicBezier(
+        startPosition, position,
+        0.4, 0, 0.2, 1
+    ));
+    Camera.setOrientation(timeQCubicBezier(
+        startOrientation, orientationOf(vector),
+        0.4, 0, 0.2, 1
+    ));
 }
 
 function mouseReleaseEvent(event) {

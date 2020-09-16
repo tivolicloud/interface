@@ -16,7 +16,7 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function lerp(a: number, b: number, n: number): number {
-	return a + (n / 1) * (b - a);
+	return (1 - n) * a + n * b;
 }
 
 function lerp2D(a: number[], b: number[], n: number): [number, number] {
