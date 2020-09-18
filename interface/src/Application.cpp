@@ -199,6 +199,7 @@
 #include "scripting/PerformanceScriptingInterface.h"
 #include "scripting/RenderScriptingInterface.h"
 #include "scripting/ChatScriptingInterface.h"
+#include "scripting/DiskCacheScriptingInterface.h"
 
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
@@ -940,6 +941,7 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     DependencyManager::set<TTSScriptingInterface>();
     DependencyManager::set<QmlCommerce>();
     DependencyManager::set<ChatScriptingInterface>();
+    DependencyManager::set<DiskCacheScriptingInterface>();
 
     DependencyManager::set<FadeEffect>();
     DependencyManager::set<ResourceRequestObserver>();
@@ -7573,6 +7575,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
     scriptEngine->registerGlobalObject("Pointers", DependencyManager::get<PointerScriptingInterface>().data());
     scriptEngine->registerGlobalObject("TextToSpeech", DependencyManager::get<TTSScriptingInterface>().data());
     scriptEngine->registerGlobalObject("Chat", DependencyManager::get<ChatScriptingInterface>().data());
+    scriptEngine->registerGlobalObject("DiskCache", DependencyManager::get<DiskCacheScriptingInterface>().data());
 
     // Caches
     scriptEngine->registerGlobalObject("AnimationCache", DependencyManager::get<AnimationCacheScriptingInterface>().data());
