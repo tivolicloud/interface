@@ -1,7 +1,7 @@
 // included scripts
 [
 	"system/request-service.js", // some http request dependancy thing
-	"system/progress.js", // progress bar at the bottom, to be rewritten
+	// "system/progress.js", // progress bar at the bottom, to be rewritten
 	// "system/away.js",
 	"system/audio.js",
 	"system/hmd.js", // enter leave vr button
