@@ -2,9 +2,12 @@
 	<h2 style="margin-top: 0; margin-bottom: 12px;">
 		<mat-icon inline>supervisor_account</mat-icon> Online Users
 	</h2>
+	<p style="margin-top: -8px; margin-bottom: 8px;">
+		This will become "online friends" when our friend system is complete.
+	</p>
 
 	<div class="domain-friends" *ngFor="let domain of domainFriends">
-		<h3>
+		<h3 style="white-space: nowrap;">
 			<mat-icon inline *ngIf="domain.private">lock</mat-icon>
 			{{ domain.name }}
 		</h3>

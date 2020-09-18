@@ -183,6 +183,7 @@ private:
  * @hifi-client-entity
  * @hifi-avatar
  *
+ * @property {boolean} enabled=false - <code>true</code> if the reticle circle is enabled, <code>false</code> if it's disabled.
  * @property {boolean} allowMouseCapture=true - <code>true</code> if the mouse cursor will be captured when in HMD mode and the 
  *     Interface window content (excluding menus) has focus, <code>false</code> if the mouse cursor will not be captured.
  * @property {number} depth - The depth (distance) that the reticle is displayed at relative to the HMD view, in HMD mode.
@@ -207,6 +208,7 @@ private:
 // Scripting interface available to control the Reticle
 class ReticleInterface : public QObject {
     Q_OBJECT
+    Q_PROPERTY(bool enabled READ getEnabled WRITE setEnabled)
     Q_PROPERTY(QVariant position READ getPosition WRITE setPosition)
     Q_PROPERTY(bool visible READ getVisible WRITE setVisible)
     Q_PROPERTY(float depth READ getDepth WRITE setDepth)
@@ -218,6 +220,20 @@ class ReticleInterface : public QObject {
 
 public:
     ReticleInterface(CompositorHelper* outer) : QObject(outer), _compositor(outer) {}
+
+     /**jsdoc
+     * Gets whether the reticle circle is enabled.
+     * @function Reticle.getEnabled
+     * @returns {boolean} enabled
+     */
+    Q_INVOKABLE bool getEnabled() const;
+
+    /**jsdoc
+     * Sets whether the reticle circle is enabled.
+     * @function Reticle.setEnabled
+     * @param {boolean} enabled
+     */
+    Q_INVOKABLE void setEnabled(bool enabled);
 
     /**jsdoc
      * Checks whether the mouse cursor is captured, displaying only in Interface and not on the rest of the desktop. The mouse 

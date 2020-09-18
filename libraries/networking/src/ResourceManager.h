@@ -14,6 +14,7 @@
 
 #include <functional>
 
+#include <QNetworkDiskCache>
 #include <QObject>
 #include <QtCore/QMutex>
 #include <QThread>
@@ -50,6 +51,8 @@ public:
 
     // adjust where we persist the cache
     void setCacheDir(const QString& cacheDir);
+
+    QNetworkDiskCache* networkDiskCache = new QNetworkDiskCache();
 
 private:
     QThread _thread;

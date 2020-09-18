@@ -49,6 +49,7 @@ export class ScriptService {
 			} catch (err) {
 				return;
 			}
+			if (!data.uuid && !data.key) return;
 			if (!data.uuid.includes("com.tivolicloud.defaultScripts")) return;
 
 			this.zone.run(() => {

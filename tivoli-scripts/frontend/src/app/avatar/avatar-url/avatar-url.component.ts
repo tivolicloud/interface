@@ -19,7 +19,17 @@ export class AvatarUrlComponent {
 	}
 
 	onUpdate(input: any) {
-		this.scriptService.emitEvent("avatar", "setAvatarUrl", input.value);
+		let avatarUrl = input.value;
+		const isWindows = /^[A-Z]:\\/i.test(avatarUrl);
+		const isUnix = /^\//.test(avatarUrl);
+		if (isWindows || isUnix) {
+			avatarUrl =
+				"file://" +
+				(isWindows ? "/" : "") +
+				avatarUrl.replace(/\\/g, "/");
+		}
+
+		this.scriptService.emitEvent("avatar", "setAvatarUrl", avatarUrl);
 		this.scriptService.emitEvent("avatar", "close");
 		this.dialogRef.close();
 	}

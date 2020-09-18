@@ -57,14 +57,16 @@ export function initNametags() {
 				grabFollowsController: false,
 				equippable: false,
 			},
-
 			type: "Image",
 			emissive: true,
 			keepAspectRatio: false,
 			billboardMode: "full",
 			imageURL: "",
 			alpha: 0,
-			isVisibleInSecondaryCamera: false
+			isVisibleInSecondaryCamera: false,
+			collisionless: true,
+			collisionMask: 0,
+			ignorePickIntersection: true
 		}, "local");
 
 		updateNametagEntity(nametag);

@@ -62,6 +62,7 @@ public:
     bool _zoneCullingActive = false;
     bool _updateStaticEntities = false;
     bool _isEditMode = false;
+    bool _ghostingAllowed = true;
 
     void setCurrentlySelectedItems(QList<EntityItemID>& value) { _currentlySelectedEntities = value;}
     bool checkIfEntityIsSelected(const EntityItemID& value) { return _currentlySelectedEntities.contains(value); }
@@ -73,6 +74,7 @@ public:
     bool getSceneIsReady() { return _sceneIsReady; }
 
     void setIsEditMode(bool modeState) { _isEditMode = modeState; }
+    bool getGhostingAllowed() { return _ghostingAllowed; }
 
     ReadWriteLockable _getZoneCullSkiplistGuard;
     QVector<QUuid> getZoneCullSkiplist();
@@ -191,6 +193,7 @@ public slots:
     render::ItemID renderableIdForEntityId(const EntityItemID& id) const;
 
     void handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUpdate);
+    void forceRecheckEntities();
 
 protected:
     virtual OctreePointer createTree() override {
@@ -221,7 +224,6 @@ private:
     void checkEnterLeaveEntities();
     void leaveDomainAndNonOwnedEntities();
     void leaveAllEntities();
-    void forceRecheckEntities();
 
     glm::vec3 _avatarPosition { 0.0f };
     bool _forceRecheckEntities { true };
@@ -279,7 +281,7 @@ private:
 
     LayeredZones _layeredZones;
     uint64_t _lastZoneCheck { 0 };
-    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 100; // ~10hz
+    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 1000; // ~1000hz
     const float ZONE_CHECK_DISTANCE = 0.001f;
 
     float _avgRenderableUpdateCost { 0.0f };

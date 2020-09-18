@@ -518,6 +518,16 @@ glm::mat4 CompositorHelper::getPoint2DTransform(const glm::vec2& point, float si
     return result;
 }
 
+bool ReticleInterface::getEnabled() const {
+    QString preferredCursor;
+    QMetaObject::invokeMethod(qApp, "getPreferredCursor", Qt::DirectConnection, Q_RETURN_ARG(QString, preferredCursor));
+    return preferredCursor == Cursor::Manager::getIconName(Cursor::Icon::RETICLE);
+}
+
+void ReticleInterface::setEnabled(bool enabled) {
+    QString preferredCursor = enabled ? Cursor::Manager::getIconName(Cursor::Icon::RETICLE) : QString();
+    QMetaObject::invokeMethod(qApp, "setPreferredCursor", Qt::DirectConnection, Q_ARG(const QString&, preferredCursor));
+}
 
 QVariant ReticleInterface::getPosition() const {
     return vec2ToVariant(_compositor->getReticlePosition());

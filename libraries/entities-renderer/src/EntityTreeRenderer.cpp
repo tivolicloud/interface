@@ -273,6 +273,7 @@ void EntityTreeRenderer::stopDomainAndNonOwnedEntities() {
 void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
 
     stopDomainAndNonOwnedEntities();
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
     auto sessionUUID = getTree()->getMyAvatarSessionUUID();
     std::unordered_map<EntityItemID, EntityRendererPointer> savedEntities;
@@ -311,6 +312,7 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
 void EntityTreeRenderer::clear() {
 
     leaveAllEntities();
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     // unload and stop the engine
     if (_entitiesScriptEngine) 
     {
@@ -389,10 +391,7 @@ void EntityTreeRenderer::init() {
     DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
     connect(&domainHandler, &DomainHandler::settingsReceived, this, &EntityTreeRenderer::connectedToDomain);
     
-    if (_wantScripts) 
-    {
-        resetEntitiesScriptEngine();
-    }
+    if (_wantScripts) resetEntitiesScriptEngine();
 
     forceRecheckEntities();  // setup our state to force checking our inside/outsideness of entities
 
@@ -400,6 +399,8 @@ void EntityTreeRenderer::init() {
     connect(entityTree.get(), &EntityTree::addingEntity, this, &EntityTreeRenderer::addingEntity, Qt::QueuedConnection);
     connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging,
             Qt::QueuedConnection);
+            
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
 }
 
@@ -567,7 +568,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const auto& renderable : _priorityRenderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) {                    
+                    renderable->getEntity()->setNeedsRenderUpdate(true);
+                    renderable->updateInScene(scene, transaction);
+                }
             }
         }
 
@@ -581,7 +585,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             for (const EntityRendererPointer& renderable : _renderablesToUpdate) 
             {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
-                if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                if (renderable != nullptr) {
+                    renderable->getEntity()->setNeedsRenderUpdate(true);
+                    renderable->updateInScene(scene, transaction);
+                }
             }
 
             size_t numRenderables = _renderablesToUpdate.size() + 1;  // add one to avoid divide by zero
@@ -643,7 +650,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                         break;
                     }
                     const auto& renderable = sortedRenderable.getRenderer();
-                    if (renderable != nullptr) renderable->updateInScene(scene, transaction);
+                    if (renderable != nullptr) {                        
+                        renderable->getEntity()->setNeedsRenderUpdate(true);
+                        renderable->updateInScene(scene, transaction);
+                    }
                     _renderablesToUpdate.erase(renderable);
                 }
 
@@ -826,8 +836,9 @@ QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist()
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
 
-    if (_zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
-
+    if (_zoneCullingStack != _prevZoneCullingStack) QMetaObject::invokeMethod(qApp, "requeryOctree"); 
+    if (!_forceRecheckEntities && _zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
+    _forceRecheckEntities = false;
     _zoneCullSkipList.clear();    
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
@@ -836,24 +847,22 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         if (!zoneItem) continue;
         // to do -- make seond parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
         uint32_t _zoneMode = zoneItem->getZoneCullingMode();
-        
+    
         switch (_zoneMode) {
-            case inherit:  // do nothing
+            case ZONE_CULLING_INHERIT:  // do nothing
                 break;
-            case onInclusive:
+            case ZONE_CULLING_OUTSIDE:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList += zoneItem->getZoneContentList(); // Add these items to the outer skiplist
                 break;
-            case onExclusive:
-                updateZoneContentsLists(_zoneCullingStack[i], false); 
-                _zoneCullSkipList.clear();
-                _zoneCullSkipList += zoneItem->getZoneContentList(); // Reset the skiplist and replace with these new values
-                break;
-            case offExclusive:
+            case ZONE_CULLING_DISABLED:
                 updateZoneContentsLists(_zoneCullingStack[i], false);  
                 _zoneCullSkipList.clear(); // Completely wipe the skiplist rendering EVERYTHING
                 break;
         }
+
+        _ghostingAllowed = zoneItem->getGhostingAllowed();
+
     }
 
     auto scene = _viewState->getMain3DScene();
@@ -895,7 +904,6 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
         {
             _avatarPosition = avatarPosition;
             _lastZoneCheck = now;
-            _forceRecheckEntities = false;
 
             QSet<EntityItemID> entitiesContainingAvatar;
 
@@ -907,7 +915,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
             // for entity IDs that no longer exist.
-
+            
             if (_entitiesScriptEngine) 
             {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
@@ -945,7 +953,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                             }
                        }
                     }
-                }
+                }                
                 _currentEntitiesInside = entitiesContainingAvatar;
             }
         }

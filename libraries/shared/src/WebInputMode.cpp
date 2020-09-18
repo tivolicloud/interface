@@ -10,7 +10,8 @@
 
 const char* webInputModeNames[] = {
     "touch",
-    "mouse"
+    "mouse",
+    "none"
 };
 
 static const size_t WEB_INPUT_MODE_NAMES = (sizeof(webInputModeNames) / sizeof(webInputModeNames[0]));

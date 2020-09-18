@@ -13,6 +13,20 @@
 #include <functional>
 #include <QtCore/QObject>
 
+/**jsdoc
+ * Here's how you could use the Test API:
+ * 
+ * <ul>
+ *     <li>Write a script using the below and launch interface with: <code>interface --testScript path/to/script.js</code></li>
+ *     <li>Save the recorded events with {@link Test.stopTracing} to a <code>.json</code> or <code>.json.gz</code> file</li>
+ *     <li>Open Chrome, visit <a href="chrome://tracing">chrome://tracing</a> and load your file</li>
+ * </ul>
+ * 
+ * @namespace Test
+ *
+ * @hifi-interface
+ */
+
 class QScriptValue;
 
 class TestScriptingInterface : public QObject {
@@ -58,14 +72,14 @@ public slots:
     /**jsdoc
     * Waits for establishment of connection to server
     * @function Test.waitForConnection
-    * @param {int} maxWaitMs [default=10000] - Number of milliseconds to wait
+    * @param {number} [maxWaitMs=10000] - Number of milliseconds to wait
     */
     bool waitForConnection(qint64 maxWaitMs = 10000);
 
     /**jsdoc
     * Waits a specific number of milliseconds
     * @function Test.wait
-    * @param {int} milliseconds - Number of milliseconds to wait
+    * @param {number} milliseconds - Number of milliseconds to wait
     */
     void wait(int milliseconds);
 
@@ -83,18 +97,18 @@ public slots:
     void clear();
 
     /**jsdoc
-    * Start recording Chrome compatible tracing events
-    * logRules can be used to specify a set of logging category rules to limit what gets captured
+    * Start recording Chrome compatible tracing events<br />
+    * <code>logrules</code> can be used to specify a set of logging category rules to limit what gets captured
     * @function Test.startTracing
-    * @param {string} logrules [defaultValue=""] - See implementation for explanation
+    * @param {string} [logrules=""] - See implementation for explanation
     */
     bool startTracing(QString logrules = "");
 
     /**jsdoc
-    * Stop recording Chrome compatible tracing events and serialize recorded events to a file
-    * Using a filename with a .gz extension will automatically compress the output file
+    * Stop recording Chrome compatible tracing events and serialize recorded events to a file<br />
+    * Using a filename with <code>.gz</code> extension will automatically compress the output file
     * @function Test.stopTracing
-    * @param {string} filename - Name of file to save to
+    * @param {string} filename - Name of file to save to ending with <code>.json</code> or <code>.json.gz</code>
     * @returns {bool} True if successful.   
     */
     bool stopTracing(QString filename);
@@ -108,9 +122,8 @@ public slots:
 
     /**jsdoc
     * Stop a specific name event
-    * Using a filename with a .gz extension will automatically compress the output file
     * @function Test.endTraceEvent
-    * @param {string} filename - Name of event
+    * @param {string} name - Name of event
     */
     void endTraceEvent(QString name);
 
@@ -166,12 +179,12 @@ public slots:
     /**jsdoc
      * Set number of cycles texture size is required to be stable
      * @function Test.setMinimumGPUTextureMemStabilityCount
-    * @param {number} count - Number of cycles to wait
+     * @param {number} count - Number of cycles to wait
      */
     Q_INVOKABLE void setMinimumGPUTextureMemStabilityCount(int count);
 
     /**jsdoc
-     * Check whether all textures have been loaded.
+     * Check whether all textures have been loaded
      * @function Test.isTextureLoadingComplete
      * @returns {boolean} <code>true</code> texture memory usage is not increasing
      */

@@ -192,13 +192,21 @@ endif()
             # hifi_utils.executeSubprocess(['git', 'clone', 'https://github.com/microsoft/vcpkg.git', self.path])
             
             print("Download vcpkg from GitHub to {}".format(self.path))
+
+            vcpkg_version = "2020.07"
+            if platform.machine() == "aarch64":
+                vcpkg_version = "2020.04"
+
             hifi_utils.downloadAndExtract(
-                "https://codeload.github.com/microsoft/vcpkg/zip/master", self.path, isZip=True
+                "https://codeload.github.com/microsoft/vcpkg/zip/" + vcpkg_version, self.path, isZip=True
             )
-            vcpkg_master = os.path.join(self.path, "vcpkg-master")
-            for filename in os.listdir(vcpkg_master):
-                shutil.move(os.path.join(vcpkg_master, filename), os.path.join(self.path, filename))
-            os.rmdir(vcpkg_master)
+            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + vcpkg_version)
+
+            for filename in os.listdir(vcpkg_extract_dir):
+                shutil.move(os.path.join(vcpkg_extract_dir, filename), os.path.join(self.path, filename))
+            
+            os.rmdir(vcpkg_extract_dir)
+
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
 
@@ -228,7 +236,9 @@ endif()
         shutil.copytree(self.sourcePortsPath, portsPath)
 
     def run(self, commands):
-        actualCommands = [self.exe, '--vcpkg-root', self.path]
+        # TODO: causes Error: Invalid vcpkg root directory /interface/build/TIVOLI_VCPKG/5317b356-release/interface/build/TIVOLI_VCPKG/5317b356-release: No such file or directory
+        # actualCommands = [self.exe, '--vcpkg-root', self.path]
+        actualCommands = [self.exe]
         actualCommands.extend(commands)
         print("Running command")
         print(actualCommands)

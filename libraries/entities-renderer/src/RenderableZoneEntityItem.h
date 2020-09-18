@@ -20,6 +20,7 @@
 #include <BackgroundStage.h>
 #include <HazeStage.h>
 #include <BloomStage.h>
+//#include <ToneMappingStage.h>
 #include <TextureCache.h>
 #include "RenderableEntityItem.h"
 #include <ComponentMode.h>
@@ -52,6 +53,7 @@ private:
     void updateKeyBackgroundFromEntity(const TypedEntityPointer& entity);
     void updateBloomFromEntity(const TypedEntityPointer& entity);
     void updateZoneCullingFromEntity(const TypedEntityPointer& entity);
+    void updateToneMappingFromEntity(const TypedEntityPointer& entity);
     void updateAmbientMap();
     void updateSkyboxMap();
     void setAmbientURL(const QString& ambientUrl);
@@ -63,10 +65,15 @@ private:
     void setSkyboxMode(ComponentMode mode);
     void setBloomMode(ComponentMode mode);
     void setZoneCullingMode(ZoneCullingComponentMode mode);
+    void setToneMappingMode(ToneMappingComponentMode mode);
+    void setToneMappingExposure(float value);
 
     void setSkyboxColor(const glm::vec3& color);
     void setProceduralUserData(const QString& userData);
 
+
+    void storeOldToneMappingMode();
+    bool toneMappingModeChanged();
 
     graphics::LightPointer editSunLight() {
         _needSunUpdate = true;
@@ -89,7 +96,6 @@ private:
         _needBloomUpdate = true;
         return _bloom;
     }
-    // graphics::ZoneCullingPointer editZoneCulling() { _needZoneCullingUpdate = true; return _zoneCulling; }
 
     glm::vec3 _lastPosition;
     glm::vec3 _lastDimensions;
@@ -101,7 +107,8 @@ private:
     const graphics::LightPointer _ambientLight{ std::make_shared<graphics::Light>() };
     const graphics::SunSkyStagePointer _background{ std::make_shared<graphics::SunSkyStage>() };
     const graphics::HazePointer _haze{ std::make_shared<graphics::Haze>() };
-    const graphics::BloomPointer _bloom{ std::make_shared<graphics::Bloom>() };  //
+    const graphics::BloomPointer _bloom { std::make_shared<graphics::Bloom>() };
+    //const graphics::ToneMappingPointer _toneMapping{ std::make_shared<graphics::ToneMapping>() };
 
     ComponentMode _keyLightMode{ COMPONENT_MODE_INHERIT };
     ComponentMode _ambientLightMode{ COMPONENT_MODE_INHERIT };
@@ -109,8 +116,11 @@ private:
     ComponentMode _hazeMode{ COMPONENT_MODE_INHERIT };
     ComponentMode _bloomMode{ COMPONENT_MODE_INHERIT };
 
+    ZoneCullingComponentMode _zoneCullingMode{ ZONE_CULLING_INHERIT  };
 
-    ZoneCullingComponentMode _zoneCullingMode{ inherit };
+    ToneMappingComponentMode _toneMappingMode{ TONE_MAPPING_INHERIT  };
+    ToneMappingComponentMode _prevToneMappingMode{ TONE_MAPPING_INHERIT };
+    float _toneMappingExposure;
 
     indexed_container::Index _sunIndex{ LightStage::INVALID_INDEX };
     indexed_container::Index _ambientIndex{ LightStage::INVALID_INDEX };
@@ -131,6 +141,7 @@ private:
     bool _needHazeUpdate{ true };
     bool _needBloomUpdate{ true };
     bool _needZoneCullingUpdate{ true };
+    bool _needToneMappingUpdate{ true };
 
     KeyLightPropertyGroup _keyLightProperties;
     AmbientLightPropertyGroup _ambientLightProperties;
@@ -138,6 +149,7 @@ private:
     SkyboxPropertyGroup _skyboxProperties;
     BloomPropertyGroup _bloomProperties;
     ZoneCullingPropertyGroup _zoneCullingProperties;
+    ToneMappingPropertyGroup _toneMappingProperties;
 
     // More attributes used for rendering:
     QString _ambientTextureURL;

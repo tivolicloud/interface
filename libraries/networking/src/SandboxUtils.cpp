@@ -29,7 +29,7 @@ QNetworkReply* getStatus() {
     auto& networkAccessManager = NetworkAccessManager::getInstance();
     QNetworkRequest sandboxStatus(SANDBOX_STATUS_URL);
     sandboxStatus.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-    sandboxStatus.setHeader(QNetworkRequest::UserAgentHeader, HIGH_FIDELITY_USER_AGENT);
+    sandboxStatus.setHeader(QNetworkRequest::UserAgentHeader, TIVOLI_CLOUD_VR_USER_AGENT);
     return networkAccessManager.get(sandboxStatus);
 }
 

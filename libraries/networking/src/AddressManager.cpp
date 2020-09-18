@@ -570,6 +570,7 @@ void AddressManager::goToAddressFromObject(const QVariantMap& dataObject, const 
 
                         // we didn't override the path or get one back - ask the DS for the viewpoint of its index path
                         // which we will jump to if it exists
+                        // TODO: this doesnt always work
                         emit pathChangeRequired(INDEX_PATH);
                     }
                 }
@@ -789,17 +790,6 @@ bool AddressManager::handleViewpoint(const QString& viewpointString, bool should
                 shouldFace
             );
 
-            // TODO: locationChangeRequired runs too early which causes people to spawn at 0,0,0
-            if (trigger == LookupTrigger::DomainPathResponse) {
-                QTimer::singleShot(2000, [=](){
-                    if (glm::distance(_positionGetter(), newPosition) > 2) {
-                        emit locationChangeRequired(newPosition, orientationChanged,
-                            trigger == LookupTrigger::VisitUserFromPAL ? cancelOutRollAndPitch(newOrientation): newOrientation,
-                            shouldFace
-                        );
-                    }
-                });
-            }
         } else {
             qCDebug(networking) << "Could not jump to position from lookup string because it has an invalid value.";
         }

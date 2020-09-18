@@ -170,6 +170,7 @@ enum EntityPropertyList
     PROP_DERIVED_33,
     PROP_DERIVED_34,
     PROP_DERIVED_35,
+    PROP_DERIVED_36,
 
     PROP_AFTER_LAST_ITEM,
 
@@ -292,14 +293,18 @@ enum EntityPropertyList
     PROP_BLOOM_SIZE = PROP_DERIVED_24,
     PROP_FLYING_ALLOWED = PROP_DERIVED_25,
     PROP_GHOSTING_ALLOWED = PROP_DERIVED_26,
-    PROP_FILTER_URL = PROP_DERIVED_27,
+    PROP_FILTER_URL = PROP_DERIVED_27,    
+
     PROP_KEY_LIGHT_MODE = PROP_DERIVED_28,
     PROP_AMBIENT_LIGHT_MODE = PROP_DERIVED_29,
     PROP_SKYBOX_MODE = PROP_DERIVED_30,
     PROP_HAZE_MODE = PROP_DERIVED_31,
     PROP_BLOOM_MODE = PROP_DERIVED_32,
     PROP_AVATAR_PRIORITY = PROP_DERIVED_33,
-    PROP_ZONE_CULLING_MODE = PROP_DERIVED_34,
+    PROP_ZONE_CULLING_MODE = PROP_DERIVED_34,    
+    PROP_TONE_MAPPING_MODE = PROP_DERIVED_35,
+
+    PROP_TONE_MAPPING_EXPOSURE = PROP_DERIVED_36,
     
     // Polyvox
     PROP_VOXEL_VOLUME_SIZE = PROP_DERIVED_0,
@@ -380,10 +385,7 @@ enum EntityPropertyList
     PROP_MAJOR_TICK_MARKS_COLOR = PROP_DERIVED_17,
     PROP_MINOR_TICK_MARKS_COLOR = PROP_DERIVED_18,
 
-    // CPM TIVOLI - breaking the rule below here by adding this in the prop derived area
-    // because when it was added to the upper list without a prop derived value, interface
-    // was crashing on loading particles.
-  //  PROP_STATIC_CERTIFICATE_VERSION = PROP_DERIVED_35,     // EXPERIMENT TO MAKE SPACE FOR PROP_LOCALLY_VISIBLE 
+   
 
     // WARNING!!! DO NOT ADD PROPS_xxx here unless you really really meant to.... Add them UP above
 

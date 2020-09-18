@@ -24,16 +24,9 @@ class OctreePacketData;
 class EntityTreeElementExtraEncodeData;
 class ReadBitstreamToTreeParams;
 
-//static const float INITIAL_BLOOM_INTENSITY{ 0.25f };
-//static const float INITIAL_BLOOM_THRESHOLD{ 0.7f };
-//static const float INITIAL_BLOOM_SIZE{ 0.9f };
-
 /**jsdoc
- * Bloom is defined by the following properties:
- * @typedef {object} Entities.Bloom
- * @property {number} bloomIntensity=0.25 - The intensity of the bloom effect.
- * @property {number} bloomThreshold=0.7 - The threshold for the bloom effect.
- * @property {number} bloomSize=0.9 - The size of the bloom effect.
+ * Zone Culling is defined by the following properties:
+ * @typedef {object} Entities.ZoneCulling
  */
 class ZoneCullingPropertyGroup : public PropertyGroup {
 public:
@@ -88,9 +81,6 @@ public:
                                                  bool overwriteLocalData,
                                                  bool& somethingChanged) override;
 
-   /* DEFINE_PROPERTY(PROP_BLOOM_INTENSITY, BloomIntensity, bloomIntensity, float, INITIAL_BLOOM_INTENSITY);
-    DEFINE_PROPERTY(PROP_BLOOM_THRESHOLD, BloomThreshold, bloomThreshold, float, INITIAL_BLOOM_THRESHOLD);
-    DEFINE_PROPERTY(PROP_BLOOM_SIZE, BloomSize, bloomSize, float, INITIAL_BLOOM_SIZE);*/
 };
 
 #endif  // hifi_ZoneCullingPropertyGroup_h

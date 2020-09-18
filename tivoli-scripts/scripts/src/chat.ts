@@ -120,6 +120,8 @@ class ChatHandler extends WebEventHandler {
 		SoundCache.getSound(Script.resolvePath("assets/chat2.wav")),
 	];
 
+	private commands: ChatCommand[] = [];
+
 	private playChatSound() {
 		const sound = this.chatSounds[this.currentChatSound];
 
@@ -136,42 +138,20 @@ class ChatHandler extends WebEventHandler {
 	constructor(uuid: string, button: ButtonData) {
 		super(uuid, button);
 
-		Messages.subscribe(this.channel);
-
-		this.signalManager.connect(
-			Messages.messageReceived,
-			(channel, messageStr, senderID) => {
-				if (channel != this.channel) return;
-
-				let message: object;
-				try {
-					message = JSON.parse(messageStr);
-				} catch (err) {}
-				if (typeof message != "object") return;
-
+		this.signalManager.connect(Chat.messageReceived, (data, senderID) => {
+			if (data.local) {
+				this.emitEvent("showMessage", data);
+			} else {
 				const user = AvatarList.getAvatar(senderID);
 				const username = user.displayName;
-
-				// // legacy support
-				// if (Array.isArray(message)) {
-				// 	if (message.length > 1) {
-				// 		this.emitEvent("message", {
-				// 			username, // message[0]
-				// 			message: message[1],
-				// 		});
-				// 	}
-				// 	return;
-				// }
-
-				delete message["username"]; // make sure people dont overwrite it
-
-				this.emitEvent("message", { username, ...message });
-			},
-		);
+				delete data["username"]; // make sure people dont overwrite it
+				this.emitEvent("sendMessage", { username, ...data });
+			}
+		});
 
 		this.signalManager.connect(Controller.keyPressEvent, (e: KeyEvent) => {
-			if (e.text == "\r") {
-				this.emitEvent("focus");
+			if (e.text == "\r" || e.text == "/") {
+				this.emitEvent("focus", e.text == "/" ? { command: true } : {});
 				this.button.panel.window.setFocus(true);
 				this.button.panel.window.setEnabled(true);
 			} else if (e.text == "ESC") {
@@ -190,12 +170,50 @@ class ChatHandler extends WebEventHandler {
 		this.joinAndLeave.onNewWorld = () => {
 			this.emitEvent("clear");
 		};
+
+		const clearCommand = Chat.addCommand(
+			"clear",
+			"clears the chat for yourself",
+		);
+		this.signalManager.connect(clearCommand.running, params => {
+			this.emitEvent("clear");
+			Chat.showMessage("You cleared the chat for yourself.");
+		});
+		this.commands.push(clearCommand);
+	}
+
+	getMetaTags(url: string, callback: (headContent: string) => any) {
+		request<string>(url, (error, response, html) => {
+			if (error) return callback(null);
+			if (response.headers["content-type"].indexOf("text/html") == -1)
+				return callback(null);
+
+			let metaTags = [];
+
+			const matches = html.match(
+				/(?:<meta [^]+?>)|(?:<link [^]+?>)|(?:<title[^]*?>[^]+?<\/title>)/gi,
+			);
+			if (matches != null) metaTags = matches;
+
+			return callback(metaTags.join("\n"));
+		});
 	}
 
 	handleEvent(data: { key: string; value: any }) {
 		switch (data.key) {
 			case "message":
-				Messages.sendMessage(this.channel, JSON.stringify(data.value));
+				Chat.sendMessage(data.value);
+				(Chat.messageSent as any)(data.value);
+				break;
+			case "command":
+				const command = Chat.getCommand(data.value.command);
+				if (command == null) {
+					Chat.showMessage(
+						"Command not found: " + data.value.command,
+					);
+				} else {
+					command.run(data.value.params);
+				}
 				break;
 			case "unfocus":
 				this.button.panel.window.setFocus(false);
@@ -207,20 +225,28 @@ class ChatHandler extends WebEventHandler {
 			case "openUrl":
 				Window.openUrl(data.value);
 				break;
-			case "tts":
-				TextToSpeech.speakText(data.value);
-				break;
+			case "getMetaTags":
+				this.getMetaTags(data.value, metaTags => {
+					if (metaTags == null) return;
+					this.emitEvent("getMetaTags", {
+						url: data.value,
+						metaTags,
+					});
+				});
 		}
 	}
 
 	cleanup() {
-		Messages.unsubscribe(this.channel);
 		this.joinAndLeave.cleanup();
 		this.signalManager.cleanup();
+
+		for (const command of this.commands) {
+			Chat.removeCommand(command);
+		}
 	}
 }
 
-export class Chat {
+export class ChatUI {
 	signals = new SignalManager();
 
 	window: OverlayWebWindow;
@@ -273,6 +299,7 @@ export class Chat {
 	}
 
 	cleanup() {
+		this.handler.cleanup();
 		this.signals.cleanup();
 	}
 }

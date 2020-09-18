@@ -42,6 +42,7 @@ SkyboxPropertyGroup EntityItemProperties::_staticSkybox;
 HazePropertyGroup EntityItemProperties::_staticHaze;
 BloomPropertyGroup EntityItemProperties::_staticBloom;
 ZoneCullingPropertyGroup EntityItemProperties::_staticZoneCulling;
+ToneMappingPropertyGroup EntityItemProperties::_staticToneMapping;
 KeyLightPropertyGroup EntityItemProperties::_staticKeyLight;
 AmbientLightPropertyGroup EntityItemProperties::_staticAmbientLight;
 GrabPropertyGroup EntityItemProperties::_staticGrab;
@@ -228,6 +229,7 @@ const QHash<QString, WebInputMode> stringToWebInputModeLookup = [] {
     QHash<QString, WebInputMode> toReturn;
     addWebInputMode(toReturn, WebInputMode::TOUCH);
     addWebInputMode(toReturn, WebInputMode::MOUSE);
+    addWebInputMode(toReturn, WebInputMode::NONE);
     return toReturn;
 }();
 QString EntityItemProperties::getInputModeAsString() const { return WebInputModeHelpers::getNameForWebInputMode(_inputMode); }
@@ -255,7 +257,6 @@ void EntityItemProperties::setGizmoTypeFromString(const QString& gizmoType) {
 }
 
 inline void addComponentMode(QHash<QString, ComponentMode>& lookup, ComponentMode mode) { lookup[ComponentModeHelpers::getNameForComponentMode(mode)] = mode; }
-
 const QHash<QString, ComponentMode> stringToComponentMode = [] {
     QHash<QString, ComponentMode> toReturn;
     addComponentMode(toReturn, ComponentMode::COMPONENT_MODE_INHERIT);
@@ -263,28 +264,40 @@ const QHash<QString, ComponentMode> stringToComponentMode = [] {
     addComponentMode(toReturn, ComponentMode::COMPONENT_MODE_ENABLED);
     return toReturn;
 }();
-
+QString EntityItemProperties::getComponentModeAsString(uint32_t mode) {
+    return ComponentModeHelpers::getNameForComponentMode((ComponentMode)mode);
+}
 
 inline void addZoneCullingComponentMode(QHash<QString, ZoneCullingComponentMode>& lookup, ZoneCullingComponentMode mode) {
     lookup[ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(mode)] = mode;
 }
-
-    //inherit,        // Do not change the skiplist
-    //onInclusive,   // Add my entities to existing skiplist.
-    //onExclusive,   // Overwrite skiplist with my entities.
-    //offExclusive,  // Clear skiplist completely.
 const QHash<QString, ZoneCullingComponentMode> stringToZoneCullingComponentMode = [] {
     QHash<QString, ZoneCullingComponentMode> toReturn;
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::inherit);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onInclusive);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::onExclusive);
-    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::offExclusive);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_INHERIT);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_OUTSIDE);
+    addZoneCullingComponentMode(toReturn, ZoneCullingComponentMode::ZONE_CULLING_DISABLED);
+    return toReturn;
+}();
+QString EntityItemProperties::getZoneCullingComponentModeAsString(uint32_t mode) {
+    return ZoneCullingModeHelpers::getNameForZoneCullingComponentMode((ZoneCullingComponentMode)mode);
+}
+
+inline void addToneMappingComponentMode(QHash<QString, ToneMappingComponentMode>& lookup, ToneMappingComponentMode mode) {
+    lookup[ToneMappingModeHelpers::getNameForToneMappingComponentMode(mode)] = mode;
+}
+
+const QHash<QString, ToneMappingComponentMode> stringToToneMappingComponentMode = [] {
+    QHash<QString, ToneMappingComponentMode> toReturn;
+    addToneMappingComponentMode(toReturn, ToneMappingComponentMode::TONE_MAPPING_INHERIT);
+    addToneMappingComponentMode(toReturn, ToneMappingComponentMode::TONE_MAPPING_RGB);
+    addToneMappingComponentMode(toReturn, ToneMappingComponentMode::TONE_MAPPING_SRGB);
+    addToneMappingComponentMode(toReturn, ToneMappingComponentMode::TONE_MAPPING_REINHARD);
+    addToneMappingComponentMode(toReturn, ToneMappingComponentMode::TONE_MAPPING_FILMIC);
     return toReturn;
 }();
 
-QString EntityItemProperties::getComponentModeAsString(uint32_t mode) { return ComponentModeHelpers::getNameForComponentMode((ComponentMode)mode); }
-QString EntityItemProperties::getZoneCullingComponentModeAsString(uint32_t mode) {
-    return ZoneCullingModeHelpers::getNameForZoneCullingComponentMode((ZoneCullingComponentMode)mode);
+QString EntityItemProperties::getToneMappingComponentModeAsString(uint32_t mode) {
+    return ToneMappingModeHelpers::getNameForToneMappingComponentMode((ToneMappingComponentMode)mode);
 }
 
 QString EntityItemProperties::getSkyboxModeAsString() const { return getComponentModeAsString(_skyboxMode); }
@@ -295,7 +308,9 @@ QString EntityItemProperties::getBloomModeAsString() const { return getComponent
 QString EntityItemProperties::getZoneCullingModeAsString() const {
     return getZoneCullingComponentModeAsString(_zoneCullingMode);
 }
-
+QString EntityItemProperties::getToneMappingModeAsString() const {
+    return getToneMappingComponentModeAsString(_toneMappingMode);
+}
 
 void EntityItemProperties::setSkyboxModeFromString(const QString& mode) {
     auto modeItr = stringToComponentMode.find(mode.toLower());
@@ -340,6 +355,15 @@ void EntityItemProperties::setZoneCullingModeFromString(const QString& mode) {
         _zoneCullingModeChanged = true;
     }
 }
+
+void EntityItemProperties::setToneMappingModeFromString(const QString& mode) {
+    auto modeItr = stringToToneMappingComponentMode.find(mode.toLower());
+    if (modeItr != stringToToneMappingComponentMode.end()) {
+        _toneMappingMode = modeItr.value();
+        _toneMappingModeChanged = true;
+    }
+}
+
 inline void addAvatarPriorityMode(QHash<QString, AvatarPriorityMode>& lookup, AvatarPriorityMode mode) { lookup[AvatarPriorityModeHelpers::getNameForAvatarPriorityMode(mode)] = mode; }
 const QHash<QString, AvatarPriorityMode> stringToAvatarPriority = [] {
     QHash<QString, AvatarPriorityMode> toReturn;
@@ -628,7 +652,8 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_SKYBOX_MODE, skyboxMode);
     CHECK_PROPERTY_CHANGE(PROP_HAZE_MODE, hazeMode);
     CHECK_PROPERTY_CHANGE(PROP_BLOOM_MODE, bloomMode);
-    CHECK_PROPERTY_CHANGE(PROP_ZONE_CULLING_MODE, zoneCullingMode);  // TIVOLI
+    CHECK_PROPERTY_CHANGE(PROP_ZONE_CULLING_MODE, zoneCullingMode);
+    CHECK_PROPERTY_CHANGE(PROP_TONE_MAPPING_MODE, toneMappingMode);
     CHECK_PROPERTY_CHANGE(PROP_AVATAR_PRIORITY, avatarPriority);
 
     // Polyvox
@@ -734,6 +759,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  * @property {boolean} locked=false - <code>true</code> if properties other than <code>locked</code> cannot be changed and the 
  *     entity cannot be deleted, <code>false</code> if all properties can be changed and the entity can be deleted.
  * @property {boolean} visible=true - <code>true</code> if the entity is rendered, <code>false</code> if it isn't.
+ * @property {Entities.EntityPriority} entityPriority="automatic" - The priority with which the entity receives updates from the CPU.
  * @property {boolean} canCastShadow=true - <code>true</code> if the entity can cast a shadow, <code>false</code> if it can't. 
  *     Currently applicable only to {@link Entities.EntityProperties-Model|Model} and 
  *     {@link Entities.EntityProperties-Shape|Shape} entities. Shadows are cast if inside a 
@@ -1853,7 +1879,8 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_SKYBOX_MODE, skyboxMode, getSkyboxModeAsString());
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_HAZE_MODE, hazeMode, getHazeModeAsString());
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_BLOOM_MODE, bloomMode, getBloomModeAsString());
-        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_ZONE_CULLING_MODE, zoneCullingMode, getZoneCullingModeAsString());  // TIVOLI
+        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_ZONE_CULLING_MODE, zoneCullingMode, getZoneCullingModeAsString());
+        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_TONE_MAPPING_MODE, toneMappingMode, getToneMappingModeAsString());
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_AVATAR_PRIORITY, avatarPriority, getAvatarPriorityAsString());
     }
 
@@ -2224,6 +2251,7 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     _haze.copyFromScriptValue(object, _defaultSettings);
     _bloom.copyFromScriptValue(object, _defaultSettings);
     _zoneCulling.copyFromScriptValue(object, _defaultSettings);
+    _toneMapping.copyFromScriptValue(object, _defaultSettings);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(flyingAllowed, bool, setFlyingAllowed);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(ghostingAllowed, bool, setGhostingAllowed);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(filterURL, QString, setFilterURL);
@@ -2233,6 +2261,7 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(hazeMode, HazeMode);
     COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(bloomMode, BloomMode);
     COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(zoneCullingMode, ZoneCullingMode);
+    COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(toneMappingMode, ToneMappingMode);
     COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(avatarPriority, AvatarPriority);
 
     // Polyvox
@@ -2923,6 +2952,9 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
             ADD_GROUP_PROPERTY_TO_MAP(PROP_BLOOM_THRESHOLD, Bloom, bloom, BloomThreshold, bloomThreshold);
             ADD_GROUP_PROPERTY_TO_MAP(PROP_BLOOM_SIZE, Bloom, bloom, BloomSize, bloomSize);
         }
+        { // Tone Mapping
+            ADD_GROUP_PROPERTY_TO_MAP(PROP_TONE_MAPPING_EXPOSURE, ToneMapping, toneMapping, Exposure, exposure);
+        }
         ADD_PROPERTY_TO_MAP(PROP_FLYING_ALLOWED, FlyingAllowed, flyingAllowed, bool);
         ADD_PROPERTY_TO_MAP(PROP_GHOSTING_ALLOWED, GhostingAllowed, ghostingAllowed, bool);
         ADD_PROPERTY_TO_MAP(PROP_FILTER_URL, FilterURL, filterURL, QString);
@@ -2931,7 +2963,8 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_SKYBOX_MODE, SkyboxMode, skyboxMode, uint32_t);
         ADD_PROPERTY_TO_MAP(PROP_HAZE_MODE, HazeMode, hazeMode, uint32_t);
         ADD_PROPERTY_TO_MAP(PROP_BLOOM_MODE, BloomMode, bloomMode, uint32_t);
-        ADD_PROPERTY_TO_MAP(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t); // TIVOLI
+        ADD_PROPERTY_TO_MAP(PROP_ZONE_CULLING_MODE, ZoneCullingMode, zoneCullingMode, uint32_t);
+        ADD_PROPERTY_TO_MAP(PROP_TONE_MAPPING_MODE, ToneMappingMode, toneMappingMode, uint32_t);
         ADD_PROPERTY_TO_MAP(PROP_AVATAR_PRIORITY, AvatarPriority, avatarPriority, uint32_t);
 
         // Polyvox
@@ -3347,9 +3380,12 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
                 _staticBloom.setProperties(properties);
                 _staticBloom.appendToEditPacket(packetData, requestedProperties, propertyFlags, propertiesDidntFit, propertyCount, appendState);
 
-                // TIVOLI
                 _staticZoneCulling.setProperties(properties);
                 _staticZoneCulling.appendToEditPacket(packetData, requestedProperties, propertyFlags, propertiesDidntFit,
+                                                propertyCount, appendState);
+             
+                _staticToneMapping.setProperties(properties);
+                _staticToneMapping.appendToEditPacket(packetData, requestedProperties, propertyFlags, propertiesDidntFit,
                                                 propertyCount, appendState);
 
                 APPEND_ENTITY_PROPERTY(PROP_FLYING_ALLOWED, properties.getFlyingAllowed());
@@ -3362,8 +3398,8 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
                 APPEND_ENTITY_PROPERTY(PROP_HAZE_MODE, (uint32_t)properties.getHazeMode());
                 APPEND_ENTITY_PROPERTY(PROP_BLOOM_MODE, (uint32_t)properties.getBloomMode());
                 APPEND_ENTITY_PROPERTY(PROP_AVATAR_PRIORITY, (uint32_t)properties.getAvatarPriority());
-                // TIVOLI Added zone culling below 
                 APPEND_ENTITY_PROPERTY(PROP_ZONE_CULLING_MODE, (uint32_t)properties.getZoneCullingMode());
+                APPEND_ENTITY_PROPERTY(PROP_TONE_MAPPING_MODE, (uint32_t)properties.getToneMappingMode());
             }
 
             if (properties.getType() == EntityTypes::PolyVox) {
@@ -3833,6 +3869,7 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
         properties.getSkybox().decodeFromEditPacket(propertyFlags, dataAt, processedBytes);
         properties.getHaze().decodeFromEditPacket(propertyFlags, dataAt, processedBytes);
         properties.getBloom().decodeFromEditPacket(propertyFlags, dataAt, processedBytes);
+        properties.getToneMapping().decodeFromEditPacket(propertyFlags, dataAt, processedBytes);
 
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_FLYING_ALLOWED, bool, setFlyingAllowed);
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_GHOSTING_ALLOWED, bool, setGhostingAllowed);
@@ -3843,7 +3880,8 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_SKYBOX_MODE, uint32_t, setSkyboxMode);
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_HAZE_MODE, uint32_t, setHazeMode);
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_BLOOM_MODE, uint32_t, setBloomMode);
-        READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ZONE_CULLING_MODE, uint32_t, setZoneCullingMode); // TIVOLI
+        READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ZONE_CULLING_MODE, uint32_t, setZoneCullingMode); 
+        READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_TONE_MAPPING_MODE, uint32_t, setToneMappingMode);
         READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_AVATAR_PRIORITY, uint32_t, setAvatarPriority);
     }
 
@@ -4242,7 +4280,8 @@ void EntityItemProperties::markAllChanged() {
     _hazeModeChanged = true;
     _bloomModeChanged = true;
     _avatarPriorityChanged = true;
-    _zoneCullingModeChanged = true;  // TIVOLI new
+    _zoneCullingModeChanged = true;
+    _toneMappingModeChanged = true;
 
     // Polyvox
     _voxelVolumeSizeChanged = true;
@@ -4883,6 +4922,9 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     }
     if (zoneCullingModeChanged()) {
         out += "zoneCullingMode";
+    }
+    if (toneMappingModeChanged()) {
+        out += "toneMappingMode";
     }
     // Polyvox
     if (voxelVolumeSizeChanged()) {

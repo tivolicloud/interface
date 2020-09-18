@@ -369,11 +369,23 @@ Menu::Menu() {
     //// Developer > Tivoli Options > Test Zone Culling (test)
     //addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::TestZoneCulling, 0, false);
 
+
+    // Edit > Redraw Tree 
+    addActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::Redraw, Qt::CTRL | Qt::SHIFT | Qt::Key_T, qApp, SLOT(requeryOctree()));
+
     action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassPrioritySorting, 0,
         qApp->getForcedBypassPrioritySorting());
     connect(action, &QAction::triggered, [action] { 
         qApp->setForcedBypassPrioritySorting(action->isChecked());
      });
+
+
+    action = addCheckableActionToQMenuAndActionHash(tivoliOptionsMenu, MenuOption::BypassScriptThrottling, 0,
+        qApp->getBypassScriptThrottling());
+    connect(action, &QAction::triggered, [action] { 
+        qApp->setBypassScriptThrottling(action->isChecked());
+     });
+
 
     // Developer > Scripting >>>
     MenuWrapper* scriptingOptionsMenu = developerMenu->addMenu("Scripting");
@@ -813,7 +825,7 @@ Menu::Menu() {
     
 
     // Developer > Show Statistics
-    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, Qt::Key_Slash, true);
+    addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::Stats, Qt::Key_F3, true);
 
     // Developer > Show Animation Statistics
     addCheckableActionToQMenuAndActionHash(developerMenu, MenuOption::AnimStats);

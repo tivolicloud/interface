@@ -68,6 +68,7 @@ EntityItemProperties ZoneEntityItem::getProperties(const EntityPropertyFlags& de
     _hazeProperties.getProperties(properties);
     _bloomProperties.getProperties(properties);
     _zoneCullingProperties.getProperties(properties);
+    _toneMappingProperties.getProperties(properties);
 
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(flyingAllowed, getFlyingAllowed);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(ghostingAllowed, getGhostingAllowed);
@@ -79,6 +80,7 @@ EntityItemProperties ZoneEntityItem::getProperties(const EntityPropertyFlags& de
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(hazeMode, getHazeMode);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(bloomMode, getBloomMode);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(zoneCullingMode, getZoneCullingMode);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(toneMappingMode, getToneMappingMode);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(avatarPriority, getAvatarPriority);
 
     return properties;
@@ -117,6 +119,7 @@ bool ZoneEntityItem::setSubClassProperties(const EntityItemProperties& propertie
     _hazePropertiesChanged = _hazeProperties.setProperties(properties);
     _bloomPropertiesChanged = _bloomProperties.setProperties(properties);
     _zoneCullingPropertiesChanged = _zoneCullingProperties.setProperties(properties);
+    _toneMappingPropertiesChanged = _toneMappingProperties.setProperties(properties);
 
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(flyingAllowed, setFlyingAllowed);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(ghostingAllowed, setGhostingAllowed);
@@ -128,10 +131,12 @@ bool ZoneEntityItem::setSubClassProperties(const EntityItemProperties& propertie
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(hazeMode, setHazeMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(bloomMode, setBloomMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(zoneCullingMode, setZoneCullingMode);
+    SET_ENTITY_PROPERTY_FROM_PROPERTIES(toneMappingMode, setToneMappingMode);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(avatarPriority, setAvatarPriority);
 
     somethingChanged = somethingChanged || _keyLightPropertiesChanged || _ambientLightPropertiesChanged ||
-                       _skyboxPropertiesChanged || _hazePropertiesChanged || _bloomPropertiesChanged || _zoneCullingPropertiesChanged;
+                       _skyboxPropertiesChanged || _hazePropertiesChanged || _bloomPropertiesChanged || 
+                       _zoneCullingPropertiesChanged || _toneMappingPropertiesChanged;
 
     return somethingChanged;
 }
@@ -195,13 +200,22 @@ int ZoneEntityItem::readEntitySubclassDataFromBuffer(const unsigned char* data, 
         dataAt += bytesFromBloom;
     }
 
-    { // TIVOLI - does the order here matter? I imagine it does..
+    { 
         int bytesFromZoneCulling =
             _zoneCullingProperties.readEntitySubclassDataFromBuffer(dataAt, (bytesLeftToRead - bytesRead), args, propertyFlags,
                                                               overwriteLocalData, _zoneCullingPropertiesChanged);
         somethingChanged = somethingChanged || _zoneCullingPropertiesChanged;
         bytesRead += bytesFromZoneCulling;
         dataAt += bytesFromZoneCulling;
+    }
+
+    { 
+        int bytesFromToneMapping =
+            _toneMappingProperties.readEntitySubclassDataFromBuffer(dataAt, (bytesLeftToRead - bytesRead), args, propertyFlags,
+                                                              overwriteLocalData, _toneMappingPropertiesChanged);
+        somethingChanged = somethingChanged || _toneMappingPropertiesChanged;
+        bytesRead += bytesFromToneMapping;
+        dataAt += bytesFromToneMapping;
     }
 
     READ_ENTITY_PROPERTY(PROP_FLYING_ALLOWED, bool, setFlyingAllowed);
@@ -214,6 +228,7 @@ int ZoneEntityItem::readEntitySubclassDataFromBuffer(const unsigned char* data, 
     READ_ENTITY_PROPERTY(PROP_HAZE_MODE, uint32_t, setHazeMode);
     READ_ENTITY_PROPERTY(PROP_BLOOM_MODE, uint32_t, setBloomMode);
     READ_ENTITY_PROPERTY(PROP_ZONE_CULLING_MODE, uint32_t, setZoneCullingMode);
+    READ_ENTITY_PROPERTY(PROP_TONE_MAPPING_MODE, uint32_t, setToneMappingMode);
     READ_ENTITY_PROPERTY(PROP_AVATAR_PRIORITY, uint32_t, setAvatarPriority);
 
     return bytesRead;
@@ -231,6 +246,7 @@ EntityPropertyFlags ZoneEntityItem::getEntityProperties(EncodeBitstreamParams& p
     requestedProperties += _hazeProperties.getEntityProperties(params);
     requestedProperties += _bloomProperties.getEntityProperties(params);
     requestedProperties += _zoneCullingProperties.getEntityProperties(params);
+    requestedProperties += _toneMappingProperties.getEntityProperties(params);
 
     requestedProperties += PROP_FLYING_ALLOWED;
     requestedProperties += PROP_GHOSTING_ALLOWED;
@@ -242,7 +258,8 @@ EntityPropertyFlags ZoneEntityItem::getEntityProperties(EncodeBitstreamParams& p
     requestedProperties += PROP_SKYBOX_MODE;
     requestedProperties += PROP_HAZE_MODE;
     requestedProperties += PROP_BLOOM_MODE;
-    requestedProperties += PROP_ZONE_CULLING_MODE; // TIVOLI
+    requestedProperties += PROP_ZONE_CULLING_MODE;
+    requestedProperties += PROP_TONE_MAPPING_MODE;
 
     return requestedProperties;
 }
@@ -274,6 +291,8 @@ void ZoneEntityItem::appendSubclassData(OctreePacketData* packetData, EncodeBits
         propertyFlags, propertiesDidntFit, propertyCount, appendState);
     _zoneCullingProperties.appendSubclassData(packetData, params, modelTreeElementExtraEncodeData, requestedProperties, propertyFlags,
                                         propertiesDidntFit, propertyCount, appendState);
+    _toneMappingProperties.appendSubclassData(packetData, params, modelTreeElementExtraEncodeData, requestedProperties, propertyFlags,
+                                        propertiesDidntFit, propertyCount, appendState);
 
     APPEND_ENTITY_PROPERTY(PROP_FLYING_ALLOWED, getFlyingAllowed());
     APPEND_ENTITY_PROPERTY(PROP_GHOSTING_ALLOWED, getGhostingAllowed());
@@ -284,7 +303,8 @@ void ZoneEntityItem::appendSubclassData(OctreePacketData* packetData, EncodeBits
     APPEND_ENTITY_PROPERTY(PROP_SKYBOX_MODE, (uint32_t)getSkyboxMode());
     APPEND_ENTITY_PROPERTY(PROP_HAZE_MODE, (uint32_t)getHazeMode());
     APPEND_ENTITY_PROPERTY(PROP_BLOOM_MODE, (uint32_t)getBloomMode());
-    APPEND_ENTITY_PROPERTY(PROP_ZONE_CULLING_MODE, (uint32_t)getZoneCullingMode()); // TIVOLI
+    APPEND_ENTITY_PROPERTY(PROP_ZONE_CULLING_MODE, (uint32_t)getZoneCullingMode());
+    APPEND_ENTITY_PROPERTY(PROP_TONE_MAPPING_MODE, (uint32_t)getToneMappingMode());
     APPEND_ENTITY_PROPERTY(PROP_AVATAR_PRIORITY, getAvatarPriority());
 }
 
@@ -300,6 +320,7 @@ void ZoneEntityItem::debugDump() const {
     qCDebug(entities) << "         _skyboxMode:" << EntityItemProperties::getComponentModeAsString(_skyboxMode);
     qCDebug(entities) << "          _bloomMode:" << EntityItemProperties::getComponentModeAsString(_bloomMode);
     qCDebug(entities) << "     _zoneCullingMode:" << getZoneCullingMode();
+    qCDebug(entities) << "     _toneMappingMode:" << getToneMappingMode();
     qCDebug(entities) << "     _avatarPriority:" << getAvatarPriority();
 
     _keyLightProperties.debugDump();
@@ -308,6 +329,7 @@ void ZoneEntityItem::debugDump() const {
     _hazeProperties.debugDump();
     _bloomProperties.debugDump();
     _zoneCullingProperties.debugDump();
+    _toneMappingProperties.debugDump();
 }
 
 void ZoneEntityItem::setShapeType(ShapeType type) {
@@ -428,6 +450,7 @@ void ZoneEntityItem::resetRenderingPropertiesChanged() {
         _hazePropertiesChanged = false;
         _bloomPropertiesChanged = false;
         _zoneCullingPropertiesChanged = false;
+        _toneMappingPropertiesChanged = false;
     });
 }
 
@@ -453,27 +476,29 @@ uint32_t ZoneEntityItem::getBloomMode() const {
     return _bloomMode;
 }
 
-      
-/*
-    inherit,           // Do not change the skiplist
-    onInclusive,      // Add my entities to existing skiplist.
-    onExclusive,      // Overwrite skiplist with my entities.
-    offExclusive,     // Clear skiplist completely.
-*/
-
-// TIVOLI Added zone culling mode
 void ZoneEntityItem::setZoneCullingMode(const uint32_t value) {
-    if (value < ZONECULLING_MODE_ITEM_COUNT && value != _zoneCullingMode) {
+    if (value < ZONE_CULLING_MODE_ITEM_COUNT && value != _zoneCullingMode) {
         _zoneCullingMode = value;
         _zoneCullingPropertiesChanged = true;
     }
 }
 
-// TIVOLI Added zone culling mode
 uint32_t ZoneEntityItem::getZoneCullingMode() const {
     return _zoneCullingMode;
 }
 
+void ZoneEntityItem::setToneMappingMode(const uint32_t value) {
+    if (value < TONE_MAPPING_MODE_ITEM_COUNT && value != _toneMappingMode) {
+        _toneMappingMode = value;
+        _toneMappingPropertiesChanged = true;
+        qDebug() << "TONE MAPPING MODE CHANGED TO " << value;
+    }
+}
+
+uint32_t ZoneEntityItem::getToneMappingMode() const {
+    return _toneMappingMode;
+}
+//-------------------------------------
 void ZoneEntityItem::setKeyLightMode(const uint32_t value) {
     if (value < COMPONENT_MODE_ITEM_COUNT && value != _keyLightMode) {
         _keyLightMode = value;

@@ -951,6 +951,9 @@ bool NodeList::sockAddrBelongsToDomainOrNode(const HifiSockAddr& sockAddr) {
 }
 
 void NodeList::ignoreNodesInRadius(bool enabled) {
+    // tivoli disabled bubble
+    if (enabled == true) enabled = false;
+
     bool isEnabledChange = _ignoreRadiusEnabled.get() != enabled;
     _ignoreRadiusEnabled.set(enabled);
 
@@ -965,6 +968,9 @@ void NodeList::ignoreNodesInRadius(bool enabled) {
 }
 
 void NodeList::sendIgnoreRadiusStateToNode(const SharedNodePointer& destinationNode) {
+    // tivoli disabled bubble
+    _ignoreRadiusEnabled.set(false);
+
     auto ignorePacket = NLPacket::create(PacketType::RadiusIgnoreRequest, sizeof(bool) + sizeof(float), true);
     ignorePacket->writePrimitive(_ignoreRadiusEnabled.get());
     sendPacket(std::move(ignorePacket), *destinationNode);

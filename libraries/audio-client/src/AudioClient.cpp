@@ -1777,7 +1777,7 @@ void AudioClient::setAcousticEchoCancellation(bool enable, bool emitSignal) {
 
 bool AudioClient::setIsStereoInput(bool isStereoInput) {
     bool stereoInputChanged = false;
-    if (isStereoInput != _isStereoInput && _inputDeviceInfo.getDevice().supportedChannelCounts().contains(2)) {
+    if (_isStereoInput != isStereoInput && _inputDeviceInfo.getDevice().supportedChannelCounts().contains(2)) {
         _isStereoInput = isStereoInput;
         stereoInputChanged = true;
 

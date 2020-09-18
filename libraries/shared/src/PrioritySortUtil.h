@@ -133,7 +133,7 @@ namespace PrioritySortUtil {
 } // namespace PrioritySortUtil
 
   // for now we're keeping hard-coded sorted time budgets in one spot
-const uint64_t MAX_UPDATE_RENDERABLES_TIME_BUDGET = 12200; 
-const uint64_t MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET = 12200;  
-const uint64_t MAX_UPDATE_AVATARS_TIME_BUDGET = 2000; 
+const uint64_t MAX_UPDATE_RENDERABLES_TIME_BUDGET = 2000; // usec
+const uint64_t MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET = 1000; // usec
+const uint64_t MAX_UPDATE_AVATARS_TIME_BUDGET = 2000; // usec
 #endif // hifi_PrioritySortUtil_h

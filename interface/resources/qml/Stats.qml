@@ -31,6 +31,8 @@ Item {
         implicitHeight: row.height
         implicitWidth: row.width
 
+        expanded: true
+
         anchors.horizontalCenter: parent.horizontalCenter
         readonly property string bgColor: "#AA111111"
 

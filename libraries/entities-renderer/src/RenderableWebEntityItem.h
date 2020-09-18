@@ -58,8 +58,8 @@ protected:
     virtual bool isTransparent() const override;
     Item::Bound getBound() override;
 
-    virtual bool wantsHandControllerPointerEvents() const override { return true; }
-    virtual bool wantsKeyboardFocus() const override { return true; }
+    virtual bool wantsHandControllerPointerEvents() const override { return _inputMode != WebInputMode::NONE; }
+    virtual bool wantsKeyboardFocus() const override { return _inputMode != WebInputMode::NONE; }
 
     void handlePointerEventAsTouch(const PointerEvent& event);
     void handlePointerEventAsMouse(const PointerEvent& event);

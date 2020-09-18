@@ -157,6 +157,7 @@ namespace MenuOption {
     const QString Quit =  "Quit";
     const QString ReloadAllScripts = "Reload All Scripts";
     const QString ReloadContent = "Clear Cache && Reload (very slow)";
+    const QString Redraw = "Re-query Octree";
     const QString Rejoin = "Rejoin World";
     const QString ReloadAvatar = "Reload my Avatar";
     const QString RenderClearKtxCache = "Clear KTX Cache (requires restart)";
@@ -238,6 +239,7 @@ namespace MenuOption {
     const QString ForceEverythingUnlit = "Force Everything Unlit";
     const QString LoadCompleteEntityTree = "Load Complete Entity Tree";
     const QString BypassPrioritySorting = "Bypass Entity Priority Sorting";
+    const QString BypassScriptThrottling = "Bypass Script Engine Throttling";
 
     }
 

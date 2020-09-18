@@ -250,6 +250,15 @@ public slots:
      * @param {boolean} enabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
      */
     void setNametagsEnabled(bool enabled);
+
+    // /**jsdoc
+    //  * Sets a tonemapping curve and exposure to be used in a given zone.
+    //  * @function Render.setTonemappingMode
+    //  * @param {int} curve - The tonemapping curve {0:RGB, 1:SRGB, 2:Reinhard, 3:Filmic} 
+    //  * @param {float} exposure - The exposure level affecting the tonemap -4 to 4
+    //  */
+    //  // void setToneMappingMode(int curve, float exposure);
+
 signals:
 
     /**jsdoc

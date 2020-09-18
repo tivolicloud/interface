@@ -198,6 +198,8 @@
 #include "scripting/KeyboardScriptingInterface.h"
 #include "scripting/PerformanceScriptingInterface.h"
 #include "scripting/RenderScriptingInterface.h"
+#include "scripting/ChatScriptingInterface.h"
+#include "scripting/DiskCacheScriptingInterface.h"
 
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
@@ -329,7 +331,7 @@ static const int ENTITY_SERVER_ADDED_TIMEOUT = 5000;
 static const int ENTITY_SERVER_CONNECTION_TIMEOUT = 5000;
 static const int WATCHDOG_TIMER_TIMEOUT = 100;
 
-static const float INITIAL_QUERY_RADIUS = 300.0f;  // priority radius for entities before physics enabled
+static const float INITIAL_QUERY_RADIUS = 10.0f;  // priority radius for entities before physics enabled
 
 static const QString DESKTOP_LOCATION = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
@@ -938,6 +940,8 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     DependencyManager::set<WalletScriptingInterface>();
     DependencyManager::set<TTSScriptingInterface>();
     DependencyManager::set<QmlCommerce>();
+    DependencyManager::set<ChatScriptingInterface>();
+    DependencyManager::set<DiskCacheScriptingInterface>();
 
     DependencyManager::set<FadeEffect>();
     DependencyManager::set<ResourceRequestObserver>();
@@ -1003,6 +1007,7 @@ const bool DEFAULT_MINI_TABLET_ENABLED = false;
 const bool DEFAULT_AWAY_STATE_WHEN_FOCUS_LOST_IN_VR_ENABLED = true;
 const bool DEFAULT_LOAD_COMPLETE_ENTITY_TREE = true; 
 const bool DEFAULT_BYPASS_PRIORITY_SORTING = false; 
+const bool DEFAULT_BYPASS_SCRIPT_THROTTLING = false;
 
 QSharedPointer<OffscreenUi> getOffscreenUI() {
 #if !defined(DISABLE_QML)
@@ -1038,6 +1043,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _miniTabletEnabledSetting("miniTabletEnabled", DEFAULT_MINI_TABLET_ENABLED),
     _loadCompleteEntityTreeSetting("loadCompleteEntityTree", DEFAULT_LOAD_COMPLETE_ENTITY_TREE),
     _bypassPrioritySortingSetting("bypassPrioritySorting", DEFAULT_BYPASS_PRIORITY_SORTING), 
+    _bypassScriptThrottling("bypassScriptThrottling", DEFAULT_BYPASS_SCRIPT_THROTTLING), 
     _scaleMirror(1.0f),
     _mirrorYawOffset(0.0f),
     _raiseMirror(0.0f),
@@ -3955,12 +3961,15 @@ void Application::handleSandboxStatus(QNetworkReply* reply) {
 
     qCDebug(interfaceapp) << "HMD:" << hasHMD << ", Hand Controllers: " << hasHandControllers << ", Using HMD: " << isUsingHMDAndHandControllers;
 
-    // when --url in command line, teleport to location
-    const QString HIFI_URL_COMMAND_LINE_KEY = "--url";
-    int urlIndex = arguments().indexOf(HIFI_URL_COMMAND_LINE_KEY);
     QString addressLookupString;
-    if (urlIndex != -1) {
-        QUrl url(arguments().value(urlIndex + 1));
+
+    // when --url in command line, teleport to location
+    QCommandLineParser parser;
+    QCommandLineOption urlOption("url", "", "value");
+    parser.addOption(urlOption);
+    parser.parse(arguments());
+    if (parser.isSet(urlOption)) {
+        QUrl url = QUrl(parser.value(urlOption));
         if (url.scheme() == URL_SCHEME_HIFIAPP) {
             Setting::Handle<QVariant>("startUpApp").set(url.path());
         } else {
@@ -4047,7 +4056,7 @@ bool Application::isServerlessMode() const {
 
 void Application::setIsInterstitialMode(bool interstitialMode) {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-    if (enableInterstitial) {  // cpm force true to turn on ism
+    if (enableInterstitial) {
         if (_interstitialMode != interstitialMode) {
             _interstitialMode = interstitialMode;
             emit interstitialModeChanged(_interstitialMode);
@@ -5604,7 +5613,7 @@ void Application::init() {
     connect(_entitySimulation.get(), &PhysicalEntitySimulation::entityCollisionWithEntity,
             getEntities().data(), &EntityTreeRenderer::entityCollisionWithEntity);
 
-    // connect the _entities (EntityTreeRenderer) to our script engine's EntityScriptingInterface for firing
+     // connect the _entities (EntityTreeRenderer) to our script engine's EntityScriptingInterface for firing
     // of events related clicking, hovering over, and entering entities
     getEntities()->connectSignalsToSlots(entityScriptingInterface.data());
 
@@ -5939,6 +5948,30 @@ void Application::cameraMenuChanged() {
     }
 }
 
+void Application::requeryOctree() {      
+    DependencyManager::get<EntityTreeRenderer>()->forceRecheckEntities();
+    auto now = SteadyClock::now();
+    static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
+    _queryExpiry = SteadyClock::now();
+    _octreeQuery.incrementConnectionID();
+    QJsonObject queryJSONParameters;
+    QJsonObject queryFlags;
+    queryFlags["includeDescendants"] = true;
+    queryFlags["includeAncestors"] = true;
+    queryJSONParameters["flags"] = queryFlags;
+    queryOctree(
+        NodeType::EntityServer,
+        PacketType::EntityQuery,
+        queryJSONParameters
+    );    
+    _queryExpiry = now + MIN_PERIOD_BETWEEN_QUERIES;
+}
+
+// TO DO: Get this out of Application and create a proper tonemapping stage, move it there
+// or ToneMapAndResampleTask
+void Application::setTonemappingMode(int toneCurve, float exposure) {
+}
+
 void Application::resetPhysicsReadyInformation() {
     // we've changed domains or cleared out caches or something.  we no longer know enough about the
     // collision information of nearby entities to make running bullet be safe.
@@ -6215,25 +6248,22 @@ static bool domainLoadingInProgress = false;
 
 void Application::tryToEnablePhysics() {
     bool enableInterstitial = DependencyManager::get<NodeList>()->getDomainHandler().getInterstitialModeEnabled();
-    qDebug() << "TRY TO ENABLE PHYSICS 1";
     if (gpuTextureMemSizeStable() || !enableInterstitial) {
         _fullSceneCounterAtLastPhysicsCheck = _fullSceneReceivedCounter;
         _lastQueriedViews.clear();  // Force new view.
-        qDebug() << "TRY TO ENABLE PHYSICS 2";
-
         // process octree stats packets are sent in between full sends of a scene (this isn't currently true).
         // We keep physics disabled until we've received a full scene and everything near the avatar in that
         // scene is ready to compute its collision shape.
         auto myAvatar = getMyAvatar();
         if (myAvatar->isReadyForPhysics()) {
-            qDebug() << "TRY TO ENABLE PHYSICS 31";
             myAvatar->getCharacterController()->setPhysicsEngine(_physicsEngine);
             _octreeProcessor.resetSafeLanding();
             _physicsEnabled = true;
             setIsInterstitialMode(false);
             myAvatar->updateMotionBehaviorFromMenu();
-            qDebug() << "TRY TO ENABLE PHYSICS 4";
+            qDebug() << "Physics enabled";
             DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
+            requeryOctree(); // hit it with a quick refresh to make sure everything is drawn
         }
     }
 }
@@ -6263,16 +6293,9 @@ void Application::update(float deltaTime) {
             }
         } else {
             _octreeProcessor.updateSafeLanding();
-
-            //qDebug() << "UPDATE SAFE LANDING";
-            //DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
-            if (_octreeProcessor.safeLandingIsComplete()) {
-                // DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
-
-                qDebug() << "SAFELANDING COMPLETE. NEXT TRY TO ENABLE PHYSICS 1";
-                // weird this is just constantly called over and over rather than once... what?
-                // also look into interstitail mode, how its frustum works, its jsonqueryparameters, and 
-                // where it's designated in domain settings, and see if we can get it working again
+            
+            if (DependencyManager::get<EntityTreeRenderer>()->getGhostingAllowed() 
+             || _octreeProcessor.safeLandingIsComplete()) { 
                 tryToEnablePhysics();
             }
         }
@@ -6672,12 +6695,15 @@ void Application::update(float deltaTime) {
 
 
         // if it's been a while since our last query or the view has significantly changed then send a query, otherwise suppress it
-        static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 3 };
+        static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 2 };
         auto now = SteadyClock::now();
-        if (now > _queryExpiry || viewIsDifferentEnough) {
-            if (
-                DependencyManager::get<SceneScriptingInterface>()
-                ->shouldRenderEntities()
+
+        bool enoughTimePassed = now > _queryExpiry;
+        if (enoughTimePassed) requeryOctree();
+
+        if (viewIsDifferentEnough) {            
+            if (DependencyManager::get<SceneScriptingInterface>()
+            ->shouldRenderEntities()
             ) {
                 QJsonObject queryJSONParameters;
                 QJsonObject queryFlags;
@@ -6975,8 +7001,8 @@ void Application::queryOctree(
 
     const bool isModifiedQuery = !_physicsEnabled;
     
-    // if (isModifiedQuery) {
-    if (true) {
+    if (isModifiedQuery) {   
+
         if (!_octreeProcessor.safeLandingIsActive()) {
             // don't send the octreeQuery until SafeLanding knows it has started
             return;
@@ -7006,7 +7032,7 @@ void Application::queryOctree(
                // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
                 _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
                 _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
-               // _octreeQuery.setConicalViews({ sphericalView, farView });
+                _octreeQuery.setConicalViews({ sphericalView, farView });
             }
         } else {
             _octreeQuery.setConicalViews({ sphericalView });
@@ -7548,6 +7574,8 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
     scriptEngine->registerGlobalObject("Picks", DependencyManager::get<PickScriptingInterface>().data());
     scriptEngine->registerGlobalObject("Pointers", DependencyManager::get<PointerScriptingInterface>().data());
     scriptEngine->registerGlobalObject("TextToSpeech", DependencyManager::get<TTSScriptingInterface>().data());
+    scriptEngine->registerGlobalObject("Chat", DependencyManager::get<ChatScriptingInterface>().data());
+    scriptEngine->registerGlobalObject("DiskCache", DependencyManager::get<DiskCacheScriptingInterface>().data());
 
     // Caches
     scriptEngine->registerGlobalObject("AnimationCache", DependencyManager::get<AnimationCacheScriptingInterface>().data());
@@ -7777,7 +7805,7 @@ bool Application::askToWearAvatarAttachmentUrl(const QString& url) {
     QNetworkAccessManager& networkAccessManager = NetworkAccessManager::getInstance();
     QNetworkRequest networkRequest = QNetworkRequest(url);
     networkRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-    networkRequest.setHeader(QNetworkRequest::UserAgentHeader, HIGH_FIDELITY_USER_AGENT);
+    networkRequest.setHeader(QNetworkRequest::UserAgentHeader, TIVOLI_CLOUD_VR_USER_AGENT);
     QNetworkReply* reply = networkAccessManager.get(networkRequest);
     int requestNumber = ++_avatarAttachmentRequest;
     connect(reply, &QNetworkReply::finished, [this, reply, url, requestNumber]() {

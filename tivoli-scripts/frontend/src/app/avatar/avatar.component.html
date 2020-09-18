@@ -1,9 +1,9 @@
 <div class="avatar">
 	<mat-toolbar color="primary">
-		<mat-icon style="font-size: 1.5em; width: 32px; height: 32px;">
+		<mat-icon style="font-size: 1.5em; width: 32px; height: 32px">
 			accessibility_new
 		</mat-icon>
-		<span style="padding: 0 4px;"></span>
+		<span style="padding: 0 4px"></span>
 		My Avatar
 
 		<!-- <span style="flex-grow: 1;"></span>
@@ -19,8 +19,18 @@
 						src="https://tivolicloud.com/api/user/_/image"
 					/>
 				</td>
-				<td style="padding-left: 16px;">
-					<h2 style="margin: 0; margin-bottom: 16px;">
+				<td style="padding-left: 16px">
+					<h2
+						style="
+							display: flex;
+							align-items: center;
+							margin: 0;
+							margin-bottom: 16px;
+						"
+					>
+						<mat-icon *ngIf="avatarIsTea" style="margin-right: 8px">
+							emoji_food_beverage
+						</mat-icon>
 						{{ avatarBookmarkName || avatarName }}
 					</h2>
 					<button
@@ -32,7 +42,7 @@
 						Update avatar URL
 					</button>
 
-					<div style="padding: 4px 0;"></div>
+					<div style="padding: 4px 0"></div>
 
 					<button
 						mat-flat-button
@@ -43,7 +53,7 @@
 						Avatar from my Tivoli files
 					</button>
 
-					<div style="padding: 4px 0;"></div>
+					<div style="padding: 4px 0"></div>
 
 					<button
 						mat-button
@@ -58,7 +68,7 @@
 						<button
 							mat-button
 							(click)="onRemoveBookmark(avatarBookmarkName)"
-							style="padding: 0 8px; margin-left: 0;"
+							style="padding: 0 8px; margin-left: 0"
 						>
 							<mat-icon>favorite</mat-icon>
 							Remove from favorites
@@ -87,7 +97,7 @@
 			<mat-form-field
 				appearance="outline"
 				class="thin"
-				style="width: 60px;"
+				style="width: 60px"
 			>
 				<mat-label>Scale</mat-label>
 				<input
@@ -100,23 +110,23 @@
 			</mat-form-field>
 			<button
 				mat-button
-				style="padding: 0 8px; min-width: 16px;"
+				style="padding: 0 8px; min-width: 16px"
 				(click)="onScaleUp()"
 			>
 				<mat-icon>add</mat-icon>
 			</button>
 			<button
 				mat-button
-				style="padding: 0 8px; min-width: 16px;"
+				style="padding: 0 8px; min-width: 16px"
 				(click)="onScaleDown()"
 			>
 				<mat-icon>remove</mat-icon>
 			</button>
-			<button mat-button style="padding: 0 8px;" (click)="onScaleReset()">
+			<button mat-button style="padding: 0 8px" (click)="onScaleReset()">
 				<mat-icon>undo</mat-icon> Reset
 			</button>
 
-			<span style="flex-grow: 1;"></span>
+			<span style="flex-grow: 1"></span>
 
 			<button mat-stroked-button (click)="onNoclip()">
 				<mat-icon *ngIf="avatarCollisions" svgIcon="noclip"></mat-icon>
@@ -127,7 +137,7 @@
 		</p>
 	</div>
 
-	<hr style="margin: 16px 0;" />
+	<hr style="margin: 16px 0" />
 
 	<div>
 		<h2
@@ -138,12 +148,12 @@
 				align-items: center;
 			"
 		>
-			<mat-icon style="margin-right: 8px;">favorite</mat-icon> Your
+			<mat-icon style="margin-right: 8px">favorite</mat-icon> Your
 			favorites
 		</h2>
 	</div>
 	<div
-		style="flex-grow: 1; overflow: auto; height: 0; margin-bottom: 16px;"
+		style="flex-grow: 1; overflow: auto; height: 0; margin-bottom: 16px"
 		class="bookmarks"
 	>
 		<div class="bookmark" *ngFor="let name of avatarBookmarkNames">
@@ -157,20 +167,20 @@
 	</div>
 	<!-- <div *ngIf="firstTime" style="flex-grow: 1;"></div> -->
 
-	<div style="display: flex;">
+	<div style="display: flex">
 		<button
 			class="recommended-avatars"
 			mat-flat-button
 			color="primary"
-			style="flex-grow: 1;"
+			style="flex-grow: 1"
 			(click)="openMarket()"
 		>
 			<mat-icon inline>search</mat-icon> Find an avatar here!
 		</button>
-		<div style="margin: 0 4px;"></div>
+		<div style="margin: 0 4px"></div>
 		<button
 			class="recommended-avatars"
-			style="font-weight: 400; min-width: 140px;"
+			style="font-weight: 400; min-width: 140px"
 			mat-stroked-button
 			(click)="onUseDefault()"
 		>

@@ -28,6 +28,10 @@ enum class ToneCurve {
     Filmic,
 };
 
+
+
+//Q_DECLARE_METATYPE(ToneCurve);
+
 class ToneMappingConfig : public render::Job::Config {
     Q_OBJECT
     Q_PROPERTY(float exposure MEMBER exposure WRITE setExposure);
@@ -36,8 +40,8 @@ class ToneMappingConfig : public render::Job::Config {
 public:
     ToneMappingConfig() : render::Job::Config(true) {}
 
-    void setExposure(float newExposure) { exposure = newExposure; emit dirty(); }
-    void setCurve(int newCurve) { curve = std::max((int)ToneCurve::None, std::min((int)ToneCurve::Filmic, newCurve)); emit dirty(); }
+    Q_INVOKABLE void setExposure(float newExposure) { exposure = newExposure; emit dirty(); }
+    Q_INVOKABLE void setCurve(int newCurve) { curve = std::max((int)ToneCurve::None, std::min((int)ToneCurve::Filmic, newCurve)); emit dirty(); }
 
 
     float exposure{ 0.0f };

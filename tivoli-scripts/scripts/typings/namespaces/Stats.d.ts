@@ -1,4 +1,9 @@
 declare namespace Stats {
+	const downloads: number;
+	const downloadLimit: number;
+	const downloadsPending: number;
+	const downloadUrls: string[];
+	// ...
 	const serverCount: number;
 	// ...
 	const audioPing: number;
@@ -13,6 +18,11 @@ declare namespace Stats {
 
 	function forceUpdateStats(): void;
 
+	const downloadsChanged: Signal<() => any>;
+	const downloadLimitChanged: Signal<() => any>;
+	const downloadsPendingChanged: Signal<() => any>;
+	const downloadUrlsChanged: Signal<() => any>;
+	// ...
 	const serverCountChanged: Signal<() => any>;
 	// ...
 	const audioPingChanged: Signal<() => any>;

@@ -251,6 +251,25 @@ void RenderScriptingInterface::setNametagsEnabled(bool enabled) {
     }
 }
 
+// TODO: Hook this up to a ToneMappingStage
+// void RenderScriptingInterface::setToneMappingMode(int curve, float exposure) {
+//    // tonemapping curve {0:RGB, 1:SRGB, 2:Reinhard, 3:Filmic} 
+//     _renderSettingLock.withWriteLock([&] {
+//         auto renderConfig = qApp->getRenderEngine()->getConfiguration();
+//         assert(renderConfig);
+//         auto deferredView = renderConfig->getConfig("RenderMainView.ToneMapping");  
+//           if (deferredView) {
+//               deferredView->setProperty("toneMappingMode", curve);
+//               deferredView->setProperty("Tonemapping.exposure", exposure);
+//           }
+//          auto forwardView = renderConfig->getConfig("RenderMainView.ToneMapping");
+//           if (forwardView) {
+//               forwardView->setProperty("toneMappingMode", curve);
+//               forwardView->setProperty("Tonemapping.exposure", exposure);
+//           }
+//     });
+// }
+
 void RenderScriptingInterface::forceNametagsEnabled(bool enabled) {
     _nametagsEnabled = (enabled);
     _nametagsEnabledSetting.set(enabled);

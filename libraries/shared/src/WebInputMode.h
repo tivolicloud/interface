@@ -20,6 +20,7 @@
  *   <tbody>
  *     <tr><td><code>"touch"</code></td><td>Events are processed as touch events.</td></tr>
  *     <tr><td><code>"mouse"</code></td><td>Events are processed as mouse events.</td></tr>
+ *     <tr><td><code>"none"</code></td><td>Events are not processed and input is not captured.</td></tr>
  *   </tbody>
  * </table>
  * @typedef {string} WebInputMode
@@ -27,7 +28,8 @@
 
 enum class WebInputMode {
     TOUCH = 0,
-    MOUSE,
+    MOUSE = 1,
+    NONE = 2
 };
 
 class WebInputModeHelpers {

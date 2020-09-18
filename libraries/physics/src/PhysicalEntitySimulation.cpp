@@ -50,7 +50,7 @@ void PhysicalEntitySimulation::addEntityInternal(EntityItemPointer entity) {
     assert(!entity->isDead());
     uint8_t region = _space->getRegion(entity->getSpaceIndex());
     bool maybeShouldBePhysical = (region < workload::Region::R3 || region == workload::Region::UNKNOWN) && entity->shouldBePhysical();
-    bool canBeKinematic = region <= workload::Region::R3;
+    bool canBeKinematic = region <= workload::Region::R4;
     if (maybeShouldBePhysical) {
         EntityMotionState* motionState = static_cast<EntityMotionState*>(entity->getPhysicsInfo());
         if (motionState) {
@@ -139,7 +139,7 @@ void PhysicalEntitySimulation::processChangedEntity(const EntityItemPointer& ent
     EntityMotionState* motionState = static_cast<EntityMotionState*>(entity->getPhysicsInfo());
     uint8_t region = _space->getRegion(entity->getSpaceIndex());
     bool shouldBePhysical = region < workload::Region::R3 && entity->shouldBePhysical();
-    bool canBeKinematic = region <= workload::Region::R3;
+    bool canBeKinematic = region <= workload::Region::R4;
     if (motionState) {
         if (!shouldBePhysical) {
             if (motionState->isLocallyOwned()) {

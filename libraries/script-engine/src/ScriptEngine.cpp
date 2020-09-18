@@ -66,6 +66,7 @@
 #include "EventTypes.h"
 #include "FileScriptingInterface.h" // unzip project
 #include "MenuItemProperties.h"
+#include "RequestFunction.h"
 #include "ScriptAudioInjector.h"
 #include "ScriptAvatarData.h"
 #include "ScriptCache.h"
@@ -804,6 +805,47 @@ void ScriptEngine::init() {
     qScriptRegisterMetaType(this, animVarMapToScriptValue, animVarMapFromScriptValue);
     qScriptRegisterMetaType(this, resultHandlerToScriptValue, resultHandlerFromScriptValue);
 
+    /**jsdoc
+     * Encodes text to base64.
+     * @function btoa
+     * @param {string} text - The text you want to encode.
+     * @returns {string} base64
+     */
+    globalObject().setProperty("btoa", newFunction(
+        [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
+            QString text = context->argumentCount() > 0 ? context->argument(0).toString() : QString();
+            if (text.isEmpty()) {
+                return QScriptValue(QString());
+            } else {
+                return QScriptValue(QString(text.toUtf8().toBase64()));
+            }
+        }
+    ));
+    
+    /**jsdoc
+     * Decodes base64 to text.
+     * @function atob
+     * @param {string} base64 - The base64 you want to decode.
+     * @returns {string} text
+     */
+    globalObject().setProperty("atob", newFunction(
+        [](QScriptContext* context, QScriptEngine* engine) -> QScriptValue {
+            QString base64 = context->argumentCount() > 0 ? context->argument(0).toString() : QString();
+            if (base64.isEmpty()) {
+                return QScriptValue(QString());
+            } else {
+                return QScriptValue(QString(QByteArray::fromBase64(base64.toUtf8())));
+            }
+        }
+    ));
+
+    
+    // globalObject().setProperty("request", newFunction(requestFunction));
+    QScriptProgram requestFunctionProgram { requestFunction };
+    if (requestFunctionProgram.isNull() == false) {
+        BaseScriptEngine::evaluate(requestFunctionProgram);
+    }
+
     // Scriptable cache access
     auto resourcePrototype = createScriptableResourcePrototype(qSharedPointerCast<ScriptEngine>(sharedFromThis()));
     globalObject().setProperty("Resource", resourcePrototype);
@@ -1177,6 +1219,7 @@ QScriptValue ScriptEngine::evaluate(const QString& sourceCode, const QString& fi
     return result;
 }
 
+
 void ScriptEngine::run() {
     if (QThread::currentThread() != qApp->thread() && _context == Context::CLIENT_SCRIPT) {
         // Flag that we're allowed to access local HTML files on UI created from C++ calls on this thread
@@ -1199,6 +1242,7 @@ void ScriptEngine::run() {
         init();
     }
 
+    
     _isRunning = true;
     emit runningStateChanged();
 
@@ -1222,7 +1266,6 @@ void ScriptEngine::run() {
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
 
     _lastUpdate = usecTimestampNow();
-
     std::chrono::microseconds totalUpdates(0);
 
     // TODO: Integrate this with signals/slots instead of reimplementing throttling for ScriptEngine
@@ -1256,7 +1299,7 @@ void ScriptEngine::run() {
             PROFILE_RANGE(script, "processEvents-sleep");
             std::chrono::milliseconds sleepFor =
                 std::chrono::duration_cast<std::chrono::milliseconds>(sleepUntil - clock::now());
-            if (sleepFor > std::chrono::milliseconds(0)) {
+            if (!scriptEngines->getBypassScriptThrottling() && sleepFor > std::chrono::milliseconds(0)) {
                 QEventLoop loop;
                 QTimer timer;
                 timer.setSingleShot(true);
@@ -2611,9 +2654,10 @@ void ScriptEngine::refreshFileScript(const EntityItemID& entityID) {
 // global values for different entity scripts).
 void ScriptEngine::doWithEnvironment(const EntityItemID& entityID, const QUrl& sandboxURL, std::function<void()> operation) {
     EntityItemID oldIdentifier = currentEntityIdentifier;
-    QUrl oldSandboxURL = currentSandboxURL;
+    QUrl oldSandboxURL;
+    if (currentSandboxURL.isValid()) oldSandboxURL = currentSandboxURL;
     currentEntityIdentifier = entityID;
-    currentSandboxURL = sandboxURL;
+    if (sandboxURL.isValid()) currentSandboxURL = sandboxURL;
 
 #if DEBUG_CURRENT_ENTITY
     QScriptValue oldData = this->globalObject().property("debugEntityID");

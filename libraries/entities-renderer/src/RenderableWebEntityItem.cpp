@@ -302,12 +302,14 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
     glm::vec4 color;
     Transform transform;
     bool forward;
+    bool transparent;
     withReadLock([&] {
         float fadeRatio = _isFading ? Interpolate::calculateFadeRatio(_fadeStartTime) : 1.0f;
         color = glm::vec4(toGlm(_color), _alpha * fadeRatio);
         color = EntityRenderer::calculatePulseColor(color, _pulseProperties, _created);
         transform = _renderTransform;
         forward = _renderLayer != RenderLayer::WORLD || args->_renderMethod == render::Args::FORWARD;
+        transparent = isTransparent();
     });
 
     if (color.a == 0.0f) {
@@ -321,7 +323,7 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 
     // Turn off jitter for these entities
     batch.pushProjectionJitter();
-    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, _transparentBackground || color.a < OPAQUE_ALPHA_THRESHOLD, forward);
+    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, transparent, forward);
     DependencyManager::get<GeometryCache>()->renderQuad(batch, topLeft, bottomRight, texMin, texMax, color, _geometryId);
     batch.popProjectionJitter();
     batch.setResourceTexture(0, nullptr);
@@ -333,10 +335,7 @@ void WebEntityRenderer::buildWebSurface(const EntityItemPointer& entity, const Q
         return;
     }
 
-    if (_contentType == ContentType::HtmlContent) {
-        ++_currentWebCount;
-    }
-
+    ++_currentWebCount;
     WebEntityRenderer::acquireWebSurface(newSourceURL, _contentType == ContentType::HtmlContent, _webSurface, _cachedWebSurface);
     _fadeStartTime = usecTimestampNow();
     _webSurface->resume();
@@ -363,15 +362,12 @@ void WebEntityRenderer::destroyWebSurface() {
     QSharedPointer<OffscreenQmlSurface> webSurface;
     withWriteLock([&] {
         webSurface.swap(_webSurface);
-        
+        _contentType = ContentType::NoContent;
+
         if (webSurface) {
-            if (_contentType == ContentType::HtmlContent) {
-                --_currentWebCount;
-            }
+            --_currentWebCount;
             WebEntityRenderer::releaseWebSurface(webSurface, _cachedWebSurface, _connections);
         }
-
-        _contentType = ContentType::NoContent;
     });
 }
 
@@ -424,10 +420,10 @@ void WebEntityRenderer::hoverLeaveEntity(const PointerEvent& event) {
 }
 
 void WebEntityRenderer::handlePointerEvent(const PointerEvent& event) {
+    if (_inputMode == WebInputMode::NONE) return;
+    
     withReadLock([&] {
-        if (!_webSurface) {
-            return;
-        }
+        if (!_webSurface) return;
 
         if (_inputMode == WebInputMode::TOUCH) {
             handlePointerEventAsTouch(event);

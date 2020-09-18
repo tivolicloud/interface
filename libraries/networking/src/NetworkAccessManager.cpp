@@ -12,15 +12,19 @@
 #include "NetworkAccessManager.h"
 
 #include <QThreadStorage>
+#include <QtNetwork/QNetworkProxy>
 
 #include "AtpReply.h"
-#include <QtNetwork/QNetworkProxy>
+#include "ResourceManager.h"
 
 QThreadStorage<QNetworkAccessManager*> networkAccessManagers;
 
 QNetworkAccessManager& NetworkAccessManager::getInstance() {
     if (!networkAccessManagers.hasLocalData()) {
-        networkAccessManagers.setLocalData(new QNetworkAccessManager());
+        QNetworkAccessManager* networkAccessManager = new QNetworkAccessManager();
+        auto resourceManager = DependencyManager::get<ResourceManager>();
+        networkAccessManager->setCache(resourceManager->networkDiskCache);
+        networkAccessManagers.setLocalData(networkAccessManager);
     }
     
     return *networkAccessManagers.localData();

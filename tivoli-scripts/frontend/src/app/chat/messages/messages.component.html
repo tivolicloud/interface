@@ -1,8 +1,4 @@
-<div
-	#messages
-	class="messages fast-transition"
-	[class.focused]="chatService.focused"
->
+<div #messages class="messages fast-transition">
 	<div
 		class="message transition"
 		*ngFor="let message of chatService.messages; let i = index"
@@ -28,37 +24,53 @@
 		></div>
 		<div class="username" *ngIf="!message.extras.me">
 			<span class="badge" *ngIf="message.extras.tts">TTS</span>
-			{{
-				message.type == "message"
-					? message.username + ":"
-					: message.message
-			}}
+			{{ message.type == "message" ? message.username + ":" : "" }}
 		</div>
-		<ng-container *ngIf="message.type == 'message'">
-			<span *ngIf="message.extras.me" style="margin-left: -4px;">
+		<span [class.username]="message.type == 'announcement'">
+			<span *ngIf="message.extras.me" style="margin-left: -4px">
 				{{ message.username }}
 			</span>
 			<ng-container *ngFor="let part of message.messageParts">
-				<ng-container *ngIf="!part.html">
+				<ng-container *ngIf="!part.html && !part.code">
 					<ng-container *ngIf="!part.link">
 						{{ part.content }}
 					</ng-container>
 					<a
 						*ngIf="part.link"
-						style="cursor: pointer;"
+						style="cursor: pointer"
 						(click)="openUrl(part.content)"
 					>
 						{{ part.content }}
 					</a>
 				</ng-container>
 				<span *ngIf="part.html" [innerHTML]="part.content"></span>
+				<pre *ngIf="part.code" class="code">{{ part.content }}</pre>
 			</ng-container>
-		</ng-container>
+		</span>
+		<div
+			*ngIf="message.metadata"
+			(click)="openUrl(message.metadata.url)"
+			class="metadata"
+		>
+			<div style="flex-grow: 1">
+				<p class="title">{{ message.metadata.title }}</p>
+				<p class="description">{{ message.metadata.description }}</p>
+			</div>
+			<div
+				class="image"
+				[style.backgroundImage]="
+					'url(' + message.metadata.imageUrl + ')'
+				"
+				[style.backgroundSize]="
+					message.metadata.imageUrl.endsWith('.ico') ? 'auto' : ''
+				"
+			></div>
+		</div>
 		<img
 			*ngIf="message.imageUrl"
 			class="image"
 			[src]="message.imageUrl"
-			style="cursor: pointer;"
+			style="cursor: pointer"
 			(click)="openUrl(message.imageUrl)"
 		/>
 	</div>

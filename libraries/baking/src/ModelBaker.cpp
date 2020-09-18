@@ -159,7 +159,7 @@ void ModelBaker::saveSourceModel() {
         // setup the request to follow re-directs and always hit the network
         networkRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
         networkRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-        networkRequest.setHeader(QNetworkRequest::UserAgentHeader, HIGH_FIDELITY_USER_AGENT);
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader, TIVOLI_CLOUD_VR_USER_AGENT);
 
         networkRequest.setUrl(_modelURL);
 

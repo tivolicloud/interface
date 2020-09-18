@@ -21,7 +21,7 @@
 #endif
 
 #include <DependencyManager.h>
-#include <UserActivityLogger.h>
+// #include <UserActivityLogger.h>
 #include <QThreadPool>
 
 #include "RuntimePlugin.h"
@@ -223,6 +223,22 @@ const OculusPlatformPluginPointer PluginManager::getOculusPlatformPlugin() {
     return oculusPlatformPlugin;
 }
 
+const TeaProtocolPluginPointer PluginManager::getTeaProtocolPlugin() {
+    static TeaProtocolPluginPointer teaProtocolPlugin;
+    static std::once_flag once;
+    std::call_once(once, [&] {
+        // Now grab the dynamic plugins
+        for (auto loader : getLoadedPlugins()) {
+            TeaProtocolProvider* teaProtocolProvider = qobject_cast<TeaProtocolProvider*>(loader->instance());
+            if (teaProtocolProvider) {
+                teaProtocolPlugin = teaProtocolProvider->getTeaProtocolPlugin();
+                break;
+            }
+        }
+    });
+    return teaProtocolPlugin;
+}
+
 DisplayPluginList PluginManager::getAllDisplayPlugins() {
     return _displayPlugins;
 }
@@ -231,11 +247,11 @@ DisplayPluginList PluginManager::getAllDisplayPlugins() {
     static std::once_flag once;
     static auto deviceAddedCallback = [](QString deviceName) {
         qCDebug(plugins) << "Added device: " << deviceName;
-        UserActivityLogger::getInstance().connectedDevice("display", deviceName);
+        // UserActivityLogger::getInstance().connectedDevice("display", deviceName);
     };
     static auto subdeviceAddedCallback = [](QString pluginName, QString deviceName) {
         qCDebug(plugins) << "Added subdevice: " << deviceName;
-        UserActivityLogger::getInstance().connectedDevice("display", pluginName + " | " + deviceName);
+        // UserActivityLogger::getInstance().connectedDevice("display", pluginName + " | " + deviceName);
     };
 
     std::call_once(once, [&] {
@@ -278,11 +294,11 @@ const InputPluginList& PluginManager::getInputPlugins() {
         QStringList runningDevices = getRunningInputDeviceNames();
         bool isDeviceRunning = runningDevices.indexOf(deviceName) >= 0;
         emit inputDeviceRunningChanged(deviceName, isDeviceRunning, runningDevices);
-        UserActivityLogger::getInstance().connectedDevice("input", deviceName);
+        // UserActivityLogger::getInstance().connectedDevice("input", deviceName);
     };
     static auto subdeviceAddedCallback = [](QString pluginName, QString deviceName) {
         qCDebug(plugins) << "Added subdevice: " << deviceName;
-        UserActivityLogger::getInstance().connectedDevice("input", pluginName + " | " + deviceName);
+        // UserActivityLogger::getInstance().connectedDevice("input", pluginName + " | " + deviceName);
     };
 
     std::call_once(once, [&] {

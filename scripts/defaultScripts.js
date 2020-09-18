@@ -1,7 +1,7 @@
 // included scripts
 [
 	"system/request-service.js", // some http request dependancy thing
-	"system/progress.js", // progress bar at the bottom, to be rewritten
+	// "system/progress.js", // progress bar at the bottom, to be rewritten
 	// "system/away.js",
 	"system/audio.js",
 	"system/hmd.js", // enter leave vr button
@@ -17,23 +17,20 @@
 	// "system/notifications.js",
 	// "system/commerce/wallet.js",
 	"system/create/edit.js",
-	"system/dialTone.js", // join and leave sounds
 	"system/tablet-ui/tabletUI.js",
 	"system/emote.js",
 	// "system/miniTablet.js",
 	// "system/audioMuteOverlay.js", // the big text that appears when you're muted
 	"system/keyboardShortcuts/keyboardShortcuts.js",
 
-	"system/controllers/controllerScripts.js",
+	"system/controllers/controllerScripts.js"
 	// "system/interstitialPage.js"
-].forEach(function(script) {
+].forEach(function (script) {
 	Script.include("file:///~/" + script);
 });
 
 // loaded scripts
-[
-	"tivoli/tivoli.js"
-].forEach(function(script) {
+["tivoli/tivoli.js", "system/inspect.js"].forEach(function (script) {
 	var runningScripts = ScriptDiscoveryService.getRunning();
 
 	for (var i = 0; i < runningScripts.length; i++) {

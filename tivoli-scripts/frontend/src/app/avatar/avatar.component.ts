@@ -31,6 +31,7 @@ export class AvatarComponent implements OnInit, OnDestroy {
 
 	avatarURL = "";
 	avatarName = "";
+	avatarIsTea = false;
 
 	avatarScale = 1;
 	avatarCollisions = true;
@@ -69,6 +70,9 @@ export class AvatarComponent implements OnInit, OnDestroy {
 				// 	break;
 				case "getAvatarUrl":
 					this.avatarURL = data.value;
+					this.avatarIsTea = data.value
+						.toLowerCase()
+						.startsWith("tea://");
 					this.avatarName = (() => {
 						const filename = data.value.split("/").pop();
 						const name = filename.split(".");
@@ -114,6 +118,9 @@ export class AvatarComponent implements OnInit, OnDestroy {
 		this.dialog.open(TivoliFilesComponent, {
 			width: "90vw",
 			maxWidth: "90vw",
+			data: {
+				usingTea: this.avatarIsTea,
+			},
 		});
 	}
 
