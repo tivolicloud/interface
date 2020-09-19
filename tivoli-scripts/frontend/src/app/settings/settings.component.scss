@@ -1,30 +1,81 @@
-mat-tab-group {
-	width: 100vw;
-	height: 100vh;
+.settings {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	overflow: auto;
 
-	::ng-deep .mat-tab-body-wrapper {
-		height: 100%;
+	.content {
+		flex: 1 1 auto;
+		overflow-y: auto;
+		min-height: 100vh;
+		height: 0;
+		padding: 16px;
 	}
 }
 
-.tab-icon {
-	margin-right: 4px;
-}
+.settings .content ::ng-deep {
+	p,
+	h1,
+	h2,
+	h3 {
+		margin: 0;
+	}
 
-.settings {
-	display: flex;
-	width: 100%;
-	height: 100%;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-
-	.setting-header {
+	.title {
 		display: flex;
+		flex-direction: row;
 		align-items: center;
+		font-weight: 700;
+		margin-bottom: 16px;
+		font-size: 1.75rem;
 
 		.material-icons {
-			margin-right: 8px;
+			margin-right: 12px;
+			$size: 32px;
+			font-size: $size;
+			width: $size;
+			height: $size;
 		}
+	}
+
+	.setting {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 16px;
+		max-height: 32px;
+		height: 32px;
+
+		.label {
+			margin-right: 24px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			font-weight: 500;
+
+			.material-icons {
+				margin-right: 8px;
+			}
+		}
+	}
+
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		line-height: 36px;
+	}
+
+	.mat-form-field .mat-form-field-wrapper {
+		margin: 0;
+		padding: 0;
+	}
+
+	button.mat-mini-fab {
+		box-shadow: none;
+	}
+
+	hr {
+		border: none;
+		border-bottom: solid 1px mix(#000, #fff, 12%);
+		margin: 24px 0;
 	}
 }

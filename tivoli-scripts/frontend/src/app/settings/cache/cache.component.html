@@ -1,0 +1,99 @@
+<h3>
+	Tivoli caches everything you download so that you don't have to redownload
+	everything. This improves the experience significatly and we recommend
+	keeping a big cache!
+</h3>
+<br />
+<h3
+	*ngIf="usedCacheSize != null && maximumCacheSize != null"
+	style="margin-bottom: 12px"
+>
+	<b>{{ usedCacheSize ? usedCacheSize.toFixed(2) : null }} GB</b> out of
+	<b>{{ maximumCacheSize }} GB</b> in use
+</h3>
+<mat-progress-bar
+	*ngIf="usedCacheSize != null && maximumCacheSize != null"
+	mode="determinate"
+	[value]="(usedCacheSize / maximumCacheSize) * 100"
+></mat-progress-bar>
+<br />
+<br />
+<div
+	*ngIf="maximumCacheSize != null"
+	style="display: flex; align-items: center"
+>
+	<mat-form-field appearance="outline" style="width: 120px">
+		<mat-label>Cache size</mat-label>
+		<input
+			matInput
+			#maximumCacheSizeInput
+			required
+			type="number"
+			[value]="maximumCacheSize"
+		/>
+		<span matSuffix>GB</span>
+	</mat-form-field>
+	<button
+		mat-mini-fab
+		color="primary"
+		[disabled]="maximumCacheSizeInput.value == maximumCacheSize"
+		(click)="
+			script.emitEvent(
+				'settings',
+				'DiskCache.maximumCacheSize',
+				maximumCacheSizeInput.value
+			)
+		"
+		style="margin-left: 8px"
+	>
+		<mat-icon>save</mat-icon>
+	</button>
+	<button
+		mat-mini-fab
+		color="primary"
+		(click)="restoreDefaultMaximumCacheSize()"
+		style="margin-left: 8px"
+	>
+		<mat-icon>restore</mat-icon>
+	</button>
+</div>
+<br />
+<div *ngIf="cacheDirectory != null" style="display: flex; align-items: center">
+	<mat-form-field appearance="outline" style="width: 100%">
+		<mat-label>Cache location</mat-label>
+		<input
+			matInput
+			#cacheDirectoryInput
+			required
+			[value]="cacheDirectory"
+		/>
+	</mat-form-field>
+	<button
+		mat-mini-fab
+		color="primary"
+		[disabled]="cacheDirectoryInput.value == cacheDirectory"
+		(click)="
+			script.emitEvent(
+				'settings',
+				'DiskCache.cacheDirectory',
+				cacheDirectoryInput.value
+			)
+		"
+		disabled
+		style="margin-left: 8px"
+	>
+		<mat-icon>save</mat-icon>
+	</button>
+	<button
+		mat-mini-fab
+		color="primary"
+		(click)="restoreDefaultCacheDirectory()"
+		style="margin-left: 8px"
+	>
+		<mat-icon>restore</mat-icon>
+	</button>
+</div>
+<br />
+<button mat-flat-button color="primary" (click)="clearCache()">
+	<mat-icon>clear</mat-icon> Clear cache
+</button>

@@ -1,0 +1,56 @@
+<mdc-drawer class="drawer">
+	<mdc-drawer-header class="header">
+		<h2 class="title"><mdc-icon>settings</mdc-icon> Settings</h2>
+	</mdc-drawer-header>
+	<mdc-drawer-content>
+		<mdc-list>
+			<!-- <a
+				mdc-list-item
+				routerLink="/settings/audio"
+				routerLinkActive="mdc-list-item--activated"
+			>
+				<mdc-icon mdcListItemGraphic>volume_up</mdc-icon>
+				Audio
+			</a> -->
+			<a
+				mdc-list-item
+				routerLink="/settings/graphics"
+				routerLinkActive="mdc-list-item--activated"
+				style="font-weight: 700"
+			>
+				<mdc-icon mdcListItemGraphic>desktop_windows</mdc-icon>
+				Graphics
+			</a>
+			<!-- <a
+				mdc-list-item
+				routerLink="/settings/controls"
+				routerLinkActive="mdc-list-item--activated"
+			>
+				<mdc-icon mdcListItemGraphic>keyboard</mdc-icon>
+				Controls
+			</a> -->
+			<a
+				mdc-list-item
+				routerLink="/settings/cache"
+				routerLinkActive="mdc-list-item--activated"
+				style="font-weight: 700"
+			>
+				<mdc-icon mdcListItemGraphic>storage</mdc-icon>
+				Cache
+			</a>
+			<!-- <a
+				mdc-list-item
+				routerLink="/settings/nametag"
+				routerLinkActive="mdc-list-item--activated"
+			>
+				<mdc-icon mdcListItemGraphic>label</mdc-icon>
+				Nametag
+			</a> -->
+			<!-- <mdc-list-divider></mdc-list-divider> -->
+			<a mdc-list-item disabled style="height: 80px; font-weight: 400">
+				More settings will appear here with time, hopefully replacing
+				all the old UI
+			</a>
+		</mdc-list>
+	</mdc-drawer-content>
+</mdc-drawer>

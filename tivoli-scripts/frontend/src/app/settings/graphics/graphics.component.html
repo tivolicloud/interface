@@ -1,0 +1,128 @@
+<div class="setting">
+	<p class="label">
+		<mat-icon>settings</mat-icon>
+		Preset
+	</p>
+	<mat-button-toggle-group
+		*ngIf="presetNames != null && preset != null"
+		(change)="onPresetChange($event)"
+		[value]="presetNames[preset]"
+	>
+		<mat-button-toggle value="POTATO">Potato</mat-button-toggle>
+		<mat-button-toggle value="LOW">Low</mat-button-toggle>
+		<mat-button-toggle value="MID">Medium</mat-button-toggle>
+		<mat-button-toggle value="HIGH">High</mat-button-toggle>
+		<mat-button-toggle value="UNKNOWN">Custom</mat-button-toggle>
+	</mat-button-toggle-group>
+</div>
+<hr />
+<!-- <div class="setting">
+	<p class="label">
+		<mat-icon>public</mat-icon>
+		World details
+	</p>
+	<mat-button-toggle-group
+		*ngIf="worldDetailNames != null && worldDetail != null"
+		(change)="onWorldDetailChange($event)"
+		[value]="worldDetailNames[worldDetail]"
+	>
+		<mat-button-toggle value="LOW">Low</mat-button-toggle>
+		<mat-button-toggle value="MID">Medium</mat-button-toggle>
+		<mat-button-toggle value="HIGH">Full</mat-button-toggle>
+	</mat-button-toggle-group>
+</div> -->
+<div class="setting">
+	<p class="label">
+		<mat-icon>timelapse</mat-icon>
+		Refresh rate
+	</p>
+	<mat-button-toggle-group
+		*ngIf="refreshRateNames != null && refreshRate != null"
+		(change)="onRefreshRateChange($event)"
+		[value]="refreshRateNames[refreshRate]"
+	>
+		<mat-button-toggle value="DISPLAY_BASED">
+			Display-based
+		</mat-button-toggle>
+		<mat-button-toggle value="REALTIME">60</mat-button-toggle>
+		<mat-button-toggle value="INTERACTIVE">30</mat-button-toggle>
+		<mat-button-toggle value="ECO">20</mat-button-toggle>
+	</mat-button-toggle-group>
+	<p style="margin-left: 12px">FPS</p>
+</div>
+<div class="setting">
+	<p class="label">
+		<mat-icon>gradient</mat-icon>
+		Anti-aliasing
+	</p>
+	<mat-button-toggle-group
+		*ngIf="antialiasingMethodNames != null && antialiasingMethod != null"
+		(change)="onAntialiasingMethodChange($event)"
+		[value]="antialiasingMethodNames[antialiasingMethod]"
+	>
+		<mat-button-toggle value="NONE">None</mat-button-toggle>
+		<mat-button-toggle value="TAA">TAA</mat-button-toggle>
+		<mat-button-toggle value="FXAA">FXAA</mat-button-toggle>
+	</mat-button-toggle-group>
+</div>
+<div class="setting">
+	<p class="label">
+		<mat-icon>filter</mat-icon>
+		Render effects
+	</p>
+	<mat-slide-toggle
+		*ngIf="deferred != null"
+		(change)="onDeferredChange($event)"
+		[checked]="deferred"
+	></mat-slide-toggle>
+	<p style="margin-left: 24px; opacity: 0.5">(deferred rendering)</p>
+</div>
+<div class="setting">
+	<p class="label">
+		<mat-icon>tonality</mat-icon>
+		Shadows
+	</p>
+	<mat-slide-toggle
+		*ngIf="shadows != null"
+		(change)="onShadowsChange($event)"
+		[checked]="shadows"
+	></mat-slide-toggle>
+</div>
+<div class="setting">
+	<p class="label">
+		<mat-icon>label</mat-icon>
+		Nametags
+	</p>
+	<mat-slide-toggle
+		*ngIf="nametags != null"
+		(change)="onNametagsChange($event)"
+		[checked]="nametags"
+	></mat-slide-toggle>
+	<!-- <p style="margin-left: 24px; opacity: 0.5">(doesn't include yourself)</p> -->
+</div>
+<div class="setting">
+	<p class="label" *ngIf="resolutionScale != null">
+		<mat-icon>aspect_ratio</mat-icon>
+		Resolution scale (x{{ resolutionScale.toFixed(1) }})
+	</p>
+	<mat-slide-toggle
+		[checked]="resolutionUserAgree"
+		(change)="resolutionUserAgree = $event.checked"
+	></mat-slide-toggle>
+	<p *ngIf="resolutionUserAgree" style="margin-left: 24px; opacity: 0.5">
+		(<b>WARNING!</b> changing this can lag or crash you)
+	</p>
+</div>
+<div class="setting" style="max-height: 16px; height: 16px">
+	<mat-slider
+		*ngIf="resolutionScale != null"
+		[disabled]="!resolutionUserAgree"
+		thumbLabel
+		min="0.1"
+		max="4"
+		step="0.1"
+		(change)="onResolutionScaleChange($event)"
+		[value]="resolutionScale"
+		style="margin-left: 24px; max-width: 600px; width: 600px"
+	></mat-slider>
+</div>

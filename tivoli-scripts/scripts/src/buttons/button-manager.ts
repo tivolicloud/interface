@@ -25,6 +25,8 @@ export class ButtonManager {
 	private readonly panelScale = 0.7;
 	private readonly panelDpi = 33;
 
+	private readonly smallPanelModifier = 0.75;
+
 	private readonly tablet = Tablet.getTablet(
 		"com.highfidelity.interface.tablet.system",
 	);
@@ -33,17 +35,19 @@ export class ButtonManager {
 
 	constructor() {}
 
-	private getOptimalWindowSize() {
+	private getOptimalWindowSize(small = false) {
 		const maxWidth = Window.innerWidth - 16;
 		const maxHeight = Window.innerHeight - 96;
+		const windowWidth = 1280 * (small ? this.smallPanelModifier : 1);
+		const windowHeight = 720 * (small ? this.smallPanelModifier : 1);
 		return {
-			x: maxWidth < 1280 ? maxWidth : 1280,
-			y: maxHeight < 720 ? maxHeight : 720,
+			x: maxWidth < windowWidth ? maxWidth : windowWidth,
+			y: maxHeight < windowHeight ? maxHeight : windowHeight,
 		};
 	}
 
-	private getOptimalWindowPosition() {
-		const size = this.getOptimalWindowSize();
+	private getOptimalWindowPosition(small = false) {
+		const size = this.getOptimalWindowSize(small);
 		return {
 			x: Window.innerWidth / 2 - size.x / 2,
 			y: Window.innerHeight / 2 - size.y / 2,
@@ -85,7 +89,7 @@ export class ButtonManager {
 		icon: string,
 		backgroundColor: string,
 		sortOrder: number,
-		isPanel = false,
+		isPanel: "false" | "big" | "small" = "false",
 		handlerClass: typeof WebEventHandler,
 	) {
 		const url =
@@ -112,36 +116,39 @@ export class ButtonManager {
 
 		let visible = false;
 
-		const panel = isPanel
-			? {
-					// for desktop
-					window: new OverlayWebWindow({
-						title: name,
-						visible: false,
-						source: "about:blank",
-					}),
-					// for vr
-					entity: Entities.addEntity<Entities.EntityPropertiesWeb>(
-						{
-							type: "Web",
-							sourceUrl: "about:blank",
-							position: { x: 0, y: 0, z: 0 },
-							dimensions: { x: 0, y: 0, z: 0 },
-							maxFPS: 120,
-							dpi: 0,
+		const panel =
+			isPanel != "false"
+				? {
+						// for desktop
+						window: new OverlayWebWindow({
+							title: name,
 							visible: false,
-							showKeyboardFocusHighlight: false,
-							inputMode: "touch",
-						},
-						"local",
-					),
-			  }
-			: null;
+							source: "about:blank",
+						}),
+						// for vr
+						entity: Entities.addEntity<
+							Entities.EntityPropertiesWeb
+						>(
+							{
+								type: "Web",
+								sourceUrl: "about:blank",
+								position: { x: 0, y: 0, z: 0 },
+								dimensions: { x: 0, y: 0, z: 0 },
+								maxFPS: 120,
+								dpi: 0,
+								visible: false,
+								showKeyboardFocusHighlight: false,
+								inputMode: "touch",
+							},
+							"local",
+						),
+				  }
+				: null;
 
 		// functions
 
 		const verifyPanelUrl = () => {
-			if (isPanel == false) return;
+			if (isPanel == "false") return;
 
 			const windowUrl = panel.window.getURL();
 			const entityUrl = Entities.getEntityProperties<
@@ -207,7 +214,15 @@ export class ButtonManager {
 					);
 
 					const dimensions = Vec3.multiply(
-						{ x: 1.6, y: 0.9, z: 0.01 },
+						{
+							x: 1.6,
+							y: 0.9,
+							z:
+								0.01 *
+								(isPanel == "small"
+									? this.smallPanelModifier
+									: 1),
+						},
 						this.panelScale * MyAvatar.scale,
 					);
 
@@ -232,9 +247,13 @@ export class ButtonManager {
 						panel.window.setVisible(false);
 					}
 
-					panel.window.setSize(this.getOptimalWindowSize() as Vec2);
+					panel.window.setSize(
+						this.getOptimalWindowSize(isPanel == "small") as Vec2,
+					);
 					panel.window.setPosition(
-						this.getOptimalWindowPosition() as Vec2,
+						this.getOptimalWindowPosition(
+							isPanel == "small",
+						) as Vec2,
 					);
 					panel.window.setVisible(true);
 				}
