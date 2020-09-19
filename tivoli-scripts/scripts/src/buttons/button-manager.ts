@@ -258,7 +258,8 @@ export class ButtonManager {
 					panel.window.setVisible(true);
 				}
 
-				verifyPanelUrl();
+				// disabled because it resets the url everytime you open
+				// verifyPanelUrl();
 			} else {
 				this.tablet.gotoWebScreen(url);
 			}
