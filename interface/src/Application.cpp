@@ -7689,9 +7689,11 @@ bool Application::acceptURL(const QString& urlString, bool defaultUpload) {
         }
     }
 
-    if (defaultUpload && !url.fileName().isEmpty() && url.isLocalFile()) {
-        showAssetServerWidget(urlString);
-    }
+    // dont show atp upload dialog when drag and dropping assets into the window
+    // if (defaultUpload && !url.fileName().isEmpty() && url.isLocalFile()) {
+    //     showAssetServerWidget(urlString);
+    // }
+    
     return defaultUpload;
 }
 
