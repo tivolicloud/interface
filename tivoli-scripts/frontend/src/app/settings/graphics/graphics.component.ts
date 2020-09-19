@@ -19,91 +19,130 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 	presetNames: string[];
 	onPresetChange(e: MatButtonToggleChange) {
 		if (this.presetNames == null) return;
-		this.script.emitEvent(
-			"settings",
-			"Performance.performancePreset",
-			this.presetNames.indexOf(e.value),
-		);
-		this.refresh();
+		this.script
+			.rpc(
+				"Performance.performancePreset",
+				this.presetNames.indexOf(e.value),
+			)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	// worldDetail: number;
 	// worldDetailNames: string[] = ["LOW", "MID", "HIGH"];
 	// onWorldDetailChange(e: MatButtonToggleChange) {
-	// 	this.script.emitEvent(
-	// 		"settings",
-	// 		"LODManager.worldDetailQuality",
-	// 		this.worldDetailNames.indexOf(e.value),
-	// 	);
+	// 	this.script
+	// 		.rpc(
+	// 			"LODManager.worldDetailQuality",
+	// 			this.worldDetailNames.indexOf(e.value),
+	// 		)
+	// 		.subscribe(() => {
+	// 			this.refresh();
+	// 		});
 	// 	this.refresh();
 	// }
 
 	shadows: boolean;
 	onShadowsChange(e: MatSlideToggleChange) {
-		this.script.emitEvent("settings", "Render.shadowsEnabled", e.checked);
-		this.refresh();
+		this.script.rpc("Render.shadowsEnabled", e.checked).subscribe(() => {
+			this.refresh();
+		});
 	}
 
 	deferred: boolean;
 	onDeferredChange(e: MatSlideToggleChange) {
-		this.script.emitEvent(
-			"settings",
-			"Render.renderMethod",
-			e.checked ? 0 : 1,
-		);
-		this.refresh();
+		this.script
+			.rpc("Render.renderMethod", e.checked ? 0 : 1)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	refreshRate: number;
 	refreshRateNames: string[];
 	onRefreshRateChange(e: MatButtonToggleChange) {
 		if (this.refreshRateNames == null) return;
-		this.script.emitEvent(
-			"settings",
-			"Performance.refreshRateProfile",
-			this.refreshRateNames.indexOf(e.value),
-		);
-		this.refresh();
+		this.script
+			.rpc(
+				"Performance.refreshRateProfile",
+				this.refreshRateNames.indexOf(e.value),
+			)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	antialiasingMethod: number;
 	antialiasingMethodNames: string[];
 	onAntialiasingMethodChange(e: MatButtonToggleChange) {
 		if (this.antialiasingMethodNames == null) return;
-		this.script.emitEvent(
-			"settings",
-			"Render.antialiasingMethod",
-			this.antialiasingMethodNames.indexOf(e.value),
-		);
-		this.refresh();
+		this.script
+			.rpc(
+				"Render.antialiasingMethod",
+				this.antialiasingMethodNames.indexOf(e.value),
+			)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	resolutionScale: number;
 	resolutionUserAgree = false;
 	onResolutionScaleChange(e: MatSliderChange) {
-		this.script.emitEvent(
-			"settings",
-			"Render.viewportResolutionScale",
-			e.value,
-		);
-		this.refresh();
+		this.script
+			.rpc("Render.viewportResolutionScale", e.value)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	nametags: boolean;
 	onNametagsChange(e: MatSlideToggleChange) {
-		this.script.emitEvent("settings", "Render.nametagsEnabled", e.checked);
-		this.refresh();
+		this.script.rpc("Render.nametagsEnabled", e.checked).subscribe(() => {
+			this.refresh();
+		});
 	}
 
 	refresh() {
-		this.script.emitEvent("settings", "Performance.performancePreset");
-		// this.script.emitEvent("settings", "LODManager.worldDetailQuality");
-		this.script.emitEvent("settings", "Render.shadowsEnabled");
-		this.script.emitEvent("settings", "Render.renderMethod");
-		this.script.emitEvent("settings", "Performance.refreshRateProfile");
-		this.script.emitEvent("settings", "Render.antialiasingMethod");
-		this.script.emitEvent("settings", "Render.viewportResolutionScale");
-		this.script.emitEvent("settings", "Render.nametagsEnabled");
+		this.script
+			.rpc<number>("Performance.performancePreset")
+			.subscribe(preset => {
+				this.preset = preset;
+			});
+		// this.script
+		// 	.rpc<number>("LODManager.worldDetailQuality")
+		// 	.subscribe(worldDetail => {
+		// 		this.worldDetail = worldDetail;
+		// 	});
+		this.script.rpc<boolean>("Render.shadowsEnabled").subscribe(shadows => {
+			this.shadows = shadows;
+		});
+		this.script
+			.rpc<number>("Render.renderMethod")
+			.subscribe(renderMethod => {
+				this.deferred = renderMethod == 0;
+			});
+		this.script
+			.rpc<number>("Performance.refreshRateProfile")
+			.subscribe(refreshRate => {
+				this.refreshRate = refreshRate;
+			});
+		this.script
+			.rpc<number>("Render.antialiasingMethod")
+			.subscribe(antialiasingMethod => {
+				this.antialiasingMethod = antialiasingMethod;
+			});
+		this.script
+			.rpc<number>("Render.viewportResolutionScale")
+			.subscribe(resolutionScale => {
+				this.resolutionScale = resolutionScale;
+			});
+		this.script
+			.rpc<boolean>("Render.nametagsEnabled")
+			.subscribe(nametags => {
+				this.nametags = nametags;
+			});
 	}
 
 	ngOnInit() {
@@ -113,55 +152,25 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 					case "refresh":
 						this.refresh();
 						break;
-					case "Performance.getPerformancePresetNames()":
-						this.presetNames = data.value;
-						break;
-					case "Performance.performancePreset":
-						this.preset = data.value;
-						break;
-					// case "LODManager.worldDetailQuality":
-					// 	this.worldDetail = data.value;
-					// 	break;
-					case "Render.shadowsEnabled":
-						this.shadows = data.value;
-						break;
-					case "Render.renderMethod":
-						this.deferred = data.value == 0;
-						break;
-					case "Performance.getRefreshRateProfileNames()":
-						this.refreshRateNames = data.value;
-						break;
-					case "Performance.refreshRateProfile":
-						this.refreshRate = data.value;
-						break;
-					case "Render.getAntialiasingMethodNames()":
-						this.antialiasingMethodNames = data.value;
-						break;
-					case "Render.antialiasingMethod":
-						this.antialiasingMethod = data.value;
-						break;
-					case "Render.viewportResolutionScale":
-						this.resolutionScale = data.value;
-						break;
-					case "Render.nametagsEnabled":
-						this.nametags = data.value;
-						break;
 				}
 			}),
 		);
 
-		this.script.emitEvent(
-			"settings",
-			"Performance.getPerformancePresetNames()",
-		);
-		this.script.emitEvent(
-			"settings",
-			"Performance.getRefreshRateProfileNames()",
-		);
-		this.script.emitEvent(
-			"settings",
-			"Render.getAntialiasingMethodNames()",
-		);
+		this.script
+			.rpc<string[]>("Performance.getPerformancePresetNames()")
+			.subscribe(presetNames => {
+				this.presetNames = presetNames;
+			});
+		this.script
+			.rpc<string[]>("Performance.getRefreshRateProfileNames()")
+			.subscribe(refreshRateNames => {
+				this.refreshRateNames = refreshRateNames;
+			});
+		this.script
+			.rpc<string[]>("Render.getAntialiasingMethodNames()")
+			.subscribe(antialiasingMethodNames => {
+				this.antialiasingMethodNames = antialiasingMethodNames;
+			});
 
 		this.refresh();
 	}

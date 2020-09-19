@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 
 @Injectable({
 	providedIn: "root",
@@ -22,7 +23,10 @@ export class ScriptService {
 			JSON.stringify({
 				key: key,
 				value: value == null ? null : value,
-				uuid: "com.tivolicloud.defaultScripts." + uuid,
+				uuid:
+					uuid == null
+						? "com.tivolicloud.defaultScripts"
+						: "com.tivolicloud.defaultScripts." + uuid,
 			}),
 		);
 	}
@@ -31,6 +35,35 @@ export class ScriptService {
 		for (let key of keys) {
 			this.emitEvent(uuid, key);
 		}
+	}
+
+	rpc<T>(fn: string, args: any[] | any = []): Observable<T> {
+		if (Array.isArray(args) == false) args = [args];
+
+		const id = new Array(16)
+			.fill(null)
+			.map(() => String.fromCharCode(97 + Math.floor(Math.random() * 26)))
+			.join("");
+
+		return new Observable(sub => {
+			this.emitEvent(null, "rpc", {
+				id,
+				fn,
+				args,
+			});
+			this.event$
+				.pipe(
+					filter(
+						data =>
+							data.key == "rpc" &&
+							data.value != null &&
+							data.value.id == id,
+					),
+					take(1),
+					map(data => data.value.out),
+				)
+				.subscribe(sub);
+		});
 	}
 
 	event$ = new Subject<{ key: string; value: any }>();

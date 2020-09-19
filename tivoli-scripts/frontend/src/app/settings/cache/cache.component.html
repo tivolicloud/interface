@@ -8,7 +8,7 @@
 	*ngIf="usedCacheSize != null && maximumCacheSize != null"
 	style="margin-bottom: 12px"
 >
-	<b>{{ usedCacheSize ? usedCacheSize.toFixed(2) : null }} GB</b> out of
+	<b>{{ (usedCacheSize ? usedCacheSize : 0).toFixed(2) }} GB</b> out of
 	<b>{{ maximumCacheSize }} GB</b> in use
 </h3>
 <mat-progress-bar
@@ -37,13 +37,7 @@
 		mat-mini-fab
 		color="primary"
 		[disabled]="maximumCacheSizeInput.value == maximumCacheSize"
-		(click)="
-			script.emitEvent(
-				'settings',
-				'DiskCache.maximumCacheSize',
-				maximumCacheSizeInput.value
-			)
-		"
+		(click)="setMaximumCacheSize(maximumCacheSizeInput.value)"
 		style="margin-left: 8px"
 	>
 		<mat-icon>save</mat-icon>
@@ -72,13 +66,7 @@
 		mat-mini-fab
 		color="primary"
 		[disabled]="cacheDirectoryInput.value == cacheDirectory"
-		(click)="
-			script.emitEvent(
-				'settings',
-				'DiskCache.cacheDirectory',
-				cacheDirectoryInput.value
-			)
-		"
+		(click)="setCacheDirectory(cacheDirectoryInput.value)"
 		disabled
 		style="margin-left: 8px"
 	>
@@ -94,6 +82,22 @@
 	</button>
 </div>
 <br />
-<button mat-flat-button color="primary" (click)="clearCache()">
-	<mat-icon>clear</mat-icon> Clear cache
-</button>
+<div style="display: flex">
+	<button
+		mat-flat-button
+		color="primary"
+		[disabled]="clearCacheConfirm"
+		(click)="clearCacheConfirm = true"
+	>
+		<mat-icon>clear</mat-icon> Clear cache
+	</button>
+	<div style="margin: 0 4px"></div>
+	<button
+		*ngIf="clearCacheConfirm"
+		mat-flat-button
+		color="primary"
+		(click)="clearCache()"
+	>
+		Are you sure?
+	</button>
+</div>

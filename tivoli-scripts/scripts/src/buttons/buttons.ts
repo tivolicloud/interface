@@ -3,7 +3,6 @@ import { ButtonManager } from "./button-manager";
 import { AvatarHandler } from "./web-event-handlers/avatar";
 import { ExploreHandler } from "./web-event-handlers/explore";
 import { MarketHandler } from "./web-event-handlers/market";
-import { SettingsHandler } from "./web-event-handlers/settings";
 
 export class Buttons {
 	readonly tablet = Tablet.getTablet(
@@ -36,7 +35,6 @@ export class Buttons {
 			"#e91e63", // pink 500
 			2,
 			"small",
-			SettingsHandler,
 		);
 
 		// avatar

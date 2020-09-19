@@ -90,7 +90,7 @@ export class ButtonManager {
 		backgroundColor: string,
 		sortOrder: number,
 		isPanel: "false" | "big" | "small" = "false",
-		handlerClass: typeof WebEventHandler,
+		handlerClass: typeof WebEventHandler = null,
 	) {
 		const url =
 			Script.resolvePath("../ui/index.html") +
@@ -312,11 +312,18 @@ export class ButtonManager {
 			close,
 		};
 
-		const handler = new handlerClass(
-			"com.tivolicloud.defaultScripts." + name.toLowerCase(),
-			buttonData,
-			this.buttons,
-		);
+		const handler =
+			handlerClass == null
+				? new WebEventHandler(
+						"com.tivolicloud.defaultScripts",
+						buttonData,
+						this.buttons,
+				  )
+				: new handlerClass(
+						"com.tivolicloud.defaultScripts." + name.toLowerCase(),
+						buttonData,
+						this.buttons,
+				  );
 
 		this.handlers.push(handler); // for cleanup
 

@@ -10,37 +10,69 @@ import { ScriptService } from "../../script.service";
 export class CacheComponent implements OnInit, OnDestroy {
 	subs: Subscription[] = [];
 
-	constructor(public readonly script: ScriptService) {}
+	constructor(private readonly script: ScriptService) {}
 
 	maximumCacheSize: number;
 	usedCacheSize: number;
 	cacheDirectory: string;
 
+	clearCacheConfirm = false;
+
+	setMaximumCacheSize(maximumCacheSize: string) {
+		this.script
+			.rpc("DiskCache.maximumCacheSize", maximumCacheSize)
+			.subscribe(() => {
+				this.refresh();
+			});
+	}
+
 	restoreDefaultMaximumCacheSize() {
-		this.script.emitEvent(
-			"settings",
-			"DiskCache.restoreDefaultMaximumCacheSize()",
-		);
-		this.refresh();
+		this.script
+			.rpc<number>("DiskCache.restoreDefaultMaximumCacheSize()")
+			.subscribe(() => {
+				this.refresh();
+			});
+	}
+
+	setCacheDirectory(cacheDirectory: string) {
+		this.script
+			.rpc("DiskCache.cacheDirectory", cacheDirectory)
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	restoreDefaultCacheDirectory() {
-		this.script.emitEvent(
-			"settings",
-			"DiskCache.restoreDefaultCacheDirectory()",
-		);
-		this.refresh();
+		this.script
+			.rpc<number>("DiskCache.restoreDefaultCacheDirectory()")
+			.subscribe(() => {
+				this.refresh();
+			});
 	}
 
 	clearCache() {
-		this.script.emitEvent("settings", "DiskCache.clearCache()");
-		this.refresh();
+		this.script.rpc<number>("DiskCache.clearCache()").subscribe(() => {
+			this.refresh();
+			this.clearCacheConfirm = false;
+		});
 	}
 
 	refresh() {
-		this.script.emitEvent("settings", "DiskCache.maximumCacheSize");
-		this.script.emitEvent("settings", "DiskCache.usedCacheSize");
-		this.script.emitEvent("settings", "DiskCache.cacheDirectory");
+		this.script
+			.rpc<number>("DiskCache.maximumCacheSize")
+			.subscribe(maximumCacheSize => {
+				this.maximumCacheSize = maximumCacheSize;
+			});
+		this.script
+			.rpc<number>("DiskCache.usedCacheSize")
+			.subscribe(usedCacheSize => {
+				this.usedCacheSize = usedCacheSize;
+			});
+		this.script
+			.rpc<string>("DiskCache.cacheDirectory")
+			.subscribe(cacheDirectory => {
+				this.cacheDirectory = cacheDirectory;
+			});
 	}
 
 	ngOnInit() {
@@ -50,19 +82,10 @@ export class CacheComponent implements OnInit, OnDestroy {
 					case "refresh":
 						this.refresh();
 						break;
-					case "DiskCache.maximumCacheSize":
-						this.maximumCacheSize = data.value;
-						break;
-					case "DiskCache.usedCacheSize":
-						this.usedCacheSize = data.value;
-						break;
-					case "DiskCache.cacheDirectory":
-						this.cacheDirectory = data.value;
-						break;
 				}
 			}),
 			interval(1000).subscribe(n => {
-				this.script.emitEvent("settings", "DiskCache.usedCacheSize");
+				this.refresh();
 			}),
 		);
 		this.refresh();
