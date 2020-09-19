@@ -18,7 +18,7 @@
  * @hifi-avatar
  * 
  * @property {number} maximumCacheSize - The maximum cache size in gigabytes.
- * @property {number} usedCacheSize - The used cache size in gigabytes.
+ * @property {number} usedCacheSize - The used cache size in gigabytes. <em>Read-only.</em>
  * @property {string} cacheDirectory - The path to the cache directory.
  */
 class DiskCacheScriptingInterface : public QObject, public Dependency {
@@ -67,10 +67,22 @@ public:
     Q_INVOKABLE QString getCacheDirectory();
 
     /**jsdoc
+     * Sets the maximum cache size in gigabytes back to the default.
+     * @function DiskCache.restoreDefaultMaximumCacheSize
+     */
+    Q_INVOKABLE void restoreDefaultMaximumCacheSize();
+
+    /**jsdoc
      * Sets the path to the cache directory back to the default.
      * @function DiskCache.restoreDefaultCacheDirectory
      */
     Q_INVOKABLE void restoreDefaultCacheDirectory();
+
+    /**jsdoc
+     * Clears all the cache.
+     * @function DiskCache.clearCache
+     */
+    Q_INVOKABLE void clearCache();
 
 private:
     QNetworkDiskCache* networkDiskCache;
