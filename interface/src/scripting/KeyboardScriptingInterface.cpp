@@ -33,7 +33,7 @@ void KeyboardScriptingInterface::loadKeyboardFile(const QString& keyboardFile) {
 }
 
 bool KeyboardScriptingInterface::getUse3DKeyboard() const {
-    return DependencyManager::get<Keyboard>()->getUse3DKeyboard();
+    return false;
 }
 
 void KeyboardScriptingInterface::disableRightMallet() {

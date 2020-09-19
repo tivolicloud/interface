@@ -245,14 +245,12 @@ void Keyboard::enableSelectionLists() {
 }
 
 bool Keyboard::getUse3DKeyboard() const {
-    return _use3DKeyboardLock.resultWithReadLock<bool>([&] {
-        return _use3DKeyboard.get();
-    });
+    return false;
 }
 
 void Keyboard::setUse3DKeyboard(bool use) {
     _use3DKeyboardLock.withWriteLock([&] {
-        _use3DKeyboard.set(use);
+        _use3DKeyboard.set(false);
     });
 }
 
