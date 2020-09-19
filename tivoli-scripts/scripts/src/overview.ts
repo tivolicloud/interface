@@ -102,6 +102,7 @@ export class Overview {
 	visible = false;
 	setVisible(visible: boolean) {
 		this.window.setSize(this.width, visible ? Overlays.height() : 0);
+		this.window.setEnabled(false);
 		this.handler.setEnabled(visible);
 	}
 
