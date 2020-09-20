@@ -79,7 +79,7 @@ publish to aur:
     stage: finalize
     image: archlinux:latest
 
-    extends: .deploy
+    extends: .production
 
     needs:
         - upload launcher
