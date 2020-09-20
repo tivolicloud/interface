@@ -30,7 +30,7 @@ pages:
     script:
         - cd tools/jsdoc
         - npm install
-        - npm run build
+        - BUILD_VERSION=$CI_COMMIT_TAG npm run build
         - mv out ../../public
 
     artifacts:
