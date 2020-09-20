@@ -1,0 +1,77 @@
+<mat-progress-bar
+	*ngIf="loading"
+	mode="indeterminate"
+	style="margin: 36px 0"
+></mat-progress-bar>
+<img *ngIf="!loading" style="width: 100%" [src]="nametagUrl" />
+<div style="display: flex; flex-direction: row; align-items: center">
+	<hr />
+	<button
+		mat-icon-button
+		style="margin-left: 12px; opacity: 0.5"
+		(click)="getNametagImage()"
+	>
+		<mat-icon>refresh</mat-icon>
+	</button>
+</div>
+<h3>This is your nametag and it's what people will see above your head.</h3>
+<br />
+<div style="display: flex; flex-direction: row; align-items: top">
+	<mat-form-field appearance="outline" style="flex-grow: 1">
+		<mat-label>Display name</mat-label>
+		<input
+			matInput
+			#displayNameInput
+			[disabled]="nametagDetailsLoading"
+			[value]="nametagDetails ? nametagDetails.displayName : ''"
+		/>
+	</mat-form-field>
+	<div style="margin: 0 8px"></div>
+	<mat-form-field appearance="outline" style="width: 150px">
+		<mat-label>Pronoun</mat-label>
+		<mat-select
+			#genderPronounInput
+			[disabled]="nametagDetailsLoading"
+			[value]="nametagDetails ? nametagDetails.genderPronoun : ''"
+		>
+			<mat-option value="">None</mat-option>
+			<mat-option value="she/her">She/Her</mat-option>
+			<mat-option value="he/him">He/Him</mat-option>
+			<mat-option value="they/them">They/Them</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<div style="margin: 0 8px"></div>
+	<button
+		mat-mini-fab
+		color="primary"
+		style="margin-top: 8px"
+		[disabled]="nametagDetailsLoading"
+		(click)="
+			setNametagDetails(displayNameInput.value, genderPronounInput.value)
+		"
+	>
+		<mat-icon>save</mat-icon>
+	</button>
+</div>
+<br />
+<ng-container *ngIf="nametagDetailsLoading">
+	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+	<br />
+</ng-container>
+<div
+	*ngIf="rejoinRequired"
+	style="display: flex; flex-direction: row; align-items: center"
+>
+	<button mat-flat-button color="primary" (click)="onRejoinWorld()">
+		<mat-icon>refresh</mat-icon>
+		Rejoin world
+	</button>
+	<h3 style="margin-left: 16px">
+		You need to rejoin the world for others to see your changes
+	</h3>
+</div>
+<ng-container *ngIf="rejoinRequired"><hr /></ng-container>
+<button mat-flat-button color="primary" (click)="onUpdateImage()">
+	<mat-icon>open_in_new</mat-icon>
+	Update your image
+</button>

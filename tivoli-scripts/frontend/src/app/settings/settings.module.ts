@@ -4,6 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { MaterialModule } from "../material.module";
 import { CacheComponent } from "./cache/cache.component";
 import { GraphicsComponent } from "./graphics/graphics.component";
+import { NametagComponent } from "./nametag/nametag.component";
 import { SettingsComponent } from "./settings.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 
@@ -41,6 +42,14 @@ const routes: Routes = [
 					icon: "storage",
 				},
 			},
+			{
+				path: "nametag",
+				component: NametagComponent,
+				data: {
+					name: "Nametag",
+					icon: "label",
+				},
+			},
 		],
 	},
 ];
@@ -51,6 +60,7 @@ const routes: Routes = [
 		SidebarComponent,
 		GraphicsComponent,
 		CacheComponent,
+		NametagComponent,
 	],
 	imports: [CommonModule, RouterModule.forChild(routes), MaterialModule],
 })

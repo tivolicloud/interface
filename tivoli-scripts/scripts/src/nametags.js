@@ -28,7 +28,7 @@ export function initNametags() {
 			imageURL: (
 				"https://tivolicloud.com/api/user/"+
 				nametag.username+
-				"/nametag?"+
+				"/nametag?"+ Date.now() +
 				(nametag.admin?"&admin":"")+
 				(nametag.connection=="friend"?"&friend":"")
 			)

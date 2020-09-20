@@ -70,6 +70,11 @@ b {
 	font-weight: 500;
 }
 
+a {
+	text-decoration: inherit;
+	color: mat-color($mat-pink, 500);
+}
+
 hr {
 	width: 100%;
 	border-color: rgba(0, 0, 0, 0.1);
