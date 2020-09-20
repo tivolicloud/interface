@@ -85,6 +85,8 @@ publish to aur:
         - upload launcher
 
     script:
+        - pacman -Syu --noconfirm git python binutils openssh
+
         - mkdir -p ~/.ssh
         - cp $AUR_SSH_KEY ~/.ssh/id_rsa
         - chmod 600 ~/.ssh/id_rsa
