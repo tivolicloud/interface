@@ -26,7 +26,7 @@
 #include "PhysicsLogging.h"
 
 const uint8_t LOOPS_FOR_SIMULATION_ORPHAN = 50;
-const quint64 USECS_BETWEEN_OWNERSHIP_BIDS = USECS_PER_SECOND / 5;
+const quint64 USECS_BETWEEN_OWNERSHIP_BIDS = USECS_PER_SECOND / 15;
 
 
 EntityMotionState::EntityMotionState(btCollisionShape* shape, EntityItemPointer entity) :
