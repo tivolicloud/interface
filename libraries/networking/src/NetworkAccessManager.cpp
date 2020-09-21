@@ -23,7 +23,9 @@ QNetworkAccessManager& NetworkAccessManager::getInstance() {
     if (!networkAccessManagers.hasLocalData()) {
         QNetworkAccessManager* networkAccessManager = new QNetworkAccessManager();
         auto resourceManager = DependencyManager::get<ResourceManager>();
-        networkAccessManager->setCache(resourceManager->networkDiskCache);
+        if (resourceManager) {
+            networkAccessManager->setCache(resourceManager->networkDiskCache);
+        }
         networkAccessManagers.setLocalData(networkAccessManager);
     }
     
