@@ -105,9 +105,7 @@ publish to aur:
         - 'echo "tivoli ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
         - 'echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
         - chown -R tivoli:tivoli .
-        - su tivoli
-        - makepkg --printsrcinfo > .SRCINFO
-        - exit
+        - su tivoli -c "makepkg --printsrcinfo > .SRCINFO"
         - chown -R root:root .
 
         - git add -A
