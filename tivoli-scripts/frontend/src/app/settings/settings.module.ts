@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { MaterialModule } from "../material.module";
+import { AboutComponent } from "./about/about.component";
 import { CacheComponent } from "./cache/cache.component";
 import { GraphicsComponent } from "./graphics/graphics.component";
 import { NametagComponent } from "./nametag/nametag.component";
@@ -50,6 +51,14 @@ const routes: Routes = [
 					icon: "label",
 				},
 			},
+			{
+				path: "about",
+				component: AboutComponent,
+				data: {
+					name: "About",
+					icon: "info",
+				},
+			},
 		],
 	},
 ];
@@ -61,6 +70,7 @@ const routes: Routes = [
 		GraphicsComponent,
 		CacheComponent,
 		NametagComponent,
+		AboutComponent,
 	],
 	imports: [CommonModule, RouterModule.forChild(routes), MaterialModule],
 })
