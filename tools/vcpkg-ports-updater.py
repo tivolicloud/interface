@@ -39,10 +39,10 @@ def printPackage(packageName, currentVersion, latestVersion, local=False):
     updateAvailable = currentVersion != latestVersion
 
     color = COLOR_GREEN
-    version = COLOR_BOLD + currentVersion
+    version = COLOR_BOLD + str(currentVersion)
     if updateAvailable:
         color = COLOR_RED
-        version = currentVersion + " -> " + COLOR_BOLD + latestVersion
+        version = str(currentVersion) + " -> " + COLOR_BOLD + latestVersion
     if local:
         color = ""
 
