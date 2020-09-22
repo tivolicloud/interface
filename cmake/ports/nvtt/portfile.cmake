@@ -10,8 +10,8 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO tivolicloud/nvidia-texture-tools
-    REF 0e248637acd0dc5993e6cb2bc4399d796647ce16
-    SHA512 2630fff825b850bd075b9f2dc3232516f2fab954667982759bb9c65fad78221761e2b989df00922239704cc741ee2427e6c745a3c1f3f74a69167f8b27882d10
+    REF 9afc4b3455db676da47dfadd36c0e2b913d4ffa5
+    SHA512 1c7ebd97768b843c9dd4449c65b53766443e5336eb00dd4c7a82e9969bb6cbecd35c25ffb7ddc06e030fb5bae13c714e4fd680b97393194fce94af9bba82bad9
     HEAD_REF master
 )
 
