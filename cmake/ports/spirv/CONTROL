@@ -1,0 +1,3 @@
+Source: spirv
+Version: 0.1
+Build-Depends: spirv-cross-windows (windows), spirv-tools-windows (windows), spirv-cross (osx|linux), spirv-headers (osx|linux), spirv-tools (osx|linux)

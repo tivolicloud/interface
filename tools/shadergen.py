@@ -6,6 +6,7 @@ import os
 import json
 import argparse
 import concurrent
+import platform
 from os.path import expanduser
 from concurrent.futures import ThreadPoolExecutor
 from argparse import ArgumentParser
@@ -168,7 +169,9 @@ def processCommand(line):
     global scribeDepCache
     glslangExec = args.tools_dir + '/glslangValidator'
     spirvCrossExec = args.tools_dir + '/spirv-cross'
-    spirvOptExec = args.tools_dir + '/spirv-opt'
+    spirvOptExec = args.tools_dir + '/spirv-tools/spirv-opt'
+    if platform.system() == "Windows": # uses an older vcpkg port
+        spirvOptExec = args.tools_dir + '/spirv-opt'
     params = line.split(';')
     dialect = params.pop(0)
     variant = params.pop(0)
