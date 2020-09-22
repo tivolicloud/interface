@@ -39,5 +39,5 @@ file(REMOVE ${EXES})
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
 
 # Handle copyright
-file(COPY ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/spirv-tools)
-file(RENAME ${CURRENT_PACKAGES_DIR}/share/spirv-tools/LICENSE ${CURRENT_PACKAGES_DIR}/share/spirv-tools/copyright)
+file(COPY ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/spirv-tools-windows)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/spirv-tools-windows/LICENSE ${CURRENT_PACKAGES_DIR}/share/spirv-tools-windows/copyright)
