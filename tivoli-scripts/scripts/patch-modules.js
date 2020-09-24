@@ -21,6 +21,23 @@ const toPatch = [inputDir, "!" + path.join(inputDir, "ui")];
 		const code = await fs.readFile(filePath, "utf-8");
 		const ast = parser.parse(code);
 
+		// if entity script `()=>{ ... }`
+		let entityScript = /(-|\.)(server|client)\.(ts|js)$/i.test(filePath);
+		let entityBody = null;
+
+		if (entityScript) {
+			for (const node of ast.program.body) {
+				if (
+					node.type == "ExpressionStatement" &&
+					node.expression.type == "FunctionExpression" &&
+					node.expression.body.type == "BlockStatement"
+				) {
+					entityScript = true;
+					entityBody = node.expression.body.body;
+				}
+			}
+		}
+
 		for (const node of ast.program.body) {
 			// remove
 			// `exports.__esModule = true;`
@@ -57,6 +74,12 @@ const toPatch = [inputDir, "!" + path.join(inputDir, "ui")];
 			) {
 				const require = node.declarations[0].init;
 
+				// add `require` into entity function
+				if (entityScript && entityBody) {
+					entityBody.unshift(node);
+					delete ast.program.body[ast.program.body.indexOf(node)];
+				}
+
 				require.callee.name = "Script.require";
 
 				const arguments = require.arguments;
@@ -83,30 +106,40 @@ const toPatch = [inputDir, "!" + path.join(inputDir, "ui")];
 			// transform
 			// `Script.require(Script.resolvePath("./script.js"));`
 			// `Script.require(Script.resolvePath("./script.js?12345678"));`
-			if (
-				node.type == "VariableDeclaration" &&
-				node.declarations[0].type == "VariableDeclarator" &&
-				node.declarations[0].init.type == "CallExpression" &&
-				node.declarations[0].init.callee.type == "MemberExpression" &&
-				node.declarations[0].init.callee.object.name == "Script" &&
-				node.declarations[0].init.callee.property.name == "require"
-			) {
-				const require = node.declarations[0].init.arguments[0];
+			function patchScriptRequire(node) {
 				if (
-					require.callee.type == "MemberExpression" &&
-					require.callee.object.name == "Script" &&
-					require.callee.property.name == "resolvePath"
+					node.type == "VariableDeclaration" &&
+					node.declarations[0].type == "VariableDeclarator" &&
+					node.declarations[0].init.type == "CallExpression" &&
+					node.declarations[0].init.callee.type ==
+						"MemberExpression" &&
+					node.declarations[0].init.callee.object.name == "Script" &&
+					node.declarations[0].init.callee.property.name == "require"
 				) {
-					if (/\?[0-9]+?$/.test(require.arguments[0].value)) {
-						require.arguments[0].value =
-							require.arguments[0].value.replace(
-								/\?[0-9]+?$/,
-								"",
-							) +
-							"?" +
-							Date.now();
+					const require = node.declarations[0].init.arguments[0];
+
+					if (
+						require.callee.type == "MemberExpression" &&
+						require.callee.object.name == "Script" &&
+						require.callee.property.name == "resolvePath"
+					) {
+						if (/\?[0-9]+?$/.test(require.arguments[0].value)) {
+							require.arguments[0].value =
+								require.arguments[0].value.replace(
+									/\?[0-9]+?$/,
+									"",
+								) +
+								"?" +
+								Date.now();
+						}
 					}
 				}
+			}
+
+			patchScriptRequire(node);
+
+			if (entityScript) {
+				for (const node of entityBody) patchScriptRequire(node);
 			}
 		}
 
@@ -118,6 +151,9 @@ const toPatch = [inputDir, "!" + path.join(inputDir, "ui")];
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 		await fs.writeFile(filePath, output.code);
 
-		console.log("Patched:", filePath);
+		console.log(
+			"Patched" + (entityScript ? " (entity)" : "") + ":",
+			filePath,
+		);
 	}
 })();
