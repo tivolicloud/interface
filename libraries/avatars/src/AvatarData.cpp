@@ -2428,10 +2428,6 @@ void AvatarData::detachAll(const QString& modelURL, const QString& jointName) {
 
 int AvatarData::sendAvatarDataPacket(bool sendAll) {
     auto nodeList = DependencyManager::get<NodeList>();
-    auto avatarMixer = nodeList->soloNodeOfType(NodeType::AvatarMixer);
-    if (!avatarMixer || !avatarMixer->getActiveSocket()) {
-        return 0;
-    }
 
     // about 2% of the time, we send a full update (meaning, we transmit all the joint data), even if nothing has changed.
     // this is to guard against a joint moving once, the packet getting lost, and the joint never moving again.
@@ -2464,17 +2460,13 @@ int AvatarData::sendAvatarDataPacket(bool sendAll) {
     avatarPacket->write(avatarByteArray);
     auto packetSize = avatarPacket->getWireSize();
 
-    nodeList->sendPacket(std::move(avatarPacket), *avatarMixer);
+    nodeList->broadcastToNodes(std::move(avatarPacket), NodeSet() << NodeType::AvatarMixer);
 
     return packetSize;
 }
 
 int AvatarData::sendIdentityPacket() {
     auto nodeList = DependencyManager::get<NodeList>();
-    auto avatarMixer = nodeList->soloNodeOfType(NodeType::AvatarMixer);
-    if (!avatarMixer || !avatarMixer->getActiveSocket()) {
-        return 0;
-    }
 
     if (_identityDataChanged) {
         // if the identity data has changed, push the sequence number forwards
@@ -2484,8 +2476,13 @@ int AvatarData::sendIdentityPacket() {
 
     auto packetList = NLPacketList::create(PacketType::AvatarIdentity, QByteArray(), true, true);
     packetList->write(identityData);
-    
-    nodeList->sendPacketList(std::move(packetList), *avatarMixer);
+    nodeList->eachMatchingNode(
+        [](const SharedNodePointer& node)->bool {
+            return node->getType() == NodeType::AvatarMixer && node->getActiveSocket();
+        },
+        [&](const SharedNodePointer& node) {
+            nodeList->sendPacketList(std::move(packetList), *node);
+    });
 
     _identityDataChanged = false;
     return identityData.size();
