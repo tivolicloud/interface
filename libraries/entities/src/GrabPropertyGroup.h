@@ -26,7 +26,7 @@ class EncodeBitstreamParams;
 class OctreePacketData;
 class ReadBitstreamToTreeParams;
 
-static const bool INITIAL_GRABBABLE { true };
+static const bool INITIAL_GRABBABLE { false };
 static const bool INITIAL_KINEMATIC { true };
 static const bool INITIAL_FOLLOWS_CONTROLLER { true };
 static const bool INITIAL_TRIGGERABLE { false };
@@ -44,7 +44,7 @@ static const glm::vec3 INITIAL_EQUIPPABLE_INDICATOR_OFFSET { glm::vec3(0.0f) };
  * Grabbing behavior is defined by the following properties:
  *
  * @typedef {object} Entities.Grab
- * @property {boolean} grabbable=true - <code>true</code> if the entity can be grabbed, <code>false</code> if it can't be.
+ * @property {boolean} grabbable=false - <code>true</code> if the entity can be grabbed, <code>false</code> if it can't be.
  * @property {boolean} grabKinematic=true - <code>true</code> if the entity will be updated in a kinematic manner when 
  *     grabbed; <code>false</code> if it will be grabbed using a tractor action. A kinematic grab will make the item appear 
  *     more tightly held but will cause it to behave poorly when interacting with dynamic entities.
