@@ -46,7 +46,6 @@ enum EntityPropertyList
     PROP_ENTITY_PRIORITY,
     PROP_PRIMITIVE_MODE,
     PROP_IGNORE_PICK_INTERSECTION,
-    PROP_CUSTOM_TAGS,// TIVOLI tagging
 
 
     // Grab

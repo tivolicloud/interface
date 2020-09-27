@@ -278,7 +278,6 @@ enum class EntityVersion : PacketVersion {
     TextEntityFonts,
     ScriptServerKinematicMotion,
     ZoneCullingMode, // caitlyn
-    CustomTags, // caitlyn
     EntityPriority, // caitlyn
     ModelBlendshapes, // hifiexperiments
     CloneGrabbable, // maki    

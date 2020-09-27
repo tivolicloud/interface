@@ -1207,21 +1207,6 @@ QVector<QUuid> EntityScriptingInterface::findEntitiesByName(const QString entity
     return result;
 }
 
-// TIVOLI tagging
-QVector<QUuid> EntityScriptingInterface::findEntitiesWithTag(const QString tagName,
-                                                             const glm::vec3& center,
-                                                             float radius) const {
-    QVector<QUuid> result;
-    if (_entityTree) {
-        _entityTree->withReadLock([&] {
-            unsigned int searchFilter = PickFilter::getBitMask(PickFilter::FlagBit::DOMAIN_ENTITIES) |
-                                        PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES);
-            _entityTree->evalEntitiesInSphereWithTag(center, radius, tagName, PickFilter(searchFilter), result);
-        });
-    }
-    return result;
-}
-
 RayToEntityIntersectionResult EntityScriptingInterface::findRayIntersection(const PickRay& ray,
                                                                             bool precisionPicking,
                                                                             const QScriptValue& entityIdsToInclude,

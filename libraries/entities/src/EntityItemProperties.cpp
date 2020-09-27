@@ -490,7 +490,6 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
     CHECK_PROPERTY_CHANGE(PROP_PRIVATE_USER_DATA, privateUserData);
     CHECK_PROPERTY_CHANGE(PROP_HREF, href);
     CHECK_PROPERTY_CHANGE(PROP_DESCRIPTION, description);
-    CHECK_PROPERTY_CHANGE(PROP_CUSTOM_TAGS, customTags);
     CHECK_PROPERTY_CHANGE(PROP_POSITION, position);
     CHECK_PROPERTY_CHANGE(PROP_DIMENSIONS, dimensions);
     CHECK_PROPERTY_CHANGE(PROP_ROTATION, rotation);
@@ -1666,7 +1665,6 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_PRIVATE_USER_DATA, privateUserData);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_HREF, href); 
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DESCRIPTION, description);
-    COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_CUSTOM_TAGS, customTags);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_POSITION, position);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DIMENSIONS, dimensions);
     COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_ROTATION, rotation);
@@ -2089,7 +2087,6 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
     COPY_PROPERTY_FROM_QSCRIPTVALUE(privateUserData, QString, setPrivateUserData);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(href, QString, setHref);  
     COPY_PROPERTY_FROM_QSCRIPTVALUE(description, QString, setDescription);
-    COPY_PROPERTY_FROM_QSCRIPTVALUE(customTags, QString, setCustomTags);  // TIVOLI tagging
     COPY_PROPERTY_FROM_QSCRIPTVALUE_ENUM(entityPriority, EntityPriority);  
     COPY_PROPERTY_FROM_QSCRIPTVALUE(position, vec3, setPosition);
     COPY_PROPERTY_FROM_QSCRIPTVALUE(dimensions, vec3, setDimensions);
@@ -2394,7 +2391,6 @@ void EntityItemProperties::merge(const EntityItemProperties& other) {
     COPY_PROPERTY_IF_CHANGED(privateUserData);
     COPY_PROPERTY_IF_CHANGED(href);    
     COPY_PROPERTY_IF_CHANGED(description);
-    COPY_PROPERTY_IF_CHANGED(customTags);
     COPY_PROPERTY_IF_CHANGED(entityPriority);
     COPY_PROPERTY_IF_CHANGED(position);
     COPY_PROPERTY_IF_CHANGED(dimensions);
@@ -2691,7 +2687,6 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
         ADD_PROPERTY_TO_MAP(PROP_PRIVATE_USER_DATA, PrivateUserData, privateUserData, QString);
         ADD_PROPERTY_TO_MAP(PROP_HREF, Href, href, QString);        
         ADD_PROPERTY_TO_MAP(PROP_DESCRIPTION, Description, description, QString);
-        ADD_PROPERTY_TO_MAP(PROP_CUSTOM_TAGS, CustomTags, customTags, QString);
         ADD_PROPERTY_TO_MAP(PROP_POSITION, Position, position, vec3);
         ADD_PROPERTY_TO_MAP_WITH_RANGE(PROP_DIMENSIONS, Dimensions, dimensions, vec3, ENTITY_ITEM_MIN_DIMENSION, FLT_MAX);
         ADD_PROPERTY_TO_MAP(PROP_ROTATION, Rotation, rotation, quat);
@@ -3193,7 +3188,6 @@ OctreeElement::AppendState EntityItemProperties::encodeEntityEditPacket(PacketTy
             APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, properties.getPrivateUserData());
             APPEND_ENTITY_PROPERTY(PROP_HREF, properties.getHref());            
             APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, properties.getDescription());
-            APPEND_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, properties.getCustomTags());
             APPEND_ENTITY_PROPERTY(PROP_POSITION, properties.getPosition());
             APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, properties.getDimensions());
             APPEND_ENTITY_PROPERTY(PROP_ROTATION, properties.getRotation());
@@ -3698,7 +3692,6 @@ bool EntityItemProperties::decodeEntityEditPacket(const unsigned char* data, int
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_HREF, QString, setHref);    
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DESCRIPTION, QString, setDescription);
-    READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_CUSTOM_TAGS, QString, setCustomTags);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_POSITION, vec3, setPosition);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_DIMENSIONS, vec3, setDimensions);
     READ_ENTITY_PROPERTY_TO_PROPERTIES(PROP_ROTATION, quat, setRotation);
@@ -4124,7 +4117,6 @@ void EntityItemProperties::markAllChanged() {
     _privateUserDataChanged = true;
     _hrefChanged = true;
     _descriptionChanged = true;    
-    _customTagsChanged = true; 
     _entityPriorityChanged = true; 
     _positionChanged = true;
     _dimensionsChanged = true;
@@ -4507,9 +4499,6 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     }  
     if (descriptionChanged()) {
         out += "description";
-    }
-    if (customTagsChanged()) {
-        out += "customTags";
     }
     if (entityPriorityChanged()) { 
         out += "entityPriority";

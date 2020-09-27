@@ -776,23 +776,6 @@ public slots:
     Q_INVOKABLE QVector<QUuid> findEntitiesByName(const QString entityName, const glm::vec3& center, float radius,
         bool caseSensitiveSearch = false) const;
 
-    // TIVOLI tagging
-    /**jsdoc
-     * Finds all domain and avatar entities marked with a custom tag that intersect a sphere.
-     * @function Entities.findEntitiesWithTag
-     * @param {string} tagName - The tag of the entity to search for. Tags are forced to lower-case.
-     * @param {Vec3} center - The point about which to search.
-     * @param {number} radius - The radius within which to search.
-     * @returns {Uuid[]} An array of entity IDs that have the specified tag and intersect the search sphere. The array is 
-     *     empty if no entities could be found.
-     * @example <caption>Report the number of entities with the tag, "SCENERY".</caption>
-     * var entityIDs = Entities.findEntitiesWithTag("SCENERY", MyAvatar.position, 10, false);
-     * print("Number of entities with the tag SCENERY: " + entityIDs.length);
-     */
-    Q_INVOKABLE QVector<QUuid> findEntitiesWithTag(const QString tagName,
-                                                  const glm::vec3& center,
-                                                  float radius) const;
-
     /**jsdoc
      * Finds the first avatar or domain entity intersected by a {@link PickRay}. <code>Light</code> and <code>Zone</code> 
      * entities are not intersected unless they've been configured as pickable using 
