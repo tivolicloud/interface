@@ -22,7 +22,9 @@ const toPatch = [inputDir, "!" + path.join(inputDir, "ui")];
 		const ast = parser.parse(code);
 
 		// if entity script `()=>{ ... }`
-		let entityScript = /(-|\.)(server|client)\.(ts|js)$/i.test(filePath);
+		let entityScript = /(-|\.)(server|client|entity)\.(ts|js)$/i.test(
+			filePath,
+		);
 		let entityBody = null;
 
 		if (entityScript) {

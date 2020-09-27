@@ -521,6 +521,8 @@ declare namespace Entities {
 
 	type EntityHostType = "domain" | "avatar" | "local";
 
+	type EntityPriority = "automatic" | "static" | "prioritized";
+
 	interface EntityProperties {
 		id: Uuid;
 		name: string;
@@ -538,6 +540,7 @@ declare namespace Entities {
 		lastEditedBy: Uuid;
 		locked: boolean;
 		visible: boolean;
+		entityPriority: EntityPriority;
 		canCastShadow: boolean;
 		isVisibleInSecondaryCamera: boolean;
 		renderLayer: RenderLayer;
@@ -776,6 +779,10 @@ declare namespace Entities {
 		topMargin: number;
 		bottomMargin: number;
 		unlit: boolean;
+		font: string;
+		textEffect: string;
+		textEffectColor: TextEffect;
+		textEffectThickness: number;
 		billboardMode: BillboardMode;
 		faceCamera: boolean;
 		isFacingAvatar: boolean;

@@ -1,5 +1,5 @@
 declare namespace Script {
-	const context: string;
+	const context: "client" | "entity_client" | "entity_server" | "agent";
 
 	function print(message: string): void;
 	function include(filename: string, callback?: () => void): void;
