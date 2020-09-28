@@ -134,6 +134,21 @@ SharedNetworkPeer IceServer::addOrUpdateHeartbeatingPeer(NLPacket& packet) {
     QDataStream heartbeatStream(&packet);
     heartbeatStream >> senderUUID >> publicSocket >> localSocket;
 
+    // cast to {xxxxxxxx-xxxx-1000-8000-xxxxxxxxxxxx}
+    // TODO: we're migrating to a smaller/faster id format (bson ObjectId)
+    // thats 12 bytes long instead of a 16 bytes uuid. QUuid will eventually
+    // go away here and be replaced together with the rest of the program.
+    QByteArray senderUUIDByteArray = senderUUID.toByteArray(QUuid::WithBraces);
+    senderUUIDByteArray[15] = '1';
+    senderUUIDByteArray[16] = '0';
+    senderUUIDByteArray[17] = '0';
+    senderUUIDByteArray[18] = '0';
+    senderUUIDByteArray[20] = '8';
+    senderUUIDByteArray[21] = '0';
+    senderUUIDByteArray[22] = '0';
+    senderUUIDByteArray[23] = '0';
+    senderUUID = QUuid(senderUUIDByteArray);
+
     auto signedPlaintext = QByteArray::fromRawData(packet.getPayload(), heartbeatStream.device()->pos());
     heartbeatStream >> signature;
 
