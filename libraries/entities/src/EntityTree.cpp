@@ -701,7 +701,7 @@ void EntityTree::recursivelyFilterAndCollectForDelete(const EntityItemPointer& e
             bool wasChanged = false;
             auto startFilter = usecTimestampNow();
             EntityItemProperties dummyProperties;
-            allowed = force || filterProperties(entity, dummyProperties, dummyProperties, wasChanged, FilterType::Delete);
+            allowed = filterProperties(entity, dummyProperties, dummyProperties, wasChanged, FilterType::Delete);
             auto endFilter = usecTimestampNow();
             _totalFilterTime += endFilter - startFilter;
         }
