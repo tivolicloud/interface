@@ -255,12 +255,10 @@ void EntityTreeRenderer::stopDomainAndNonOwnedEntities() {
         foreach (const EntityItemID& entityID,  entitiesWithEntityScripts) 
         {
             EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
-            if (entityItem && !entityItem->getScript().isEmpty()) 
-            {
-                if (!(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == getTree()->getMyAvatarSessionUUID()))) 
-                {
-                    if (_currentEntitiesInside.contains(entityID)) 
-                    {
+
+            if (entityItem && !entityItem->getScript().isEmpty()) {
+                if (!(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
+                    if (_currentEntitiesInside.contains(entityID)) {
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
                     }
                     _entitiesScriptEngine->unloadEntityScript(entityID, true);
@@ -275,7 +273,6 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
     stopDomainAndNonOwnedEntities();
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
-    auto sessionUUID = getTree()->getMyAvatarSessionUUID();
     std::unordered_map<EntityItemID, EntityRendererPointer> savedEntities;
     std::unordered_set<EntityRendererPointer> savedRenderables;
     auto scene = _viewState->getMain3DScene();
@@ -285,9 +282,8 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         for (const auto& entry :  _entitiesInScene) 
         {
             const auto& renderer = entry.second;
-            const EntityItemPointer entityItem = renderer->getEntity();
-            if (entityItem && !(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == sessionUUID))) 
-            {
+            const EntityItemPointer& entityItem = renderer->getEntity();
+            if (entityItem && !(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
                 fadeOutRenderable(renderer);
             } 
             else 
@@ -301,8 +297,8 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
     _renderablesToUpdate = savedRenderables;
     _entitiesInScene = savedEntities;
 
-    if (_layeredZones.clearDomainAndNonOwnedZones(sessionUUID)) 
-    {
+    auto sessionUUID = getTree()->getMyAvatarSessionUUID();
+    if (_layeredZones.clearDomainAndNonOwnedZones(sessionUUID)) {
         applyLayeredZones();
     }
 
@@ -967,7 +963,7 @@ void EntityTreeRenderer::leaveDomainAndNonOwnedEntities() {
         QSet<EntityItemID> currentEntitiesInsideToSave;
         foreach (const EntityItemID& entityID, _currentEntitiesInside) {
             EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
-            if (entityItem && !(entityItem->isLocalEntity() || (entityItem->isAvatarEntity() && entityItem->getOwningAvatarID() == getTree()->getMyAvatarSessionUUID()))) {
+            if (entityItem && !(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
                 emit leaveEntity(entityID);
                 if (_entitiesScriptEngine) 
                 {
@@ -1539,7 +1535,7 @@ bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones(const QUuid& 
     auto it = begin();
     while (it != end()) {
         auto zone = it->zone.lock();
-        if (!zone || !(zone->isLocalEntity() || (zone->isAvatarEntity() && zone->getOwningAvatarID() == sessionUUID))) {
+        if (!zone || !(zone->isLocalEntity() || zone->isMyAvatarEntity())) {
             zonesChanged = true;
             it = erase(it);
         } else {
@@ -1676,6 +1672,10 @@ EntityItemPointer EntityTreeRenderer::getEntity(const EntityItemID& id) {
         result = renderable->getEntity();
     }
     return result;
+}
+
+void EntityTreeRenderer::deleteEntity(const EntityItemID& id) const {
+    DependencyManager::get<EntityScriptingInterface>()->deleteEntity(id);
 }
 
 void EntityTreeRenderer::onEntityChanged(const EntityItemID& id) {
