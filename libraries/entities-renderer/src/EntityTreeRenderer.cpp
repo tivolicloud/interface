@@ -18,6 +18,7 @@
 #include <QScriptSyntaxCheckResult>
 #include <QThreadPool>
 #include <QSet>
+
 #include <shared/QtHelpers.h>
 #include <AbstractScriptingServicesInterface.h>
 #include <AbstractViewStateInterface.h>
@@ -40,15 +41,13 @@
 
 #include "RenderableWebEntityItem.h"
 
-
 #include <PointerManager.h>
 
 std::function<bool()> EntityTreeRenderer::_entitiesShouldFadeFunction = []() { return true; };
 
 QString resolveScriptURL(const QString& scriptUrl) {
-
     auto normalizedScriptUrl = DependencyManager::get<ResourceManager>()->normalizeURL(scriptUrl);
-    QUrl url{ normalizedScriptUrl };
+    QUrl url { normalizedScriptUrl };
     if (url.isLocalFile()) {
         // Outside of the ScriptEngine, /~/ resolves to the /resources directory.
         // Inside of the ScriptEngine, /~/ resolves to the /scripts directory.
@@ -63,8 +62,11 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts,
                                        AbstractViewStateInterface* viewState,
                                        AbstractScriptingServicesInterface* scriptingServices) :
     _wantScripts(wantScripts),
-    _lastPointerEventValid(false), _viewState(viewState), _scriptingServices(scriptingServices), _displayModelBounds(false) {
-    
+    _lastPointerEventValid(false),
+    _viewState(viewState),
+    _scriptingServices(scriptingServices),
+    _displayModelBounds(false)
+{
     setMouseRayPickResultOperator([](unsigned int rayPickID) {
         RayToEntityIntersectionResult entityResult;
         return entityResult;
@@ -76,29 +78,21 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts,
 
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>().data();
     auto pointerManager = DependencyManager::get<PointerManager>();
-    connect(pointerManager.data(), &PointerManager::hoverBeginEntity, entityScriptingInterface,
-            &EntityScriptingInterface::hoverEnterEntity);
-    connect(pointerManager.data(), &PointerManager::hoverContinueEntity, entityScriptingInterface,
-            &EntityScriptingInterface::hoverOverEntity);
-    connect(pointerManager.data(), &PointerManager::hoverEndEntity, entityScriptingInterface,
-            &EntityScriptingInterface::hoverLeaveEntity);
-    connect(pointerManager.data(), &PointerManager::triggerBeginEntity, entityScriptingInterface,
-            &EntityScriptingInterface::mousePressOnEntity);
-    connect(pointerManager.data(), &PointerManager::triggerContinueEntity, entityScriptingInterface,
-            &EntityScriptingInterface::mouseMoveOnEntity);
-    connect(pointerManager.data(), &PointerManager::triggerEndEntity, entityScriptingInterface,
-            &EntityScriptingInterface::mouseReleaseOnEntity);
+    connect(pointerManager.data(), &PointerManager::hoverBeginEntity, entityScriptingInterface, &EntityScriptingInterface::hoverEnterEntity);
+    connect(pointerManager.data(), &PointerManager::hoverContinueEntity, entityScriptingInterface, &EntityScriptingInterface::hoverOverEntity);
+    connect(pointerManager.data(), &PointerManager::hoverEndEntity, entityScriptingInterface, &EntityScriptingInterface::hoverLeaveEntity);
+    connect(pointerManager.data(), &PointerManager::triggerBeginEntity, entityScriptingInterface, &EntityScriptingInterface::mousePressOnEntity);
+    connect(pointerManager.data(), &PointerManager::triggerContinueEntity, entityScriptingInterface, &EntityScriptingInterface::mouseMoveOnEntity);
+    connect(pointerManager.data(), &PointerManager::triggerEndEntity, entityScriptingInterface, &EntityScriptingInterface::mouseReleaseOnEntity);
 
-    //  Forward mouse events to web entities
+    // Forward mouse events to web entities
     auto handlePointerEvent = [&](const QUuid& entityID, const PointerEvent& event) {
         std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
         auto entity = getEntity(entityID);
-        if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) 
-        {
+        if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
             thisEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(renderableForEntityId(entityID));
         }
-        if (thisEntity) 
-        {
+        if (thisEntity) {
             QMetaObject::invokeMethod(thisEntity.get(), "handlePointerEvent", Q_ARG(const PointerEvent&, event));
         }
     };
@@ -106,44 +100,41 @@ EntityTreeRenderer::EntityTreeRenderer(bool wantScripts,
     connect(entityScriptingInterface, &EntityScriptingInterface::mouseMoveOnEntity, this, handlePointerEvent);
     connect(entityScriptingInterface, &EntityScriptingInterface::mouseReleaseOnEntity, this, handlePointerEvent);
     // Handle mouse-clicking or laser-clicking on entities with the `href` property set
-    connect(entityScriptingInterface, &EntityScriptingInterface::mousePressOnEntity, this,
-            [&](const QUuid& entityID, const PointerEvent& event) {
-                if (!EntityTree::areEntityClicksCaptured() && (event.getButtons() & PointerEvent::PrimaryButton)) {
-                    auto entity = getEntity(entityID);
-                    if (!entity) {
-                        return;
-                    }
-                    auto properties = entity->getProperties();
-                    QString urlString = properties.getHref();
-                    QUrl url = QUrl(urlString, QUrl::StrictMode);
-                    if (url.isValid() && !url.isEmpty()) {
-                        DependencyManager::get<AddressManager>()->handleLookupString(urlString);
-                    }
-                }
-            });
-    connect(entityScriptingInterface, &EntityScriptingInterface::hoverEnterEntity, this,
-            [&](const QUuid& entityID, const PointerEvent& event) {
-                std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
-                auto entity = getEntity(entityID);
-                if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
-                    thisEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(renderableForEntityId(entityID));
-                }
-                if (thisEntity) {
-                    QMetaObject::invokeMethod(thisEntity.get(), "hoverEnterEntity", Q_ARG(const PointerEvent&, event));
-                }
-            });
+    connect(entityScriptingInterface, &EntityScriptingInterface::mousePressOnEntity, this, [&](const QUuid& entityID, const PointerEvent& event) {
+        if (!EntityTree::areEntityClicksCaptured() && (event.getButtons() & PointerEvent::PrimaryButton)) {
+            auto entity = getEntity(entityID);
+            if (!entity) {
+                return;
+            }
+            auto properties = entity->getProperties();
+            QString urlString = properties.getHref();
+            QUrl url = QUrl(urlString, QUrl::StrictMode);
+            if (url.isValid() && !url.isEmpty()) {
+                DependencyManager::get<AddressManager>()->handleLookupString(urlString);
+            }
+        }
+    });
+    connect(entityScriptingInterface, &EntityScriptingInterface::hoverEnterEntity, this, [&](const QUuid& entityID, const PointerEvent& event) {
+        std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
+        auto entity = getEntity(entityID);
+        if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
+            thisEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(renderableForEntityId(entityID));
+        }
+        if (thisEntity) {
+            QMetaObject::invokeMethod(thisEntity.get(), "hoverEnterEntity", Q_ARG(const PointerEvent&, event));
+        }
+    });
     connect(entityScriptingInterface, &EntityScriptingInterface::hoverOverEntity, this, handlePointerEvent);
-    connect(entityScriptingInterface, &EntityScriptingInterface::hoverLeaveEntity, this,
-            [&](const QUuid& entityID, const PointerEvent& event) {
-                std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
-                auto entity = getEntity(entityID);
-                if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
-                    thisEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(renderableForEntityId(entityID));
-                }
-                if (thisEntity) {
-                    QMetaObject::invokeMethod(thisEntity.get(), "hoverLeaveEntity", Q_ARG(const PointerEvent&, event));
-                }
-            });
+    connect(entityScriptingInterface, &EntityScriptingInterface::hoverLeaveEntity, this, [&](const QUuid& entityID, const PointerEvent& event) {
+        std::shared_ptr<render::entities::WebEntityRenderer> thisEntity;
+        auto entity = getEntity(entityID);
+        if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
+            thisEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(renderableForEntityId(entityID));
+        }
+        if (thisEntity) {
+            QMetaObject::invokeMethod(thisEntity.get(), "hoverLeaveEntity", Q_ARG(const PointerEvent&, event));
+        }
+    });
 }
 
 EntityTreeRenderer::~EntityTreeRenderer() {
@@ -152,24 +143,18 @@ EntityTreeRenderer::~EntityTreeRenderer() {
 }
 
 EntityRendererPointer EntityTreeRenderer::renderableForEntityId(const EntityItemID& id) const {
-
-    auto itr = _entitiesInScene.find(id);  // ? how is this list built to asssure its only renderable
-    if (itr == _entitiesInScene.end()) 
-    {
-        return EntityRendererPointer();  
+    auto itr = _entitiesInScene.find(id); // ? how is this list built to asssure its only renderable
+    if (itr == _entitiesInScene.end()) {
+        return EntityRendererPointer();
     }
-    return itr->second;  
+    return itr->second;
 }
 
 render::ItemID EntityTreeRenderer::renderableIdForEntityId(const EntityItemID& id) const {
-
     auto renderable = renderableForEntityId(id);
-    if (renderable) 
-    {
+    if (renderable) {
         return renderable->getRenderItemID();
-    } 
-    else 
-    {
+    } else {
         return render::Item::INVALID_ITEM_ID;
     }
 }
@@ -187,55 +172,44 @@ void EntityTreeRenderer::resetEntitiesScriptEngine() {
 
     // Connect mouse events to entity script callbacks
     if (!_mouseAndPreloadSignalHandlersConnected) {
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mousePressOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "mousePressOnEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseDoublePressOnEntity,
-                _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseDoublePressOnEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseMoveOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseMoveOnEntity", event);
-                    // FIXME: this is a duplicate of mouseMoveOnEntity, but it seems like some scripts might use this naming
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseMoveEvent", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseReleaseOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseReleaseOnEntity", event);
-                });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mousePressOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "mousePressOnEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseDoublePressOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseDoublePressOnEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseMoveOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseMoveOnEntity", event);
+            // FIXME: this is a duplicate of mouseMoveOnEntity, but it seems like some scripts might use this naming
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseMoveEvent", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::mouseReleaseOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "mouseReleaseOnEntity", event);
+        });
 
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::clickDownOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "clickDownOnEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::holdingClickOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "holdingClickOnEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::clickReleaseOnEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "clickReleaseOnEntity", event);
-                });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::clickDownOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "clickDownOnEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::holdingClickOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "holdingClickOnEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::clickReleaseOnEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "clickReleaseOnEntity", event);
+        });
 
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverEnterEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverEnterEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverOverEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverOverEntity", event);
-                });
-        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverLeaveEntity, _entitiesScriptEngine.data(),
-                [&](const EntityItemID& entityID, const PointerEvent& event) {
-                    _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverLeaveEntity", event);
-                });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverEnterEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverEnterEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverOverEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverOverEntity", event);
+        });
+        connect(entityScriptingInterface.data(), &EntityScriptingInterface::hoverLeaveEntity, _entitiesScriptEngine.data(), [&](const EntityItemID& entityID, const PointerEvent& event) {
+            _entitiesScriptEngine->callEntityScriptMethod(entityID, "hoverLeaveEntity", event);
+        });
 
         connect(_entitiesScriptEngine.data(), &ScriptEngine::entityScriptPreloadFinished, [&](const EntityItemID& entityID) {
             EntityItemPointer entity = getTree()->findEntityByID(entityID);
-            if (entity) 
-            {
+            if (entity) {
                 entity->setScriptHasFinishedPreload(true);
             }
         });
@@ -245,15 +219,12 @@ void EntityTreeRenderer::resetEntitiesScriptEngine() {
 }
 
 void EntityTreeRenderer::stopDomainAndNonOwnedEntities() {
-
     leaveDomainAndNonOwnedEntities();
     // unload and stop the engine
-    if (_entitiesScriptEngine) 
-    {
+    if (_entitiesScriptEngine) {
         QList<EntityItemID> entitiesWithEntityScripts = _entitiesScriptEngine->getListOfEntityScriptIDs();
 
-        foreach (const EntityItemID& entityID,  entitiesWithEntityScripts) 
-        {
+        foreach (const EntityItemID& entityID,  entitiesWithEntityScripts) {
             EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
 
             if (entityItem && !entityItem->getScript().isEmpty()) {
@@ -269,7 +240,6 @@ void EntityTreeRenderer::stopDomainAndNonOwnedEntities() {
 }
 
 void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
-
     stopDomainAndNonOwnedEntities();
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 
@@ -277,17 +247,13 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
     std::unordered_set<EntityRendererPointer> savedRenderables;
     auto scene = _viewState->getMain3DScene();
 
-    if (scene) 
-    {
-        for (const auto& entry :  _entitiesInScene) 
-        {
+    if (scene) {
+        for (const auto& entry :  _entitiesInScene) {
             const auto& renderer = entry.second;
             const EntityItemPointer& entityItem = renderer->getEntity();
             if (entityItem && !(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
                 fadeOutRenderable(renderer);
-            } 
-            else 
-            {
+            } else {
                 savedEntities[entry.first] = entry.second;
                 savedRenderables.insert(entry.second);
             }
@@ -301,16 +267,14 @@ void EntityTreeRenderer::clearDomainAndNonOwnedEntities() {
         applyLayeredZones();
     }
 
-    OctreeProcessor::clearDomainAndNonOwnedEntities();  
+    OctreeProcessor::clearDomainAndNonOwnedEntities();
 }
 
 void EntityTreeRenderer::clear() {
-
     leaveAllEntities();
     _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
     // unload and stop the engine
-    if (_entitiesScriptEngine) 
-    {
+    if (_entitiesScriptEngine) {
         // do this here (instead of in deleter) to avoid marshalling unload signals back to this thread
         _entitiesScriptEngine->unloadAllEntityScripts(true);
         _entitiesScriptEngine->stop();
@@ -319,8 +283,7 @@ void EntityTreeRenderer::clear() {
     // reset the engine
     auto scene = _viewState->getMain3DScene();
     if (_shuttingDown) {
-        if (scene) 
-        {
+        if (scene) {
             render::Transaction transaction;
             for (const auto& entry : _entitiesInScene) {
                 const auto& renderer = entry.second;
@@ -328,22 +291,16 @@ void EntityTreeRenderer::clear() {
             }
             scene->enqueueTransaction(transaction);
         }
-    } 
-    else 
-    {
-        if (_wantScripts) 
-        {
+    } else {
+        if (_wantScripts) {
             resetEntitiesScriptEngine();
         }
-        if (scene) 
-        {
+        if (scene) {
             for (const auto& entry : _entitiesInScene) {
                 const auto& renderer = entry.second;
                 fadeOutRenderable(renderer);
             }
-        } 
-        else 
-        {
+        } else {
             qCWarning(entitiesrenderer) << "EntitityTreeRenderer::clear(), Unexpected null scene";
         }
     }
@@ -354,8 +311,7 @@ void EntityTreeRenderer::clear() {
     _staticRenderablesToUpdate.clear();
     _layeredZones.clear();
 
-    if (!_shuttingDown) 
-    {
+    if (!_shuttingDown) {
         applyLayeredZones();
     }
 
@@ -363,105 +319,80 @@ void EntityTreeRenderer::clear() {
 }
 
 void EntityTreeRenderer::reloadEntityScripts() {
-
     _entitiesScriptEngine->unloadAllEntityScripts();
     _entitiesScriptEngine->resetModuleCache();
-
-    for (const auto& entry : _entitiesInScene) 
-    {
+    for (const auto& entry : _entitiesInScene) {
         const auto& renderer = entry.second;
         const auto& entity = renderer->getEntity();
-        if (!entity->getScript().isEmpty()) 
-        {
+        if (!entity->getScript().isEmpty()) {
             _entitiesScriptEngine->loadEntityScript(entity->getEntityItemID(), resolveScriptURL(entity->getScript()), true);
         }
     }
 }
 
 void EntityTreeRenderer::init() {
-
     OctreeProcessor::init();
     EntityTreePointer entityTree = std::static_pointer_cast<EntityTree>(_tree);
 
     DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
     connect(&domainHandler, &DomainHandler::settingsReceived, this, &EntityTreeRenderer::connectedToDomain);
-    
+
     if (_wantScripts) resetEntitiesScriptEngine();
 
-    forceRecheckEntities();  // setup our state to force checking our inside/outsideness of entities
+    forceRecheckEntities(); // setup our state to force checking our inside/outsideness of entities
 
     connect(entityTree.get(), &EntityTree::deletingEntity, this, &EntityTreeRenderer::deletingEntity, Qt::QueuedConnection);
     connect(entityTree.get(), &EntityTree::addingEntity, this, &EntityTreeRenderer::addingEntity, Qt::QueuedConnection);
-    connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging,
-            Qt::QueuedConnection);
-            
-    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
+    connect(entityTree.get(), &EntityTree::entityScriptChanging, this, &EntityTreeRenderer::entityScriptChanging, Qt::QueuedConnection);
 
+    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
 }
 
 void EntityTreeRenderer::connectedToDomain() {
-
     setSceneIsReady(false);
     MeshPartPayload::sceneIsReady = false;
-    _zoneCullSkipList.clear();  // in case skiplist from a culling zone in a previous domain remains
+    _zoneCullSkipList.clear(); // in case skiplist from a culling zone in a previous domain remains
     _staticRenderablesToUpdate.clear();
     evaluateZoneCullingStack();
-
 }
 
 void EntityTreeRenderer::shutdown() {
-
-    if (_entitiesScriptEngine) 
-    {
-        _entitiesScriptEngine->disconnectNonEssentialSignals();  // disconnect all slots/signals from the script engine, except essential
+    if (_entitiesScriptEngine) {
+        _entitiesScriptEngine->disconnectNonEssentialSignals(); // disconnect all slots/signals from the script engine, except essential
     }
     _shuttingDown = true;
 
-    clear();  // always clear() on shutdown
-
+    clear(); // always clear() on shutdown
 }
 
-
 void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
-
     PROFILE_RANGE_EX(simulation_physics, "AddToScene", 0xffff00ff, (uint64_t)_entitiesToAdd.size());
     PerformanceTimer pt("add");
-
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
     // weird compilation error related to EntityItemID assignment operators
-    for (auto itr = _entitiesToAdd.begin(); _entitiesToAdd.end() != itr;) 
-    {        
-        if (itr->second.expired()) 
-        {
+    for (auto itr = _entitiesToAdd.begin(); _entitiesToAdd.end() != itr; ) {
+        if (itr->second.expired()) {
             _entitiesToAdd.erase(itr++);
-        } 
-        else 
-        {
+        } else {
             ++itr;
         }
     }
 
-    if (!_entitiesToAdd.empty()) 
-    {
+    if (!_entitiesToAdd.empty()) {
         std::unordered_set<EntityItemID> processedIds;
-        for (const auto& entry : _entitiesToAdd) 
-        {
+        for (const auto& entry : _entitiesToAdd) {
             auto entity = entry.second.lock();
-            
-            if (!entity) 
-            {
+            if (!entity) {
                 continue;
             }
-            
+
             // Path to the parent transforms is not valid,
             // don't add to the scene graph yet
-            if (!entity->isParentPathComplete()) 
-            {
+            if (!entity->isParentPathComplete()) {
                 continue;
             }
-            if (entity->getSpaceIndex() == -1) 
-            {
+            if (entity->getSpaceIndex() == -1) {
                 std::unique_lock<std::mutex> lock(_spaceLock);
                 auto spaceIndex = _space->allocateID();
                 workload::Sphere sphere(entity->getWorldPosition(), entity->getBoundingRadius());
@@ -470,38 +401,33 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
                 transaction.reset(spaceIndex, sphere, workload::Owner(nestable));
                 _space->enqueueTransaction(transaction);
                 entity->setSpaceIndex(spaceIndex);
-                connect(entity.get(), &EntityItem::spaceUpdate, this, &EntityTreeRenderer::handleSpaceUpdate,
-                        Qt::QueuedConnection);
+                connect(entity.get(), &EntityItem::spaceUpdate, this, &EntityTreeRenderer::handleSpaceUpdate, Qt::QueuedConnection);
             }
 
             auto entityID = entity->getEntityItemID();
             auto renderable = EntityRenderer::addToScene(*this, entity, scene, transaction);
-            if (renderable) 
-            { 
+            if (renderable) {
                 _entitiesInScene.insert({ entityID, renderable });
                 processedIds.insert(entityID);
             }
         }
 
-        if (!processedIds.empty()) 
-        {
-            for (const auto& processedId : processedIds) 
-            {
+        if (!processedIds.empty()) {
+            for (const auto& processedId : processedIds) {
                 _entitiesToAdd.erase(processedId);
             }
             forceRecheckEntities();
         }
     }
-
 }
 
-
 void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
-
     PROFILE_RANGE_EX(simulation_physics, "ChangeInScene", 0xffff00ff, (uint64_t)_changedEntities.size());
     PerformanceTimer pt("change");
     std::unordered_set<EntityItemID> changedEntities;
-    _changedEntitiesGuard.withWriteLock([&] { changedEntities.swap(_changedEntities); });
+    _changedEntitiesGuard.withWriteLock([&] {
+        changedEntities.swap(_changedEntities);
+    });
     // bool selectionPriority = false;
 
     _renderablesToUpdate.clear();
@@ -512,38 +438,34 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         for (const EntityItemID& entityId : changedEntities) {
             // quint16 t = 0; 
             const EntityRendererPointer& renderable = renderableForEntityId(entityId);
-             if (getSceneIsReady()) 
-             {  // no priority optimization until everything's loaded
-                 EntityItemPointer _entity = getEntity(entityId);
-             
-                 if ( !_entity || _entity->isDead()) continue;  
-                 if ( !renderable ) continue;
+            if (getSceneIsReady()) {
+                // no priority optimization until everything's loaded
+                EntityItemPointer _entity = getEntity(entityId);
+            
+                if (!_entity || _entity->isDead()) continue;
+                if (!renderable) continue;
 
-                 EntityPriority _entityPriority = _entity->getEntityPriority();
+                EntityPriority _entityPriority = _entity->getEntityPriority();
 
-                 if ( _isEditMode || getBypassPrioritySorting() ) {
-                     _entityPriority = EntityPriority::AUTOMATIC;
-                 }
+                if (_isEditMode || getBypassPrioritySorting()) {
+                    _entityPriority = EntityPriority::AUTOMATIC;
+                }
 
-                 // Make sure avatar entities and shapes aren't somehow set to static
-                 if ( _entityPriority == EntityPriority::STATIC && ( _entity->isAvatarEntity() ||
-                     _entity->isPrimitiveShapeType() ) ) 
-                 {
-                     _entityPriority = EntityPriority::AUTOMATIC;
-                 }
-                                  
-                 if ( _entityPriority == EntityPriority::AUTOMATIC ) 
-                 { 
+                // make sure avatar entities and shapes aren't somehow set to static
+                if (
+                    _entityPriority == EntityPriority::STATIC && 
+                    (_entity->isAvatarEntity() || _entity->isPrimitiveShapeType())
+                ) {
+                    _entityPriority = EntityPriority::AUTOMATIC;
+                }
+
+                if (_entityPriority == EntityPriority::AUTOMATIC) { 
                     _renderablesToUpdate.insert(renderable);
-                 } 
-                 else if (_entityPriority == EntityPriority::PRIORITIZED) 
-                 {
+                } else if (_entityPriority == EntityPriority::PRIORITIZED) {
                     _priorityRenderablesToUpdate.insert(renderable);
-                 } 
-                 else if ( _entityPriority == EntityPriority::STATIC )
-                 {
+                } else if (_entityPriority == EntityPriority::STATIC) {
                     _staticRenderablesToUpdate.insert(renderable); 
-                 }                 
+                }
              }
              else 
              {
@@ -557,12 +479,10 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         float expectedUpdateCost = _avgRenderableUpdateCost * _renderablesToUpdate.size();
        
         // Update all the priority items first
-       //  if (!_isEditMode && _priorityRenderablesToUpdate.size()>0)
-        if (_priorityRenderablesToUpdate.size() > 0)
-        {
-            for (const auto& renderable : _priorityRenderablesToUpdate) 
-            {
-                assert(renderable);  // only valid renderables are added to _renderablesToUpdate
+        // if (!_isEditMode && _priorityRenderablesToUpdate.size()>0)
+        if (_priorityRenderablesToUpdate.size() > 0) {
+            for (const auto& renderable : _priorityRenderablesToUpdate) {
+                assert(renderable); // only valid renderables are added to _renderablesToUpdate
                 if (renderable != nullptr) {                    
                     renderable->getEntity()->setNeedsRenderUpdate(true);
                     renderable->updateInScene(scene, transaction);
@@ -570,15 +490,12 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
         }
 
-        if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) 
-        { 
-
+        if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) { 
             PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
 
             uint64_t updateStart = usecTimestampNow();
 
-            for (const EntityRendererPointer& renderable : _renderablesToUpdate) 
-            {
+            for (const EntityRendererPointer& renderable : _renderablesToUpdate) {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
                 if (renderable != nullptr) {
                     renderable->getEntity()->setNeedsRenderUpdate(true);
@@ -591,21 +508,19 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
             const float BLEND = 0.1f;
             _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
-
-        } 
-        else 
-        { 
+        } else {
             // we expect the cost to updating all renderables to exceed available time budget
             // so we first sort by priority and update in order until out of time
             class SortableRenderer : public PrioritySortUtil::Sortable {
             public:
                 SortableRenderer(const EntityRendererPointer& renderer) : _renderer(renderer) {}
-                glm::vec3 getPosition() const override { 
-                    if (!_renderer) return glm::vec3(0.0f, 0.0f, 0.0f);  // HACK: prevent a crash by returning 0,0,0 but this is probably not a good solution
-                    return _renderer->getEntity()->getWorldPosition(); 
+                glm::vec3 getPosition() const override {
+                    if (!_renderer) return glm::vec3(0.0f, 0.0f, 0.0f); // HACK: prevent a crash by returning 0,0,0 but this is probably not a good solution
+                    return _renderer->getEntity()->getWorldPosition();
                 }
                 float getRadius() const override { return 0.5f * _renderer->getEntity()->getQueryAACube().getScale(); }
                 uint64_t getTimestamp() const override { return _renderer->getUpdateTime(); }
+
                 EntityRendererPointer getRenderer() const { return _renderer; }
             private:
                 EntityRendererPointer _renderer;
@@ -620,7 +535,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             {
                 PROFILE_RANGE_EX(simulation_physics, "BuildSortedRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
                 for (const auto& renderable : _renderablesToUpdate) {
-                    assert(renderable);   // only valid renderables are added to _renderablesToUpdate
+                    assert(renderable); // only valid renderables are added to _renderablesToUpdate
                     if (renderable) sortedRenderables.push(SortableRenderer(renderable));
                 }
             }
@@ -637,15 +552,13 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 }
                 uint64_t expiry = updateStart + timeBudget;
 
-                //process the sorted renderables
-                for (const auto& sortedRenderable : sortedRenderablesVector) 
-                {
-                    if (usecTimestampNow() > expiry) 
-                    {
+                // process the sorted renderables
+                for (const auto& sortedRenderable : sortedRenderablesVector) {
+                    if (usecTimestampNow() > expiry) {
                         break;
                     }
                     const auto& renderable = sortedRenderable.getRenderer();
-                    if (renderable != nullptr) {                        
+                    if (renderable != nullptr) {
                         renderable->getEntity()->setNeedsRenderUpdate(true);
                         renderable->updateInScene(scene, transaction);
                     }
@@ -660,19 +573,16 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
         }
         MeshPartPayload::sceneIsReady = true;
-    }        
+    }
 }
 
-
 void EntityTreeRenderer::preUpdate() {
-
     if (_tree && !_shuttingDown) {
         _tree->preUpdate();
     }
 }
 
 void EntityTreeRenderer::update(bool simulate) {
-
     PROFILE_RANGE(simulation_physics, "ETR::update");
     PerformanceTimer perfTimer("ETRupdate");
     if (_tree && !_shuttingDown) {
@@ -715,35 +625,29 @@ void EntityTreeRenderer::update(bool simulate) {
             }
         }
 
-        if (simulate) 
-        {
+        if (simulate) {
             // Handle enter/leave entity logic
-            checkEnterLeaveEntities();   
+            checkEnterLeaveEntities();
+
             // Even if we're not moving the mouse, if we started clicking on an entity and we have
             // not yet released the hold then this is still considered a holdingClickOnEntity event
             // and we want to simulate this message here as well as in mouse move
             if (_lastPointerEventValid && !_currentClickingOnEntityID.isInvalidID()) {
-                emit DependencyManager::get<EntityScriptingInterface>()->holdingClickOnEntity(_currentClickingOnEntityID,
-                                                                                              _lastPointerEvent);
+                emit DependencyManager::get<EntityScriptingInterface>()->holdingClickOnEntity(_currentClickingOnEntityID, _lastPointerEvent);
             }
         }
     }
-
 }
 
 void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUpdate) {
-
     std::unique_lock<std::mutex> lock(_spaceLock);
     _spaceUpdates.emplace_back(proxyUpdate.first, proxyUpdate.second);
-
 }
 
 // TO DO - zones with compound shapes rather than boxes
 
-
 // Make a list of all the entities inside entity. 
 void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool hasCompoundShape) {
-
     auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID)); // get a pointer to the zone entity item
     glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
     glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
@@ -759,21 +663,20 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
     });
 
     zoneItem->updateZoneEntityItemContentList(result); // On the zone, tell it to rewrite its content list.    
-
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
-
-    float radius = 0.01f;  // for now, assume 0.01 meter radius, because we actually check the point inside later
+    float radius = 0.01f; // for now, assume 0.01 meter radius, because we actually check the point inside later
     QVector<QUuid> entityIDs;
 
     // find the entities near us
     // don't let someone else change our tree while we search
     _tree->withReadLock([&] {
         auto entityTree = std::static_pointer_cast<EntityTree>(_tree);
-        
+
         // FIXME - if EntityTree had a findEntitiesContainingPoint() this could theoretically be a little faster
         entityTree->evalEntitiesInSphere(_avatarPosition, radius, PickFilter(), entityIDs);
+
         LayeredZones oldLayeredZones(_layeredZones);
         _layeredZones.clear();
 
@@ -796,41 +699,36 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
             // so that the script is awake in time to receive the "entityEntity" call (even if the entity is a zone).
             bool contains = false;
             bool scriptHasLoaded = hasScript && entity->isScriptPreloadFinished();
-            if (isZone || scriptHasLoaded) 
-            {
+            if (isZone || scriptHasLoaded) {
                 contains = entity->contains(_avatarPosition);
             }
 
-            if (contains) { 
+            if (contains) {
                 // if this entity is a zone and visible, add it to our layered zones
-                if (isZone && entity->getVisible() && renderableIdForEntity(entity) != render::Item::INVALID_ITEM_ID) 
-                {
+                if (isZone && entity->getVisible() && renderableIdForEntity(entity) != render::Item::INVALID_ITEM_ID) {
                     _layeredZones.emplace_back(std::dynamic_pointer_cast<ZoneEntityItem>(entity));
                 }
 
-                if ((!hasScript && isZone) || scriptHasLoaded) 
-                {
+                if ((!hasScript && isZone) || scriptHasLoaded) {
                     entitiesContainingAvatar << entity->getEntityItemID();
                 }
             }
         }
 
-        _layeredZones.sort(); 
+        _layeredZones.sort();
         if (!_layeredZones.equals(oldLayeredZones)) {
             applyLayeredZones();
         }
     });
 }
 
-QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() 
-{
+QVector<QUuid> EntityTreeRenderer::getZoneCullSkiplist() {
     QVector<QUuid> result;
     _getZoneCullSkiplistGuard.withReadLock([&] { result = _zoneCullSkipList; });
     return result;
 }
 
 void EntityTreeRenderer::evaluateZoneCullingStack() {  
-
     if (_zoneCullingStack != _prevZoneCullingStack) QMetaObject::invokeMethod(qApp, "requeryOctree"); 
     if (!_forceRecheckEntities && _zoneCullingStack == _prevZoneCullingStack) return; // stack hasn't changed
     _forceRecheckEntities = false;
@@ -857,7 +755,6 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
         }
 
         _ghostingAllowed = zoneItem->getGhostingAllowed();
-
     }
 
     auto scene = _viewState->getMain3DScene();
@@ -865,8 +762,7 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     
     // Since statics are generally not in the update loop, force an update pass for them here
     for (const auto& renderable : _staticRenderablesToUpdate) {
-        if (renderable) 
-        {
+        if (renderable) {
             // const bool hasChanged = renderable->evaluateEntityZoneCullState(renderable->getEntity());//, _zoneCullSkipList);
             // if (hasChanged || _isEditMode) {
               renderable->updateInScene(scene, transaction);
@@ -878,14 +774,12 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     scene->enqueueTransaction(transaction);
 }
 
-
 void EntityTreeRenderer::checkEnterLeaveEntities() {
     PROFILE_RANGE(simulation_physics, "EnterLeave");
     PerformanceTimer perfTimer("enterLeave");
     auto now = usecTimestampNow();
 
-    if (_tree && !_shuttingDown) 
-    {
+    if (_tree && !_shuttingDown) {
         glm::vec3 avatarPosition = _viewState->getAvatarPosition();
 
         // we want to check our enter/leave state if we've moved a significant amount, or
@@ -895,8 +789,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
         auto movedEnough = glm::distance(avatarPosition, _avatarPosition) > ZONE_CHECK_DISTANCE;
         auto enoughTimeElapsed = (now - _lastZoneCheck) > ZONE_CHECK_INTERVAL;
 
-        if (_forceRecheckEntities || movedEnough || enoughTimeElapsed) 
-        {
+        if (_forceRecheckEntities || movedEnough || enoughTimeElapsed) {
             _avatarPosition = avatarPosition;
             _lastZoneCheck = now;
 
@@ -910,45 +803,40 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
             // Note: at this point we don't need to worry about the tree being locked, because we only deal with
             // EntityItemIDs from here. The callEntityScriptMethod() method is robust against attempting to call scripts
             // for entity IDs that no longer exist.
-            
-            if (_entitiesScriptEngine) 
-            {
+
+            if (_entitiesScriptEngine) {
                 // for all of our previous containing entities, if they are no longer containing then send them a leave event
-                foreach (const EntityItemID& entityID, _currentEntitiesInside) {
+                foreach(const EntityItemID& entityID, _currentEntitiesInside) {
                     if (!entitiesContainingAvatar.contains(entityID)) {
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
 
                         auto entity = getEntity(entityID);
-                        if (entity && entity->getType() == EntityTypes::Zone) 
-                        { // Remove this zone ID from the zoneCullingStack
-                            if (_zoneCullingStack.indexOf(entityID) != -1) 
-                            {  // if it exists, remove it
+                        // remove this zone ID from the zoneCullingStack
+                        if (entity && entity->getType() == EntityTypes::Zone) {
+                            // if it exists, remove it
+                            if (_zoneCullingStack.indexOf(entityID) != -1) { 
                                 _zoneCullingStack.removeAt(_zoneCullingStack.indexOf(entityID));
                             }
                         }
-
                     }
                 }
 
                 // for all of our new containing entities, if they weren't previously containing then send them an enter event
-                foreach (const EntityItemID& entityID, entitiesContainingAvatar) {
-                    if (!_currentEntitiesInside.contains(entityID))                     {
-
+                foreach(const EntityItemID& entityID, entitiesContainingAvatar) {
+                    if (!_currentEntitiesInside.contains(entityID)) {
                         emit enterEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
 
                         // Add this ID to the zoneCullingStack
-                       auto entity = getEntity(entityID);
-                       if (entity && entity->getType() == EntityTypes::Zone) 
-                       {     
-                            if (_zoneCullingStack.indexOf(entityID) == -1) 
-                            {
+                        auto entity = getEntity(entityID);
+                        if (entity && entity->getType() == EntityTypes::Zone) {     
+                            if (_zoneCullingStack.indexOf(entityID) == -1) {
                                 _zoneCullingStack.append(entityID);
                             }
-                       }
+                        }
                     }
-                }                
+                }
                 _currentEntitiesInside = entitiesContainingAvatar;
             }
         }
@@ -956,42 +844,33 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
 }
 
 void EntityTreeRenderer::leaveDomainAndNonOwnedEntities() {
-
-    if (_tree && !_shuttingDown) 
-    {
+    if (_tree && !_shuttingDown) {
         QSet<EntityItemID> currentEntitiesInsideToSave;
         foreach (const EntityItemID& entityID, _currentEntitiesInside) {
             EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
             if (entityItem && !(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
                 emit leaveEntity(entityID);
-                if (_entitiesScriptEngine) 
-                {
+                if (_entitiesScriptEngine) {
                     _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
                 }
-            } 
-            else 
-            {
+            } else {
                 currentEntitiesInsideToSave.insert(entityID);
             }
         }
 
         _currentEntitiesInside = currentEntitiesInsideToSave;
         forceRecheckEntities();
-
     }
 }
 
 void EntityTreeRenderer::leaveAllEntities() {
-
-    if (_tree && !_shuttingDown) 
-    {
+    if (_tree && !_shuttingDown) {
         _zoneCullingStack.clear();
 
         // for all of our previous containing entities, if they are no longer containing then send them a leave event
-        foreach (const EntityItemID& entityID, _currentEntitiesInside) {
+        foreach(const EntityItemID& entityID, _currentEntitiesInside) {
             emit leaveEntity(entityID);
-            if (_entitiesScriptEngine) 
-            {
+            if (_entitiesScriptEngine) {
                 _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
             }
         }
@@ -1001,18 +880,14 @@ void EntityTreeRenderer::leaveAllEntities() {
 }
 
 void EntityTreeRenderer::forceRecheckEntities() {
-
     _forceRecheckEntities = true;
-
 }
 
 bool EntityTreeRenderer::applyLayeredZones() {
     // from the list of zones we are going to build a selection list the Render Item corresponding to the zones
     // in the expected layered order and update the scene with it
     auto scene = _viewState->getMain3DScene();
-
-    if (scene) 
-    {
+    if (scene) {
         render::ItemIDs list;
         _layeredZones.appendRenderIDs(list, this);
 
@@ -1020,18 +895,14 @@ bool EntityTreeRenderer::applyLayeredZones() {
         render::Transaction transaction;
         transaction.resetSelection(selection);
         scene->enqueueTransaction(transaction);
-    } 
-    else 
-    {
-        qCWarning(entitiesrenderer)
-            << "EntityTreeRenderer::applyLayeredZones(), Unexpected null scene, possibly during application shutdown";
+    } else {
+        qCWarning(entitiesrenderer) << "EntityTreeRenderer::applyLayeredZones(), Unexpected null scene, possibly during application shutdown";
     }
 
     return true;
 }
 
 void EntityTreeRenderer::processEraseMessage(ReceivedMessage& message, const SharedNodePointer& sourceNode) {
-
     OCTREE_PACKET_FLAGS flags;
     message.readPrimitive(&flags);
 
@@ -1041,36 +912,20 @@ void EntityTreeRenderer::processEraseMessage(ReceivedMessage& message, const Sha
     _lastOctreeMessageSequence = sequence;
     message.seek(0);
     std::static_pointer_cast<EntityTree>(_tree)->processEraseMessage(message, sourceNode);
-
-}
-
-//const DomainHandler& domainHandler = DependencyManager::get<NodeList>()->getDomainHandler();
-//connect(&domainHandler, &DomainHandler::connectedToDomain, this, &WindowScriptingInterface::domainChanged);
-
-//QLabel *label = new QLabel;
-//QLineEdit *lineEdit = new QLineEdit;
-//QObject::connect(lineEdit, &QLineEdit::textChanged,label, &QLabel::setText);
-    // emit enterEntity(entityID);
-
-void requestSpecialUpdate(){
-
 }
 
 void EntityTreeRenderer::connectSignalsToSlots(EntityScriptingInterface* entityScriptingInterface) {
-
     connect(this, &EntityTreeRenderer::enterEntity, entityScriptingInterface, &EntityScriptingInterface::enterEntity);
     connect(this, &EntityTreeRenderer::leaveEntity, entityScriptingInterface, &EntityScriptingInterface::leaveEntity);
-    connect(this, &EntityTreeRenderer::collisionWithEntity, entityScriptingInterface,
-            &EntityScriptingInterface::collisionWithEntity);
+    connect(this, &EntityTreeRenderer::collisionWithEntity, entityScriptingInterface, &EntityScriptingInterface::collisionWithEntity);
 
-    connect(DependencyManager::get<SceneScriptingInterface>().data(), &SceneScriptingInterface::shouldRenderEntitiesChanged,
-            this, &EntityTreeRenderer::updateEntityRenderStatus, Qt::QueuedConnection);
-
+    connect(DependencyManager::get<SceneScriptingInterface>().data(), &SceneScriptingInterface::shouldRenderEntitiesChanged, this, &EntityTreeRenderer::updateEntityRenderStatus, Qt::QueuedConnection);
 }
 
 static glm::vec2 projectOntoEntityXYPlane(EntityItemPointer entity, const PickRay& pickRay, const RayToEntityIntersectionResult& rayPickResult) {
-    if (entity) 
-    {
+
+    if (entity) {
+
         glm::vec3 entityPosition = entity->getWorldPosition();
         glm::quat entityRotation = entity->getWorldOrientation();
         glm::vec3 entityDimensions = entity->getScaledDimensions();
@@ -1083,45 +938,38 @@ static glm::vec2 projectOntoEntityXYPlane(EntityItemPointer entity, const PickRa
         glm::vec3 rayDirection = pickRay.direction;
         glm::vec3 rayStart = pickRay.origin;
         glm::vec3 p;
-
-        if (rayPlaneIntersection(planePosition, planeNormal, rayStart, rayDirection, distance)) 
-        {
+        if (rayPlaneIntersection(planePosition, planeNormal, rayStart, rayDirection, distance)) {
             p = rayStart + rayDirection * distance;
         } else {
             p = rayPickResult.intersection;
         }
-
         glm::vec3 localP = glm::inverse(entityRotation) * (p - entityPosition);
         glm::vec3 normalizedP = (localP / entityDimensions) + entityRegistrationPoint;
         return glm::vec2(normalizedP.x * entityDimensions.x,
                          (1.0f - normalizedP.y) * entityDimensions.y);  // flip y-axis
-    } 
-    else 
-    {
+    } else {
         return glm::vec2();
     }
 }
 
 static uint32_t toPointerButtons(const QMouseEvent& event) {
-
     uint32_t buttons = 0;
     buttons |= event.buttons().testFlag(Qt::LeftButton) ? PointerEvent::PrimaryButton : 0;
     buttons |= event.buttons().testFlag(Qt::RightButton) ? PointerEvent::SecondaryButton : 0;
     buttons |= event.buttons().testFlag(Qt::MiddleButton) ? PointerEvent::TertiaryButton : 0;
     return buttons;
-
 }
 
 static PointerEvent::Button toPointerButton(const QMouseEvent& event) {
     switch (event.button()) {
-        case Qt::LeftButton:
-            return PointerEvent::PrimaryButton;
-        case Qt::RightButton:
-            return PointerEvent::SecondaryButton;
-        case Qt::MiddleButton:
-            return PointerEvent::TertiaryButton;
-        default:
-            return PointerEvent::NoButtons;
+    case Qt::LeftButton:
+        return PointerEvent::PrimaryButton;
+    case Qt::RightButton:
+        return PointerEvent::SecondaryButton;
+    case Qt::MiddleButton:
+        return PointerEvent::TertiaryButton;
+    default:
+        return PointerEvent::NoButtons;
     }
 }
 
@@ -1139,9 +987,11 @@ QUuid EntityTreeRenderer::mousePressEvent(QMouseEvent* event) {
     EntityItemPointer entity;
     if (rayPickResult.intersects && (entity = getTree()->findEntityByID(rayPickResult.entityID))) {
         glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-        PointerEvent pointerEvent(PointerEvent::Press, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                  rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event), toPointerButtons(*event),
-                                  Qt::NoModifier);  // TODO -- check for modifier keys?
+        PointerEvent pointerEvent(PointerEvent::Press, PointerManager::MOUSE_POINTER_ID,
+                                  pos2D, rayPickResult.intersection,
+                                  rayPickResult.surfaceNormal, ray.direction,
+                                  toPointerButton(*event), toPointerButtons(*event),
+                                  Qt::NoModifier); // TODO -- check for modifier keys?
 
         emit entityScriptingInterface->mousePressOnEntity(rayPickResult.entityID, pointerEvent);
 
@@ -1171,9 +1021,10 @@ void EntityTreeRenderer::mouseDoublePressEvent(QMouseEvent* event) {
     EntityItemPointer entity;
     if (rayPickResult.intersects && (entity = getTree()->findEntityByID(rayPickResult.entityID))) {
         glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-        PointerEvent pointerEvent(PointerEvent::Press, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                  rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event), toPointerButtons(*event),
-                                  Qt::NoModifier);
+        PointerEvent pointerEvent(PointerEvent::Press, PointerManager::MOUSE_POINTER_ID,
+            pos2D, rayPickResult.intersection,
+            rayPickResult.surfaceNormal, ray.direction,
+            toPointerButton(*event), toPointerButtons(*event), Qt::NoModifier);
 
         emit entityScriptingInterface->mouseDoublePressOnEntity(rayPickResult.entityID, pointerEvent);
 
@@ -1203,9 +1054,11 @@ void EntityTreeRenderer::mouseReleaseEvent(QMouseEvent* event) {
         // qCDebug(entitiesrenderer) << "mouseReleaseEvent over entity:" << rayPickResult.entityID;
 
         glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-        PointerEvent pointerEvent(PointerEvent::Release, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                  rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event), toPointerButtons(*event),
-                                  Qt::NoModifier);  // TODO -- check for modifier keys?
+        PointerEvent pointerEvent(PointerEvent::Release, PointerManager::MOUSE_POINTER_ID,
+                                  pos2D, rayPickResult.intersection,
+                                  rayPickResult.surfaceNormal, ray.direction,
+                                  toPointerButton(*event), toPointerButtons(*event),
+                                  Qt::NoModifier); // TODO -- check for modifier keys?
 
         emit entityScriptingInterface->mouseReleaseOnEntity(rayPickResult.entityID, pointerEvent);
 
@@ -1217,9 +1070,11 @@ void EntityTreeRenderer::mouseReleaseEvent(QMouseEvent* event) {
     // we're releasing the button, then this is considered a clickReleaseOn event
     if (!_currentClickingOnEntityID.isInvalidID()) {
         glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-        PointerEvent pointerEvent(PointerEvent::Release, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                  rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event), toPointerButtons(*event),
-                                  Qt::NoModifier);  // TODO -- check for modifier keys?
+        PointerEvent pointerEvent(PointerEvent::Release, PointerManager::MOUSE_POINTER_ID,
+                                  pos2D, rayPickResult.intersection,
+                                  rayPickResult.surfaceNormal, ray.direction,
+                                  toPointerButton(*event), toPointerButtons(*event),
+                                  Qt::NoModifier); // TODO -- check for modifier keys?
 
         emit entityScriptingInterface->clickReleaseOnEntity(_currentClickingOnEntityID, pointerEvent);
     }
@@ -1242,9 +1097,11 @@ void EntityTreeRenderer::mouseMoveEvent(QMouseEvent* event) {
     EntityItemPointer entity;
     if (rayPickResult.intersects && (entity = getTree()->findEntityByID(rayPickResult.entityID))) {
         glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-        PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                  rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event), toPointerButtons(*event),
-                                  Qt::NoModifier);  // TODO -- check for modifier keys?
+        PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID,
+                                  pos2D, rayPickResult.intersection,
+                                  rayPickResult.surfaceNormal, ray.direction,
+                                  toPointerButton(*event), toPointerButtons(*event),
+                                  Qt::NoModifier); // TODO -- check for modifier keys?
 
         emit entityScriptingInterface->mouseMoveOnEntity(rayPickResult.entityID, pointerEvent);
 
@@ -1254,10 +1111,11 @@ void EntityTreeRenderer::mouseMoveEvent(QMouseEvent* event) {
         // then we need to send the hover leave.
         if (!_currentHoverOverEntityID.isInvalidID() && rayPickResult.entityID != _currentHoverOverEntityID) {
             glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-            PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                      rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event),
-                                      toPointerButtons(*event),
-                                      Qt::NoModifier);  // TODO -- check for modifier keys?
+            PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID,
+                                      pos2D, rayPickResult.intersection,
+                                      rayPickResult.surfaceNormal, ray.direction,
+                                      toPointerButton(*event), toPointerButtons(*event),
+                                      Qt::NoModifier); // TODO -- check for modifier keys?
 
             emit entityScriptingInterface->hoverLeaveEntity(_currentHoverOverEntityID, pointerEvent);
         }
@@ -1284,13 +1142,14 @@ void EntityTreeRenderer::mouseMoveEvent(QMouseEvent* event) {
         // send the hover leave for our previous entity
         if (!_currentHoverOverEntityID.isInvalidID()) {
             glm::vec2 pos2D = projectOntoEntityXYPlane(entity, ray, rayPickResult);
-            PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID, pos2D, rayPickResult.intersection,
-                                      rayPickResult.surfaceNormal, ray.direction, toPointerButton(*event),
-                                      toPointerButtons(*event),
-                                      Qt::NoModifier);  // TODO -- check for modifier keys?
+            PointerEvent pointerEvent(PointerEvent::Move, PointerManager::MOUSE_POINTER_ID,
+                                  pos2D, rayPickResult.intersection,
+                                  rayPickResult.surfaceNormal, ray.direction,
+                                      toPointerButton(*event), toPointerButtons(*event),
+                                      Qt::NoModifier); // TODO -- check for modifier keys?
 
             emit entityScriptingInterface->hoverLeaveEntity(_currentHoverOverEntityID, pointerEvent);
-            _currentHoverOverEntityID = UNKNOWN_ENTITY_ID;  // makes it the unknown ID
+            _currentHoverOverEntityID = UNKNOWN_ENTITY_ID; // makes it the unknown ID
 
             _lastPointerEvent = pointerEvent;
             _lastPointerEventValid = true;
@@ -1317,8 +1176,7 @@ void EntityTreeRenderer::deletingEntity(const EntityItemID& entityID) {
 
     auto scene = _viewState->getMain3DScene();
     if (!scene) {
-        qCWarning(entitiesrenderer)
-            << "EntityTreeRenderer::deletingEntity(), Unexpected null scene, possibly during application shutdown";
+        qCWarning(entitiesrenderer) << "EntityTreeRenderer::deletingEntity(), Unexpected null scene, possibly during application shutdown";
         return;
     }
 
@@ -1331,7 +1189,7 @@ void EntityTreeRenderer::deletingEntity(const EntityItemID& entityID) {
         return;
     }
 
-    forceRecheckEntities();  // reset our state to force checking our inside/outsideness of entities
+    forceRecheckEntities(); // reset our state to force checking our inside/outsideness of entities
 
     fadeOutRenderable(renderable);
 }
@@ -1340,7 +1198,7 @@ void EntityTreeRenderer::addingEntity(const EntityItemID& entityID) {
     checkAndCallPreload(entityID);
     auto entity = std::static_pointer_cast<EntityTree>(_tree)->findEntityByID(entityID);
     if (entity) {
-        _entitiesToAdd.insert({ entity->getEntityItemID(), entity });
+        _entitiesToAdd.insert({ entity->getEntityItemID(),  entity });
     }
 }
 
@@ -1354,8 +1212,6 @@ void EntityTreeRenderer::entityScriptChanging(const EntityItemID& entityID, bool
 
 void EntityTreeRenderer::checkAndCallPreload(const EntityItemID& entityID, bool reload, bool unloadFirst) {
     if (_tree && !_shuttingDown) {
-
-
         EntityItemPointer entity = getTree()->findEntityByEntityItemID(entityID);
         if (!entity) {
             return;
@@ -1405,7 +1261,7 @@ void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entit
         return;
     }
 
-    SharedSoundPointer collisionSound = renderable->getCollisionSound();  // TIVOLI improve
+    SharedSoundPointer collisionSound = renderable->getCollisionSound(); // TIVOLI improve
     if (!collisionSound) {
         return;
     }
@@ -1416,15 +1272,15 @@ void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entit
     }
     float mass = entity->computeMass();
 
-    const float COLLISION_PENETRATION_TO_VELOCITY = 50.0f;  // as a subsitute for RELATIVE entity->getVelocity()
+    const float COLLISION_PENETRATION_TO_VELOCITY = 50.0f; // as a subsitute for RELATIVE entity->getVelocity()
     // The collision.penetration is a pretty good indicator of changed velocity AFTER the initial contact,
     // but that first contact depends on exactly where we hit in the physics step.
     // We can get a more consistent initial-contact energy reading by using the changed velocity.
     // Note that velocityChange is not a good indicator for continuing collisions, because it does not distinguish
     // between bounce and sliding along a surface.
-    const float speedSquared = (collision.type == CONTACT_EVENT_TYPE_START)
-                                   ? glm::length2(collision.velocityChange)
-                                   : glm::length2(collision.penetration) * COLLISION_PENETRATION_TO_VELOCITY;
+    const float speedSquared = (collision.type == CONTACT_EVENT_TYPE_START) ?
+        glm::length2(collision.velocityChange) :
+        glm::length2(collision.penetration) * COLLISION_PENETRATION_TO_VELOCITY;
     const float energy = mass * speedSquared / 2.0f;
     const float COLLISION_ENERGY_AT_FULL_VOLUME = (collision.type == CONTACT_EVENT_TYPE_START) ? 150.0f : 5.0f;
     const float COLLISION_MINIMUM_VOLUME = 0.005f;
@@ -1433,8 +1289,7 @@ void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entit
         return;
     }
     // Quiet sound aren't really heard at all, so we can compress everything to the range [1-c, 1], if we play it all.
-    const float COLLISION_SOUND_COMPRESSION_RANGE =
-        1.0f;  // This section could be removed when the value is 1, but let's see how it goes.
+    const float COLLISION_SOUND_COMPRESSION_RANGE = 1.0f; // This section could be removed when the value is 1, but let's see how it goes.
     const float volume = (energyFactorOfFull * COLLISION_SOUND_COMPRESSION_RANGE) + (1.0f - COLLISION_SOUND_COMPRESSION_RANGE);
 
     // Shift the pitch down by ln(1 + (size / COLLISION_SIZE_FOR_STANDARD_PITCH)) / ln(2)
@@ -1450,7 +1305,8 @@ void EntityTreeRenderer::playEntityCollisionSound(const EntityItemPointer& entit
     DependencyManager::get<AudioInjectorManager>()->playSound(collisionSound, options, true);
 }
 
-void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA, const EntityItemID& idB, const Collision& collision) {
+void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA, const EntityItemID& idB,
+                                                    const Collision& collision) {
     // If we don't have a tree, or we're in the process of shutting down, then don't
     // process these events.
     if (!_tree || _shuttingDown) {
@@ -1469,7 +1325,7 @@ void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA, cons
         bool entityAIsDynamic = entityA->getDynamic();
         bool entityBIsDynamic = entityB->getDynamic();
 
-        //#ifdef WANT_DEBUG
+#ifdef WANT_DEBUG
         bool bothEntitiesStatic = !entityAIsDynamic && !entityBIsDynamic;
         if (bothEntitiesStatic) {
             qCDebug(entities) << "A collision has occurred between two static entities!";
@@ -1477,10 +1333,14 @@ void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA, cons
             qCDebug(entities) << "Entity B ID:" << entityB->getID();
         }
         assert(!bothEntitiesStatic);
-        //#endif
+#endif
 
-        if ((myNodeID == entityASimulatorID && entityAIsDynamic) ||
-            (myNodeID == entityBSimulatorID && (!entityAIsDynamic || entityASimulatorID.isNull()))) {
+        if (
+            (myNodeID == entityASimulatorID && entityAIsDynamic) || 
+            (myNodeID == entityBSimulatorID && 
+                (!entityAIsDynamic || entityASimulatorID.isNull())
+            )
+        ) {
             playEntityCollisionSound(entityA, collision);
             emit collisionWithEntity(idA, idB, collision);
             if (_entitiesScriptEngine) {
@@ -1488,8 +1348,12 @@ void EntityTreeRenderer::entityCollisionWithEntity(const EntityItemID& idA, cons
             }
         }
 
-        if ((myNodeID == entityBSimulatorID && entityBIsDynamic) ||
-            (myNodeID == entityASimulatorID && (!entityBIsDynamic || entityBSimulatorID.isNull()))) {
+        if (
+            (myNodeID == entityBSimulatorID && entityBIsDynamic) || 
+            (myNodeID == entityASimulatorID && 
+                (!entityBIsDynamic || entityBSimulatorID.isNull())
+            )
+        ) {
             playEntityCollisionSound(entityB, collision);
             // since we're swapping A and B we need to send the inverted collision
             Collision invertedCollision(collision);
@@ -1511,8 +1375,13 @@ void EntityTreeRenderer::updateEntityRenderStatus(bool shouldRenderEntities) {
     } else {
         _entityIDsLastInScene.clear();
         using MapEntry = std::pair<EntityItemID, EntityRendererPointer>;
-        std::transform(_entitiesInScene.begin(), _entitiesInScene.end(), std::back_inserter(_entityIDsLastInScene),
-                       [](const MapEntry& entry) { return entry.first; });
+        std::transform(
+            _entitiesInScene.begin(), _entitiesInScene.end(), 
+            std::back_inserter(_entityIDsLastInScene),
+            [](const MapEntry& entry) {
+                return entry.first;
+            }
+        );
 
         for (auto entityID : _entityIDsLastInScene) {
             // FIXME - is this really right? do we want to do the deletingEntity() code or just remove from the scene.
@@ -1531,6 +1400,7 @@ void EntityTreeRenderer::updateZone(const EntityItemID& id) {
 
 bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones() {
     bool zonesChanged = false;
+
     auto it = begin();
     while (it != end()) {
         auto zone = it->zone.lock();
@@ -1558,10 +1428,12 @@ std::pair<bool, bool> EntityTreeRenderer::LayeredZones::getZoneInteractionProper
     return { true, true };
 }
 
-
-
 bool EntityTreeRenderer::LayeredZones::update(std::shared_ptr<ZoneEntityItem> zone, const glm::vec3& position, EntityTreeRenderer* entityTreeRenderer) {
+    // When a zone's position or visibility changes, we call this method
+    // In order to resort our zones, we first remove the changed zone, and then re-insert it if necessary
+
     bool needsResort = false;
+
     {
         auto it = begin();
         while (it != end()) {
@@ -1577,8 +1449,11 @@ bool EntityTreeRenderer::LayeredZones::update(std::shared_ptr<ZoneEntityItem> zo
     }
 
     // Only call contains if the zone is rendering
-    if (zone->isVisible() && entityTreeRenderer->renderableIdForEntity(zone) != render::Item::INVALID_ITEM_ID &&
-        zone->contains(position)) {
+    if (
+        zone->isVisible() &&
+        entityTreeRenderer->renderableIdForEntity(zone) != render::Item::INVALID_ITEM_ID && 
+        zone->contains(position)
+    ) {
         emplace_back(zone);
         needsResort = true;
     }
@@ -1678,7 +1553,9 @@ void EntityTreeRenderer::deleteEntity(const EntityItemID& id) const {
 }
 
 void EntityTreeRenderer::onEntityChanged(const EntityItemID& id) {
-    _changedEntitiesGuard.withWriteLock([&] { _changedEntities.insert(id); });
+    _changedEntitiesGuard.withWriteLock([&] {
+        _changedEntities.insert(id);
+    });
 }
 
 EntityEditPacketSender* EntityTreeRenderer::getPacketSender() {
@@ -1689,18 +1566,12 @@ EntityEditPacketSender* EntityTreeRenderer::getPacketSender() {
     return packetSender;
 }
 
-std::function<bool(const QUuid&, graphics::MaterialLayer, const std::string&)>
-    EntityTreeRenderer::_addMaterialToEntityOperator = nullptr;
-std::function<bool(const QUuid&, graphics::MaterialPointer, const std::string&)>
-    EntityTreeRenderer::_removeMaterialFromEntityOperator = nullptr;
-std::function<bool(const QUuid&, graphics::MaterialLayer, const std::string&)>
-    EntityTreeRenderer::_addMaterialToAvatarOperator = nullptr;
-std::function<bool(const QUuid&, graphics::MaterialPointer, const std::string&)>
-    EntityTreeRenderer::_removeMaterialFromAvatarOperator = nullptr;
+std::function<bool(const QUuid&, graphics::MaterialLayer, const std::string&)> EntityTreeRenderer::_addMaterialToEntityOperator = nullptr;
+std::function<bool(const QUuid&, graphics::MaterialPointer, const std::string&)> EntityTreeRenderer::_removeMaterialFromEntityOperator = nullptr;
+std::function<bool(const QUuid&, graphics::MaterialLayer, const std::string&)> EntityTreeRenderer::_addMaterialToAvatarOperator = nullptr;
+std::function<bool(const QUuid&, graphics::MaterialPointer, const std::string&)> EntityTreeRenderer::_removeMaterialFromAvatarOperator = nullptr;
 
-bool EntityTreeRenderer::addMaterialToEntity(const QUuid& entityID,
-                                             graphics::MaterialLayer material,
-                                             const std::string& parentMaterialName) {
+bool EntityTreeRenderer::addMaterialToEntity(const QUuid& entityID, graphics::MaterialLayer material, const std::string& parentMaterialName) {
     if (_addMaterialToEntityOperator) {
         return _addMaterialToEntityOperator(entityID, material, parentMaterialName);
     }

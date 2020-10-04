@@ -54,10 +54,10 @@ class EntityTreeRenderer : public OctreeProcessor, public Dependency {
     Q_OBJECT
 public:
 
-    QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
+    QVector<QUuid> _zoneCullSkipList; // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
     QList<EntityItemID> _prevZoneCullingStack;
-    QList<EntityItemID> _currentlySelectedEntities;  // selected by edit
+    QList<EntityItemID> _currentlySelectedEntities; // selected by edit
     
     bool _zoneCullingActive = false;
     bool _updateStaticEntities = false;
@@ -96,7 +96,9 @@ public:
                                 AbstractScriptingServicesInterface* scriptingServices);
     virtual ~EntityTreeRenderer();
 
-    QSharedPointer<EntityTreeRenderer> getSharedFromThis() { return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis()); }
+    QSharedPointer<EntityTreeRenderer> getSharedFromThis() {
+        return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis());
+    }
 
     virtual char getMyNodeType() const override { return NodeType::EntityServer; }
     virtual PacketType getMyQueryMessageType() const override { return PacketType::EntityQuery; }
@@ -282,11 +284,10 @@ private:
 
     LayeredZones _layeredZones;
     uint64_t _lastZoneCheck { 0 };
-    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 1000; // ~1000hz
+    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 1000; // ~100hz
     const float ZONE_CHECK_DISTANCE = 0.001f;
 
     float _avgRenderableUpdateCost { 0.0f };
-
 
     ReadWriteLockable _changedEntitiesGuard;
     std::unordered_set<EntityItemID> _changedEntities;
