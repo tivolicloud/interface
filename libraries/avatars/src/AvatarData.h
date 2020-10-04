@@ -1212,11 +1212,11 @@ public:
         bool isReplicated;
         bool lookAtSnappingEnabled;
         AvatarDataPacket::IdentityFlags identityFlags;
+        QUrl skeletonModelURL;
     };
 
-    // identityChanged returns true if identity has changed, false otherwise.
-    // identityChanged returns true if identity has changed, false otherwise. Similarly for displayNameChanged and skeletonModelUrlChange.
-    void processAvatarIdentity(QDataStream& packetStream, bool& identityChanged, bool& displayNameChanged);
+    // identityChanged returns true if identity has changed, false otherwise. Similarly for displayNameChanged and skeletonModelURLChange.
+    void processAvatarIdentity(QDataStream& packetStream, bool& identityChanged, bool& displayNameChanged, bool& skeletonModelURLChanged);
 
     QByteArray packTrait(AvatarTraits::TraitType traitType) const;
     QByteArray packTraitInstance(AvatarTraits::TraitType traitType, AvatarTraits::TraitInstanceID instanceID);
@@ -1691,7 +1691,6 @@ protected:
     bool hasParent() const { return !getParentID().isNull(); }
 
     QByteArray packSkeletonData() const;
-    QByteArray packSkeletonModelURL() const;
     QByteArray packAvatarEntityTraitInstance(AvatarTraits::TraitInstanceID traitInstanceID);
     QByteArray packGrabTraitInstance(AvatarTraits::TraitInstanceID traitInstanceID);
 

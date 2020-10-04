@@ -107,11 +107,6 @@ int ClientTraitsHandler::sendChangedTraitsToMixer() {
 
             if (initialSend || *simpleIt == Updated) {
                 bytesWritten += AvatarTraits::packTrait(traitType, *traitsPacketList, *_owningAvatar);
-                
-                if (traitType == AvatarTraits::SkeletonModelURL) {
-                    // keep track of our skeleton version in case we get an override back
-                    _currentSkeletonVersion = _currentTraitVersion;
-                }
             }
 
             ++simpleIt;
@@ -171,27 +166,7 @@ void ClientTraitsHandler::processTraitOverride(QSharedPointer<ReceivedMessage> m
                 return;
             }
 
-            // only accept an override if this is for a trait type we override
-            // and the version matches what we last sent for skeleton
-            if (traitType == AvatarTraits::SkeletonModelURL
-                && traitVersion == _currentSkeletonVersion
-                && _traitStatuses[AvatarTraits::SkeletonModelURL] != Updated) {
-
-                // override the skeleton URL but do not mark the trait as having changed
-                // so that we don't unecessarily send a new trait packet to the mixer with the overriden URL
-
-                auto hasChangesBefore = _hasChangedTraits;
-
-                auto traitBinaryData = message->readWithoutCopy(traitBinarySize);
-                _owningAvatar->processTrait(traitType, traitBinaryData);
-
-                // setSkeletonModelURL will flag us for changes to the SkeletonModelURL so we reset some state here to
-                // avoid unnecessarily sending the overriden skeleton model URL back to the mixer
-                _traitStatuses.erase(AvatarTraits::SkeletonModelURL);
-                _hasChangedTraits = hasChangesBefore;
-            } else {
-                message->seek(message->getPosition() + traitBinarySize);
-            }
+            message->seek(message->getPosition() + traitBinarySize);
         }
     }
 }

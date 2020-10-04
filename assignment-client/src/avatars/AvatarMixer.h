@@ -76,6 +76,11 @@ private:
     void sendIdentityPacket(AvatarMixerClientData* nodeData, const SharedNodePointer& destinationNode);
 
     void manageIdentityData(const SharedNodePointer& node);
+    bool isAvatarInWhitelist(const QUrl& url);
+
+    const QString REPLACEMENT_AVATAR_DEFAULT{ "" };
+    QStringList _avatarWhitelist { };
+    QString _replacementAvatar { REPLACEMENT_AVATAR_DEFAULT };
 
     void optionallyReplicatePacket(ReceivedMessage& message, const Node& node);
 

@@ -69,8 +69,11 @@ public:
 
     uint64_t getIdentityChangeTimestamp() const { return _identityChangeTimestamp; }
     void flagIdentityChange() { _identityChangeTimestamp = usecTimestampNow(); }
+    
     bool getAvatarSessionDisplayNameMustChange() const { return _avatarSessionDisplayNameMustChange; }
     void setAvatarSessionDisplayNameMustChange(bool set = true) { _avatarSessionDisplayNameMustChange = set; }
+    bool getAvatarSkeletonModelURLMustChange() const { return _avatarSkeletonModelURLMustChange; }
+    void setAvatarSkeletonModelURLMustChange(bool set = true) { _avatarSkeletonModelURLMustChange = set; }
 
     void resetNumAvatarsSentLastFrame() { _numAvatarsSentLastFrame = 0; }
     void incrementNumAvatarsSentLastFrame() { ++_numAvatarsSentLastFrame; }
@@ -177,7 +180,7 @@ private:
 
     uint64_t _identityChangeTimestamp;
     bool _avatarSessionDisplayNameMustChange{ true };
-    bool _avatarSkeletonModelUrlMustChange{ false };
+    bool _avatarSkeletonModelURLMustChange{ true };
 
     int _numAvatarsSentLastFrame = 0;
     int _numFramesSinceAdjustment = 0;
