@@ -158,11 +158,11 @@ void PickManager::update() {
     bool shouldPickHUD = _shouldPickHUDOperator();
     // FIXME: give each type its own expiry
     // Each type will update at least one pick, regardless of the expiry
-    {
-        PROFILE_RANGE_EX(picks, "StylusPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Stylus]);
-        PerformanceTimer perfTimer("StylusPicks");
-        _updatedPickCounts[PickQuery::Stylus] = _stylusPickCacheOptimizer.update(cachedPicks[PickQuery::Stylus], _nextPickToUpdate[PickQuery::Stylus], expiry, false);
-    }
+    // {
+    //     PROFILE_RANGE_EX(picks, "StylusPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Stylus]);
+    //     PerformanceTimer perfTimer("StylusPicks");
+    //     _updatedPickCounts[PickQuery::Stylus] = _stylusPickCacheOptimizer.update(cachedPicks[PickQuery::Stylus], _nextPickToUpdate[PickQuery::Stylus], expiry, false);
+    // }
     {
         PROFILE_RANGE_EX(picks, "RayPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Ray]);
         PerformanceTimer perfTimer("RayPicks");

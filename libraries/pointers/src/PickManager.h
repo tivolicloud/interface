@@ -92,7 +92,7 @@ protected:
     PickCacheOptimizer<PickParabola> _parabolaPickCacheOptimizer;
     PickCacheOptimizer<CollisionRegion> _collisionPickCacheOptimizer;
 
-    static const unsigned int DEFAULT_PER_FRAME_TIME_BUDGET = 3 * USECS_PER_MSEC;
+    static const unsigned int DEFAULT_PER_FRAME_TIME_BUDGET = 0.1 * USECS_PER_MSEC;
     unsigned int _perFrameTimeBudget { DEFAULT_PER_FRAME_TIME_BUDGET };
 };
 
