@@ -240,9 +240,9 @@ bool OctreeEntitiesFileParser::readEntitiesArray(QVariantList& entitiesArray) {
         QJsonObject entityObject = entity.object();
 
         // resolve urls starting with ./ or ../ 
-        if (relativeURL.isEmpty() == false) {
+        if (!_relativeURL.isEmpty()) {
             bool isDirty = false;
-            
+
             const QStringList urlKeys { 
                 // model
                 "modelURL",
@@ -256,7 +256,6 @@ bool OctreeEntitiesFileParser::readEntitiesArray(QVariantList& entitiesArray) {
                 "ambientLight.ambientURL",
                 "skybox.url",
                 // particles
-                "textures",
                 // materials
                 "materialURL",
                 // ...shared
@@ -265,6 +264,7 @@ bool OctreeEntitiesFileParser::readEntitiesArray(QVariantList& entitiesArray) {
                 "serverScripts",
                 "collisionSoundURL",
                 "compoundShapeURL",
+                "textures",
                 // TODO: deal with materialData and userData
             };
 
@@ -282,7 +282,7 @@ bool OctreeEntitiesFileParser::readEntitiesArray(QVariantList& entitiesArray) {
                             const QString url = childObject[childKey].toString();
     
                             if (url.startsWith("./") || url.startsWith("../")) {
-                                childObject[childKey] = relativeURL.resolved(url).toString();
+                                childObject[childKey] = _relativeURL.resolved(url).toString();
                                 entityObject[entityKey] = childObject;
                                 isDirty = true;
                             }
@@ -290,11 +290,30 @@ bool OctreeEntitiesFileParser::readEntitiesArray(QVariantList& entitiesArray) {
                     }
                 } else {
                     if (entityObject.contains(key) && entityObject[key].isString()) {
-                        const QString url = entityObject[key].toString();
+                        const QString value = entityObject[key].toString();
 
-                        if (url.startsWith("./") || url.startsWith("../")) {
-                            entityObject[key] = relativeURL.resolved(url).toString();
+                        if (value.startsWith("./") || value.startsWith("../")) {
+                            // url value
+                            entityObject[key] = _relativeURL.resolved(value).toString();
                             isDirty = true;
+                        } else if (value.startsWith("{")) {
+                            // object with url values
+                            auto document = QJsonDocument::fromJson(value.toUtf8());
+                            if (!document.isNull()) {
+                                auto object = document.object();
+                                bool isObjectUpdated = false;
+                                for (const QString& key : object.keys()) {
+                                    auto value = object[key].toString();
+                                    if (value.startsWith("./") || value.startsWith("../")) {
+                                        object[key] = _relativeURL.resolved(value).toString();
+                                        isObjectUpdated = true;
+                                    }
+                                }
+                                if (isObjectUpdated) {
+                                    entityObject[key] = QString(QJsonDocument(object).toJson());
+                                    isDirty = true;
+                                }
+                            }
                         }
                     }
                 }
