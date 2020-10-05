@@ -43,18 +43,99 @@
 #include <FingerprintUtils.h>
 #include <UUID.h>
 
-#include <shared/FileLogger.h>
-
-using namespace crashpad;
+// #include <shared/FileLogger.h>
 
 static const std::string BACKTRACE_URL{ CMAKE_BACKTRACE_URL };
 // static const std::string BACKTRACE_TOKEN{ CMAKE_BACKTRACE_TOKEN };
 
-static constexpr DWORD STATUS_MSVC_CPP_EXCEPTION = 0xE06D7363;
-static constexpr ULONG_PTR MSVC_CPP_EXCEPTION_SIGNATURE = 0x19930520;
+// ------------------------------------------------------------------------------------------------
+// SpinLock - a lock that can timeout attempting to lock a block of code, and is in a busy-wait cycle while trying to acquire
+//   note that this code will malfunction if you attempt to grab a lock while already holding it
 
-CrashpadClient* client{ nullptr };
-std::mutex annotationMutex;
+class SpinLock {
+public:
+    SpinLock();
+    void lock();
+    bool lock(int msecs);
+    void unlock();
+
+private:
+    QAtomicInteger<int> _lock{ 0 };
+
+    Q_DISABLE_COPY(SpinLock)
+};
+
+class SpinLockLocker {
+public:
+    SpinLockLocker(SpinLock& lock, int msecs = -1);
+    ~SpinLockLocker();
+    bool isLocked() const;
+    void unlock();
+    bool relock(int msecs = -1);
+
+private:
+    SpinLock* _lock;
+    bool _isLocked;
+
+    Q_DISABLE_COPY(SpinLockLocker)
+};
+
+SpinLock::SpinLock() {
+}
+
+void SpinLock::lock() {
+    while (!_lock.testAndSetAcquire(0, 1))
+        ;
+}
+
+bool SpinLock::lock(int msecs) {
+    QDeadlineTimer deadline(msecs);
+    for (;;) {
+        if (_lock.testAndSetAcquire(0, 1)) {
+            return true;
+        }
+        if (deadline.hasExpired()) {
+            return false;
+        }
+    }
+}
+
+void SpinLock::unlock() {
+    _lock.storeRelease(0);
+}
+
+SpinLockLocker::SpinLockLocker(SpinLock& lock, int msecs /* = -1 */ ) : _lock(&lock) {
+    _isLocked = _lock->lock(msecs);
+}
+
+SpinLockLocker::~SpinLockLocker() {
+    if (_isLocked) {
+        _lock->unlock();
+    }
+}
+
+bool SpinLockLocker::isLocked() const {
+    return _isLocked;
+}
+
+void SpinLockLocker::unlock() {
+    if (_isLocked) {
+        _lock->unlock();
+        _isLocked = false;
+    }
+}
+
+bool SpinLockLocker::relock(int msecs /* = -1 */ ) {
+    if (!_isLocked) {
+        _isLocked = _lock->lock(msecs);
+    }
+    return _isLocked;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+crashpad::CrashpadClient* client{ nullptr };
+SpinLock crashpadAnnotationsProtect;
 crashpad::SimpleStringDictionary* crashpadAnnotations{ nullptr };
 
 #if defined(Q_OS_WIN)
