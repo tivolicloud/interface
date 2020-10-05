@@ -73,6 +73,15 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			});
 	}
 
+	maximumTextureMemory: number;
+	onMaximumTextureMemoryChange(e: MatButtonToggleChange) {
+		this.script
+			.rpc("Render.maximumTextureMemory", e.value)
+			.subscribe(() => {
+				this.refresh();
+			});
+	}
+
 	antialiasingMethod: number;
 	antialiasingMethodNames: string[];
 	onAntialiasingMethodChange(e: MatButtonToggleChange) {
@@ -127,6 +136,11 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			.rpc<number>("Performance.refreshRateProfile")
 			.subscribe(refreshRate => {
 				this.refreshRate = refreshRate;
+			});
+		this.script
+			.rpc<number>("Render.maximumTextureMemory")
+			.subscribe(maximumTextureMemory => {
+				this.maximumTextureMemory = maximumTextureMemory;
 			});
 		this.script
 			.rpc<number>("Render.antialiasingMethod")

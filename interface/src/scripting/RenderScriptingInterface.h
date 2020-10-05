@@ -29,6 +29,7 @@
  * @property {Render.AntialiasingMethod} antialiasingMethod - The anti-aliasing method being used.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  * @property {boolean} nametagsEnabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
+ * @property {number} maximumTextureMemory - The maximum texture memory in MB.
  */
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
@@ -38,6 +39,7 @@ class RenderScriptingInterface : public QObject {
     Q_PROPERTY(AntialiasingMethod antialiasingMethod READ getAntialiasingMethod WRITE setAntialiasingMethod NOTIFY settingsChanged)
     Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
     Q_PROPERTY(bool nametagsEnabled READ getNametagsEnabled WRITE setNametagsEnabled NOTIFY settingsChanged)
+    Q_PROPERTY(int maximumTextureMemory READ getMaximumTextureMemory WRITE setMaximumTextureMemory NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -259,6 +261,20 @@ public slots:
     //  */
     //  // void setToneMappingMode(int curve, float exposure);
 
+    /**jsdoc
+     * Gets the maxmium texture memory in MB.
+     * @function Render.getMaximumTextureMemory
+     * @returns {number}
+     */
+    int getMaximumTextureMemory() const;
+
+    /**jsdoc
+     * Sets the maxmium texture memory in MB.
+     * @function Render.setMaximumTextureMemory
+     * @param {number} maximumTextureMemory
+     */
+    void setMaximumTextureMemory(int maximumTextureMemory);
+
 signals:
 
     /**jsdoc
@@ -288,6 +304,7 @@ private:
     int _antialiasingMethod{ AntialiasingMethod::NONE };
     float _viewportResolutionScale{ 1.0f };
     bool _nametagsEnabled{ true };
+    // int _maximumTextureMemory{ 8192 }; // handled by gpu::Texture
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
@@ -296,6 +313,7 @@ private:
     Setting::Handle<int> _antialiasingMethodSetting{ "antialiasingMethod", _antialiasingMethod };
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
     Setting::Handle<bool> _nametagsEnabledSetting{ "nametagsEnabled", _nametagsEnabled };
+    Setting::Handle<int> _maximumTextureMemorySetting{ "maximumTextureMemory", 8192 };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
@@ -304,6 +322,7 @@ private:
     void forceAntialiasingMethod(AntialiasingMethod antialiasingMethod);
     void forceViewportResolutionScale(float scale);
     void forceNametagsEnabled(bool enabled);
+    void forceMaximumTextureMemory(int maximumTextureMemory);
 
     static std::once_flag registry_flag;
 };

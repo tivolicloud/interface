@@ -98,8 +98,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             instance->setShadowsEnabled(true);
             // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
+            instance->setMaximumTextureMemory(8192);
 
-            DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_HIGH);
+            // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_HIGH);
             
         break;
         case PerformancePreset::MID:
@@ -111,8 +112,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
+            instance->setMaximumTextureMemory(2048);
             
-            DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_MEDIUM);
+            // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_MEDIUM);
 
         break;
         case PerformancePreset::LOW:
@@ -124,8 +126,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             // instance->setCustomShadersEnabled(false);
             instance->setViewportResolutionScale(1.0);
             // instance->setViewportResolutionScale(recommendedPpiScale);
+            instance->setMaximumTextureMemory(512);
 
-            DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
+            // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 
         break;
         case PerformancePreset::POTATO:
@@ -136,8 +139,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             instance->setShadowsEnabled(false);
             // instance->setCustomShadersEnabled(false);
             instance->setViewportResolutionScale(0.5);
+            instance->setMaximumTextureMemory(64);
             
-            DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
+            // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
 
        break;
         case PerformancePreset::UNKNOWN:
