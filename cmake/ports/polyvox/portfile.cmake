@@ -1,6 +1,5 @@
 include(vcpkg_common_functions)
 
-# else Linux desktop
 vcpkg_download_distfile(
     SOURCE_ARCHIVE
     URLS https://cdn.tivolicloud.com/dependencies/polyvox-master-2015-7-15.zip
@@ -11,6 +10,7 @@ vcpkg_download_distfile(
 vcpkg_extract_source_archive_ex(
     OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE ${SOURCE_ARCHIVE}
+    PATCHES remove-version-number.patch
 )
 
 vcpkg_configure_cmake(
@@ -22,6 +22,7 @@ vcpkg_configure_cmake(
 vcpkg_install_cmake()
 
 file(INSTALL ${SOURCE_PATH}/LICENSE.TXT DESTINATION ${CURRENT_PACKAGES_DIR}/share/polyvox RENAME copyright)
+
 file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/include)
 if (NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
     file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/lib)
@@ -29,6 +30,7 @@ endif()
 if (NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
     file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib)
 endif()
+
 if(WIN32)
     if (NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
         file(RENAME ${CURRENT_PACKAGES_DIR}/PolyVoxCore/lib/Release/PolyVoxCore.lib ${CURRENT_PACKAGES_DIR}/lib/PolyVoxCore.lib)
