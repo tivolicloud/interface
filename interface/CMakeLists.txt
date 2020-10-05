@@ -62,7 +62,8 @@ list(APPEND GENERATE_QRC_DEPENDS ${RESOURCES_RCC})
 add_custom_target(resources ALL DEPENDS ${GENERATE_QRC_DEPENDS})
 
 # set a default root dir for each of our optional externals if it was not passed
-set(OPTIONAL_EXTERNALS "LeapMotion")
+# set(OPTIONAL_EXTERNALS "LeapMotion")
+set(OPTIONAL_EXTERNALS "")
 
 setup_memory_debugger()
 

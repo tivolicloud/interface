@@ -7,6 +7,14 @@
 #
 
 macro(TARGET_LEAPMOTION)
-    target_include_directories(${TARGET_NAME} PRIVATE ${LEAPMOTION_INCLUDE_DIRS})
+    find_library(LEAPMOTION_LIBRARY_RELEASE Leap PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+    find_library(LEAPMOTION_LIBRARY_DEBUG Leap PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+    select_library_configurations(LEAPMOTION)
+
     target_link_libraries(${TARGET_NAME} ${LEAPMOTION_LIBRARIES})
+
+    if (WIN32)
+        find_library(LEAPMOTION_DLL_PATH Leap PATHS ${VCPKG_INSTALL_ROOT}/share NO_DEFAULT_PATH)
+        add_paths_to_fixup_libs(${LEAPMOTION_DLL_PATH})
+    endif ()
 endmacro()
