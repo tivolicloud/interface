@@ -5253,6 +5253,7 @@ void EntityItemProperties::convertToCloneProperties(const EntityItemID& entityID
     setParentJointIndex(-1);
     setLifetime(getCloneLifetime());
     setDynamic(getCloneDynamic());
+    setEntityPriority(EntityPriority::AUTOMATIC); 
     if (getEntityHostType() != entity::HostType::LOCAL) {
         setEntityHostType(getCloneAvatarEntity() ? entity::HostType::AVATAR : entity::HostType::DOMAIN);
     } else {
