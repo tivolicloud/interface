@@ -71,6 +71,7 @@
 #include "ui/OctreeStatsDialog.h"
 #include "ui/OverlayConductor.h"
 #include "ui/overlays/Overlays.h"
+#include "DiscordRichPresence.h"
 
 #include "workload/GameWorkload.h"
 #include "graphics/GraphicsEngine.h"
@@ -864,5 +865,7 @@ private:
     VisionSqueeze _visionSqueeze;
 
     bool _crashOnShutdown{ false };
+
+    DiscordRichPresence* _discordRichPresence{ nullptr };
 };
 #endif  // hifi_Application_h

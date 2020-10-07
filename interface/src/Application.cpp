@@ -2572,6 +2572,9 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     DependencyManager::get<TabletScriptingInterface>()->preloadSounds();
     DependencyManager::get<Keyboard>()->createKeyboard();
 
+    // Initialize Discord rich presence
+    _discordRichPresence = new DiscordRichPresence();
+
     FileDialogHelper::setOpenDirectoryOperator([this](const QString& path) { openDirectory(path); });
     QDesktopServices::setUrlHandler("file", this, "showUrlHandler");
     QDesktopServices::setUrlHandler("", this, "showUrlHandler");
@@ -6783,6 +6786,10 @@ void Application::update(float deltaTime) {
         PerformanceTimer perfTimer("squeezeVision");
         _visionSqueeze.updateVisionSqueeze(myAvatar->getSensorToWorldMatrix(), deltaTime);
     }
+
+    if (_discordRichPresence) {
+        _discordRichPresence->update();
+    }
 }
 
 void Application::updateRenderArgs(float deltaTime) {
@@ -7218,7 +7225,10 @@ void Application::updateWindowTitle() const {
             );
         }
     }
-    
+
+    // it's similar to a window title, just shared online
+    if (_discordRichPresence) _discordRichPresence->domainChanged();
+
     // Not connected, Not logged in - Maki @ Cutelab (Maki) - Tivoli Cloud VR 0.7.2
 
     QStringList statusList = { connectionStatus, loginStatus };
