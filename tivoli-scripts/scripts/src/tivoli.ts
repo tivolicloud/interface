@@ -5,6 +5,7 @@ import { SignalManager } from "./lib/signal-manager";
 import { initNametags } from "./nametags";
 import { Optimize } from "./optimize";
 import { Overview } from "./overview";
+import { SeatedStanding } from "./seated-standing";
 
 const tryInit = <T>(func: () => T) => {
 	try {
@@ -21,6 +22,7 @@ class Tivoli {
 	connectionSounds = tryInit(() => new ConnectionSounds());
 
 	buttons = tryInit(() => new Buttons());
+	seatedStanding = tryInit(() => new SeatedStanding());
 
 	chat = tryInit(() => new ChatUI());
 	overview = tryInit(() => new Overview());
@@ -70,6 +72,7 @@ class Tivoli {
 		if (this.connectionSounds) this.connectionSounds.cleanup();
 
 		if (this.buttons) this.buttons.cleanup();
+		if (this.seatedStanding) this.seatedStanding.cleanup();
 
 		if (this.chat) this.chat.cleanup();
 		if (this.overview) this.overview.cleanup();
