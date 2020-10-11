@@ -153,7 +153,11 @@ void inputControllerFromScriptValue(const QScriptValue &object, controller::Inpu
 //
 // Extract the url portion of a url that has been encoded with encodeEntityIdIntoEntityUrl(...)
 QString extractUrlFromEntityUrl(const QString& url) {
+    #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+    auto parts = url.split(' ', QString::SkipEmptyParts);
+    #else
     auto parts = url.split(' ', Qt::SkipEmptyParts);
+    #endif
     if (parts.length() > 0) {
         return parts[0];
     } else {

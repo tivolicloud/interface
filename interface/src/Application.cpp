@@ -8824,19 +8824,31 @@ void Application::initPlugins(const QStringList& arguments) {
     parser.parse(arguments);
 
     if (parser.isSet(display)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto preferredDisplays = parser.value(display).split(',', QString::SkipEmptyParts);
+        #else
         auto preferredDisplays = parser.value(display).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Setting prefered display plugins:" << preferredDisplays;
         PluginManager::getInstance()->setPreferredDisplayPlugins(preferredDisplays);
     }
 
     if (parser.isSet(disableDisplays)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto disabledDisplays = parser.value(disableDisplays).split(',', QString::SkipEmptyParts);
+        #else
         auto disabledDisplays = parser.value(disableDisplays).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Disabling following display plugins:"  << disabledDisplays;
         PluginManager::getInstance()->disableDisplays(disabledDisplays);
     }
 
     if (parser.isSet(disableInputs)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto disabledInputs = parser.value(disableInputs).split(',', QString::SkipEmptyParts);
+        #else
         auto disabledInputs = parser.value(disableInputs).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Disabling following input plugins:" << disabledInputs;
         PluginManager::getInstance()->disableInputs(disabledInputs);
     }
