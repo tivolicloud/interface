@@ -253,7 +253,7 @@ endif()
             tripletForBuildTypeFile.write("set(VCPKG_BUILD_TYPE " + self.vcpkgBuildType + ")\n")
 
     def getTripletWithBuildType(self, triplet):
-        if (not self.vcpkgBuildType):
+        if not self.vcpkgBuildType:
             return triplet
         return triplet + '-' + self.vcpkgBuildType
 
@@ -364,6 +364,8 @@ endif()
         # Write out the configuration for use by CMake
         cmakeScript = os.path.join(self.path, 'scripts/buildsystems/vcpkg.cmake')
         installPath = os.path.join(self.path, 'installed', self.getTripletWithBuildType(self.triplet))
+        if self.args.android:
+            installPath = os.path.join(self.path, 'installed', self.triplet)
         toolsPath = os.path.join(self.path, 'installed', self.getTripletWithBuildType(self.hostTriplet), 'tools')
 
         cmakeTemplate = VcpkgRepo.CMAKE_TEMPLATE

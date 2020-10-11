@@ -132,7 +132,12 @@ def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
             with urllib.request.urlopen(url, context=context) as response, open(tempFileDescriptor, 'wb') as tempFile:
                 shutil.copyfileobj(response, tempFile)
         else:
-            tempFileName, headers = urllib.request.urlretrieve(url, reporthook=downloadProgressHook)
+            try:
+                tempFileName, headers = urllib.request.urlretrieve(url, reporthook=downloadProgressHook)
+            except urllib.error.HTTPError as e:
+                print("Failed to download {}".format(url))
+                print(e)
+                raise
 
         downloadHash = hashFile(tempFileName, hasher)
         # Verify the hash
