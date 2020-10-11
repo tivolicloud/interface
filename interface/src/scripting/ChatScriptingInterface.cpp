@@ -6,6 +6,7 @@
 #include <QtScript/QScriptEngine>
 #include <QtCore/QVariant>
 #include <QtCore/QJsonDocument>
+#include <QtCore/QRegularExpression>
 
 ChatCommand::ChatCommand(const QString& command, const QString& description) {
     this->setObjectName(command);
