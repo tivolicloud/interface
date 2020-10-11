@@ -2974,6 +2974,7 @@ void EntityItem::setIsVisibleInSecondaryCamera(bool value) {
 }
 
 EntityPriority EntityItem::getEntityPriority() const {
+    if (isLocalEntity()) return EntityPriority::PRIORITIZED;
     return resultWithReadLock<EntityPriority>([&] { return _entityPriority; });
 }
 
