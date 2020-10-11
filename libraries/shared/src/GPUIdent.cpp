@@ -62,7 +62,9 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
             }
         }
     }
- 
+
+    // TODO: should return all names
+
     //get gpu name
     FILE* stream = popen("system_profiler SPDisplaysDataType | grep Chipset", "r");
     
@@ -83,6 +85,10 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
         } else if (i == bestGPUid) {
             _name=parts[i];
         }
+    }
+
+    if (!_name.isEmpty()) {
+        _name = _name.trimmed().replace(new QRegExp("^Chipset: "), "");
     }
 
     _dedicatedMemoryMB = bestVRAM;
