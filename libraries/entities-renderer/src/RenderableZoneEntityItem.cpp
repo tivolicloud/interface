@@ -26,7 +26,7 @@
 
 // Sphere entities should fit inside a cube entity of the same size, so a sphere that has dimensions 1x1x1
 // is a half unit sphere.  However, the geometry cache renders a UNIT sphere, so we need to scale down.
-static const float SPHERE_ENTITY_SCALE = 0.5f;
+// static const float SPHERE_ENTITY_SCALE = 0.5f;
 
 using namespace render;
 using namespace render::entities;

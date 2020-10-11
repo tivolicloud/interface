@@ -151,7 +151,7 @@ void Basic2DWindowOpenGLDisplayPlugin::compositeExtra() {
     Parent::compositeExtra();
 }
 
-static const uint32_t MIN_THROTTLE_CHECK_FRAMES = 60;
+// static const uint32_t MIN_THROTTLE_CHECK_FRAMES = 60;
 
 bool Basic2DWindowOpenGLDisplayPlugin::isThrottled() const {
 
