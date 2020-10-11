@@ -19,7 +19,6 @@
 #include <QtCore/QMetaEnum>
 #include <QtCore/QUrl>
 #include <QtCore/QThread>
-#include <QtCore/QCborValue>
 #include <QtNetwork/QHostInfo>
 #include <QtNetwork/QNetworkInterface>
 
@@ -157,7 +156,7 @@ qint64 NodeList::sendStats(QJsonObject statsObject, HifiSockAddr destination) {
 
     auto statsPacketList = NLPacketList::create(PacketType::NodeJsonStats, QByteArray(), true, true);
 
-    statsPacketList->write(QCborValue::fromVariant(statsObject).toCbor());
+    statsPacketList->write(QJsonDocument(statsObject).toJson(QJsonDocument::Compact));
 
     sendPacketList(std::move(statsPacketList), destination);
     return 0;
