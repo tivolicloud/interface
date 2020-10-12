@@ -301,8 +301,18 @@ endif()
 
     # Removes large files used to build the vcpkg, for CI purposes.
     def cleanupDevelopmentFiles(self):
-        shutil.rmtree(os.path.join(self.path, "downloads"), ignore_errors=True)
         shutil.rmtree(os.path.join(self.path, "packages"), ignore_errors=True)
+
+        # delete all in downloads except tools
+        downloads = list(filter(lambda filename: filename != "tools", 
+            os.listdir(os.path.join(self.path, "downloads"))
+        ))
+        for filename in downloads:
+            filePath = os.path.join(self.path, "downloads", filename)
+            if os.path.isdir(filePath):
+                shutil.rmtree(filePath, ignore_errors=True)
+            else:
+                os.remove(filePath)
 
     def setupAndroidDependencies(self):
         # vcpkg prebuilt
