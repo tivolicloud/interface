@@ -67,6 +67,12 @@ public:
 
     bool getForceCoarsePicking() { return _forceCoarsePicking; }
 
+    QVector<QUuid> activeLasers;
+
+    void addEnabledLaser(QUuid id) { if (!activeLasers.contains(id)) activeLasers.append(id); }
+    void removeEnabledLaser(QUuid id) { activeLasers.removeAll(id); }
+    bool getLasersEnabled() { return activeLasers.size() > 0; }
+
     const std::vector<QVector3D>& getUpdatedPickCounts() { return _updatedPickCounts; }
     const std::vector<int>& getTotalPickCounts() { return _totalPickCounts; }
 
@@ -93,7 +99,10 @@ protected:
     PickCacheOptimizer<CollisionRegion> _collisionPickCacheOptimizer;
 
     static const unsigned int DEFAULT_PER_FRAME_TIME_BUDGET = 0.1 * USECS_PER_MSEC;
+    static const unsigned int DEFAULT_PER_FRAME_LASER_TIME_BUDGET = 5.0f * USECS_PER_MSEC;
+
     unsigned int _perFrameTimeBudget { DEFAULT_PER_FRAME_TIME_BUDGET };
+    unsigned int _perFrameLaserTimeBudget { DEFAULT_PER_FRAME_LASER_TIME_BUDGET };
 };
 
 #endif // hifi_PickManager_h
