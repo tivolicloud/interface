@@ -24,5 +24,5 @@ macro(TARGET_NEURON)
         endif ()
 
         add_definitions(-DHAVE_NEURON)
-    endif(WIN32 OR APPLE)
+    endif ()
 endmacro()
