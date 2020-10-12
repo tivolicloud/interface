@@ -6,11 +6,9 @@
 #  See the accompanying file LICENSE or http:#www.apache.org/licenses/LICENSE-2.0.html
 #
 
-if (WIN32)
-    
+if (WIN32 OR APPLE)
     set(TARGET_NAME hifiNeuron)
     setup_hifi_plugin(Qml)
     link_hifi_libraries(shared controllers qml ui plugins input-plugins)
     target_neuron()
-
 endif()

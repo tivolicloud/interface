@@ -218,7 +218,6 @@ if (WIN32)
     add_dependency_external_projects(sixense)
   endif ()
 
-  add_dependency_external_projects(neuron)
   add_dependency_external_projects(wasapi)
 endif()
 
