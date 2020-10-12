@@ -33,6 +33,7 @@ elseif (VCPKG_TARGET_IS_OSX)
 	)
 	file(INSTALL ${NEURON_EXTRACTED}/NeuronDataReader_Mac/dylib/NeuronDataReader.dylib
 		DESTINATION ${CURRENT_PACKAGES_DIR}/lib
+		RENAME libNeuronDataReader.dylib
 	)
 	file(INSTALL ${NEURON_EXTRACTED}/NeuronDataReader_Mac/LICENSE.txt
 		DESTINATION ${CURRENT_PACKAGES_DIR}/share/neuron
