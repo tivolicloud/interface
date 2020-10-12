@@ -54,9 +54,6 @@ LoginDialog::~LoginDialog() {
 }
 
 void LoginDialog::showWithSelection() {
-
-    return; // TIVOLI early out
-
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
     auto tablet = dynamic_cast<TabletProxy*>(tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system"));
     auto hmd = DependencyManager::get<HMDScriptingInterface>();
@@ -84,12 +81,10 @@ void LoginDialog::showWithSelection() {
 }
 
 void LoginDialog::toggleAction() {
-
-    return; // TIVOLI early out 
-
     auto accountManager = DependencyManager::get<AccountManager>();
     QAction* loginAction = Menu::getInstance()->getActionForOption(MenuOption::Login);
-    Q_CHECK_PTR(loginAction);
+    if (loginAction == nullptr) return;
+
     static QMetaObject::Connection connection;
     if (connection) {
         disconnect(connection);
@@ -130,7 +125,8 @@ QString LoginDialog::oculusUserID() const {
 
 void LoginDialog::dismissLoginDialog() {
     QAction* loginAction = Menu::getInstance()->getActionForOption(MenuOption::Login);
-    Q_CHECK_PTR(loginAction);
+    if (loginAction == nullptr) return;
+
     loginAction->setEnabled(true);
 
     emit dismissedLoginDialog();

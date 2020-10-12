@@ -1588,19 +1588,20 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     });
 
     connect(offscreenUi.data(), &OffscreenUi::keyboardFocusActive, [this]() {
-#if !defined(Q_OS_ANDROID) && !defined(DISABLE_QML)
-        // Do not show login dialog if requested not to on the command line
-        // QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
-        // int index = arguments().indexOf(hifiNoLoginCommandLineKey);
-        // if (index != -1) {
-            resumeAfterLoginDialogActionTaken();
-            return;
-        // }
+// #if !defined(Q_OS_ANDROID) && !defined(DISABLE_QML)
+//         // Do not show login dialog if requested not to on the command line
+//         // QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
+//         // int index = arguments().indexOf(hifiNoLoginCommandLineKey);
 
-        // TIVOLI showLoginScreen();
-#else
+//         if (arguments().indexOf("--tokens") != -1) {
+//             resumeAfterLoginDialogActionTaken();
+//             return;
+//         }
+
+//         showLoginScreen();
+// #else
         resumeAfterLoginDialogActionTaken();
-#endif
+// #endif
     });
 
     // Initialize the user interface and menu system
@@ -3083,6 +3084,7 @@ void Application::initializeGL() {
 
     #if defined(Q_OS_LINUX)
         // Fixes "seccomp-bpf failure in syscall 0230" on Arch Linux
+        // CHECK THIS
         chromiumFlags << "--disable-seccomp-filter-sandbox";
     #endif
 
@@ -3202,7 +3204,6 @@ static void addDisplayPluginToMenu(const DisplayPluginPointer& displayPlugin, in
 #endif
 
 void Application::showLoginScreen() {
-    return;  // TIVOLI
 #if !defined(DISABLE_QML)
     auto accountManager = DependencyManager::get<AccountManager>();
     auto dialogsManager = DependencyManager::get<DialogsManager>();

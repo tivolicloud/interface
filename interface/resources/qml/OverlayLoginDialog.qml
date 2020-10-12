@@ -56,7 +56,7 @@ FocusScope {
         z: -10
         id: loginDialogBackground
         fillMode: Image.PreserveAspectCrop
-        source: "LoginDialog/images/background.png"
+        source: "LoginDialog/images/background.jpg"
         anchors.fill: parent
     }
 
@@ -65,10 +65,10 @@ FocusScope {
         id: opaqueRect
         height: parent.height
         width: parent.width
-        opacity: 0.65
+        // opacity: 0.65
+        opacity: 0
         color: "black"
     }
-
     Item {
         z: -5
         id: bannerContainer
@@ -81,7 +81,7 @@ FocusScope {
         Image {
             id: banner
             anchors.centerIn: parent
-            source: "../images/high-fidelity-banner.svg"
+            source: "../images/tivoli-banner.svg"
             horizontalAlignment: Image.AlignHCenter
         }
     }
