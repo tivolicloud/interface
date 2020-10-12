@@ -181,7 +181,7 @@ class MyAvatar : public Avatar {
      *     following: <code>"camera"</code>, <code>"avatar"</code>, and <code>"world"</code>.
      * @property {string} motorMode="simple" - The Type of scripted motor behavior: <code>"simple"</code> to use the 
      *     <code>motorTimescale</code> time scale; <code>"dynamic"</code> to use character controller timescales.
-     * @property {string} collisionSoundURL="Body_Hits_Impact.wav" - The sound that's played when the avatar experiences a 
+     * @property {string} collisionSoundURL="qrc:/sounds/Body_Hits_Impact.wav" - The sound that's played when the avatar experiences a 
      *     collision. It can be a mono or stereo 16-bit WAV file running at either 24kHz or 48kHz. The latter is down-sampled 
      *     by the audio mixer, so all audio effectively plays back at a 24khz. 48kHz RAW files are also supported.
      * @property {number} audioListenerMode=0 - Specifies the listening position when hearing spatialized audio. Must be one 
