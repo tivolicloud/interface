@@ -6,7 +6,7 @@
 #  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 #
 macro(TARGET_STEAMWORKS)
-    find_library(STEAMWORKS_LIBRARY_RELEASE steam_api PATHS ${VCPKG_INSTALL_ROOT}/lib/steam NO_DEFAULT_PATH)
+    find_library(STEAMWORKS_LIBRARY_RELEASE steam_api64 steam_api PATHS ${VCPKG_INSTALL_ROOT}/lib/steam NO_DEFAULT_PATH)
     set(STEAMWORKS_INCLUDE_DIRS ${VCPKG_INSTALL_ROOT}/include/steam)
     select_library_configurations(STEAMWORKS)
 
