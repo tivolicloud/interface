@@ -47,6 +47,8 @@ namespace BuildInfo {
 #else
     const BuildType BUILD_TYPE = Dev;
     const QString BUILD_TYPE_STRING = "dev";
+
+    const QString SOURCE_DIR = "@CMAKE_SOURCE_DIR@";
 #endif
 
 }
