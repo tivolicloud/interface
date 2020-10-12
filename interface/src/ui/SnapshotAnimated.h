@@ -15,7 +15,6 @@
 #include <QtCore/QVector>
 #include <Application.h>
 #include <DependencyManager.h>
-#include <GifCreator.h>
 #include <qtimer.h>
 #include <SettingHandle.h>
 #include "scripting/WindowScriptingInterface.h"
@@ -43,8 +42,6 @@ private:
     static QVector<qint64> snapshotAnimatedFrameDelayVector;
     static QSharedPointer<WindowScriptingInterface> snapshotAnimatedDM;
     static float aspectRatio;
-
-    static GifWriter snapshotAnimatedGifWriter;
 
     static void captureFrames();
     static void processFrames();
