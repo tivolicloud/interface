@@ -31,7 +31,7 @@ Download and install these programs:
 
     ```bash
     brew install cmake python
-    brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/64555220bfbf4a25598523c2e4d3a232560eaad7/Formula/openssl.rb -f
+    curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/64555220bfbf4a25598523c2e4d3a232560eaad7/Formula/openssl.rb && brew install openssl.rb -f && rm -f openssl.rb
     ```
 
 ## Step 2. Configuring environment variables
