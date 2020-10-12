@@ -23,10 +23,10 @@ vcpkg_install_cmake()
 vcpkg_copy_pdbs()
 
 file(GLOB OVR_HEADER_FILES ${OVR_SOURCE_PATH}/LibOVR/Include/*.h)
+file(COPY ${OVR_HEADER_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/include/)
+
 file(GLOB OVR_EXTRA_HEADER_FILES ${OVR_SOURCE_PATH}/LibOVR/Include/Extras/*.h)  
-file(COPY ${OVR_HEADER_FILES} ${OVR_EXTRA_HEADER_FILES}
-	DESTINATION ${CURRENT_PACKAGES_DIR}/include/
-)
+file(COPY ${OVR_EXTRA_HEADER_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/include/Extras/)
 
 file(COPY ${OVR_SOURCE_PATH}/LICENSE.txt
 	DESTINATION ${CURRENT_PACKAGES_DIR}/share/ovr/copyright
@@ -52,9 +52,32 @@ file(COPY ${OVR_PLATFORM_HEADER_FILES}
 	DESTINATION ${CURRENT_PACKAGES_DIR}/include/
 )
 
-file(COPY ${OVR_PLATFORM_SOURCE_PATH}/Windows/LibOVRPlatform64_1.lib
-	DESTINATION ${CURRENT_PACKAGES_DIR}/lib/
-)
-file(COPY ${OVR_PLATFORM_SOURCE_PATH}/Windows/LibOVRPlatform64_1.lib
-	DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/
-)
+if (NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
+	file(COPY ${OVR_PLATFORM_SOURCE_PATH}/Windows/LibOVRPlatform64_1.lib
+		DESTINATION ${CURRENT_PACKAGES_DIR}/lib/
+	)
+	vcpkg_execute_required_process(
+		COMMAND lib /def:LibOVRPlatform64_1.lib /OUT:LibOVRPlatform64.lib
+		WORKING_DIRECTORY ${CURRENT_PACKAGES_DIR}/lib/
+		LOGNAME lib-${TARGET_TRIPLET}-rel
+	)
+	file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/LibOVRPlatform64.exp)
+	file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/LibOVRPlatform64_1.lib)
+	file(RENAME ${CURRENT_PACKAGES_DIR}/lib/LibOVRPlatform64.lib ${CURRENT_PACKAGES_DIR}/lib/LibOVRPlatform64_1.lib)
+endif()
+
+if (NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+	file(COPY ${OVR_PLATFORM_SOURCE_PATH}/Windows/LibOVRPlatform64_1.lib
+		DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/
+	)
+	vcpkg_execute_required_process(
+		COMMAND lib /def:LibOVRPlatform64_1.lib /OUT:LibOVRPlatform64.lib
+		WORKING_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/
+		LOGNAME lib-${TARGET_TRIPLET}-rel
+	)
+	file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/LibOVRPlatform64.exp)
+	file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/LibOVRPlatform64_1.lib)
+	file(RENAME ${CURRENT_PACKAGES_DIR}/debug/lib/LibOVRPlatform64.lib ${CURRENT_PACKAGES_DIR}/debug/lib/LibOVRPlatform64_1.lib)
+
+endif()
+
