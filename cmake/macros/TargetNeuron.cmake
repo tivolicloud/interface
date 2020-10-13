@@ -14,8 +14,7 @@ macro(TARGET_NEURON)
         target_link_libraries(${TARGET_NAME} ${NEURON_LIBRARIES})
         
         if (WIN32)
-            # vcpkg wont let dll's in bin 
-            add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/share/neuron")
+            add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/bin")
         elseif (APPLE)
             add_custom_command(TARGET ${TARGET_NAME}
                 COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_PATH=${NEURON_LIBRARY_RELEASE} -P ${EXTERNAL_PROJECT_DIR}/OSXInstallNameChange.cmake

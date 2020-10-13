@@ -24,7 +24,7 @@ if (VCPKG_TARGET_IS_WINDOWS)
 		DESTINATION ${CURRENT_PACKAGES_DIR}/lib/steam
 	)
 	file(INSTALL ${STEAMWORKS_EXTRACTED}/redistributable_bin/win64/steam_api64.dll
-		DESTINATION ${CURRENT_PACKAGES_DIR}/share/steamworks
+		DESTINATION ${CURRENT_PACKAGES_DIR}/bin
 	)
 elseif (VCPKG_TARGET_IS_OSX)
 	file(INSTALL ${STEAMWORKS_EXTRACTED}/redistributable_bin/osx32/libsteam_api.dylib

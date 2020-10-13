@@ -42,9 +42,9 @@ file(INSTALL ${LEAPMOTION_EXTRACTED}/LeapSDK/lib/${LEAPMOTION_LIB_NAME}
 	DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib
 )
 if(VCPKG_TARGET_IS_WINDOWS)
-	# cant place in bin or lib
+	set(VCPKG_POLICY_ALLOW_OBSOLETE_MSVCRT enabled) # fixes "Detected outdated dynamic CRT" for dll
 	file(INSTALL ${LEAPMOTION_EXTRACTED}/LeapSDK/lib/x64/Leap.dll
-		DESTINATION ${CURRENT_PACKAGES_DIR}/share/leapmotion
+		DESTINATION ${CURRENT_PACKAGES_DIR}/bin
 	)
 endif()
 
