@@ -16,7 +16,7 @@ vcpkg_extract_source_archive_ex(
 vcpkg_configure_cmake(
   SOURCE_PATH ${SOURCE_PATH}
   PREFER_NINJA
-  OPTIONS -DENABLE_EXAMPLES=OFF -DENABLE_BINDINGS=OFF 
+  OPTIONS -DENABLE_EXAMPLES=OFF -DENABLE_BINDINGS=OFF -DLIBRARY_TYPE=STATIC
 )
 
 vcpkg_install_cmake()
