@@ -32,12 +32,14 @@ if (WIN32)
   endif ()
 
   list(APPEND CMAKE_PREFIX_PATH "${WINDOW_SDK_PATH}")
-
-  # multi core parallel building
-  include(ProcessorCount)
-  ProcessorCount(PROCESSOR_COUNT)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
-  set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
+ 
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # multi core parallel building
+    include(ProcessorCount)
+    ProcessorCount(PROCESSOR_COUNT)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
+    set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
+  endif ()
 
   # /wd4351 disables warning C4351: new behavior: elements of array will be default initialized
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4351")
