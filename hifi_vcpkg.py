@@ -77,6 +77,7 @@ endif()
         # A format version attached to the tag file... increment when you want to force the build systems to rebuild 
         # without the contents of the ports changing
         self.version = 1
+        self.vcpkgVersion = "2020.07"
         self.tagContents = "{}_{}".format(self.id, self.version)
         self.bootstrapEnv = os.environ.copy()
         self.buildEnv = os.environ.copy()
@@ -118,9 +119,10 @@ endif()
             self.hostTriplet = 'x64-linux'
 
             if platform.machine() == "aarch64":
-                self.bootstrapCmds.append('-useSystemBinaries')
+                self.bootstrapCmds.append("-useSystemBinaries")
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
-                self.hostTriplet = 'arm64-linux'
+                self.hostTriplet = "arm64-linux"
+                self.vcpkgVersion = "2020.04"
 
         if self.args.android:
             self.triplet = 'arm64-android'
@@ -204,14 +206,10 @@ endif()
             
             print("Download vcpkg from GitHub to {}".format(self.path))
 
-            vcpkg_version = "2020.07"
-            if platform.machine() == "aarch64":
-                vcpkg_version = "2020.04"
-
             hifi_utils.downloadAndExtract(
-                "https://codeload.github.com/microsoft/vcpkg/zip/" + vcpkg_version, self.path, isZip=True
+                "https://codeload.github.com/microsoft/vcpkg/zip/" + self.vcpkgVersion, self.path, isZip=True
             )
-            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + vcpkg_version)
+            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + self.vcpkgVersion)
 
             for filename in os.listdir(vcpkg_extract_dir):
                 shutil.move(os.path.join(vcpkg_extract_dir, filename), os.path.join(self.path, filename))
