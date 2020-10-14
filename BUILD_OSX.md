@@ -30,7 +30,7 @@ Download and install these programs:
     The last command will install OpenSSL 1.0.2t
 
     ```bash
-    brew install cmake python node
+    brew install cmake ninja python node
 
     curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/64555220bfbf4a25598523c2e4d3a232560eaad7/Formula/openssl.rb && brew install openssl.rb -f && rm -f openssl.rb
 

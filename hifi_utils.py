@@ -160,3 +160,6 @@ def downloadAndExtract(url, destPath, hash=None, hasher=hashlib.sha512(), isZip=
         with tarfile.open(tempFileName, 'r:gz') as tgz:
             tgz.extractall(destPath)
     os.remove(tempFileName)
+
+def getMacVersion():
+    return list(map(lambda n: int(n), platform.mac_ver()[0].split(".")))
