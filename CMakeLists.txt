@@ -110,7 +110,7 @@ endif()
 
 option(VCPKG_APPLOCAL_DEPS OFF)
 
-project(hifi)
+project(tivoli)
 include("cmake/init.cmake")
 include("cmake/compiler.cmake")
 option(VCPKG_APPLOCAL_DEPS OFF)
