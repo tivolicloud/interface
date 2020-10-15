@@ -11,7 +11,7 @@
 
 if (FALSE AND APPLE)
 
-    set(TARGET_NAME oculusLegacy)
+    set(TARGET_NAME oculus-legacy-plugin)
     setup_hifi_plugin()
     link_hifi_libraries(shared shaders gl gpu plugins ui ui-plugins display-plugins input-plugins midi ${PLATFORM_GL_BACKEND})
     

@@ -46,5 +46,5 @@ macro(SETUP_HIFI_PLUGIN)
         ${PLUGIN_FULL_PATH}
     )
 
-    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME tivoli-plugin-${TARGET_NAME})
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME tivoli-${TARGET_NAME})
 endmacro()

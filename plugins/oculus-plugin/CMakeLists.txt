@@ -13,7 +13,7 @@ if (WIN32 AND (NOT USE_GLES))
     add_definitions(-DOCULUS_APP_ID="$ENV{OCULUS_APP_ID}")
   endif ()
 
-  set(TARGET_NAME oculus)
+  set(TARGET_NAME oculus-plugin)
   setup_hifi_plugin(Multimedia)
   link_hifi_libraries(
     shared task gl shaders gpu ${PLATFORM_GL_BACKEND} controllers ui qml

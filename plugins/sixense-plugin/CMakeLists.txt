@@ -11,7 +11,7 @@
 # currently this will build the hifiSixense plugin, but unless the user has previously installed
 # the msvcr100 runtime support, the plugin will not load.
 if (NOT ANDROID)
-  set(TARGET_NAME hifiSixense)
+  set(TARGET_NAME sixense-plugin)
   setup_hifi_plugin(Qml)
   link_hifi_libraries(shared controllers ui plugins ui-plugins input-plugins)
   target_sixense()

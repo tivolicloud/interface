@@ -16,7 +16,7 @@ if (
     ) AND 
     NOT USE_GLES
 )
-    set(TARGET_NAME openvr)
+    set(TARGET_NAME openvr-plugin)
     setup_hifi_plugin(Gui Qml Multimedia)
     link_hifi_libraries(shared task gl qml networking controllers ui 
         plugins display-plugins ui-plugins input-plugins script-engine

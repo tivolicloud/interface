@@ -7,7 +7,7 @@
 #
 
 if(WIN32)
-    set(TARGET_NAME hifiSpacemouse)
+    set(TARGET_NAME spacemouse-plugin)
     find_package(3DCONNEXIONCLIENT)
     if (3DCONNEXIONCLIENT_FOUND) 
         setup_hifi_plugin(Qml)

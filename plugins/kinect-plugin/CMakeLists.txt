@@ -9,7 +9,7 @@
 if (WIN32)
     find_package(KINECT)
     if (KINECT_FOUND) 
-        set(TARGET_NAME hifiKinect)
+        set(TARGET_NAME kinect-plugin)
         setup_hifi_plugin(Qml)
         link_hifi_libraries(shared controllers ui plugins input-plugins display-plugins)
     
