@@ -39,9 +39,12 @@ macro(SETUP_HIFI_PLUGIN)
         ${PLUGIN_FULL_PATH}
     )
 
-    add_custom_command(TARGET ${DIR} POST_BUILD
+    add_custom_command(
+        TARGET ${TARGET_NAME} POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E copy
         "$<TARGET_FILE:${TARGET_NAME}>"
         ${PLUGIN_FULL_PATH}
     )
+
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME tivoli-plugin-${TARGET_NAME})
 endmacro()
