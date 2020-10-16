@@ -361,7 +361,7 @@ void TestRailInterface::createAddTestCasesPythonScript(const QString& testDirect
 #ifdef Q_OS_WIN
         QStringList parameters = QStringList() << _outputDirectory + "/addTestCases.py";
         process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
         QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + _outputDirectory + "/addTestCases.py";
         process->start("sh", parameters);
 #endif
@@ -492,7 +492,7 @@ void TestRailInterface::addRun() {
 #ifdef Q_OS_WIN
         QStringList parameters = QStringList() << _outputDirectory + "/addRun.py";
         process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
         QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + _outputDirectory + "/addRun.py";
         process->start("sh", parameters);
 #endif
@@ -602,7 +602,7 @@ void TestRailInterface::updateRunWithResults() {
 #ifdef Q_OS_WIN
         QStringList parameters = QStringList() << _outputDirectory + "/updateRunWithResults.py";
         process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
         QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + _outputDirectory + "/updateRunWithResults.py";
         process->start("sh", parameters);
 #endif
@@ -780,7 +780,7 @@ void TestRailInterface::getReleasesFromTestRail() {
 #ifdef Q_OS_WIN
     QStringList parameters = QStringList() << filename;
     process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + filename;
     process->start("sh", parameters);
 #endif
@@ -1104,7 +1104,7 @@ void TestRailInterface::getTestSectionsFromTestRail() {
 #ifdef Q_OS_WIN
     QStringList parameters = QStringList() << filename;
     process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + filename;
     process->start("sh", parameters);
 #endif
@@ -1148,7 +1148,7 @@ void TestRailInterface::getRunsFromTestRail() {
 #ifdef Q_OS_WIN
     QStringList parameters = QStringList() << filename;
     process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QStringList parameters = QStringList() << "-c" <<  _pythonCommand + " " + filename;
     process->start("sh", parameters);
 #endif

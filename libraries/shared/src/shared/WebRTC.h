@@ -11,7 +11,7 @@
 #ifndef hifi_WebRTC_h
 #define hifi_WebRTC_h
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
 #  define WEBRTC_ENABLED 1
 #  define WEBRTC_POSIX 1
 #elif defined(Q_OS_WIN)

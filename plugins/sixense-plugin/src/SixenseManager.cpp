@@ -74,7 +74,7 @@ const char* SHOW_DEBUG_RAW { "Debug Draw Raw Data" };
 const char* SHOW_DEBUG_CALIBRATED { "Debug Draw Calibrated Data" };
 
 bool SixenseManager::isSupported() const {
-#if defined(HAVE_SIXENSE) && !defined(Q_OS_OSX)
+#if defined(HAVE_SIXENSE) && !defined(Q_OS_MACOS)
     return true;
 #else
     return false;

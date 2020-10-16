@@ -89,7 +89,7 @@ void FileUtils::locateFile(const QString& filePath) {
     }
 
     bool success = false;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QStringList args;
     args << "-e";
     args << "tell application \"Finder\"";

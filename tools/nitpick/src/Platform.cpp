@@ -14,7 +14,7 @@
 #ifdef Q_OS_WIN
 #include <dxgi1_3.h>
 #pragma comment(lib, "dxgi.lib")
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
 #include <OpenGL/OpenGL.h>
 #include <sstream>
 #include <QStringList>
@@ -94,7 +94,7 @@ QString Platform::getGraphicsCardType() {
         return QString(description.c_str());
     }
 
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     FILE* stream = popen("system_profiler SPDisplaysDataType | grep Chipset", "r");
 
     std::ostringstream hostStream;

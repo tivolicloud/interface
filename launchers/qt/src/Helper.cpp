@@ -67,7 +67,7 @@ bool swapLaunchers(const QString& oldLauncherPath, const QString& newLauncherPat
     }
 
     bool success = false;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     qDebug() << "replacing launchers -> old launcher: " << oldLauncherPath << " new launcher: " << newLauncherPath;
     success = replaceDirectory(oldLauncherPath, newLauncherPath);
 #endif

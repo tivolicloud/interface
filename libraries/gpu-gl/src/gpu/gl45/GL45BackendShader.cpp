@@ -13,7 +13,7 @@ using namespace gpu::gl;
 using namespace gpu::gl45;
 
 shader::Dialect GL45Backend::getShaderDialect() const {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     // We build, but don't actually use GL 4.5 on OSX
     throw std::runtime_error("GL 4.5 unavailable on OSX");
 #else

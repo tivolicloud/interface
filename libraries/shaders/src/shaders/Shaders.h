@@ -32,7 +32,7 @@ enum class Dialect
 #if defined(USE_GLES)
     // GLES only support 3.1 es
     glsl310es,
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     // Mac only supports 4.1
     glsl410,
 #else

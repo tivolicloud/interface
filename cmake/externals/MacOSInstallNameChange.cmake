@@ -1,5 +1,5 @@
 # 
-#  OSXInstallNameChange.cmake
+#  MacOSInstallNameChange.cmake
 #  cmake/macros
 # 
 #  Copyright 2015 High Fidelity, Inc.
@@ -10,9 +10,6 @@
 #
 
 # first find the so files in the source dir
-message("INSTALL_NAME_LIBRARY_DIR ${INSTALL_NAME_LIBRARY_DIR}")
-message("INSTALL_NAME_LIBRARY_PATH ${INSTALL_NAME_LIBRARY_PATH}")
-
 if (INSTALL_NAME_LIBRARY_PATH AND EXISTS ${INSTALL_NAME_LIBRARY_PATH})
   set(_LIBRARIES "${INSTALL_NAME_LIBRARY_PATH}")
   get_filename_component(INSTALL_NAME_LIBRARY_DIR ${INSTALL_NAME_LIBRARY_PATH} DIRECTORY)
@@ -20,8 +17,11 @@ else ()
   file(GLOB_RECURSE _LIBRARIES "${INSTALL_NAME_LIBRARY_DIR}/*.dylib")
 endif ()
 
+message("INSTALL_NAME_LIBRARY_DIR ${INSTALL_NAME_LIBRARY_DIR}")
+message("INSTALL_NAME_LIBRARY_PATH ${INSTALL_NAME_LIBRARY_PATH}")
+
 if (NOT _LIBRARIES)
-  message(FATAL_ERROR "OSXInstallNameChange -- no libraries found: ${INSTALL_NAME_LIBRARY_DIR}")
+  message(FATAL_ERROR "MacOSInstallNameChange -- no libraries found: ${INSTALL_NAME_LIBRARY_DIR}")
 endif ()
 
 # find the install_name_tool command

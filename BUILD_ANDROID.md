@@ -6,11 +6,11 @@ Please read the [general build guide](BUILD.md) for information on building othe
 
 # Dependencies
 
-Building is currently supported on Windows, OSX and Linux, but developers intending to do work on the library dependencies are strongly urged to use 64 bit Linux as a build platform.
+Building is currently supported on Windows, macOS and Linux, but developers intending to do work on the library dependencies are strongly urged to use 64 bit Linux as a build platform.
 
 ### OS specific dependencies
 
-Please install the dependencies for your OS using the [Windows](BUILD_WIN.md), [OSX](BUILD_OSX.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
+Please install the dependencies for your OS using the [Windows](BUILD_WIN.md), [macOS](BUILD_MACOS.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
 
 ### Android Studio
 

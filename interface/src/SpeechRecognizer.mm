@@ -10,7 +10,7 @@
 //
 
 #include <QtGlobal>
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 
 #import <Foundation/Foundation.h>
 #import <AppKit/NSSpeechRecognizer.h>
@@ -106,4 +106,4 @@ void SpeechRecognizer::removeCommand(const QString& command) {
     reloadCommands();
 }
 
-#endif // Q_OS_MAC
+#endif // Q_OS_MACOS

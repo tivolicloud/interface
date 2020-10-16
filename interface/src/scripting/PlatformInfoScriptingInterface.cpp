@@ -15,7 +15,7 @@
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
 #include <sstream>
 #endif
 
@@ -38,7 +38,7 @@ PlatformInfoScriptingInterface::~PlatformInfoScriptingInterface() {
 QString PlatformInfoScriptingInterface::getOperatingSystemType() {
 #ifdef Q_OS_WIN
     return "WINDOWS";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     return "MACOS";
 #else
     return "UNKNOWN";
@@ -67,7 +67,7 @@ QString PlatformInfoScriptingInterface::getCPUBrand() {
     }
 
     return CPUBrandString;
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     FILE* stream = popen("sysctl -n machdep.cpu.brand_string", "r");
     
     std::ostringstream hostStream;
@@ -94,7 +94,7 @@ int PlatformInfoScriptingInterface::getTotalSystemMemoryMB() {
     statex.dwLength = sizeof (statex);
     GlobalMemoryStatusEx(&statex);
     return statex.ullTotalPhys / 1024 / 1024;
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     FILE* stream = popen("sysctl -a | grep hw.memsize", "r");
     
     std::ostringstream hostStream;
@@ -115,7 +115,7 @@ int PlatformInfoScriptingInterface::getTotalSystemMemoryMB() {
 QString PlatformInfoScriptingInterface::getGraphicsCardType() {
 #ifdef Q_OS_WIN
     return qApp->getGraphicsCardType();
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     FILE* stream = popen("system_profiler SPDisplaysDataType | grep Chipset", "r");
     
     std::ostringstream hostStream;

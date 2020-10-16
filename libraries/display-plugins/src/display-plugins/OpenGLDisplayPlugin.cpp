@@ -158,11 +158,11 @@ public:
                             bool hasVsync = false;
                             QThread::setPriority(newPlugin->getPresentPriority());
                             bool wantVsync = newPlugin->wantVsync();
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
                             newPlugin->swapBuffers();
 #endif
                             gl::setSwapInterval(wantVsync ? 1 : 0);
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
                             newPlugin->swapBuffers();
 #endif
                             hasVsync = gl::getSwapInterval() != 0;
@@ -188,7 +188,7 @@ public:
                 continue;
             }
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
             _context->makeCurrent();
 #endif
             // Execute the frame and present it to the display device.
@@ -199,7 +199,7 @@ public:
                 gl::globalRelease(false);
                 CHECK_GL_ERROR();
             }
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
             _context->doneCurrent();
 #endif
 
@@ -877,7 +877,7 @@ gpu::gl::GLBackend* OpenGLDisplayPlugin::getGLBackend() {
         return nullptr;
     }
     auto backend = _gpuContext->getBackend().get();
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     // Should be dynamic_cast, but that doesn't work in plugins on OSX
     auto glbackend = static_cast<gpu::gl::GLBackend*>(backend);
 #else

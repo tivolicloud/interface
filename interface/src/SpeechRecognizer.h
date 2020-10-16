@@ -140,7 +140,7 @@ private:
     
     bool _enabled;
     QSet<QString> _commands;
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     void* _speechRecognizerDelegate;
     void* _speechRecognizer;
 #elif defined(Q_OS_WIN)

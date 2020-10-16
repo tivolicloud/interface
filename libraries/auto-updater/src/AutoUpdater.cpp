@@ -23,7 +23,7 @@ AutoUpdater::AutoUpdater() :
 {
 #if defined Q_OS_WIN32
     _operatingSystem = "windows";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     _operatingSystem = "mac";
 #elif defined Q_OS_LINUX
     _operatingSystem = "ubuntu";
