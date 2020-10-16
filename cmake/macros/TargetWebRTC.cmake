@@ -15,12 +15,14 @@ macro(TARGET_WEBRTC)
         # select_library_configurations(WEBRTC)
     else()
         set(WEBRTC_INCLUDE_DIRS "${VCPKG_INSTALL_ROOT}/include/webrtc")
-        target_include_directories(${TARGET_NAME} SYSTEM PUBLIC ${WEBRTC_INCLUDE_DIRS})
-        find_library(WEBRTC_LIBRARY_RELEASE webrtc PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
-        find_library(WEBRTC_LIBRARY_DEBUG webrtc PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+        
+        find_library(WEBRTC_LIBRARY_RELEASE webrtc_full PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+        find_library(WEBRTC_LIBRARY_DEBUG webrtc_full PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
         select_library_configurations(WEBRTC)
+
+        target_include_directories(${TARGET_NAME} SYSTEM PUBLIC ${WEBRTC_INCLUDE_DIRS})
         target_link_libraries(${TARGET_NAME} ${WEBRTC_LIBRARIES})
+
+        target_compile_definitions(${TARGET_NAME} PUBLIC WEBRTC_APM_DEBUG_DUMP=0)
     endif()
-
-
 endmacro()

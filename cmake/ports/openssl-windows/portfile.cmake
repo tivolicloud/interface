@@ -1,3 +1,8 @@
+# -- openssl needs to be linked dynamically or it'll be incompatible with webrtc
+set(BUILD_SHARED_LIBS true)
+set(VCPKG_LIBRARY_LINKAGE dynamic)
+# --
+
 vcpkg_fail_port_install(MESSAGE "${PORT} is only for Windows Desktop" ON_TARGET "UWP" "Linux" "OSX")
 
 if(EXISTS "${CURRENT_INSTALLED_DIR}/include/openssl/ssl.h")

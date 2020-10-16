@@ -1,3 +1,4 @@
 Source: webrtc
-Version: 20190626
-Description: WebRTC
+Version: 789887ec96919cfb1bff7f039078ad1961a07b27
+Supports: x64 & (windows|linux|osx)
+Build-Depends: abseil

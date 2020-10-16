@@ -1,36 +1,53 @@
-include(vcpkg_common_functions)
-set(WEBRTC_VERSION 20190626)
-set(MASTER_COPY_SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src)
+# https://github.com/anba8005/webrtc-builds
+#
+# ./build.sh -r 789887ec96919cfb1bff7f039078ad1961a07b27 -c x64 -t win
+#
+# -   Change line 385 in `util.sh` to current MSVC path
+#
+# ./build.sh -r 789887ec96919cfb1bff7f039078ad1961a07b27 -c x64 -t linux
+#
+# -   `docker run --rm -it -v $PWD:/webrtc-builds:/webrtc-builds debian:10`
+# -   Use `sid` in `/etc/apt/sources.list` just to install `libffi7`
+#
+# ./build.sh -r 789887ec96919cfb1bff7f039078ad1961a07b27 -c x64 -t mac
 
-if (ANDROID)
-   # this is handled by hifi_android.py
-elseif (WIN32)
-    vcpkg_download_distfile(
-        WEBRTC_SOURCE_ARCHIVE
-        URLS https://cdn.tivolicloud.com/dependencies/webrtc-20190626-windows.zip
-        SHA512 c0848eddb1579b3bb0496b8785e24f30470f3c477145035fd729264a326a467b9467ae9f426aa5d72d168ad9e9bf2c279150744832736bdf39064d24b04de1a3
-        FILENAME webrtc-20190626-windows.zip
-    )
-elseif (APPLE)
-    vcpkg_download_distfile(
-        WEBRTC_SOURCE_ARCHIVE
-        URLS https://cdn.tivolicloud.com/dependencies/webrtc-m78-osx.tar.gz
-        SHA512 8b547da921cc96f5c22b4253a1c9e707971bb627898fbdb6b238ef1318c7d2512e878344885c936d4bd6a66005cc5b63dfc3fa5ddd14f17f378dcaa17b5e25df
-        FILENAME webrtc-m78-osx.tar.gz
-    )
-else ()
-    # else Linux desktop
-    vcpkg_download_distfile(
-        WEBRTC_SOURCE_ARCHIVE
-        URLS https://cdn.tivolicloud.com/dependencies/webrtc-20190626-linux.tar.gz
-        SHA512 07d7776551aa78cb09a3ef088a8dee7762735c168c243053b262083d90a1d258cec66dc386f6903da5c4461921a3c2db157a1ee106a2b47e7756cb424b66cc43
-        FILENAME webrtc-20190626-linux.tar.gz
-    )
+vcpkg_fail_port_install(ON_ARCH "x86" "arm" "arm64" ON_TARGET "uwp")
+
+if (VCPKG_TARGET_IS_WINDOWS
+)
+elseif (VCPKG_TARGET_IS_LINUX)
+	set(WEBRTC_ARCHIVE_FILENAME "webrtc-30987-789887e-linux-x64.tar.gz")
+	set(WEBRTC_ARCHIVE_SHA512 "ff62491b441224c2977364f3896210fa8114dc84291390377d754d0f438980f57396b0dddf6e8b339db95c98013e7ca347137aad19f03374e1e073fe51623678")
+	set(WEBRTC_LIBRARY_FILENAME "libwebrtc_full.a")
+elseif (VCPKG_TARGET_IS_OSX)
 endif ()
 
-vcpkg_extract_source_archive(${WEBRTC_SOURCE_ARCHIVE})
+vcpkg_download_distfile(
+	WEBRTC_ARCHIVE
+	URLS https://cdn.tivolicloud.com/dependencies/${WEBRTC_ARCHIVE_FILENAME}
+	SHA512 ${WEBRTC_ARCHIVE_SHA512}
+	FILENAME ${WEBRTC_ARCHIVE_FILENAME}
+)
 
-file(COPY ${MASTER_COPY_SOURCE_PATH}/webrtc/include DESTINATION ${CURRENT_PACKAGES_DIR})
-file(COPY ${MASTER_COPY_SOURCE_PATH}/webrtc/lib DESTINATION ${CURRENT_PACKAGES_DIR})
-file(COPY ${MASTER_COPY_SOURCE_PATH}/webrtc/share DESTINATION ${CURRENT_PACKAGES_DIR})
-file(COPY ${MASTER_COPY_SOURCE_PATH}/webrtc/debug DESTINATION ${CURRENT_PACKAGES_DIR})
+vcpkg_extract_source_archive_ex(
+	OUT_SOURCE_PATH WEBRTC_EXTRACTED
+	ARCHIVE ${WEBRTC_ARCHIVE}
+	NO_REMOVE_ONE_LEVEL
+)
+
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/include/webrtc)
+file(RENAME ${WEBRTC_EXTRACTED}/include ${CURRENT_PACKAGES_DIR}/include/webrtc)
+
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/lib)
+file(RENAME ${WEBRTC_EXTRACTED}/lib/x64/Release/${WEBRTC_LIBRARY_FILENAME}
+${CURRENT_PACKAGES_DIR}/lib/${WEBRTC_LIBRARY_FILENAME}
+)
+
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib)
+file(RENAME ${WEBRTC_EXTRACTED}/lib/x64/Debug/${WEBRTC_LIBRARY_FILENAME}
+	${CURRENT_PACKAGES_DIR}/debug/lib/${WEBRTC_LIBRARY_FILENAME}
+)
+
+file(WRITE ${CURRENT_PACKAGES_DIR}/share/webrtc/copyright
+	"https://github.com/anba8005/webrtc-builds\n"
+)
