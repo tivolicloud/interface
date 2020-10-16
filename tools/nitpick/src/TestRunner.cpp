@@ -84,7 +84,7 @@ void TestRunner::parseBuildInformation() {
         QString platformOfInterest;
 #ifdef Q_OS_WIN
         platformOfInterest = "windows";
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
         platformOfInterest = "mac";
 #endif
 

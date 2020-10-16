@@ -69,7 +69,7 @@ protected:
 
 #ifdef Q_OS_WIN
     const QString INSTALLER_FILENAME_LATEST{ "HighFidelity-Beta-latest-dev.exe" };
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     const QString INSTALLER_FILENAME_LATEST{ "HighFidelity-Beta-latest-dev.dmg" };
 #else
     const QString INSTALLER_FILENAME_LATEST{ "" };

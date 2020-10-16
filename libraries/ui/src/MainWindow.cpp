@@ -78,7 +78,7 @@ void MainWindow::restoreGeometry() {
         ) / 2
     );
 
-#if !defined(Q_OS_MAC)
+#if !defined(Q_OS_MACOS)
     // maximising on mac is actually fullscreen
     setWindowState(Qt::WindowMaximized);
 #endif

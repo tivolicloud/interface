@@ -1,4 +1,4 @@
-[Vcpkg](https://github.com/Microsoft/vcpkg) is an open source package management system created by Microsoft, intially just for Windows based system, but eventually extended to cover Linux and OSX as well, and in theory extensible enough to cover additional operating systems.
+[Vcpkg](https://github.com/Microsoft/vcpkg) is an open source package management system created by Microsoft, intially just for Windows based system, but eventually extended to cover Linux and macOS as well, and in theory extensible enough to cover additional operating systems.
 
 Vcpkg is now our primary mechanism for managing the external libraries and tools on which we rely to build our applications.
 

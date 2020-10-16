@@ -23,11 +23,11 @@
 #include <winreg.h>
 #endif //Q_OS_WIN
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #include <IOKit/IOBSD.h>
 #include <IOKit/IOKitLib.h>
 #include <IOKit/storage/IOMedia.h>
-#endif //Q_OS_MAC
+#endif //Q_OS_MACOS
 
 static const QString FALLBACK_FINGERPRINT_KEY = "fallbackFingerprint";
 
@@ -40,14 +40,14 @@ QString FingerprintUtils::getMachineFingerprintString() {
     // for now lets do nothing.
 #endif //Q_OS_LINUX
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     io_registry_entry_t ioRegistryRoot = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/");
     CFStringRef uuidCf = (CFStringRef) IORegistryEntryCreateCFProperty(ioRegistryRoot, CFSTR(kIOPlatformUUIDKey), kCFAllocatorDefault, 0);
     IOObjectRelease(ioRegistryRoot);
     uuidString = QString::fromCFString(uuidCf);
     CFRelease(uuidCf); 
     qCDebug(networking) << "Mac serial number: " << uuidString;
-#endif //Q_OS_MAC
+#endif //Q_OS_MACOS
 
 #ifdef Q_OS_WIN
     HKEY cryptoKey;

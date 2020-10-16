@@ -24,7 +24,7 @@
 #include "RenderPipelines.h"
 #include "MeshPartPayload.h"
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 bool MeshPartPayload::DEFAULT_ENABLE_MATERIAL_PROCEDURAL_SHADERS = false;
 bool MeshPartPayload::enableMaterialProceduralShaders = false;
 #else
@@ -290,7 +290,7 @@ ModelMeshPartPayload::ModelMeshPartPayload(ModelPointer model,
 
     initCache(model);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
+#if defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     // On mac AMD, we specifically need to have a _meshBlendshapeBuffer bound when using a deformed mesh pipeline
     // it cannot be null otherwise we crash in the drawcall using a deformed pipeline with a skinned only (not blendshaped) mesh
     if (_isBlendShaped) {

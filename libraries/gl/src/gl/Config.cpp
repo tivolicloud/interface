@@ -15,7 +15,7 @@
 
 #if defined(Q_OS_WIN)
 #elif defined(Q_OS_ANDROID)
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLTypes.h>
 #include <OpenGL/CGLCurrent.h>
@@ -62,7 +62,7 @@ static void* getGlProcessAddress(const char *namez) {
     return (void*)result;
 }
 
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
 
 static void* getGlProcessAddress(const char *namez) {
     static void* GL_LIB = nullptr;
@@ -103,7 +103,7 @@ void gl::initModuleGl() {
 int gl::getSwapInterval() {
 #if defined(Q_OS_WIN)
     return wglGetSwapIntervalEXT();
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     GLint interval;
     CGLGetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &interval);
     return interval;
@@ -116,7 +116,7 @@ int gl::getSwapInterval() {
 void gl::setSwapInterval(int interval) {
 #if defined(Q_OS_WIN)
     wglSwapIntervalEXT(interval);
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &interval);
 #elif defined(Q_OS_ANDROID)
     eglSwapInterval(eglGetCurrentDisplay(), interval);

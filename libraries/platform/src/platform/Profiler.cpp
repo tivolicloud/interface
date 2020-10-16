@@ -142,7 +142,7 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
 // NO for android
 // YES on macos EXCEPT for macbookair with gpu intel iris or intel HD 6000
 bool Profiler::isRenderMethodDeferredCapable() {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     return true;
 #elif defined(Q_OS_ANDROID)
     return false;

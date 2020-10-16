@@ -205,7 +205,7 @@ void TestWindow::resizeEvent(QResizeEvent* ev) {
 
 
 int main(int argc, char** argv) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     auto format = getDefaultOpenGLSurfaceFormat();
     // Deal with some weirdness in the chromium context sharing on Mac.
     // The primary share context needs to be 3.2, so that the Chromium will

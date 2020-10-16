@@ -690,7 +690,7 @@ bool adjustedFormatForAudioDevice(const QAudioDeviceInfo& audioDevice,
     }  // else enumerate formats
 #endif
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     // Mac OSX returns the preferred CoreAudio format
     return nativeFormatForAudioDevice(audioDevice, adjustedAudioFormat);
 #endif
@@ -2259,7 +2259,7 @@ int AudioClient::setOutputBufferSize(int numFrames, bool persist) {
 const float AudioClient::CALLBACK_ACCELERATOR_RATIO = IsWindows8OrGreater() ? 1.0f : 0.25f;
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 const float AudioClient::CALLBACK_ACCELERATOR_RATIO = 2.0f;
 #endif
 
