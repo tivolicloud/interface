@@ -1,5 +1,5 @@
 #
-#  AddResourcesToOSXBundle.cmake 
+#  AddResourcesToMacOSBundle.cmake 
 #  cmake/macros
 #
 #  Created by Stephen Birarda on 04/27/15.
@@ -29,7 +29,7 @@ macro(_RECURSIVELY_SET_PACKAGE_LOCATION _PATH)
   endforeach()
 endmacro(_RECURSIVELY_SET_PACKAGE_LOCATION _PATH)
 
-macro(ADD_RESOURCES_TO_OS_X_BUNDLE _RSRC_FOLDER)
+macro(ADD_RESOURCES_TO_MACOS_BUNDLE _RSRC_FOLDER)
 
   # GLOB the resource directory
   file(GLOB _ROOT_ITEMS "${_RSRC_FOLDER}/*")
@@ -37,4 +37,4 @@ macro(ADD_RESOURCES_TO_OS_X_BUNDLE _RSRC_FOLDER)
   # recursively enumerate from the root items
   _recursively_set_package_location("" ${_ROOT_ITEMS})
 
-endmacro(ADD_RESOURCES_TO_OS_X_BUNDLE _RSRC_FOLDER)
+endmacro(ADD_RESOURCES_TO_MACOS_BUNDLE _RSRC_FOLDER)

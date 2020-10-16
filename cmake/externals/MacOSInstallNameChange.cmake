@@ -1,5 +1,5 @@
 # 
-#  OSXInstallNameChange.cmake
+#  MacOSInstallNameChange.cmake
 #  cmake/macros
 # 
 #  Copyright 2015 High Fidelity, Inc.
@@ -21,7 +21,7 @@ else ()
 endif ()
 
 if (NOT _LIBRARIES)
-  message(FATAL_ERROR "OSXInstallNameChange -- no libraries found: ${INSTALL_NAME_LIBRARY_DIR}")
+  message(FATAL_ERROR "MacOSInstallNameChange -- no libraries found: ${INSTALL_NAME_LIBRARY_DIR}")
 endif ()
 
 # find the install_name_tool command
