@@ -106,7 +106,8 @@ Item {
         settings.touchIconsEnabled: true
         settings.allowRunningInsecureContent: true
 
-        backgroundColor: flick.transparentBackground ? "transparent" : {}
+        // https://doc.qt.io/qt-5/qml-qtwebengine-webengineview.html#backgroundColor-prop
+        backgroundColor: flick.transparentBackground ? "transparent" : "white"
 
         // creates a global EventBridge object.
         WebEngineScript {

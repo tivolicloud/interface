@@ -61,7 +61,9 @@
 extern bool DEV_DECIMATE_TEXTURES;
 
 Menu* Menu::getInstance() {
-    return dynamic_cast<Menu*>(qApp->getWindow()->menuBar());
+    auto window = qApp->getWindow();
+    if (window) return dynamic_cast<Menu*>(window->menuBar());
+    else return NULL;
 }
 
 const char* EXCLUSION_GROUP_KEY = "exclusionGroup";
@@ -73,17 +75,16 @@ Menu::Menu() {
     // File/Application menu ----------------------------------
     MenuWrapper* fileMenu = addMenu("File");
 
-    // TIVOLI commented out File>Login functionality
-    //// File > Login menu items
-    //{
-    //    addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
+    // File > Login menu items
+    if (qApp->arguments().indexOf("--tokens") == -1) {
+        addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
 
-    //    // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
-    //    connect(accountManager.data(), &AccountManager::profileChanged,
-    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-    //    connect(accountManager.data(), &AccountManager::logoutComplete,
-    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-    //}
+        // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
+        connect(accountManager.data(), &AccountManager::profileChanged,
+                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+        connect(accountManager.data(), &AccountManager::logoutComplete,
+                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+    }
 
     // File > Quit
     addActionToQMenuAndActionHash(fileMenu, MenuOption::Quit, Qt::CTRL | Qt::Key_Q, qApp, SLOT(quit()), QAction::QuitRole);
@@ -288,19 +289,6 @@ Menu::Menu() {
         }
     });
 
-    // Settings > Graphics...
-    action = addActionToQMenuAndActionHash(settingsMenu, "Graphics...");
-    connect(action, &QAction::triggered, [] {
-        auto tablet = DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
-        auto hmd = DependencyManager::get<HMDScriptingInterface>();
-        tablet->pushOntoStack("hifi/dialogs/graphics/GraphicsSettings.qml");
-
-        if (!hmd->getShouldShowTablet()) {
-            hmd->toggleShouldShowTablet();
-        }
-    });
-
-
     // Settings > Developer Menu
     addCheckableActionToQMenuAndActionHash(settingsMenu, "Developer Menu", 0, false, this, SLOT(toggleDeveloperMenus()));
     
@@ -478,53 +466,6 @@ Menu::Menu() {
 
     // Developer > Render > OpenVR threaded submit
     addCheckableActionToQMenuAndActionHash(renderOptionsMenu, MenuOption::OpenVrThreadedSubmit, 0, true);
-
-    //const QString  = "Automatic Texture Memory";
-    //const QString  = "64 MB";
-    //const QString  = "256 MB";
-    //const QString  = "512 MB";
-    //const QString  = "1024 MB";
-    //const QString  = "2048 MB";
-
-    // Developer > Render > Maximum Texture Memory
-    MenuWrapper* textureMenu = renderOptionsMenu->addMenu(MenuOption::RenderMaxTextureMemory);
-    QActionGroup* textureGroup = new QActionGroup(textureMenu);
-    textureGroup->setExclusive(true);
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTextureAutomatic, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture4MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture64MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture256MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture512MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture1024MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture2048MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture4096MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture6144MB, 0, false));
-    textureGroup->addAction(addCheckableActionToQMenuAndActionHash(textureMenu, MenuOption::RenderMaxTexture8192MB, 0, true));
-    connect(textureGroup, &QActionGroup::triggered, [textureGroup] {
-        auto checked = textureGroup->checkedAction();
-        auto text = checked->text();
-        gpu::Context::Size newMaxTextureMemory { 0 };
-        if (MenuOption::RenderMaxTexture4MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(4);
-        } else if (MenuOption::RenderMaxTexture64MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(64);
-        } else if (MenuOption::RenderMaxTexture256MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(256);
-        } else if (MenuOption::RenderMaxTexture512MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(512);
-        } else if (MenuOption::RenderMaxTexture1024MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(1024);
-        } else if (MenuOption::RenderMaxTexture2048MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(2048);
-        } else if (MenuOption::RenderMaxTexture4096MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(4096);
-        } else if (MenuOption::RenderMaxTexture6144MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(6144);
-        } else if (MenuOption::RenderMaxTexture8192MB == text) {
-            newMaxTextureMemory = MB_TO_BYTES(8192);
-        }
-        gpu::Texture::setAllowedGPUMemoryUsage(newMaxTextureMemory);
-    });
 
 #ifdef Q_OS_WIN
     // Developer > Render > Enable Sparse Textures
@@ -819,6 +760,11 @@ Menu::Menu() {
         connect(action, &QAction::triggered, qApp, []() { crash::newFault(); });
         action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashNewFaultThreaded);
         connect(action, &QAction::triggered, qApp, []() { std::thread(crash::newFault).join(); });
+
+        action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashThrownException);
+        connect(action, &QAction::triggered, qApp, []() { crash::throwException(); });
+        action = addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashThrownExceptionThreaded);
+        connect(action, &QAction::triggered, qApp, []() { std::thread(crash::throwException).join(); });
 
         addActionToQMenuAndActionHash(crashMenu, MenuOption::CrashOnShutdown, 0, qApp, SLOT(crashOnShutdown()));
     }

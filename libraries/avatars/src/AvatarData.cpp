@@ -22,7 +22,6 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
-#include <QtCore/QCborValue>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 
@@ -2877,12 +2876,12 @@ QByteArray AvatarData::toFrame(const AvatarData& avatar) {
         qCDebug(avatars).noquote() << QJsonDocument(obj).toJson(QJsonDocument::JsonFormat::Indented);
     }
 #endif
-    return QCborValue::fromVariant(root).toCbor();
+    return QJsonDocument(root).toJson(QJsonDocument::Compact);
 }
 
 
 void AvatarData::fromFrame(const QByteArray& frameData, AvatarData& result, bool useFrameSkeleton) {
-    QJsonObject obj = QCborValue::fromCbor(frameData).toJsonValue().toObject();
+    QJsonObject obj = QJsonDocument::fromJson(frameData).toVariant().toJsonObject();
 
 #ifdef WANT_JSON_DEBUG
     {
@@ -3055,15 +3054,12 @@ void AvatarData::updateAvatarEntity(const QUuid& entityID, const QByteArray& ent
 }
 
 void AvatarData::clearAvatarEntity(const QUuid& entityID, bool requiresRemovalFromTree) {
-
+    // NOTE: requiresRemovalFromTree is unused
     bool removedEntity = false;
-
     _avatarEntitiesLock.withWriteLock([this, &removedEntity, &entityID] {
         removedEntity = _packedAvatarEntityData.remove(entityID);
     });
-
     insertRemovedEntityID(entityID);
-
     if (removedEntity && _clientTraitsHandler) {
         // we have a client traits handler, so we need to mark this removed instance trait as deleted
         // so that changes are sent next frame
@@ -3189,7 +3185,7 @@ QScriptValue AvatarEntityMapToScriptValue(QScriptEngine* engine, const AvatarEnt
     QScriptValue obj = engine->newObject();
     for (auto entityID : value.keys()) {
         QByteArray entityProperties = value.value(entityID);
-        QJsonValue jsonEntityProperties = QCborValue::fromCbor(entityProperties).toJsonValue();
+        QJsonValue jsonEntityProperties = QJsonDocument::fromJson(entityProperties).toVariant().toJsonValue();
         if (!jsonEntityProperties.isObject()) {
             qCDebug(avatars) << "bad AvatarEntityData in AvatarEntityMap" << QString(entityProperties.toHex());
         }
@@ -3212,7 +3208,7 @@ void AvatarEntityMapFromScriptValue(const QScriptValue& object, AvatarEntityMap&
 
         QScriptValue scriptEntityProperties = itr.value();
         QVariant variantEntityProperties = scriptEntityProperties.toVariant();
-        QByteArray binaryEntityProperties = QCborValue::fromVariant(variantEntityProperties).toCbor();
+        QByteArray binaryEntityProperties = variantEntityProperties.toJsonDocument().toJson(QJsonDocument::Compact);
 
         value[EntityID] = binaryEntityProperties;
     }

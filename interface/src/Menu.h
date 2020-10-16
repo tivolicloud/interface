@@ -77,6 +77,8 @@ namespace MenuOption {
     const QString CrashOutOfBoundsVectorAccessThreaded = "Out of Bounds Vector Access (threaded)";
     const QString CrashNewFault = "New Fault";
     const QString CrashNewFaultThreaded = "New Fault (threaded)";
+    const QString CrashThrownException = "Thrown C++ exception";
+    const QString CrashThrownExceptionThreaded = "Thrown C++ exception (threaded)";
     const QString CreateEntitiesGrabbable = "Create Entities As Grabbable (except Zones, Particles, and Lights)";
     const QString DeadlockInterface = "Deadlock Interface";
     const QString UnresponsiveInterface = "Unresponsive Interface";
@@ -161,18 +163,6 @@ namespace MenuOption {
     const QString Rejoin = "Rejoin World";
     const QString ReloadAvatar = "Reload my Avatar";
     const QString RenderClearKtxCache = "Clear KTX Cache (requires restart)";
-    const QString RenderMaxTextureMemory = "Maximum Texture Memory";
-    const QString RenderMaxTextureAutomatic = "Automatic Texture Memory";
-    const QString RenderMaxTexture4MB = "4 MB";
-    const QString RenderMaxTexture64MB = "64 MB";
-    const QString RenderMaxTexture256MB = "256 MB";
-    const QString RenderMaxTexture512MB = "512 MB";
-    const QString RenderMaxTexture1024MB = "1024 MB";
-    const QString RenderMaxTexture2048MB = "2048 MB";
-    const QString RenderMaxTexture3072MB = "3072 MB";
-    const QString RenderMaxTexture4096MB = "4096 MB";
-    const QString RenderMaxTexture6144MB = "6144 MB";
-    const QString RenderMaxTexture8192MB = "8192 MB";
     const QString RenderSensorToWorldMatrix = "Show SensorToWorld Matrix";
     const QString RenderIKTargets = "Show IK Targets";
     const QString RenderIKConstraints = "Show IK Constraints";

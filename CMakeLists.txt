@@ -41,7 +41,7 @@ file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_env")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros/TargetPython.cmake")
 target_python()
 
-if (WIN32 AND NOT HIFI_ANDROID)
+if (WIN32 AND NOT HIFI_ANDROID AND MSVC)
     # Force x64 toolset
     set(CMAKE_GENERATOR_TOOLSET "host=x64" CACHE STRING "64-bit toolset" FORCE)
 endif()
@@ -76,6 +76,8 @@ if (HIFI_ANDROID)
     execute_process(
         COMMAND ${HIFI_PYTHON_EXEC} ${CMAKE_CURRENT_SOURCE_DIR}/prebuild.py --release-type ${RELEASE_TYPE} --android ${HIFI_ANDROID_APP} --build-root ${CMAKE_BINARY_DIR} ${VCPKG_BUILD_TYPE_PARAM}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        # OUTPUT_FILE /home/maki/git/tivoli/interface/android-vcpkg.txt
+        # ERROR_FILE /home/maki/git/tivoli/interface/android-vcpkg.txt
     )
 else()
     execute_process(
@@ -94,6 +96,10 @@ endif()
 include("${CMAKE_BINARY_DIR}/vcpkg.cmake")
 
 if (HIFI_ANDROID)
+  if (DEFINED HIFI_ANDROID_PRECOMPILED)
+      set(ENV{HIFI_ANDROID_PRECOMPILED} ${HIFI_ANDROID_PRECOMPILED})
+  endif()
+
   set(QT_CMAKE_PREFIX_PATH "$ENV{HIFI_ANDROID_PRECOMPILED}/qt/lib/cmake")
 else() 
   if(NOT EXISTS "${CMAKE_BINARY_DIR}/qt.cmake")
@@ -104,7 +110,7 @@ endif()
 
 option(VCPKG_APPLOCAL_DEPS OFF)
 
-project(hifi)
+project(tivoli)
 include("cmake/init.cmake")
 include("cmake/compiler.cmake")
 option(VCPKG_APPLOCAL_DEPS OFF)

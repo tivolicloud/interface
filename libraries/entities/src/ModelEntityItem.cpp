@@ -79,9 +79,8 @@ EntityItemProperties ModelEntityItem::getProperties(const EntityPropertyFlags& d
     return properties;
 }
 
-bool ModelEntityItem::setProperties(const EntityItemProperties& properties) {
+bool ModelEntityItem::setSubClassProperties(const EntityItemProperties& properties) {
     bool somethingChanged = false;
-    somethingChanged = EntityItem::setProperties(properties); // set the properties in our base class
 
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(shapeType, setShapeType);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(compoundShapeURL, setCompoundShapeURL);
@@ -107,18 +106,7 @@ bool ModelEntityItem::setProperties(const EntityItemProperties& properties) {
             somethingChanged = somethingChanged || somethingChangedInAnimations;
         });
     }
-
-    if (somethingChanged) {
-        bool wantDebug = false;
-        if (wantDebug) {
-            uint64_t now = usecTimestampNow();
-            int elapsed = now - getLastEdited();
-            qCDebug(entities) << "ModelEntityItem::setProperties() AFTER update... edited AGO=" << elapsed <<
-                    "now=" << now << " getLastEdited()=" << getLastEdited();
-        }
-        setLastEdited(properties._lastEdited);
-    }
-
+    
     return somethingChanged;
 }
 
@@ -761,10 +749,12 @@ QString ModelEntityItem::getBlendshapeCoefficients() const {
 }
 
 void ModelEntityItem::setBlendshapeCoefficients(const QString& blendshapeCoefficients) {
+    if (blendshapeCoefficients.isEmpty()) return;
+
     QJsonParseError error;
     QJsonDocument newCoefficientsJSON = QJsonDocument::fromJson(blendshapeCoefficients.toUtf8(), &error);
     if (error.error != QJsonParseError::NoError) {
-        // qWarning() << "Could not evaluate blendshapeCoefficients property value:" << newCoefficientsJSON;
+        qWarning() << "Could not evaluate blendshapeCoefficients property value:" << newCoefficientsJSON;
         return;
     }
 

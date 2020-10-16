@@ -26,7 +26,7 @@
 
 // Sphere entities should fit inside a cube entity of the same size, so a sphere that has dimensions 1x1x1
 // is a half unit sphere.  However, the geometry cache renders a UNIT sphere, so we need to scale down.
-static const float SPHERE_ENTITY_SCALE = 0.5f;
+// static const float SPHERE_ENTITY_SCALE = 0.5f;
 
 using namespace render;
 using namespace render::entities;
@@ -325,13 +325,6 @@ void ZoneEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scen
     entity->setVisuallyReady(visuallyReady);
 }
 
-void ZoneEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointer& entity) {
-    if (entity->getShapeType() == SHAPE_TYPE_SPHERE) {
-        _renderTransform = getModelTransform();
-        _renderTransform.postScale(SPHERE_ENTITY_SCALE);
-    }
-}
-
 ItemKey ZoneEntityRenderer::getKey() {
     return ItemKey::Builder().withTypeMeta().withTagBits(getTagMask()).build();
 }
@@ -363,8 +356,6 @@ bool ZoneEntityRenderer::needsRenderUpdateFromTypedEntity(const TypedEntityPoint
     if (entity->getUserData() != _proceduralUserData) {
         return true;
     }
-
-    // FIXME: do we need to trigger an update when shapeType changes?  see doRenderUpdateAsynchronousTyped
 
     return false;
 }

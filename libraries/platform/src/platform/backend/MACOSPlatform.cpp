@@ -277,7 +277,7 @@ void MACOSInstance::enumerateGpusAndDisplays() {
             const auto& chipset = chipsetDescs[i];
             auto& gpu = _gpus[i];
             
-            if (   (chipset.vendor.find( gpu[keys::gpu::vendor]) != std::string::npos)
+            if (   (chipset.vendor.find( gpu[keys::gpu::vendor].get<std::string>()) != std::string::npos)
                 && (chipset.videoMemory == gpu[keys::gpu::videoMemory]) ) {
                 gpu[keys::gpu::model] = chipset.model;
                 gpu["macos_deviceID"] = chipset.deviceID;

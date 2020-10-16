@@ -281,16 +281,6 @@ void Model::setRenderItemsNeedUpdate() {
     emit requestRenderUpdate();
 }
 
-
-void Model::setPrimitiveMode(PrimitiveMode primitiveMode) {// const render::ScenePointer& scene) {
-    //if (_primitiveMode != primitiveMode) {
-    //    _primitiveMode = primitiveMode;
-    //    updateRenderItemsKey(scene);
-    //}
-    _primitiveMode = primitiveMode;
-    setRenderItemsNeedUpdate();
-}
-
 void Model::reset() {
     if (isLoaded()) {
         const HFMModel& hfmModel = getHFMModel();
@@ -978,6 +968,13 @@ void Model::setCauterized(bool cauterized, const render::ScenePointer& scene) {
     }
 }
 
+void Model::setPrimitiveMode(PrimitiveMode primitiveMode) {
+    if (_primitiveMode != primitiveMode) {
+        _primitiveMode = primitiveMode;
+        updateRenderItemsKey(nullptr);
+    }
+}
+
 void Model::setCullWithParent(bool cullWithParent) {
     if (_cullWithParent != cullWithParent) {
         _cullWithParent = cullWithParent;
@@ -1563,7 +1560,11 @@ std::set<unsigned int> Model::getMeshIDsFromMaterialID(QString parentMaterialNam
         };
 
         if (parentMaterialName.length() > 2 && parentMaterialName.startsWith("[") && parentMaterialName.endsWith("]")) {
+            #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+            QStringList list = parentMaterialName.split(",", QString::SkipEmptyParts);
+            #else
             QStringList list = parentMaterialName.split(",", Qt::SkipEmptyParts);
+            #endif
             for (int i = 0; i < list.length(); i++) {
                 auto& target = list[i];
                 if (i == 0) {

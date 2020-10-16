@@ -62,7 +62,9 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
             }
         }
     }
- 
+
+    // TODO: should return all names
+
     //get gpu name
     FILE* stream = popen("system_profiler SPDisplaysDataType | grep Chipset", "r");
     
@@ -75,14 +77,17 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
     
     QString result = QString::fromStdString(hostStream.str());
     QStringList parts = result.split('\n');
-    std::string name;
     
     for (int i = 0; i < parts.size(); ++i) {
         if (parts[i].toLower().contains("radeon") || parts[i].toLower().contains("nvidia")) {
-            _name=parts[i];
+            _name = parts[i];
         } else if (i == bestGPUid) {
-            _name=parts[i];
+            _name = parts[i];
         }
+    }
+
+    if (!_name.isEmpty()) {
+        _name = _name.trimmed().replace("Chipset Model: ", "");
     }
 
     _dedicatedMemoryMB = bestVRAM;

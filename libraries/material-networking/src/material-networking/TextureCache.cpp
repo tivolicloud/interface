@@ -227,12 +227,14 @@ public:
 };
 
 namespace std {
-    // template <>
-    // struct hash<QByteArray> {
-    //     size_t operator()(const QByteArray& byteArray) const {
-    //         return qHash(byteArray);
-    //     }
-    // };
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+    template <>
+    struct hash<QByteArray> {
+        size_t operator()(const QByteArray& byteArray) const {
+            return qHash(byteArray);
+        }
+    };
+#endif
 
     template <>
     struct hash<TextureExtra> {

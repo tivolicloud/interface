@@ -184,7 +184,6 @@ public:
     DEFINE_PROPERTY_REF(PROP_HREF, Href, href, QString, "");
     DEFINE_PROPERTY_REF(PROP_DESCRIPTION, Description, description, QString, "");
     DEFINE_PROPERTY_REF(PROP_CUSTOM_TAGS, CustomTags, customTags, QString, "");  // TIVOLI TAGGING
-    //DEFINE_PROPERTY_REF_ENUM(PROP_ENTITY_PRIORITY, EntityPriority, entityPriority, EntityPriority, EntityPriority::AUTOMATIC);
     DEFINE_PROPERTY_REF_WITH_SETTER(PROP_POSITION, Position, position, glm::vec3, ENTITY_ITEM_ZERO_VEC3);
     DEFINE_PROPERTY_REF(PROP_DIMENSIONS, Dimensions, dimensions, glm::vec3, ENTITY_ITEM_DEFAULT_DIMENSIONS);
     DEFINE_PROPERTY_REF(PROP_ROTATION, Rotation, rotation, glm::quat, ENTITY_ITEM_DEFAULT_ROTATION);

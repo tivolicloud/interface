@@ -17,6 +17,8 @@
 #include <QtGui/QImage>
 #include <QtConcurrent/QtConcurrentRun>
 
+#include <gif.h>
+
 #include <plugins/DisplayPlugin.h>
 
 QTimer* SnapshotAnimated::snapshotAnimatedTimer = NULL;
@@ -29,7 +31,6 @@ QVector<QImage> SnapshotAnimated::snapshotAnimatedFrameVector;
 QVector<qint64> SnapshotAnimated::snapshotAnimatedFrameDelayVector;
 float SnapshotAnimated::aspectRatio;
 QSharedPointer<WindowScriptingInterface> SnapshotAnimated::snapshotAnimatedDM;
-GifWriter SnapshotAnimated::snapshotAnimatedGifWriter;
 
 
 Setting::Handle<bool> SnapshotAnimated::alsoTakeAnimatedSnapshot("alsoTakeAnimatedSnapshot", true);
@@ -118,14 +119,16 @@ void SnapshotAnimated::processFrames() {
     uint32_t width = SnapshotAnimated::snapshotAnimatedFrameVector[0].width();
     uint32_t height = SnapshotAnimated::snapshotAnimatedFrameVector[0].height();
 
+    GifWriter snapshotAnimatedGifWriter;
+
     // Create the GIF from the temporary files
     // Write out the header and beginning of the GIF file
     if (!GifBegin(
-        &(SnapshotAnimated::snapshotAnimatedGifWriter),
+        &snapshotAnimatedGifWriter,
         qPrintable(SnapshotAnimated::snapshotAnimatedPath),
         width,
         height,
-        1)) { // "1" means "yes there is a delay" with this GifCreator library.
+        1)) { // "1" means "yes there is a delay" with this gif.h library.
 
         // We should never, ever get here. If we do, that means that writing a still JPG to the filesystem
         // has succeeded, but that writing the tiny header to a GIF file in the same directory failed.
@@ -138,14 +141,14 @@ void SnapshotAnimated::processFrames() {
     }
     for (int itr = 0; itr < SnapshotAnimated::snapshotAnimatedFrameVector.size(); itr++) {
         // Write each frame to the GIF
-        GifWriteFrame(&(SnapshotAnimated::snapshotAnimatedGifWriter),
+        GifWriteFrame(&(snapshotAnimatedGifWriter),
             (uint8_t*)SnapshotAnimated::snapshotAnimatedFrameVector[itr].convertToFormat(QImage::Format_RGBA8888).bits(),
             width,
             height,
             SnapshotAnimated::snapshotAnimatedFrameDelayVector[itr]);
     }
     // Write out the end of the GIF
-    GifEnd(&(SnapshotAnimated::snapshotAnimatedGifWriter));
+    GifEnd(&(snapshotAnimatedGifWriter));
 
     SnapshotAnimated::clearTempVariables();
     

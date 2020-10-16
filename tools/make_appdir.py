@@ -148,17 +148,12 @@ if program == "interface":
 	run(interface_dir, "cp -r resources interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r scripts interface.AppDir/usr/bin")
 
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(interface_dir, "mkdir -p interface.AppDir/usr/lib")
-	run(interface_dir, "cp ../libraries/gl/libgl.so interface.AppDir/usr/lib")
-
 	print("-- Creating interface.AppDir")
 
 	deploy_args = [
 	    linuxdeployqt,
 	    "interface.AppDir/usr/bin/interface",
 	    "-unsupported-allow-new-glibc",
-	    "-executable=interface.AppDir/usr/lib/libgl.so",
 	    "-qmake=" + qt_path + "/bin/qmake",
 	    "-qmldir=" + qt_path + "/qml",
 	    "-qmldir=../../interface/resources/qml",
@@ -216,10 +211,6 @@ elif program == "server":
 		run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
 	run(build_dir, "cp -r domain-server/resources server.AppDir/usr/bin")
 
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(build_dir, "mkdir -p server.AppDir/usr/lib")
-	run(build_dir, "cp libraries/gl/libgl.so server.AppDir/usr/lib")
-
 	print("-- Creating server.AppDir")
 
 	deploy_args = [
@@ -228,7 +219,6 @@ elif program == "server":
 	    "-unsupported-allow-new-glibc",
 	    "-executable=server.AppDir/usr/bin/assignment-client",
 	    "-executable=server.AppDir/usr/bin/oven",
-	    "-executable=server.AppDir/usr/lib/libgl.so",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
 	    "-qmldir=" + qt_path + "/qml",
@@ -267,16 +257,11 @@ elif program == "ice-server":
 	run(build_dir, "mkdir -p ice-server.AppDir/usr/bin")
 	run(build_dir, "cp ice-server/ice-server ice-server.AppDir/usr/bin")
 
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(build_dir, "mkdir -p ice-server.AppDir/usr/lib")
-	run(build_dir, "cp libraries/gl/libgl.so ice-server.AppDir/usr/lib")
-
 	print("-- Creating ice-server.AppDir")
 
 	deploy_args = [
 	    linuxdeployqt,
 	    "ice-server.AppDir/usr/bin/ice-server",
-	    "-executable=ice-server.AppDir/usr/lib/libgl.so",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
 	    "-qmldir=" + qt_path + "/qml",

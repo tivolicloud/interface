@@ -21,9 +21,9 @@
 class OctreeEntitiesFileParser {
 public:
     void setEntitiesString(const QByteArray& entitiesContents);
+    void setRelativeURL(const QUrl& relativeURL) { _relativeURL = relativeURL; }
     bool parseEntities(QVariantMap& parsedEntities);
     std::string getErrorString() const;
-    QUrl relativeURL;
 
 private:
     int nextToken();
@@ -33,6 +33,7 @@ private:
     int findMatchingBrace() const;
 
     QByteArray _entitiesContents;
+    QUrl _relativeURL;
     int _position { 0 };
     int _line { 1 };
     int _entitiesLength { 0 };

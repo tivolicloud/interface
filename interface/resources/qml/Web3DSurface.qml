@@ -16,7 +16,7 @@ Item {
     id: root
     anchors.fill: parent
     property string url: ""
-    property string scriptUrl: null
+    property string scriptUrl: ""
     property bool transparentBackground: false
 
     onUrlChanged: {

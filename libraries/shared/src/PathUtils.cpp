@@ -69,13 +69,13 @@ const QString& PathUtils::getRccPath() {
 
 #ifdef DEV_BUILD
 const QString& PathUtils::projectRootPath() {
-    static QString sourceFolder;
-    static std::once_flag once;
-    std::call_once(once, [&] {
-        QDir thisDir = QFileInfo(__FILE__).absoluteDir();
-        sourceFolder = QDir::cleanPath(thisDir.absoluteFilePath("../../../"));
-    });
-    return sourceFolder;
+    // static QString sourceFolder;
+    // static std::once_flag once;
+    // std::call_once(once, [&] {
+    //     QDir thisDir = QFileInfo(__FILE__).absoluteDir();
+    //     sourceFolder = QDir::cleanPath(thisDir.absoluteFilePath("../../../"));
+    // });
+    return BuildInfo::SOURCE_DIR;
 }
 #endif
 

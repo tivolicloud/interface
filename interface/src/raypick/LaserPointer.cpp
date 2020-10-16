@@ -160,6 +160,7 @@ void LaserPointer::RenderState::disable() {
         properties.setVisible(false);
         properties.setIgnorePickIntersection(true);
         DependencyManager::get<EntityScriptingInterface>()->editEntity(getPathID(), properties);
+        DependencyManager::get<PickManager>()->removeEnabledLaser(getPathID());
     }
 }
 
@@ -180,7 +181,8 @@ void LaserPointer::RenderState::update(const glm::vec3& origin, const glm::vec3&
         widths.append(width);
         widths.append(width);
         properties.setStrokeWidths(widths);
-        DependencyManager::get<EntityScriptingInterface>()->editEntity(getPathID(), properties);
+        DependencyManager::get<EntityScriptingInterface>()->editEntity(getPathID(), properties);        
+        DependencyManager::get<PickManager>()->addEnabledLaser(getPathID());
     }
 }
 

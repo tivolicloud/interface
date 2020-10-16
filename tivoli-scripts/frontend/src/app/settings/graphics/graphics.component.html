@@ -67,6 +67,26 @@
 </div>
 <div class="setting">
 	<p class="label">
+		<mat-icon>texture</mat-icon>
+		Max Texture Memory
+	</p>
+	<mat-button-toggle-group
+		*ngIf="maximumTextureMemory != null"
+		(change)="onMaximumTextureMemoryChange($event)"
+		[value]="maximumTextureMemory + ''"
+	>
+		<mat-button-toggle value="1">1</mat-button-toggle>
+		<mat-button-toggle value="64">64</mat-button-toggle>
+		<mat-button-toggle value="512">512</mat-button-toggle>
+		<mat-button-toggle value="1024">1024</mat-button-toggle>
+		<mat-button-toggle value="2048">2048</mat-button-toggle>
+		<mat-button-toggle value="4096">4096</mat-button-toggle>
+		<mat-button-toggle value="8192">8192</mat-button-toggle>
+	</mat-button-toggle-group>
+	<p style="margin-left: 12px">MB</p>
+</div>
+<div class="setting">
+	<p class="label">
 		<mat-icon>filter</mat-icon>
 		Render effects
 	</p>

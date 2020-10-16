@@ -13,7 +13,6 @@
 #include <QtCore/QDebug>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
-#include <QtCore/QCborValue>
 
 #include <Finally.h>
 
@@ -107,9 +106,7 @@ void PointerClip::init(uchar* data, size_t size) {
         }
 
         QByteArray fileHeaderData((char*)_data + fileHeaderFrameHeader.fileOffset, fileHeaderFrameHeader.size);
-        _header = QJsonDocument::fromVariant(
-            QCborValue::fromCbor(fileHeaderData).toVariant()
-        );
+        _header = QJsonDocument::fromJson(fileHeaderData);
     }
 
     // Check for compression

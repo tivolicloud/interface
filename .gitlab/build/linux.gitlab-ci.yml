@@ -58,7 +58,6 @@ all linux:
         TIVOLI_QT_BASE: $CI_PROJECT_DIR/build/TIVOLI_QT
         TIVOLI_VCPKG_BASE: $CI_PROJECT_DIR/build/TIVOLI_VCPKG
 
-
         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
         # SENTRY_AUTH_TOKEN
         # SENTRY_ORG: tivolicloud
@@ -71,8 +70,13 @@ all linux:
     script:
         - mkdir -p build
         - cd build
-        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-        - make interface domain-server assignment-client oven ice-server -j$(nproc)
+        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja
+        - cmake --build . --config $BUILD_TYPE
+          --target interface
+          --target domain-server
+          --target assignment-client
+          --target oven
+          --target ice-server
 
         # upload symbols and sources to sentry
         # - sentry-cli upload-dif --include-sources -p interface interface
@@ -115,8 +119,11 @@ server linux arm64:
     script:
         - mkdir -p build
         - cd build
-        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON
-        - make domain-server assignment-client oven -j$(nproc)
+        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON -G Ninja
+        - cmake --build . --config $BUILD_TYPE
+          --target domain-server
+          --target assignment-client
+          --target oven
 
         # make AppDir
         - python3 ../tools/make_appdir.py server .

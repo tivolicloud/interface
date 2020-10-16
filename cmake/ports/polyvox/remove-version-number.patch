@@ -1,0 +1,24 @@
+diff --git a/library/PolyVoxCore/CMakeLists.txt b/library/PolyVoxCore/CMakeLists.txt
+index 133b121..e34689c 100644
+--- a/library/PolyVoxCore/CMakeLists.txt
++++ b/library/PolyVoxCore/CMakeLists.txt
+@@ -144,7 +144,6 @@ IF(LIBRARY_TYPE STREQUAL "DYNAMIC")
+ ENDIF()
+ SET_PROPERTY(TARGET PolyVoxCore PROPERTY FOLDER "Library")
+ 
+-SET_TARGET_PROPERTIES(PolyVoxCore PROPERTIES VERSION ${POLYVOX_VERSION} SOVERSION ${POLYVOX_VERSION_MAJOR})
+ IF(MSVC)
+ 		SET_TARGET_PROPERTIES(PolyVoxCore PROPERTIES COMPILE_FLAGS "/W4 /wd4251 /wd4127") #Disable warning on STL exports
+ ENDIF(MSVC)
+diff --git a/library/PolyVoxUtil/CMakeLists.txt b/library/PolyVoxUtil/CMakeLists.txt
+index 52b0796..f52a62c 100644
+--- a/library/PolyVoxUtil/CMakeLists.txt
++++ b/library/PolyVoxUtil/CMakeLists.txt
+@@ -64,7 +64,6 @@ ENDIF()
+ SET_PROPERTY(TARGET PolyVoxUtil PROPERTY FOLDER "Library")
+ 
+ TARGET_LINK_LIBRARIES(PolyVoxUtil PolyVoxCore)
+-SET_TARGET_PROPERTIES(PolyVoxUtil PROPERTIES VERSION ${POLYVOX_VERSION} SOVERSION ${POLYVOX_VERSION_MAJOR})
+ IF(MSVC)
+ 		SET_TARGET_PROPERTIES(PolyVoxUtil PROPERTIES COMPILE_FLAGS "/W4 /wd4251 /wd4127") #Disable warning on STL exports
+ ENDIF(MSVC)

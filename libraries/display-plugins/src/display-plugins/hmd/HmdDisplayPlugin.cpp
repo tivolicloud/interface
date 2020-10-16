@@ -43,7 +43,7 @@ static const bool DEFAULT_MONO_VIEW = true;
 #if !defined(Q_OS_MAC)
 static const bool DEFAULT_DISABLE_PREVIEW = false;
 #endif
-static const glm::mat4 IDENTITY_MATRIX;
+// static const glm::mat4 IDENTITY_MATRIX;
 
 //#define LIVE_SHADER_RELOAD 1
 extern glm::vec3 getPoint(float yaw, float pitch);

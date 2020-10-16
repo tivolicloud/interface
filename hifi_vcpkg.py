@@ -77,6 +77,7 @@ endif()
         # A format version attached to the tag file... increment when you want to force the build systems to rebuild 
         # without the contents of the ports changing
         self.version = 1
+        self.vcpkgVersion = "2020.07"
         self.tagContents = "{}_{}".format(self.id, self.version)
         self.bootstrapEnv = os.environ.copy()
         self.buildEnv = os.environ.copy()
@@ -89,8 +90,10 @@ endif()
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-win32-client.zip'
             # self.vcpkgHash = 'a650db47a63ccdc9904b68ddd16af74772e7e78170b513ea8de5a3b47d032751a3b73dcc7526d88bcb500753ea3dd9880639ca842bb176e2bddb1710f9a58cd3'
             self.hostTriplet = 'x64-windows'
+            
             if usePrebuilt:
                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-win32.zip"
+        
         elif 'Darwin' == system:
             self.exe = os.path.join(self.path, 'vcpkg')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '-disableMetrics' ]
@@ -98,18 +101,28 @@ endif()
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-osx-client.tar'
             # self.vcpkgHash = '519d666d02ef22b87c793f016ca412e70f92e1d55953c8f9bd4ee40f6d9f78c1df01a6ee293907718f3bbf24075cc35492fb216326dfc50712a95858e9cbcb4d'
             self.hostTriplet = 'x64-osx'
+            
             if usePrebuilt:
-                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-osx.tgz"
+                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-osx.tgz"     
+            
+            # vcpkg uses tools for 10.15 that dont work on older version of macOS
+            macVersion = hifi_utils.getMacVersion()
+            if macVersion[0] <= 10 and macVersion[1] <= 14:
+                self.bootstrapCmds.append("-useSystemBinaries")
+                self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
+
         else:
             self.exe = os.path.join(self.path, 'vcpkg')
             self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '-disableMetrics' ]
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-linux-client.tar'
             # self.vcpkgHash = '6a1ce47ef6621e699a4627e8821ad32528c82fce62a6939d35b205da2d299aaa405b5f392df4a9e5343dd6a296516e341105fbb2dd8b48864781d129d7fba10d'
             self.hostTriplet = 'x64-linux'
+
             if platform.machine() == "aarch64":
-                self.bootstrapCmds.append('-useSystemBinaries')
+                self.bootstrapCmds.append("-useSystemBinaries")
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
-                self.hostTriplet = 'arm64-linux'
+                self.hostTriplet = "arm64-linux"
+                self.vcpkgVersion = "2020.04"
 
         if self.args.android:
             self.triplet = 'arm64-android'
@@ -193,14 +206,10 @@ endif()
             
             print("Download vcpkg from GitHub to {}".format(self.path))
 
-            vcpkg_version = "2020.07"
-            if platform.machine() == "aarch64":
-                vcpkg_version = "2020.04"
-
             hifi_utils.downloadAndExtract(
-                "https://codeload.github.com/microsoft/vcpkg/zip/" + vcpkg_version, self.path, isZip=True
+                "https://codeload.github.com/microsoft/vcpkg/zip/" + self.vcpkgVersion, self.path, isZip=True
             )
-            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + vcpkg_version)
+            vcpkg_extract_dir = os.path.join(self.path, "vcpkg-" + self.vcpkgVersion)
 
             for filename in os.listdir(vcpkg_extract_dir):
                 shutil.move(os.path.join(vcpkg_extract_dir, filename), os.path.join(self.path, filename))
@@ -253,7 +262,7 @@ endif()
             tripletForBuildTypeFile.write("set(VCPKG_BUILD_TYPE " + self.vcpkgBuildType + ")\n")
 
     def getTripletWithBuildType(self, triplet):
-        if (not self.vcpkgBuildType):
+        if not self.vcpkgBuildType:
             return triplet
         return triplet + '-' + self.vcpkgBuildType
 
@@ -301,8 +310,18 @@ endif()
 
     # Removes large files used to build the vcpkg, for CI purposes.
     def cleanupDevelopmentFiles(self):
-        shutil.rmtree(os.path.join(self.path, "downloads"), ignore_errors=True)
         shutil.rmtree(os.path.join(self.path, "packages"), ignore_errors=True)
+
+        # delete all in downloads except tools
+        downloads = list(filter(lambda filename: filename != "tools", 
+            os.listdir(os.path.join(self.path, "downloads"))
+        ))
+        for filename in downloads:
+            filePath = os.path.join(self.path, "downloads", filename)
+            if os.path.isdir(filePath):
+                shutil.rmtree(filePath, ignore_errors=True)
+            else:
+                os.remove(filePath)
 
     def setupAndroidDependencies(self):
         # vcpkg prebuilt
@@ -364,6 +383,8 @@ endif()
         # Write out the configuration for use by CMake
         cmakeScript = os.path.join(self.path, 'scripts/buildsystems/vcpkg.cmake')
         installPath = os.path.join(self.path, 'installed', self.getTripletWithBuildType(self.triplet))
+        if self.args.android:
+            installPath = os.path.join(self.path, 'installed', self.triplet)
         toolsPath = os.path.join(self.path, 'installed', self.getTripletWithBuildType(self.hostTriplet), 'tools')
 
         cmakeTemplate = VcpkgRepo.CMAKE_TEMPLATE

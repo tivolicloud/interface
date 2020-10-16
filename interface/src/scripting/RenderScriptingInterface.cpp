@@ -31,6 +31,7 @@ void RenderScriptingInterface::loadSettings() {
         _antialiasingMethod = (_antialiasingMethodSetting.get());
         _viewportResolutionScale = (_viewportResolutionScaleSetting.get());
         _nametagsEnabled = (_nametagsEnabledSetting.get());
+        // _maximumTextureMemory = (_maximumTextureMemorySetting.get()); // handled by gpu::Texture
     });
     forceRenderMethod((RenderMethod)_renderMethod);
     forceShadowsEnabled(_shadowsEnabled);
@@ -38,6 +39,7 @@ void RenderScriptingInterface::loadSettings() {
     forceAntialiasingMethod((AntialiasingMethod)_antialiasingMethod);
     forceViewportResolutionScale(_viewportResolutionScale);
     forceNametagsEnabled(_nametagsEnabled);
+    forceMaximumTextureMemory(_maximumTextureMemorySetting.get());
 }
 
 RenderScriptingInterface::RenderMethod RenderScriptingInterface::getRenderMethod() const {
@@ -251,6 +253,14 @@ void RenderScriptingInterface::setNametagsEnabled(bool enabled) {
     }
 }
 
+void RenderScriptingInterface::forceNametagsEnabled(bool enabled) {
+    _nametagsEnabled = (enabled);
+    _nametagsEnabledSetting.set(enabled);
+
+    // put nametags logic here when implementing in cpp
+    // code is in javascript right now and uses these functions
+}
+
 // TODO: Hook this up to a ToneMappingStage
 // void RenderScriptingInterface::setToneMappingMode(int curve, float exposure) {
 //    // tonemapping curve {0:RGB, 1:SRGB, 2:Reinhard, 3:Filmic} 
@@ -270,10 +280,23 @@ void RenderScriptingInterface::setNametagsEnabled(bool enabled) {
 //     });
 // }
 
-void RenderScriptingInterface::forceNametagsEnabled(bool enabled) {
-    _nametagsEnabled = (enabled);
-    _nametagsEnabledSetting.set(enabled);
+int RenderScriptingInterface::getMaximumTextureMemory() const {
+    return BYTES_TO_MB(gpu::Texture::getAllowedGPUMemoryUsage());
+}
 
-    // put nametags logic here when implementing in cpp
-    // code is in javascript right now and uses these functions
+void RenderScriptingInterface::setMaximumTextureMemory(int maximumTextureMemory) {
+    if (getMaximumTextureMemory() != maximumTextureMemory) {
+        forceMaximumTextureMemory(maximumTextureMemory);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceMaximumTextureMemory(int maximumTextureMemory) {
+    // 0 is automatic which doesn't work very well right now
+    if (maximumTextureMemory > 8192) maximumTextureMemory = 8192;
+    if (maximumTextureMemory < 0) maximumTextureMemory = 0;
+    _maximumTextureMemorySetting.set(maximumTextureMemory);
+   
+    gpu::Context::Size newMaximumTextureMemory = MB_TO_BYTES(maximumTextureMemory);
+    gpu::Texture::setAllowedGPUMemoryUsage(newMaximumTextureMemory);
 }

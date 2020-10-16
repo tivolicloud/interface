@@ -54,10 +54,10 @@ class EntityTreeRenderer : public OctreeProcessor, public Dependency {
     Q_OBJECT
 public:
 
-    QVector<QUuid> _zoneCullSkipList;  // the final ZCL to be used
+    QVector<QUuid> _zoneCullSkipList; // the final ZCL to be used
     QList<EntityItemID> _zoneCullingStack;
     QList<EntityItemID> _prevZoneCullingStack;
-    QList<EntityItemID> _currentlySelectedEntities;  // selected by edit
+    QList<EntityItemID> _currentlySelectedEntities; // selected by edit
     
     bool _zoneCullingActive = false;
     bool _updateStaticEntities = false;
@@ -96,7 +96,9 @@ public:
                                 AbstractScriptingServicesInterface* scriptingServices);
     virtual ~EntityTreeRenderer();
 
-    QSharedPointer<EntityTreeRenderer> getSharedFromThis() { return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis()); }
+    QSharedPointer<EntityTreeRenderer> getSharedFromThis() {
+        return qSharedPointerCast<EntityTreeRenderer>(sharedFromThis());
+    }
 
     virtual char getMyNodeType() const override { return NodeType::EntityServer; }
     virtual PacketType getMyQueryMessageType() const override { return PacketType::EntityQuery; }
@@ -153,6 +155,7 @@ public:
     void setProxyWindow(const EntityItemID& id, QWindow* proxyWindow);
     void setCollisionSound(const EntityItemID& id, const SharedSoundPointer& sound);
     EntityItemPointer getEntity(const EntityItemID& id);
+    void deleteEntity(const EntityItemID& id) const;
     void onEntityChanged(const EntityItemID& id);
 
     // Access the workload Space
@@ -169,6 +172,9 @@ public:
     static void setRemoveMaterialFromAvatarOperator(std::function<bool(const QUuid&, graphics::MaterialPointer, const std::string&)> removeMaterialFromAvatarOperator) { _removeMaterialFromAvatarOperator = removeMaterialFromAvatarOperator; }
     static bool addMaterialToAvatar(const QUuid& avatarID, graphics::MaterialLayer material, const std::string& parentMaterialName);
     static bool removeMaterialFromAvatar(const QUuid& avatarID, graphics::MaterialPointer material, const std::string& parentMaterialName);
+
+    int getPrevNumEntityUpdates() const { return _prevNumEntityUpdates; }
+    int getPrevTotalNeededEntityUpdates() const { return _prevTotalNeededEntityUpdates; }
 
 signals:
     void enterEntity(const EntityItemID& entityItemID);
@@ -268,7 +274,7 @@ private:
 
     class LayeredZones : public std::vector<LayeredZone> {
     public:
-        bool clearDomainAndNonOwnedZones(const QUuid& sessionUUID);
+        bool clearDomainAndNonOwnedZones();
 
         void sort() { std::sort(begin(), end(), std::less<LayeredZone>()); }
         bool equals(const LayeredZones& other) const;
@@ -281,14 +287,15 @@ private:
 
     LayeredZones _layeredZones;
     uint64_t _lastZoneCheck { 0 };
-    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 1000; // ~1000hz
+    const uint64_t ZONE_CHECK_INTERVAL = USECS_PER_MSEC * 1000; // ~100hz
     const float ZONE_CHECK_DISTANCE = 0.001f;
 
     float _avgRenderableUpdateCost { 0.0f };
 
-
     ReadWriteLockable _changedEntitiesGuard;
     std::unordered_set<EntityItemID> _changedEntities;
+    int _prevNumEntityUpdates { 0 };
+    int _prevTotalNeededEntityUpdates { 0 };
 
     std::unordered_set<EntityRendererPointer> _renderablesToUpdate;
     std::unordered_set<EntityRendererPointer> _priorityRenderablesToUpdate;

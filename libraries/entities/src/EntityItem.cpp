@@ -623,10 +623,6 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         _lastEdited = lastEditedFromBufferAdjusted;
         _lastEditedFromRemote = now;
         _lastEditedFromRemoteInRemoteTime = lastEditedFromBuffer;
-
-        // TODO: only send this notification if something ACTUALLY changed (hint, we haven't yet parsed
-        // the properties out of the bitstream (see below))
-        somethingChangedNotification();  // notify derived classes that something has changed
     }
 
     // last updated is stored as ByteCountCoded delta from lastEdited
@@ -1026,6 +1022,10 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
         element->getTree()->trackIncomingEntityLastEdited(lastEditedFromBufferAdjusted, bytesRead);
     }
 
+    if (somethingChanged) {
+        somethingChangedNotification();
+    }
+
     return bytesRead;
 }
 
@@ -1400,7 +1400,7 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(created, getCreated);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(lastEditedBy, getLastEditedBy);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(entityHostType, getEntityHostType);
-    COPY_ENTITY_PROPERTY_TO_PROPERTIES(owningAvatarID, getOwningAvatarID);
+    COPY_ENTITY_PROPERTY_TO_PROPERTIES(owningAvatarID, getOwningAvatarIDForProperties);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(queryAACube, getQueryAACube);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(canCastShadow, getCanCastShadow);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(isVisibleInSecondaryCamera, isVisibleInSecondaryCamera);
@@ -1621,14 +1621,14 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
         qCDebug(entities) << "EntityItem::setProperties() AFTER update... edited AGO=" << elapsed << "now=" << now
                           << " getLastEdited()=" << getLastEdited();
 #endif
-        setLastEdited(now);
-        somethingChangedNotification();  // notify derived classes that something has changed
+        setLastEdited(properties._lastEdited);
         if (getDirtyFlags() & (Simulation::DIRTY_TRANSFORM | Simulation::DIRTY_VELOCITIES)) {
             // anything that sets the transform or velocity must update _lastSimulated which is used
             // for kinematic extrapolation (e.g. we want to extrapolate forward from this moment
             // when position and/or velocity was changed).
             _lastSimulated = now;
         }
+        somethingChangedNotification();
     }
 
     // timestamps
@@ -1889,6 +1889,7 @@ void EntityItem::setPosition(const glm::vec3& value) {
 void EntityItem::setParentID(const QUuid& value) {
     QUuid oldParentID = getParentID();
     if (oldParentID != value) {
+        _needsRenderUpdate = true;
         EntityTreePointer tree = getTree();
         if (tree && !oldParentID.isNull()) {
             tree->removeFromChildrenOfAvatars(getThisPointer());
@@ -2973,6 +2974,7 @@ void EntityItem::setIsVisibleInSecondaryCamera(bool value) {
 }
 
 EntityPriority EntityItem::getEntityPriority() const {
+    if (isLocalEntity()) return EntityPriority::PRIORITIZED;
     return resultWithReadLock<EntityPriority>([&] { return _entityPriority; });
 }
 
@@ -3010,10 +3012,15 @@ bool EntityItem::getCauterized() const {
 }
 
 void EntityItem::setCauterized(bool value) {
+    bool needsRenderUpdate = false;
     withWriteLock([&] {
-        _needsRenderUpdate |= _cauterized != value;
+        needsRenderUpdate = _cauterized != value;
+        _needsRenderUpdate |= needsRenderUpdate;
         _cauterized = value;
     });
+    if (needsRenderUpdate) {
+        somethingChangedNotification();
+    }
 }
 
 bool EntityItem::getIgnorePickIntersection() const {
@@ -3046,10 +3053,15 @@ bool EntityItem::getCullWithParent() const {
 }
 
 void EntityItem::setCullWithParent(bool value) {
+    bool needsRenderUpdate = false;
     withWriteLock([&] {
-        _needsRenderUpdate |= _cullWithParent != value;
+        needsRenderUpdate = _cullWithParent != value;
+        _needsRenderUpdate |= needsRenderUpdate;
         _cullWithParent = value;
     });
+    if (needsRenderUpdate) {
+        somethingChangedNotification();
+    }
 }
 
 bool EntityItem::isChildOfMyAvatar() const {
@@ -3212,35 +3224,53 @@ void EntityItem::somethingChangedNotification() {
     });
 }
 
+// static
 void EntityItem::retrieveMarketplacePublicKey() {
-    QNetworkAccessManager& networkAccessManager = NetworkAccessManager::getInstance();
-    QNetworkRequest networkRequest;
-    networkRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-    QUrl requestURL = NetworkingConstants::METAVERSE_SERVER_URL();
-    requestURL.setPath("/api/v1/commerce/marketplace_key");
-    QJsonObject request;
-    networkRequest.setUrl(requestURL);
+    // QNetworkAccessManager& networkAccessManager = NetworkAccessManager::getInstance();
+    // QNetworkRequest networkRequest;
+    // networkRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+    // QUrl requestURL = NetworkingConstants::METAVERSE_SERVER_URL();
+    // requestURL.setPath("/api/v1/commerce/marketplace_key");
+    // QJsonObject request;
+    // networkRequest.setUrl(requestURL);
 
-    QNetworkReply* networkReply = NULL;
-    networkReply = networkAccessManager.get(networkRequest);
+    // QNetworkReply* networkReply = NULL;
+    // networkReply = networkAccessManager.get(networkRequest);
 
-    connect(networkReply, &QNetworkReply::finished, [=]() {
-        QJsonObject jsonObject = QJsonDocument::fromJson(networkReply->readAll()).object();
-        jsonObject = jsonObject["data"].toObject();
+    // connect(networkReply, &QNetworkReply::finished, [=]() {
+    //     QJsonObject jsonObject = QJsonDocument::fromJson(networkReply->readAll()).object();
+    //     jsonObject = jsonObject["data"].toObject();
 
-        if (networkReply->error() == QNetworkReply::NoError) {
-            if (!jsonObject["public_key"].toString().isEmpty()) {
-                EntityItem::_marketplacePublicKey = jsonObject["public_key"].toString();
-                qCWarning(entities) << "Marketplace public key has been set to" << _marketplacePublicKey;
-            } else {
-                qCWarning(entities) << "Marketplace public key is empty!";
+    //     if (networkReply->error() == QNetworkReply::NoError) {
+    //         if (!jsonObject["public_key"].toString().isEmpty()) {
+    //             EntityItem::_marketplacePublicKey = jsonObject["public_key"].toString();
+    //             qCWarning(entities) << "Marketplace public key has been set to" << _marketplacePublicKey;
+    //         } else {
+    //             qCWarning(entities) << "Marketplace public key is empty!";
+    //         }
+    //     } else {
+    //         qCWarning(entities) << "Call to" << networkRequest.url() << "failed! Error:" << networkReply->error();
+    //     }
+
+    //     networkReply->deleteLater();
+    // });
+}
+
+void EntityItem::collectChildrenForDelete(std::vector<EntityItemPointer>& entitiesToDelete, const QUuid& sessionID) const {
+    // Deleting an entity has consequences for its children, however there are rules dictating what can be deleted.
+    // This method helps enforce those rules: not for this entity, but for its children.
+    for (SpatiallyNestablePointer child : getChildren()) {
+        if (child && child->getNestableType() == NestableType::Entity) {
+            EntityItemPointer childEntity = std::static_pointer_cast<EntityItem>(child);
+            // NOTE: null sessionID means "collect ALL known children", else we only collect: local-entities and myAvatar-entities
+            if (sessionID.isNull() || childEntity->isLocalEntity() || childEntity->isMyAvatarEntity()) {
+                if (std::find(entitiesToDelete.begin(), entitiesToDelete.end(), childEntity) == entitiesToDelete.end()) {
+                    entitiesToDelete.push_back(childEntity);
+                    childEntity->collectChildrenForDelete(entitiesToDelete, sessionID);
+                }
             }
-        } else {
-            qCWarning(entities) << "Call to" << networkRequest.url() << "failed! Error:" << networkReply->error();
         }
-
-        networkReply->deleteLater();
-    });
+    }
 }
 
 void EntityItem::setSpaceIndex(int32_t index) {
@@ -3396,6 +3426,7 @@ void EntityItem::prepareForSimulationOwnershipBid(EntityItemProperties& properti
     properties.setSimulationOwner(Physics::getSessionUUID(), priority);
     setPendingOwnershipPriority(priority);
 
+    // TODO: figure out if it would be OK to NOT bother set these properties here
     properties.setEntityHostType(getEntityHostType());
     properties.setOwningAvatarID(getOwningAvatarID());
     setLastBroadcast(now);  // for debug/physics status icons
@@ -3407,8 +3438,26 @@ bool EntityItem::isWearable() const {
 }
 
 bool EntityItem::isMyAvatarEntity() const {
-    return _hostType == entity::HostType::AVATAR && Physics::getSessionUUID() == _owningAvatarID;
+    return _hostType == entity::HostType::AVATAR && AVATAR_SELF_ID == _owningAvatarID;
 };
+
+QUuid EntityItem::getOwningAvatarIDForProperties() const {
+    if (isMyAvatarEntity()) {
+        // NOTE: we always store AVATAR_SELF_ID for MyAvatar's avatar entities,
+        // however for EntityItemProperties to be consumed by outside contexts (e.g. JS)
+        // we use the actual "sessionUUID" which is conveniently cached in the Physics namespace
+        return Physics::getSessionUUID();
+    }
+    return _owningAvatarID;
+}
+
+void EntityItem::setOwningAvatarID(const QUuid& owningAvatarID) {
+    if (!owningAvatarID.isNull() && owningAvatarID == Physics::getSessionUUID()) {
+        _owningAvatarID = AVATAR_SELF_ID;
+    } else {
+        _owningAvatarID = owningAvatarID;
+    }
+}
 
 void EntityItem::addGrab(GrabPointer grab) {
     enableNoBootstrap();

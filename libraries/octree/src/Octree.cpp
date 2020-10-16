@@ -824,7 +824,7 @@ bool Octree::readJSONFromStream(
     }
 
     OctreeEntitiesFileParser octreeParser;
-    octreeParser.relativeURL = relativeURL;
+    octreeParser.setRelativeURL(relativeURL);
     octreeParser.setEntitiesString(jsonBuffer);
 
     QVariantMap asMap;

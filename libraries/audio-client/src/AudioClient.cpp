@@ -2086,20 +2086,15 @@ bool AudioClient::switchOutputToAudioDevice(const HifiAudioDeviceInfo outputDevi
     // NOTE: device start() uses the Qt internal device list
     Lock lock(_deviceMutex);
 
-    Lock localAudioLock(_localAudioMutex);
     _localSamplesAvailable.exchange(0, std::memory_order_release);
 
-    //wait on local injectors prep to finish running
-    if ( !_localPrepInjectorFuture.isFinished()) {
-        try { 
-            _localPrepInjectorFuture.waitForFinished();
-        }
-        catch (const std::exception&) {
-            qDebug(audioclient) << Q_FUNC_INFO << ": Error";
-            return true;
-        }
+    // wait on local injectors prep to finish running
+    if (!_localPrepInjectorFuture.isFinished()) {
+        _localPrepInjectorFuture.waitForFinished();
     }
 
+    Lock localAudioLock(_localAudioMutex);
+    
     // cleanup any previously initialized device
     if (_audioOutput) {
         _audioOutputIODevice.close();

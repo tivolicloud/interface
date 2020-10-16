@@ -25,15 +25,12 @@ macro(fixup_interface)
         endif ()
 
         if (RELEASE_TYPE STREQUAL "DEV")
-            # install(CODE "
-            #     execute_process(COMMAND ${MACDEPLOYQT_COMMAND}\
-            #         \${CMAKE_INSTALL_PREFIX}/${_INTERFACE_INSTALL_PATH}/\
-            #         -verbose=2 -qmldir=${CMAKE_SOURCE_DIR}/interface/resources/qml/\
-            #     )"
-            #     COMPONENT ${CLIENT_COMPONENT}
-            # )
-            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-                COMMAND ${MACDEPLOYQT_COMMAND} "$<TARGET_FILE_DIR:${TARGET_NAME}>/../.." -verbose=2 -qmldir=${CMAKE_SOURCE_DIR}/interface/resources/qml/
+            install(CODE "
+                execute_process(COMMAND ${MACDEPLOYQT_COMMAND}\
+                    \${CMAKE_INSTALL_PREFIX}/${_INTERFACE_INSTALL_PATH}/\
+                    -verbose=2 -qmldir=${CMAKE_SOURCE_DIR}/interface/resources/qml/\
+                )"
+                COMPONENT ${CLIENT_COMPONENT}
             )
         else ()
             add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
