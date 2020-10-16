@@ -124,7 +124,7 @@ def downloadProgressHook(count, block_size, total_size):
 def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
     for i in range(retries):
         tempFileName = None
-        # OSX Python doesn't support SSL, so we need to bypass it.  
+        # macOS Python doesn't support SSL, so we need to bypass it.  
         # However, we still validate the downloaded file's sha512 hash
         if 'Darwin' == platform.system():
             tempFileDescriptor, tempFileName = tempfile.mkstemp()
