@@ -19,7 +19,7 @@ Download and install these programs:
 
     sudo curl -LJO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.11.sdk.tar.xz
 
-    sudo tar -xvf MacOSX10.11.sdk.tar.xz
+    sudo tar -xf MacOSX10.11.sdk.tar.xz
     sudo rm -f MacOSX10.11.sdk.tar.xz
     ```
 
