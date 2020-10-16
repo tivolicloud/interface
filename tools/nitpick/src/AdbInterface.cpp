@@ -26,7 +26,7 @@ QString AdbInterface::getAdbCommand() {
             exit(-1);
         }
     }
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     _adbCommand = "/usr/local/bin/adb";
     if (!QFile::exists(_adbCommand)) {
         QMessageBox::critical(0, "adb not found",

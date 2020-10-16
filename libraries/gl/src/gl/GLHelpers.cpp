@@ -42,7 +42,7 @@ bool gl::disableGl45() {
 #endif
 }
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #define SERIALIZE_GL_RENDERING
 #endif
 
@@ -83,7 +83,7 @@ uint16_t gl::getTargetVersion() {
 #if defined(USE_GLES)
     major = 3;
     minor = 2;
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     major = 4;
     minor = 1;
 #else
@@ -183,7 +183,7 @@ uint16_t gl::getAvailableVersion() {
         // FIXME do runtime detection of the available GL version
         major = 3;
         minor = 2;
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
         // Damn it Apple.
         major = 4;
         minor = 1;
@@ -392,7 +392,7 @@ namespace gl {
     }
 
     bool debugContextEnabled() {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
         // OSX does not support GL_KHR_debug or GL_ARB_debug_output
         static bool enableDebugLogger = false;
 #elif defined(DEBUG) || defined(USE_GLES)

@@ -9,7 +9,7 @@
 //
 
 #include <QtGlobal>
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 
 #include "AppNapDisabler.h"
 
@@ -25,4 +25,4 @@ AppNapDisabler::~AppNapDisabler() {
     [_activity release];
 }
 
-#endif // Q_OS_MAC
+#endif // Q_OS_MACOS

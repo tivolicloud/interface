@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     options->parse(argc, argv);
     bool didUpdate = false;
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     if (isLauncherAlreadyRunning()) {
         return 0;
     }

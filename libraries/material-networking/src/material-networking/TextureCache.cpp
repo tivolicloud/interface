@@ -332,7 +332,7 @@ gpu::TexturePointer getFallbackTextureForType(image::TextureUsage::Type type) {
 gpu::BackendTarget getBackendTarget() {
 #if defined(USE_GLES)
     gpu::BackendTarget target = gpu::BackendTarget::GLES32;
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     gpu::BackendTarget target = gpu::BackendTarget::GL41;
 #else
     gpu::BackendTarget target = gpu::BackendTarget::GL45;

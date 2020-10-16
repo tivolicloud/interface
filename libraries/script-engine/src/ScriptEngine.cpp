@@ -434,7 +434,7 @@ void ScriptEngine::waitTillDoneRunning() {
         // We should never be waiting (blocking) on our own thread
         assert(workerThread != QThread::currentThread());
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
         // On mac, don't call QCoreApplication::processEvents() here. This is to prevent
         // [NSApplication terminate:] from prematurely destroying the static destructors
         // while we are waiting for the scripts to shutdown. We will pump the message
@@ -1491,7 +1491,7 @@ void ScriptEngine::callAnimationStateHandler(QScriptValue callback, AnimVariantM
 void ScriptEngine::updateMemoryCost(const qint64& deltaSize) {
     if (deltaSize > 0) {
         // We've patched qt to fix https://highfidelity.atlassian.net/browse/BUGZ-46 on mac and windows only.
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
         reportAdditionalMemoryCost(deltaSize);
 #endif
     }

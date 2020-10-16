@@ -60,7 +60,7 @@ void Downloader::downloadFiles(const QStringList& URLs, const QString& directory
 
     QStringList parameters = QStringList() << filename;
     process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QProcess* process = new QProcess();
     QStringList parameters = QStringList() << "-c" << _pythonCommand + " " + filename;
     process->start("sh", parameters);

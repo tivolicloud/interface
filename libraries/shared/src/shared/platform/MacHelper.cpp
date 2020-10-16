@@ -9,7 +9,7 @@
 
 #include "../PlatformHelper.h"
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
 #include <IOKit/IOMessage.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 

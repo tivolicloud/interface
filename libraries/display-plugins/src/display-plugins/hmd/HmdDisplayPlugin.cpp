@@ -40,7 +40,7 @@ static const QString DISABLE_PREVIEW = "Disable Preview";
 static const QString FRAMERATE = DisplayPlugin::MENU_PATH() + ">Framerate";
 static const QString DEVELOPER_MENU_PATH = "Developer>" + DisplayPlugin::MENU_PATH();
 static const bool DEFAULT_MONO_VIEW = true;
-#if !defined(Q_OS_MAC)
+#if !defined(Q_OS_MACOS)
 static const bool DEFAULT_DISABLE_PREVIEW = false;
 #endif
 // static const glm::mat4 IDENTITY_MATRIX;
@@ -89,7 +89,7 @@ bool HmdDisplayPlugin::internalActivate() {
         _container->setBoolSetting("monoPreview", _monoPreview);
     }, true, _monoPreview);
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     _disablePreview = true;
 #else
     _disablePreview = _container->getBoolSetting("disableHmdPreview", DEFAULT_DISABLE_PREVIEW || _vsyncEnabled);

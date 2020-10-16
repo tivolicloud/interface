@@ -201,7 +201,7 @@
 #include "scripting/ChatScriptingInterface.h"
 #include "scripting/DiskCacheScriptingInterface.h"
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
 #endif
 #include "ui/ResourceImageItem.h"
@@ -268,7 +268,7 @@ extern "C" {
 #include "AndroidHelper.h"
 #endif
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
 // On Mac OS, disable App Nap to prevent audio glitches while running in the background
 #include "AppNapDisabler.h"
 static AppNapDisabler appNapDisabler;   // disabled, while in scope
@@ -376,7 +376,7 @@ class DeadlockWatchdogThread : public QThread {
 public:
     static const unsigned long HEARTBEAT_UPDATE_INTERVAL_SECS = 1;
     // TODO: go back to 2 min across the board, after figuring out the issues with mac
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     static const unsigned long MAX_HEARTBEAT_AGE_USECS = 600 * USECS_PER_SECOND; // 10 mins with no checkin probably a deadlock, right now, on MAC
 #else
     static const unsigned long MAX_HEARTBEAT_AGE_USECS = 120 * USECS_PER_SECOND; // 2 mins with no checkin probably a deadlock
@@ -901,7 +901,7 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     DependencyManager::set<AssetMappingsScriptingInterface>();
     DependencyManager::set<DomainConnectionModel>();
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     DependencyManager::set<SpeechRecognizer>();
 #endif
     DependencyManager::set<DiscoverabilityManager>();
@@ -1931,7 +1931,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 #endif
     });
     _applicationStateDevice->setInputVariant(STATE_PLATFORM_MAC, []() -> float {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
         return 1;
 #else
         return 0;
@@ -2695,8 +2695,8 @@ void Application::toggleTabletUI(bool shouldOpen) const {
 void Application::checkChangeCursor() {
     QMutexLocker locker(&_changeCursorLock);
     if (_cursorNeedsChanging) {
-#ifdef Q_OS_MAC
-        auto cursorTarget = _window; // OSX doesn't seem to provide for hiding the cursor only on the GL widget
+#ifdef Q_OS_MACOS
+        auto cursorTarget = _window; // macOS doesn't seem to provide for hiding the cursor only on the GL widget
 #else
         // On windows and linux, hiding the top level cursor also means it's invisible when hovering over the
         // window menu, which is a pain, so only hide it for the GL surface
@@ -2984,7 +2984,7 @@ Application::~Application() {
     // Can't log to file past this point, FileLogger about to be deleted
     qInstallMessageHandler(LogHandler::verboseMessageHandler);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // 10/16/2019 - Disabling this call. This causes known crashes (A), and it is not
     // fully understood whether it might cause other unknown crashes (B).
     //
@@ -3041,7 +3041,7 @@ void Application::initializeGL() {
             _chromiumShareContext = new OffscreenGLCanvas();
             _chromiumShareContext->setObjectName("ChromiumShareContext");
             auto format =QSurfaceFormat::defaultFormat();
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
             // On mac, the primary shared OpenGL context must be a 3.2 core context,
             // or chromium flips out and spews error spam (but renders fine)
             format.setMajorVersion(3);
@@ -3485,7 +3485,7 @@ void Application::onDesktopRootContextCreated(QQmlContext* surfaceContext) {
     surfaceContext->setContextProperty("UserActivityLogger", DependencyManager::get<UserActivityLoggerScriptingInterface>().data());
     surfaceContext->setContextProperty("Camera", &_myCamera);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     surfaceContext->setContextProperty("SpeechRecognizer", DependencyManager::get<SpeechRecognizer>().data());
 #endif
 
@@ -4325,7 +4325,7 @@ bool Application::eventFilter(QObject* object, QEvent* event) {
         return true;
     }
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     // On Mac OS, Cmd+LeftClick is treated as a RightClick (more specifically, it seems to
     // be Cmd+RightClick without the modifier being dropped). Starting in Qt 5.12, only
     // on Mac, the MouseButtonRelease event for these mouse presses is sent to the top
@@ -4660,7 +4660,7 @@ void Application::synthesizeKeyReleasEvents() {
 }
 
 void Application::maybeToggleMenuVisible(QMouseEvent* event) const {
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     // If in full screen, and our main windows menu bar is hidden, and we're close to the top of the QMainWindow
     // then show the menubar.
     if (_window->isFullScreen()) {
@@ -4759,8 +4759,8 @@ void Application::mousePressEvent(QMouseEvent* event) {
         return;
     }
 
-#if defined(Q_OS_MAC)
-    // Fix for OSX right click dragging on window when coming from a native window
+#if defined(Q_OS_MACOS)
+    // Fix for macOS right click dragging on window when coming from a native window
     bool isFocussed = hasFocus();
     if (!isFocussed && event->button() == Qt::MouseButton::RightButton) {
         setFocus();
@@ -7503,7 +7503,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
 
     scriptEngine->registerGlobalObject("Camera", &_myCamera);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     scriptEngine->registerGlobalObject("SpeechRecognizer", DependencyManager::get<SpeechRecognizer>().data());
 #endif
 

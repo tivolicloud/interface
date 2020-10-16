@@ -97,7 +97,7 @@ int PluginManager::instantiate() {
     std::call_once(once, [&] {
 #if defined(Q_OS_ANDROID)
         QString pluginPath = QCoreApplication::applicationDirPath() + "/";
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
         QString pluginPath = QCoreApplication::applicationDirPath() + "/../PlugIns/";
 #else
         QString pluginPath = QCoreApplication::applicationDirPath() + "/plugins/";

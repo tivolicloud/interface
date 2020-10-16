@@ -259,7 +259,7 @@ namespace platform { namespace keys {
 
 #if defined(Q_OS_WIN)
 #include "WINPlatform.h"
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
 #include "MACOSPlatform.h"
 #elif defined(Q_OS_ANDROID)
 #include "AndroidPlatform.h"
@@ -274,7 +274,7 @@ Instance *_instance;
 void platform::create() {
 #if defined(Q_OS_WIN)
     _instance =new WINInstance();
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     _instance = new MACOSInstance();
 #elif defined(Q_OS_ANDROID)
     _instance= new AndroidInstance();

@@ -43,7 +43,7 @@ extern "C" {
 #endif
 
 int main(int argc, const char* argv[]) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     auto format = getDefaultOpenGLSurfaceFormat();
     // Deal with some weirdness in the chromium context sharing on Mac.
     // The primary share context needs to be 3.2, so that the Chromium will
@@ -125,7 +125,7 @@ int main(int argc, const char* argv[]) {
     // cross-platform implementation.
     {
         QCoreApplication tempApp(argc, const_cast<char**>(argv));
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         if (QFileInfo::exists(QCoreApplication::applicationDirPath() + "/../../../config.json")) {
             applicationPath = QCoreApplication::applicationDirPath() + "/../../../";
         } else {

@@ -20,7 +20,7 @@
 #include <dxgi1_3.h>
 #pragma comment(lib, "dxgi.lib")
 
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
 #include <OpenGL/OpenGL.h>
 #include <sstream>
 #include <QString>
@@ -41,7 +41,7 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
         return this;
     }
     _isQueried = true;  // Don't try again, even if not _isValid;
-#if (defined Q_OS_MAC)
+#if (defined Q_OS_MACOS)
     GLuint cglDisplayMask = -1; // Iterate over all of them.
     CGLRendererInfoObj rendererInfo;
     GLint rendererInfoCount;

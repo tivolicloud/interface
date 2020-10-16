@@ -51,7 +51,7 @@
 #include "PickManager.h"
 
 #include "scripting/SettingsScriptingInterface.h"
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
 #endif
 
@@ -414,7 +414,7 @@ Menu::Menu() {
                                            qApp, SLOT(updateVerboseLogging()));
     
     // Developer > Scripting > Enable Speech Control API
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     auto speechRecognizer = DependencyManager::get<SpeechRecognizer>();
     QAction* speechRecognizerAction = addCheckableActionToQMenuAndActionHash(scriptingOptionsMenu, MenuOption::ControlWithSpeech,
         Qt::CTRL | Qt::SHIFT | Qt::Key_C,

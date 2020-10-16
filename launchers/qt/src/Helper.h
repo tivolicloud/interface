@@ -16,7 +16,7 @@ bool swapLaunchers(const QString& oldLauncherPath = QString(), const QString& ne
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message);
 void cleanLogFile();
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 bool replaceDirectory(const QString& orginalDirectory, const QString& newDirectory);
 void closeInterfaceIfRunning();
 void waitForInterfaceToClose();
