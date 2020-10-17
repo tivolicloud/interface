@@ -1,8 +1,3 @@
-# -- openssl needs to be linked dynamically or it'll be incompatible with webrtc
-set(BUILD_SHARED_LIBS true)
-set(VCPKG_LIBRARY_LINKAGE dynamic)
-# --
-
 cmake_minimum_required(VERSION 3.9)
 project(openssl C)
 
