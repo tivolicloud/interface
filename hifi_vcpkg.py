@@ -96,16 +96,18 @@ endif()
         
         elif 'Darwin' == system:
             self.exe = os.path.join(self.path, 'vcpkg')
-            self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '-disableMetrics' ]
+            self.bootstrapCmds = [ os.path.join(self.path, 'bootstrap-vcpkg.sh'), '-disableMetrics', "-allowAppleClang" ]
             # self.vcpkgUrl = 'https://cdn.tivolicloud.com/dependencies/vcpkg/vcpkg-osx-client.tar'
             # self.vcpkgHash = '519d666d02ef22b87c793f016ca412e70f92e1d55953c8f9bd4ee40f6d9f78c1df01a6ee293907718f3bbf24075cc35492fb216326dfc50712a95858e9cbcb4d'
             self.hostTriplet = 'x64-osx'
             
             if usePrebuilt:
-                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-osx.tgz"     
+                self.prebuiltArchive = "https://cdn.tivolicloud.com/dependencies/vcpkg/builds/vcpkg-osx.tgz"    
             
-            # vcpkg uses tools for 10.15 that dont work on older version of macOS
             macVersion = hifi_utils.getMacVersion()
+            self.bootstrapEnv["MACOSX_DEPLOYMENT_TARGET"] = str(macVersion[0]) + "." + str(macVersion[1])
+
+            # vcpkg uses tools for 10.15 that dont work on older version of macOS
             if macVersion[0] <= 10 and macVersion[1] <= 14:
                 self.bootstrapCmds.append("-useSystemBinaries")
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
@@ -309,14 +311,23 @@ endif()
 
     # Removes large files used to build the vcpkg, for CI purposes.
     def cleanupDevelopmentFiles(self):
-        shutil.rmtree(os.path.join(self.path, "packages"), ignore_errors=True)
-
         # delete all in downloads except tools
-        downloads = list(filter(lambda filename: filename != "tools", 
-            os.listdir(os.path.join(self.path, "downloads"))
-        ))
-        for filename in downloads:
-            filePath = os.path.join(self.path, "downloads", filename)
+        downloads_dir = os.path.join(self.path, "downloads")
+        downloads = map(lambda filename: os.path.join(downloads_dir, filename),
+            filter(lambda filename: filename != "tools",
+                os.listdir(downloads_dir) if os.path.isdir(downloads_dir) else []
+            )
+        )
+
+        # delete all in packages except openssl
+        packages_dir = os.path.join(self.path, "packages")
+        packages = map(lambda filename: os.path.join(packages_dir, filename),
+            filter(lambda filename: not filename.startswith("openssl"),
+                os.listdir(packages_dir) if os.path.isdir(packages_dir) else []
+            )
+        )
+
+        for filePath in list(downloads) + list(packages):
             if os.path.isdir(filePath):
                 shutil.rmtree(filePath, ignore_errors=True)
             else:
