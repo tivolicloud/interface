@@ -16,8 +16,8 @@ macro(TARGET_WEBRTC)
     else()
         set(WEBRTC_INCLUDE_DIRS "${VCPKG_INSTALL_ROOT}/include/webrtc")
         
-        find_library(WEBRTC_LIBRARY_RELEASE webrtc_full PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
-        find_library(WEBRTC_LIBRARY_DEBUG webrtc_full PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+        find_library(WEBRTC_LIBRARY_RELEASE webrtc PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+        find_library(WEBRTC_LIBRARY_DEBUG webrtc PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
         select_library_configurations(WEBRTC)
 
         target_include_directories(${TARGET_NAME} SYSTEM PUBLIC ${WEBRTC_INCLUDE_DIRS})
