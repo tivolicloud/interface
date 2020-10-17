@@ -11,10 +11,37 @@ macro(TARGET_OPENSSL)
         set(OPENSSL_INCLUDE_DIR "${OPENSSL_INSTALL_DIR}/include" CACHE STRING INTERNAL)
         set(OPENSSL_LIBRARIES "${OPENSSL_INSTALL_DIR}/lib/libcrypto.a;${OPENSSL_INSTALL_DIR}/lib/libssl.a" CACHE STRING INTERNAL)
     else()
-    	# using VCPKG for OpenSSL
-        find_package(OpenSSL REQUIRED)
+        find_library(CRYPTO_LIBRARY_RELEASE crypto PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+        find_library(CRYPTO_LIBRARY_DEBUG crypto PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+        list(APPEND OPENSSL_LIBRARY_RELEASE ${CRYPTO_LIBRARY_RELEASE})
+        list(APPEND OPENSSL_LIBRARY_DEBUG ${CRYPTO_LIBRARY_DEBUG})
+
+        find_library(SSL_LIBRARY_RELEASE ssl PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+        find_library(SSL_LIBRARY_DEBUG ssl PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+        list(APPEND OPENSSL_LIBRARY_RELEASE ${SSL_LIBRARY_RELEASE})
+        list(APPEND OPENSSL_LIBRARY_DEBUG ${SSL_LIBRARY_DEBUG})
+        
+        select_library_configurations(OPENSSL)
     endif()
 
-    include_directories(SYSTEM "${OPENSSL_INCLUDE_DIR}")
+    # follow symbolic links to get absolute paths
+    set(_OPENSSL_LIBRARIES ${OPENSSL_LIBRARIES})
+    set(OPENSSL_LIBRARIES "")
+    foreach(LIBRARY_PATH ${_OPENSSL_LIBRARIES})
+        get_filename_component(ABS_LIBRARY_PATH ${LIBRARY_PATH} REALPATH)
+        list(APPEND OPENSSL_LIBRARIES ${ABS_LIBRARY_PATH})
+    endforeach()
+
+    target_include_directories(${TARGET_NAME} SYSTEM PUBLIC ${OPENSSL_INCLUDE_DIR})
     target_link_libraries(${TARGET_NAME} ${OPENSSL_LIBRARIES})
+
+    if (APPLE)
+        add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/lib")
+        foreach(LIBRARY_PATH ${OPENSSL_LIBRARIES})
+            add_custom_command(TARGET ${TARGET_NAME}
+                COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_PATH=${LIBRARY_PATH} -P ${EXTERNAL_PROJECT_DIR}/MacOSInstallNameChange.cmake
+                COMMENT "Calling install_name_tool on libraries to fix install name for dylib linking"
+            )
+        endforeach()
+    endif ()
 endmacro()
