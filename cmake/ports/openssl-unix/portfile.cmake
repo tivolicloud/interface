@@ -1,8 +1,3 @@
-# -- openssl needs to be linked dynamically or it'll be incompatible with webrtc
-set(BUILD_SHARED_LIBS true)
-set(VCPKG_LIBRARY_LINKAGE dynamic)
-# --
-
 if (NOT VCPKG_TARGET_IS_MINGW)
     vcpkg_fail_port_install(MESSAGE "${PORT} is only for openssl on Unix-like systems" ON_TARGET "UWP" "Windows")
 endif()
