@@ -278,11 +278,14 @@ enum class EntityVersion : PacketVersion {
     TextEntityFonts,
     ScriptServerKinematicMotion,
     ZoneCullingMode, // caitlyn
+    CustomTags, // caitlyn
     EntityPriority, // caitlyn
     ModelBlendshapes, // hifiexperiments
-    CloneGrabbable, // maki    
+    CloneGrabbable, // maki
+    RemovedCustomTags, // maki
+    SkeletonModelURLInIdentityPacket, // maki
     // TO DO - reinstate with tonemapping in zones
-   // ToneMappingMode, // caitlyn
+    // ToneMappingMode, // caitlyn
     
     // Add new versions above here
     NUM_PACKET_TYPE,
