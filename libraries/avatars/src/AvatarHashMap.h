@@ -53,7 +53,7 @@ public:
     void addReplica(const QUuid& parentID, AvatarSharedPointer replica);
     std::vector<QUuid> getReplicaIDs(const QUuid& parentID);
     void parseDataFromBuffer(const QUuid& parentID, const QByteArray& buffer);
-    void processAvatarIdentity(const QUuid& parentID, const QByteArray& identityData, bool& identityChanged, bool& displayNameChanged);
+    void processAvatarIdentity(const QUuid& parentID, const QByteArray& identityData, bool& identityChanged, bool& displayNameChanged, bool& skeletonModelURLChanged);
     void removeReplicas(const QUuid& parentID);
     std::vector<AvatarSharedPointer> takeReplicas(const QUuid& parentID);
     void processTrait(const QUuid& parentID, AvatarTraits::TraitType traitType, QByteArray traitBinaryData);

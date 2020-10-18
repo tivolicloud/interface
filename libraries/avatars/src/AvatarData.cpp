@@ -2000,9 +2000,12 @@ glm::quat AvatarData::getOrientationOutbound() const {
     return (getLocalOrientation());
 }
 
-void AvatarData::processAvatarIdentity(QDataStream& packetStream, bool& identityChanged,
-                                       bool& displayNameChanged) {
-
+void AvatarData::processAvatarIdentity(
+    QDataStream& packetStream,
+    bool& identityChanged,
+    bool& displayNameChanged,
+    bool& skeletonModelURLChanged
+) {
     QUuid avatarSessionID;
 
     // peek the sequence number, this will tell us if we should be processing this identity packet at all
@@ -2020,16 +2023,22 @@ void AvatarData::processAvatarIdentity(QDataStream& packetStream, bool& identity
     Identity identity;
 
     packetStream
+        >> identity.skeletonModelURL
         >> identity.attachmentData
         >> identity.displayName
         >> identity.sessionDisplayName
-        >> identity.identityFlags
-        ;
+        >> identity.identityFlags;
 
     if (incomingSequenceNumber > _identitySequenceNumber) {
 
         // set the store identity sequence number to match the incoming identity
         _identitySequenceNumber = incomingSequenceNumber;
+
+        if (identity.skeletonModelURL != _skeletonModelURL) {
+            setSkeletonModelURL(identity.skeletonModelURL);
+            identityChanged = true;
+            skeletonModelURLChanged = true;
+        }
 
         if (identity.displayName != _displayName) {
             _displayName = identity.displayName;
@@ -2068,6 +2077,7 @@ void AvatarData::processAvatarIdentity(QDataStream& packetStream, bool& identity
 
 #ifdef WANT_DEBUG
         qCDebug(avatars) << __FUNCTION__
+            << "identity.skeletonModelURL" << identity.skeletonModelURL
             << "identity.displayName:" << identity.displayName
             << "identity.sessionDisplayName:" << identity.sessionDisplayName
             << "identity.identityFlags:" << identity.identityFlags;
@@ -2150,10 +2160,6 @@ QByteArray AvatarData::packSkeletonData() const {
     return avatarDataByteArray.left(avatarDataSize);
 }
 
-QByteArray AvatarData::packSkeletonModelURL() const {
-    return getWireSafeSkeletonModelURL().toEncoded();
-}
-
 void AvatarData::unpackSkeletonData(const QByteArray& data) {
 
     const unsigned char* startPosition = reinterpret_cast<const unsigned char*>(data.data());
@@ -2191,11 +2197,6 @@ void AvatarData::unpackSkeletonData(const QByteArray& data) {
     setSkeletonData(joints);
 }
 
-void AvatarData::unpackSkeletonModelURL(const QByteArray& data) {
-    auto skeletonModelURL = QUrl::fromEncoded(data);
-    setSkeletonModelURL(skeletonModelURL);
-}
-
 QByteArray AvatarData::packAvatarEntityTraitInstance(AvatarTraits::TraitInstanceID traitInstanceID) {
     // grab a read lock on the avatar entities and check for entity data for the given ID
     QByteArray entityBinaryData;
@@ -2224,9 +2225,7 @@ QByteArray AvatarData::packTrait(AvatarTraits::TraitType traitType) const {
     QByteArray traitBinaryData;
 
     // Call packer function
-    if (traitType == AvatarTraits::SkeletonModelURL) {
-        traitBinaryData = packSkeletonModelURL();
-    } else if (traitType == AvatarTraits::SkeletonData) {
+    if (traitType == AvatarTraits::SkeletonData) {
         traitBinaryData = packSkeletonData();
     }
 
@@ -2247,9 +2246,7 @@ QByteArray AvatarData::packTraitInstance(AvatarTraits::TraitType traitType, Avat
 }
 
 void AvatarData::processTrait(AvatarTraits::TraitType traitType, QByteArray traitBinaryData) {
-    if (traitType == AvatarTraits::SkeletonModelURL) {
-        unpackSkeletonModelURL(traitBinaryData);
-    } else if (traitType == AvatarTraits::SkeletonData) {
+    if (traitType == AvatarTraits::SkeletonData) {
         unpackSkeletonData(traitBinaryData);
     }
 }
@@ -2304,6 +2301,7 @@ QByteArray AvatarData::identityByteArray(bool setIsReplicated) const {
 
     identityStream << getSessionUUID()
         << (udt::SequenceNumber::Type) _identitySequenceNumber
+        << getWireSafeSkeletonModelURL()
         << _attachmentData
         << _displayName
         << getSessionDisplayNameForTransport() // depends on _sessionDisplayName
@@ -2323,10 +2321,8 @@ void AvatarData::setSkeletonModelURL(const QUrl& skeletonModelURL) {
     }
     
     _skeletonModelURL = expanded;
-    if (_clientTraitsHandler) {
-        _clientTraitsHandler->markTraitUpdated(AvatarTraits::SkeletonModelURL);
-    }
-
+    markIdentityDataChanged();
+    
     emit skeletonModelURLChanged();
 }
 

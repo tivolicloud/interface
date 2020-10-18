@@ -53,7 +53,6 @@ private:
     AvatarTraits::AssociatedTraitValues<ClientTraitStatus, Unchanged> _traitStatuses;
 
     AvatarTraits::TraitVersion _currentTraitVersion { AvatarTraits::DEFAULT_TRAIT_VERSION };
-    AvatarTraits::TraitVersion _currentSkeletonVersion { AvatarTraits::NULL_TRAIT_VERSION };
     
     bool _shouldPerformInitialSend { false };
     bool _hasChangedTraits { false };

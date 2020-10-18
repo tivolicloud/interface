@@ -28,7 +28,6 @@ namespace AvatarTraits {
         NullTrait = -1,
 
         // Simple traits
-        SkeletonModelURL = 0,
         SkeletonData,
         // Instanced traits
         FirstInstancedTrait,
