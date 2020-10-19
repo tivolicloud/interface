@@ -14,11 +14,7 @@
 		<mat-button-toggle [checked]="!data.usingTea">
 			<mat-icon>link</mat-icon> https://
 		</mat-button-toggle>
-		<mat-button-toggle
-			#tea="matButtonToggle"
-			[checked]="data.usingTea"
-			disabled
-		>
+		<mat-button-toggle #tea="matButtonToggle" [checked]="data.usingTea">
 			<mat-icon>emoji_food_beverage</mat-icon> tea://
 		</mat-button-toggle>
 	</mat-button-toggle-group>
