@@ -27,12 +27,8 @@ Download and install these programs:
 
     Once installed, open the terminal and run:
 
-    The last command will install OpenSSL 1.0.2t
-
     ```bash
-    brew install cmake ninja python node
-
-    curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/64555220bfbf4a25598523c2e4d3a232560eaad7/Formula/openssl.rb && brew install openssl.rb -f && rm -f openssl.rb
+    brew install cmake ninja python node openssl@1.1
 
     curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/86a44a0a552c673a05f11018459c9f5faae3becc/Formula/python@2.rb && brew install python@2.rb -f && rm -f python@2.rb
     ```
@@ -95,7 +91,7 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2t -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl/1.0.2t/include -DOPENSSL_USE_STATIC_LIBS=TRUE -DOSX_SDK=10.11 -G Xcode ..
+cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h/include -DOSX_SDK=10.11 -G Xcode ..
 ```
 
 **Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
