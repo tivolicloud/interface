@@ -132,7 +132,10 @@ endif()
             self.triplet = self.hostTriplet
 
     def writeEnv(self, var, value=""):
-        with open(os.path.join(self.args.build_root, '_env', var + ".txt"), "w") as fp:
+        envPath = os.path.join(self.args.build_root, "_env")
+        if not os.path.isdir(envPath):
+            os.mkdir(envPath)
+        with open(os.path.join(envPath, var + ".txt"), "w") as fp:
             fp.write(value)
             fp.close()
 
