@@ -3,6 +3,8 @@ linux build image:
     image: docker:latest
 
     only:
+        refs:
+            - master
         changes:
             - .gitlab/build/linux.Dockerfile
 
@@ -26,6 +28,8 @@ linux arm64 build image:
         - arm64
 
     only:
+        refs:
+            - master
         changes:
             - .gitlab/build/linux-arm64.Dockerfile
 
