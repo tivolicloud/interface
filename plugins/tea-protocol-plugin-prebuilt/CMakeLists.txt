@@ -53,7 +53,11 @@ else()
 endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-	set(TEA_PROTOCOL_OS_PATH "linux/libtivoli-tea-protocol-plugin.so")
+	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+		set(TEA_PROTOCOL_OS_PATH "linux-arm64/libtivoli-tea-protocol-plugin.so")
+	else ()
+		set(TEA_PROTOCOL_OS_PATH "linux/libtivoli-tea-protocol-plugin.so")
+	endif ()
 elseif (APPLE)
 	set(TEA_PROTOCOL_OS_PATH "macos/libtivoli-tea-protocol-plugin.dylib")
 else()
@@ -61,6 +65,8 @@ else()
 endif()
 
 set(TEA_PROTOCOL_PREBUILT_EXTRACTED_OS_PATH "${TEA_PROTOCOL_EXTRACTED_PATH}/${TEA_PROTOCOL_OS_PATH}")
+
+message(STATUS "Using \"${TEA_PROTOCOL_OS_PATH}\"")
 
 # create the destination for the client plugin binaries
 add_custom_command(
