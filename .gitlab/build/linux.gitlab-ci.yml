@@ -68,11 +68,7 @@ all linux:
         - cd build
         - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja
         - cmake --build . --config $BUILD_TYPE
-          --target interface
-          --target domain-server
-          --target assignment-client
-          --target oven
-          --target ice-server
+          --target interface domain-server assignment-client oven ice-server
 
         # upload symbols and sources to sentry
         # - sentry-cli upload-dif --include-sources -p interface interface
@@ -109,9 +105,7 @@ server linux arm64:
         - cd build
         - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DDISABLE_HIFI_CODEC=ON -DDISABLE_PCM_CODEC=ON -G Ninja
         - cmake --build . --config $BUILD_TYPE
-          --target domain-server
-          --target assignment-client
-          --target oven
+          --target domain-server assignment-client oven
 
         # make AppDir
         - python3 ../tools/make_appdir.py server .
