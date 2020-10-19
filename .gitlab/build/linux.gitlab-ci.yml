@@ -55,17 +55,9 @@ all linux:
 
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
-        TIVOLI_QT_BASE: $CI_PROJECT_DIR/build/TIVOLI_QT
-        TIVOLI_VCPKG_BASE: $CI_PROJECT_DIR/build/TIVOLI_VCPKG
-
         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
         # SENTRY_AUTH_TOKEN
         # SENTRY_ORG: tivolicloud
-
-    cache:
-        paths:
-            - build/TIVOLI_QT
-            - build/TIVOLI_VCPKG
 
     script:
         - mkdir -p build
@@ -107,14 +99,6 @@ server linux arm64:
         STABLE_BUILD: 1
 
         RELEASE_NUMBER: $CI_COMMIT_TAG
-
-        TIVOLI_QT_BASE: $CI_PROJECT_DIR/build/TIVOLI_QT
-        TIVOLI_VCPKG_BASE: $CI_PROJECT_DIR/build/TIVOLI_VCPKG
-
-    cache:
-        paths:
-            - build/TIVOLI_QT
-            - build/TIVOLI_VCPKG
 
     script:
         - mkdir -p build
