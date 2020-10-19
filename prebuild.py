@@ -71,7 +71,8 @@ def headSha():
     stdout, _ = git.communicate()
     sha = stdout.split('\n')[0]
     if not sha:
-        raise RuntimeError("couldn't find git sha for repository {}".format(repo_dir))
+        # raise RuntimeError("couldn't find git sha for repository {}".format(repo_dir))
+        logger.warn("Couldn't find git sha for repository {}".format(repo_dir))
     return sha
 
 @contextmanager
