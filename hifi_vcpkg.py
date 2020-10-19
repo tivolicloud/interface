@@ -123,7 +123,6 @@ endif()
                 self.bootstrapCmds.append("-useSystemBinaries")
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
                 self.hostTriplet = "arm64-linux"
-                self.vcpkgVersion = "2020.04"
 
         if self.args.android:
             self.triplet = 'arm64-android'
