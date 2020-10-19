@@ -3,9 +3,9 @@ FROM ubuntu:18.04
 # arch linux
 # - pacman -Syu --noconfirm base-devel git curl unzip gcc cmake python python-distutils-extra nodejs openssl double-conversion libpng harfbuzz mesa alsa-lib libxmu libxi freeglut jack libxrandr libudev0-shim zlib md4c
 
-# ubuntu 18.04
-
 ENV DEBIAN_FRONTEND=noninteractive
+
+# system dependencies
 
 RUN \
 apt-get update -y && \
@@ -36,3 +36,23 @@ rm -rf cmake-3.14.2 cmake-3.14.2.tar.gz && \
 curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 apt-get install -y nodejs
 # npm i -g @sentry/cli
+
+# project dependencies
+
+RUN \
+# download interface from master
+cd / && \
+curl -O https://git.tivolicloud.com/tivolicloud/interface/-/archive/master/interface-master.tar.gz && \
+tar -xf interface-master.tar.gz && \
+rm -f interface-master.tar.gz && \
+# remove all but cmake and *.py
+mkdir /interface && \
+cp -r /interface-master/cmake /interface && \
+cp -r /interface-master/*.py /interface && \
+mkdir -p /interface/build && \
+rm -rf /interface-master && \
+# download dependencies
+python3 /interface/prebuild.py --release-type PRODUCTION --build-root /interface/build --vcpkg-build-type release && \
+# cleanup. vcpkg saves packages in /root/.cache/vcpkg
+rm -rf /interface && \
+rm -rf /root/tivoli/vcpkg/*/installed
