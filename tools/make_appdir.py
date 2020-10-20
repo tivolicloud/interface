@@ -117,6 +117,8 @@ print("-- Installed linuxdeployqt")
 
 # make appdir
 
+deferred_plugins = ["libtivoli-tea-protocol-plugin.so"]
+
 if program == "interface":
 
 	# find all plugins
@@ -145,6 +147,8 @@ if program == "interface":
 	run(interface_dir, "cp -r jsdoc interface.AppDir/usr/bin")
 	if os.path.isdir(plugins_dir):
 		run(interface_dir, "cp -r plugins interface.AppDir/usr/bin")
+		for p in deferred_plugins:
+			run(interface_dir, "rm -f interface.AppDir/usr/bin/plugins/" + p)
 	run(interface_dir, "cp -r resources interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r scripts interface.AppDir/usr/bin")
 
@@ -165,6 +169,8 @@ if program == "interface":
 	]
 
 	for plugin in plugins:
+		if plugin in deferred_plugins:
+			continue
 		deploy_args.append(
 		    "-executable=interface.AppDir/usr/bin/plugins/" + plugin
 		)
@@ -175,6 +181,13 @@ if program == "interface":
 	run(interface_dir, " ".join(deploy_args), env)
 
 	run(appdir, "ln -s usr/bin/interface interface")
+
+	# add final plugins in
+	for plugin in deferred_plugins:
+		run(
+		    interface_dir,
+		    "cp plugins/" + plugin + " interface.AppDir/usr/bin/plugins"
+		)
 
 	print("-- Done!")
 
@@ -209,6 +222,8 @@ elif program == "server":
 	run(build_dir, "cp tools/oven/oven server.AppDir/usr/bin")
 	if os.path.isdir(plugins_dir):
 		run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
+		for p in deferred_plugins:
+			run(build_dir, "rm -f server.AppDir/usr/bin/plugins/" + p)
 	run(build_dir, "cp -r domain-server/resources server.AppDir/usr/bin")
 
 	print("-- Creating server.AppDir")
@@ -229,6 +244,8 @@ elif program == "server":
 	]
 
 	for plugin in plugins:
+		if plugin in deferred_plugins:
+			continue
 		deploy_args.append(
 		    "-executable=server.AppDir/usr/bin/plugins/" + plugin
 		)
@@ -240,6 +257,13 @@ elif program == "server":
 	run(appdir, "ln -s usr/bin/domain-server domain-server")
 	run(appdir, "ln -s usr/bin/assignment-client assignment-client")
 	run(appdir, "ln -s usr/bin/oven oven")
+
+	# add final plugins in
+	for plugin in deferred_plugins:
+		run(
+		    build_dir, "cp assignment-client/plugins/" + plugin +
+		    " server.AppDir/usr/bin/plugins"
+		)
 
 	print("-- Done!")
 
