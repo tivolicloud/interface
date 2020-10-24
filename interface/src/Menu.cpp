@@ -62,8 +62,11 @@ extern bool DEV_DECIMATE_TEXTURES;
 
 Menu* Menu::getInstance() {
     auto window = qApp->getWindow();
-    if (window) return dynamic_cast<Menu*>(window->menuBar());
-    else return NULL;
+    if (window) {
+        return dynamic_cast<Menu*>(window->menuBar());
+    } else {
+        return nullptr;
+    }
 }
 
 const char* EXCLUSION_GROUP_KEY = "exclusionGroup";
