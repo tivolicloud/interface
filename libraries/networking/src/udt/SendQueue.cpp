@@ -334,15 +334,15 @@ void SendQueue::run() {
                 // alright, we're in a weird state
                 // we want to know why this is happening so we can implement a better fix than this guard
                 // send some details up to the API (if the user allows us) that indicate how we could such a large timeToSleep
-                static const QString SEND_QUEUE_LONG_SLEEP_ACTION = "sendqueue-sleep";
+                static const QString SEND_QUEUE_LONG_SLEEP_ACTION = QStringLiteral("sendqueue-sleep");
 
                 // setup a json object with the details we want
                 QJsonObject longSleepObject;
-                longSleepObject["timeToSleep"] = qint64(timeToSleep.count());
-                longSleepObject["packetSendPeriod"] = _packetSendPeriod.load();
-                longSleepObject["nextPacketDelta"] = nextPacketDelta;
-                longSleepObject["nextPacketTimestamp"] = qint64(nextPacketTimestamp.time_since_epoch().count());
-                longSleepObject["then"] = qint64(now.time_since_epoch().count());
+                longSleepObject[QStringLiteral("timeToSleep")] = qint64(timeToSleep.count());
+                longSleepObject[QStringLiteral("packetSendPeriod")] = _packetSendPeriod.load();
+                longSleepObject[QStringLiteral("nextPacketDelta")] = nextPacketDelta;
+                longSleepObject[QStringLiteral("nextPacketTimestamp")] = qint64(nextPacketTimestamp.time_since_epoch().count());
+                longSleepObject[QStringLiteral("then")] = qint64(now.time_since_epoch().count());
 
                 // hopefully send this event using the user activity logger
                 UserActivityLogger::getInstance().logAction(SEND_QUEUE_LONG_SLEEP_ACTION, longSleepObject);

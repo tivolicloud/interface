@@ -36,15 +36,15 @@ void ResourceRequest::send() {
 
 QString ResourceRequest::getResultString() const {
     switch (_result) {
-        case Success: return "Success";
-        case Error: return "Error";
-        case Timeout: return "Timeout";
-        case ServerUnavailable: return "Server Unavailable";
-        case AccessDenied: return "Access Denied";
-        case InvalidURL: return "Invalid URL";
-        case NotFound: return "Not Found";
-        case RedirectFail: return "Redirect Fail";
-        default: return "Unspecified Error";
+        case Success: return QStringLiteral("Success");
+        case Error: return QStringLiteral("Error");
+        case Timeout: return QStringLiteral("Timeout");
+        case ServerUnavailable: return QStringLiteral("Server Unavailable");
+        case AccessDenied: return QStringLiteral("Access Denied");
+        case InvalidURL: return QStringLiteral("Invalid URL");
+        case NotFound: return QStringLiteral("Not Found");
+        case RedirectFail: return QStringLiteral("Redirect Fail");
+        default: return QStringLiteral("Unspecified Error");
     }
 }
 

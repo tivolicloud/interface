@@ -79,7 +79,7 @@ void _writeLines(const QString& filename, const QList<QString>& lines) {
 }
 
 QString _jsdocTypeToString(QJsonValue jsdocType) {
-    return jsdocType.toObject().value("names").toVariant().toStringList().join("/");
+    return jsdocType.toObject().value(QStringLiteral("names")).toVariant().toStringList().join(QStringLiteral("/"));
 }
 
 void JSConsole::readAPI() {
@@ -90,7 +90,7 @@ void JSConsole::readAPI() {
 }
 
 QStandardItem* getAutoCompleteItem(QJsonValue propertyObject) {
-    auto propertyItem = new QStandardItem(propertyObject.toObject().value("name").toString());
+    auto propertyItem = new QStandardItem(propertyObject.toObject().value(QStringLiteral("name")).toString());
     propertyItem->setData(propertyObject.toVariant());
     return propertyItem;
 }
@@ -103,12 +103,12 @@ QStandardItemModel* JSConsole::getAutoCompleteModel(const QString& memberOf) {
     if (memberOf != nullptr) {
         foreach(auto doc, _apiDocs) {
             auto object = doc.toObject();
-            if (object.value("name").toString() == memberOf && object.value("scope").toString() == "global" &&
-                object.value("kind").toString() == "namespace") {
+            if (object.value(QStringLiteral("name")).toString() == memberOf && object.value(QStringLiteral("scope")).toString() == QStringLiteral("global") &&
+                object.value(QStringLiteral("kind")).toString() == QStringLiteral("namespace")) {
 
-                memberOfProperty = object.value("longname").toString();
+                memberOfProperty = object.value(QStringLiteral("longname")).toString();
 
-                auto properties = doc.toObject().value("properties").toArray();
+                auto properties = doc.toObject().value(QStringLiteral("properties")).toArray();
                 foreach(auto propertyObject, properties) {
                     model->appendRow(getAutoCompleteItem(propertyObject));
                 }
@@ -121,10 +121,10 @@ QStandardItemModel* JSConsole::getAutoCompleteModel(const QString& memberOf) {
     
     foreach(auto doc, _apiDocs) {
         auto object = doc.toObject();
-        auto scope = object.value("scope");
-        if ((memberOfProperty == nullptr && scope.toString() == "global" && object.value("kind").toString() == "namespace") ||
-            (memberOfProperty != nullptr && object.value("memberof").toString() == memberOfProperty &&
-                object.value("kind").toString() != "typedef")) {
+        auto scope = object.value(QStringLiteral("scope"));
+        if ((memberOfProperty == nullptr && scope.toString() == QStringLiteral("global") && object.value(QStringLiteral("kind")).toString() == QStringLiteral("namespace")) ||
+            (memberOfProperty != nullptr && object.value(QStringLiteral("memberof")).toString() == memberOfProperty &&
+                object.value(QStringLiteral("kind")).toString() != QStringLiteral("typedef"))) {
 
             model->appendRow(getAutoCompleteItem(doc));
         }
@@ -190,12 +190,12 @@ JSConsole::JSConsole(QWidget* parent, const ScriptEnginePointer& scriptEngine) :
 
 void JSConsole::insertCompletion(const QModelIndex& completion) {
     auto jsdocObject = QJsonValue::fromVariant(completion.data(Qt::UserRole + 1)).toObject();
-    auto kind = jsdocObject.value("kind").toString();
+    auto kind = jsdocObject.value(QStringLiteral("kind")).toString();
     auto completionString = completion.data().toString();
-    if (kind == "function") {
-        auto params = jsdocObject.value("params").toArray();
+    if (kind == QStringLiteral("function")) {
+        auto params = jsdocObject.value(QStringLiteral("params")).toArray();
         // automatically add the parenthesis/parentheses for the functions
-        completionString += params.isEmpty() ? "()" : "(";
+        completionString += params.isEmpty() ? QStringLiteral("()") : QStringLiteral("(");
     }
     QTextCursor textCursor = _ui->promptTextEdit->textCursor();
     int extra = completionString.length() - _completer->completionPrefix().length();
@@ -207,22 +207,22 @@ void JSConsole::insertCompletion(const QModelIndex& completion) {
 
 void JSConsole::highlightedCompletion(const QModelIndex& completion) {
     auto jsdocObject = QJsonValue::fromVariant(completion.data(Qt::UserRole + 1)).toObject();
-    QString memberOf = "";
+    QString memberOf = QString();
     if (!_completerModule.isEmpty()) {
         memberOf = _completerModule + ".";
     }
-    auto name = memberOf + "<b>" + jsdocObject.value("name").toString() + "</b>";
-    auto description = jsdocObject.value("description").toString();
-    auto examples = jsdocObject.value("examples").toArray();
-    auto kind = jsdocObject.value("kind").toString();
-    QString returnTypeText = "";
+    auto name = memberOf + "<b>" + jsdocObject.value(QStringLiteral("name")).toString() + QStringLiteral("</b>");
+    auto description = jsdocObject.value(QStringLiteral("description")).toString();
+    auto examples = jsdocObject.value(QStringLiteral("examples")).toArray();
+    auto kind = jsdocObject.value(QStringLiteral("kind")).toString();
+    QString returnTypeText = QString();
 
-    QString paramsTable = "";
-    if (kind == "function") {
-        auto params = jsdocObject.value("params").toArray();
-        auto returns = jsdocObject.value("returns");
+    QString paramsTable = QString();
+    if (kind == QStringLiteral("function")) {
+        auto params = jsdocObject.value(QStringLiteral("params")).toArray();
+        auto returns = jsdocObject.value(QStringLiteral("returns"));
         if (!returns.isUndefined()) {
-            returnTypeText = _jsdocTypeToString(jsdocObject.value("returns").toArray().at(0).toObject().value("type")) + " ";
+            returnTypeText = _jsdocTypeToString(jsdocObject.value(QStringLiteral("returns")).toArray().at(0).toObject().value(QStringLiteral("type"))) + QStringLiteral(" ");
         }
         name += "(";
         if (!params.isEmpty()) {

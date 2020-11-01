@@ -103,7 +103,7 @@ Shader::Pointer Shader::createOrReuseDomainShader(Type type, uint32_t sourceId) 
 
 
 ShaderPointer Shader::createOrReuseProgramShader(Type type, const Pointer& vertexShader, const Pointer& geometryShader, const Pointer& pixelShader) {
-    PROFILE_RANGE(app, "createOrReuseProgramShader");
+    PROFILE_RANGE(app, QStringLiteral("createOrReuseProgramShader"));
     ProgramMapKey key(0);
 
     if (vertexShader && vertexShader->getType() == VERTEX) {

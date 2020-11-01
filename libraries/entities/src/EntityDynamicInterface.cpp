@@ -139,37 +139,37 @@ variables.  These argument variables are used by the code which is run when bull
 // Note: The "none" action type is not listed because it's an internal "uninitialized" value and not useful for scripts.
 EntityDynamicType EntityDynamicInterface::dynamicTypeFromString(QString dynamicTypeString) {
     QString normalizedDynamicTypeString = dynamicTypeString.toLower().remove('-').remove('_');
-    if (normalizedDynamicTypeString == "none") {
+    if (normalizedDynamicTypeString == QStringLiteral("none")) {
         return DYNAMIC_TYPE_NONE;
     }
-    if (normalizedDynamicTypeString == "offset") {
+    if (normalizedDynamicTypeString == QStringLiteral("offset")) {
         return DYNAMIC_TYPE_OFFSET;
     }
-    if (normalizedDynamicTypeString == "spring") {
+    if (normalizedDynamicTypeString == QStringLiteral("spring")) {
         return DYNAMIC_TYPE_TRACTOR;
     }
-    if (normalizedDynamicTypeString == "tractor") {
+    if (normalizedDynamicTypeString == QStringLiteral("tractor")) {
         return DYNAMIC_TYPE_TRACTOR;
     }
-    if (normalizedDynamicTypeString == "hold") {
+    if (normalizedDynamicTypeString == QStringLiteral("hold")) {
         return DYNAMIC_TYPE_HOLD;
     }
-    if (normalizedDynamicTypeString == "traveloriented") {
+    if (normalizedDynamicTypeString == QStringLiteral("traveloriented")) {
         return DYNAMIC_TYPE_TRAVEL_ORIENTED;
     }
-    if (normalizedDynamicTypeString == "hinge") {
+    if (normalizedDynamicTypeString == QStringLiteral("hinge")) {
         return DYNAMIC_TYPE_HINGE;
     }
-    if (normalizedDynamicTypeString == "fargrab") {
+    if (normalizedDynamicTypeString == QStringLiteral("fargrab")) {
         return DYNAMIC_TYPE_FAR_GRAB;
     }
-    if (normalizedDynamicTypeString == "slider") {
+    if (normalizedDynamicTypeString == QStringLiteral("slider")) {
         return DYNAMIC_TYPE_SLIDER;
     }
-    if (normalizedDynamicTypeString == "ballsocket") {
+    if (normalizedDynamicTypeString == QStringLiteral("ballsocket")) {
         return DYNAMIC_TYPE_BALL_SOCKET;
     }
-    if (normalizedDynamicTypeString == "conetwist") {
+    if (normalizedDynamicTypeString == QStringLiteral("conetwist")) {
         return DYNAMIC_TYPE_CONE_TWIST;
     }
 
@@ -181,29 +181,29 @@ EntityDynamicType EntityDynamicInterface::dynamicTypeFromString(QString dynamicT
 QString EntityDynamicInterface::dynamicTypeToString(EntityDynamicType dynamicType) { // CPM actions related
     switch(dynamicType) {
         case DYNAMIC_TYPE_NONE:
-            return "none";
+            return QStringLiteral("none");
         case DYNAMIC_TYPE_OFFSET:
-            return "offset";
+            return QStringLiteral("offset");
         case DYNAMIC_TYPE_SPRING:
         case DYNAMIC_TYPE_TRACTOR:
-            return "tractor";
+            return QStringLiteral("tractor");
         case DYNAMIC_TYPE_HOLD:
-            return "hold";
+            return QStringLiteral("hold");
         case DYNAMIC_TYPE_TRAVEL_ORIENTED:
-            return "travel-oriented";
+            return QStringLiteral("travel-oriented");
         case DYNAMIC_TYPE_HINGE:
-            return "hinge";
+            return QStringLiteral("hinge");
         case DYNAMIC_TYPE_FAR_GRAB:
-            return "far-grab";
+            return QStringLiteral("far-grab");
         case DYNAMIC_TYPE_SLIDER:
-            return "slider";
+            return QStringLiteral("slider");
         case DYNAMIC_TYPE_BALL_SOCKET:
-            return "ball-socket";
+            return QStringLiteral("ball-socket");
         case DYNAMIC_TYPE_CONE_TWIST:
-            return "cone-twist";
+            return QStringLiteral("cone-twist");
     }
     assert(false);
-    return "none";
+    return QStringLiteral("none");
 }
 
 glm::vec3 EntityDynamicInterface::extractVec3Argument(QString objectName, QVariantMap arguments,
@@ -224,15 +224,15 @@ glm::vec3 EntityDynamicInterface::extractVec3Argument(QString objectName, QVaria
     }
 
     QVariantMap resultVM = resultV.toMap();
-    if (!resultVM.contains("x") || !resultVM.contains("y") || !resultVM.contains("z")) {
+    if (!resultVM.contains(QStringLiteral("x")) || !resultVM.contains(QStringLiteral("y")) || !resultVM.contains(QStringLiteral("z"))) {
         qCDebug(entities) << objectName << "argument" << argumentName << "must be a map with keys: x, y, z";
         ok = false;
         return glm::vec3(0.0f);
     }
 
-    QVariant xV = resultVM["x"];
-    QVariant yV = resultVM["y"];
-    QVariant zV = resultVM["z"];
+    QVariant xV = resultVM[QStringLiteral("x")];
+    QVariant yV = resultVM[QStringLiteral("y")];
+    QVariant zV = resultVM[QStringLiteral("z")];
 
     bool xOk = true;
     bool yOk = true;
@@ -273,16 +273,16 @@ glm::quat EntityDynamicInterface::extractQuatArgument(QString objectName, QVaria
     }
 
     QVariantMap resultVM = resultV.toMap();
-    if (!resultVM.contains("x") || !resultVM.contains("y") || !resultVM.contains("z") || !resultVM.contains("w")) {
+    if (!resultVM.contains(QStringLiteral("x")) || !resultVM.contains(QStringLiteral("y")) || !resultVM.contains(QStringLiteral("z")) || !resultVM.contains(QStringLiteral("w"))) {
         qCDebug(entities) << objectName << "argument" << argumentName << "must be a map with keys: x, y, z, and w";
         ok = false;
         return glm::quat();
     }
 
-    QVariant xV = resultVM["x"];
-    QVariant yV = resultVM["y"];
-    QVariant zV = resultVM["z"];
-    QVariant wV = resultVM["w"];
+    QVariant xV = resultVM[QStringLiteral("x")];
+    QVariant yV = resultVM[QStringLiteral("y")];
+    QVariant zV = resultVM[QStringLiteral("z")];
+    QVariant wV = resultVM[QStringLiteral("w")];
 
     bool xOk = true;
     bool yOk = true;
@@ -359,7 +359,7 @@ QString EntityDynamicInterface::extractStringArgument(QString objectName, QVaria
             qCDebug(entities) << objectName << "requires argument:" << argumentName;
         }
         ok = false;
-        return "";
+        return QString();
     }
     return arguments[argumentName].toString();
 }
@@ -402,7 +402,7 @@ QString serializedDynamicsToDebugString(QByteArray data) {
         QUuid dynamicID;
         serializedDynamicStream >> dynamicType;
         serializedDynamicStream >> dynamicID;
-        result += EntityDynamicInterface::dynamicTypeToString(dynamicType) + "-" + dynamicID.toString() + " ";
+        result += EntityDynamicInterface::dynamicTypeToString(dynamicType) + QStringLiteral("-") + dynamicID.toString() + QStringLiteral(" ");
     }
 
     return result;

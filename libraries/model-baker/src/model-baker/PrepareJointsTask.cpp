@@ -28,8 +28,8 @@ QMap<QString, QString> getJointNameMapping(const hifi::VariantHash& mapping) {
 
 QMap<QString, glm::quat> getJointRotationOffsets(const hifi::VariantHash& mapping) {
     QMap<QString, glm::quat> jointRotationOffsets;
-    static const QString JOINT_ROTATION_OFFSET_FIELD = "jointRotationOffset";
-    static const QString JOINT_ROTATION_OFFSET2_FIELD = "jointRotationOffset2";
+    static const QString JOINT_ROTATION_OFFSET_FIELD = QStringLiteral("jointRotationOffset");
+    static const QString JOINT_ROTATION_OFFSET2_FIELD = QStringLiteral("jointRotationOffset2");
     if (!mapping.isEmpty() && ((mapping.contains(JOINT_ROTATION_OFFSET_FIELD) && mapping[JOINT_ROTATION_OFFSET_FIELD].type() == QVariant::Hash) || (mapping.contains(JOINT_ROTATION_OFFSET2_FIELD) && mapping[JOINT_ROTATION_OFFSET2_FIELD].type() == QVariant::Hash))) {
         QHash<QString, QVariant> offsets;
         if (mapping.contains(JOINT_ROTATION_OFFSET_FIELD)) {
@@ -71,7 +71,7 @@ void PrepareJointsTask::run(const baker::BakeContextPointer& context, const Inpu
         const auto& mapping = input.get1();
         auto& jointRotationOffsets = output.edit1();
 
-        static const QString JOINT_ROTATION_OFFSET2_FIELD = "jointRotationOffset2";
+        static const QString JOINT_ROTATION_OFFSET2_FIELD = QStringLiteral("jointRotationOffset2");
         QVariantHash fstHashMap = mapping;
         bool newJointRot = fstHashMap.contains(JOINT_ROTATION_OFFSET2_FIELD);
 
@@ -124,8 +124,8 @@ void PrepareJointsTask::run(const baker::BakeContextPointer& context, const Inpu
             }
         }
 
-        const QString APPEND_DUPLICATE_JOINT = "_joint";
-        const QString APPEND_DUPLICATE_MESH = "_mesh";
+        const QString APPEND_DUPLICATE_JOINT = QStringLiteral("_joint");
+        const QString APPEND_DUPLICATE_MESH = QStringLiteral("_mesh");
 
         // resolve duplicates and set jointIndices
         auto& jointIndices = output.edit2();

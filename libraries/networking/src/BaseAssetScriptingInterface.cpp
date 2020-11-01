@@ -169,18 +169,18 @@ Promise BaseAssetScriptingInterface::convertBytes(const QByteArray& dataByteArra
     Promise conversion = makePromise(__FUNCTION__);
     if (!RESPONSE_TYPES.contains(responseType)) {
         error = QString("convertBytes: invalid responseType: '%1' (expected: %2)").arg(responseType).arg(RESPONSE_TYPES.join(" | "));
-    } else if (responseType == "arraybuffer") {
+    } else if (responseType == QStringLiteral("arraybuffer")) {
         // interpret as bytes
-        result["response"] = dataByteArray;
-    } else if (responseType == "text") {
+        result[QStringLiteral("response")] = dataByteArray;
+    } else if (responseType == QStringLiteral("text")) {
         // interpret as utf-8 text
-        result["response"] = QString::fromUtf8(dataByteArray);
-    } else if (responseType == "json") {
+        result[QStringLiteral("response")] = QString::fromUtf8(dataByteArray);
+    } else if (responseType == QStringLiteral("json")) {
         // interpret as JSON
         QJsonParseError status;
         auto parsed = QJsonDocument::fromJson(dataByteArray, &status);
         if (status.error == QJsonParseError::NoError) {
-            result["response"] = parsed.isArray() ? QVariant(parsed.array().toVariantList()) : QVariant(parsed.object().toVariantMap());
+            result[QStringLiteral("response")] = parsed.isArray() ? QVariant(parsed.array().toVariantList()) : QVariant(parsed.object().toVariantMap());
         } else {
             result = {
                 { "error", status.error },
@@ -189,11 +189,11 @@ Promise BaseAssetScriptingInterface::convertBytes(const QByteArray& dataByteArra
             error = "JSON Parse Error: " + status.errorString();
         }
     }
-    if (result.value("response").canConvert<QByteArray>()) {
+    if (result.value(QStringLiteral("response")).canConvert<QByteArray>()) {
         auto data = result.value("response").toByteArray();
-        result["contentType"] = QMimeDatabase().mimeTypeForData(data).name();
-        result["byteLength"] = data.size();
-        result["responseType"] = responseType;
+        result[QStringLiteral("contentType")] = QMimeDatabase().mimeTypeForData(data).name();
+        result[QStringLiteral("byteLength")] = data.size();
+        result[QStringLiteral("responseType")] = responseType;
     }
     return conversion->handle(error, result);
 }
@@ -226,13 +226,13 @@ Promise BaseAssetScriptingInterface::compressBytes(const QByteArray& dataByteArr
     if (gzip(dataByteArray, deflated, level)) {
         auto end = usecTimestampNow();
         compressed->resolve({
-            { "_uncompressedByteLength", dataByteArray.size() },
-            { "_uncompressedContentType", QMimeDatabase().mimeTypeForData(dataByteArray).name() },
-            { "_compressMS", (double)(end - start) / 1000.0 },
-            { "compressed", true },
-            { "byteLength", deflated.size() },
-            { "contentType", QMimeDatabase().mimeTypeForData(deflated).name() },
-            { "data", deflated },
+            { QStringLiteral("_uncompressedByteLength"), dataByteArray.size() },
+            { QStringLiteral("_uncompressedContentType"), QMimeDatabase().mimeTypeForData(dataByteArray).name() },
+            { QStringLiteral("_compressMS"), (double)(end - start) / 1000.0 },
+            { QStringLiteral("compressed"), true },
+            { QStringLiteral("byteLength"), deflated.size() },
+            { QStringLiteral("contentType"), QMimeDatabase().mimeTypeForData(deflated).name() },
+            { QStringLiteral("data"), deflated },
        });
     } else {
         compressed->reject("gzip error", {});
@@ -253,11 +253,11 @@ Promise BaseAssetScriptingInterface::downloadBytes(QString hash) {
         if (request->getError() == AssetRequest::Error::NoError) {
             QByteArray data = request->getData();
             result = {
-                { "url", request->getUrl() },
-                { "hash", request->getHash() },
-                { "cached", request->loadedFromCache() },
-                { "contentType", QMimeDatabase().mimeTypeForData(data).name() },
-                { "data", data },
+                { QStringLiteral("url"), request->getUrl() },
+                { QStringLiteral("hash"), request->getHash() },
+                { QStringLiteral("cached"), request->loadedFromCache() },
+                { QStringLiteral("contentType"), QMimeDatabase().mimeTypeForData(data).name() },
+                { QStringLiteral("data"), data },
             };
         } else {
             error = request->getError();

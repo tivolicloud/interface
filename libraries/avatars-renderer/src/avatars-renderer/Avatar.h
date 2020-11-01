@@ -503,7 +503,7 @@ public:
      * @returns {number} Simulation rate in Hz.
      * @deprecated This function is deprecated and will be removed.
      */
-    Q_INVOKABLE float getSimulationRate(const QString& rateName = QString("")) const;
+    Q_INVOKABLE float getSimulationRate(const QString& rateName = QString()) const;
 
     bool hasNewJointData() const { return _hasNewJointData; }
 

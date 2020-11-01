@@ -105,7 +105,7 @@ AnimInverseKinematics::~AnimInverseKinematics() {
 
     // remove markers
     for (int i = 0; i < MAX_TARGET_MARKERS; i++) {
-        QString name = QString("ikTarget%1").arg(i);
+        QString name = QStringLiteral("ikTarget%1").arg(i);
         DebugDraw::getInstance().removeMyAvatarMarker(name);
     }
 }
@@ -915,7 +915,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
         loadPoses(underPoses);
     } else {
 
-        PROFILE_RANGE_EX(simulation_animation, "ik/relax", 0xffff00ff, 0);
+        PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/relax"), 0xffff00ff, 0);
 
         initRelativePosesFromSolutionSource((SolutionSource)solutionSource, underPoses);
 
@@ -936,7 +936,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
         // build a list of targets from _targetVarVec
         std::vector<IKTarget> targets;
         {
-            PROFILE_RANGE_EX(simulation_animation, "ik/computeTargets", 0xffff00ff, 0);
+            PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/computeTargets"), 0xffff00ff, 0);
             computeTargets(animVars, targets, underPoses);
         }
 
@@ -946,7 +946,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
 
             JointChainInfoVec jointChainInfoVec(targets.size());
             {
-                PROFILE_RANGE_EX(simulation_animation, "ik/jointChainInfo", 0xffff00ff, 0);
+                PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/jointChainInfo"), 0xffff00ff, 0);
 
                 // initialize a new jointChainInfoVec, this will hold the results for solving each ik chain.
                 JointInfo defaultJointInfo = { glm::quat(), glm::vec3(), -1, false };
@@ -978,7 +978,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
             }
 
             {
-                PROFILE_RANGE_EX(simulation_animation, "ik/shiftHips", 0xffff00ff, 0);
+                PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/shiftHips"), 0xffff00ff, 0);
 
                 if (_hipsTargetIndex >= 0) {
 
@@ -1026,7 +1026,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
             }
 
             {
-                PROFILE_RANGE_EX(simulation_animation, "ik/debugDraw", 0xffff00ff, 0);
+                PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/debugDraw"), 0xffff00ff, 0);
 
                 // debug render ik targets
                 if (context.getEnableDebugDrawIKTargets()) {
@@ -1039,7 +1039,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
                         glm::mat4 geomTargetMat = createMatFromQuatAndPos(target.getRotation(), target.getTranslation());
                         glm::mat4 avatarTargetMat = rigToAvatarMat * context.getGeometryToRigMatrix() * geomTargetMat;
 
-                        QString name = QString("ikTarget%1").arg(targetNum);
+                        QString name = QStringLiteral("ikTarget%1").arg(targetNum);
                         DebugDraw::getInstance().addMyAvatarMarker(name, glmExtractRotation(avatarTargetMat), extractTranslation(avatarTargetMat), WHITE);
                         targetNum++;
                     }
@@ -1047,14 +1047,14 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
                     // draw secondary ik targets
                     for (auto& iter : _secondaryTargetsInRigFrame) {
                         glm::mat4 avatarTargetMat = rigToAvatarMat * (glm::mat4)iter.second;
-                        QString name = QString("ikTarget%1").arg(targetNum);
+                        QString name = QStringLiteral("ikTarget%1").arg(targetNum);
                         DebugDraw::getInstance().addMyAvatarMarker(name, glmExtractRotation(avatarTargetMat), extractTranslation(avatarTargetMat), GREEN);
                         targetNum++;
                     }
                 } else if (context.getEnableDebugDrawIKTargets() != _previousEnableDebugIKTargets) {
                     // remove markers if they were added last frame.
                     for (int i = 0; i < MAX_TARGET_MARKERS; i++) {
-                        QString name = QString("ikTarget%1").arg(i);
+                        QString name = QStringLiteral("ikTarget%1").arg(i);
                         DebugDraw::getInstance().removeMyAvatarMarker(name);
                     }
                 }
@@ -1063,7 +1063,7 @@ const AnimPoseVec& AnimInverseKinematics::overlay(const AnimVariantMap& animVars
             }
 
             {
-                PROFILE_RANGE_EX(simulation_animation, "ik/ccd", 0xffff00ff, 0);
+                PROFILE_RANGE_EX(simulation_animation, QStringLiteral("ik/ccd"), 0xffff00ff, 0);
 
                 setSecondaryTargets(context);
 
@@ -1198,16 +1198,16 @@ void AnimInverseKinematics::initConstraints() {
     for (int i = 0; i < numJoints; ++i) {
         // compute the joint's baseName and remember whether its prefix was "Left" or not
         QString baseName = _skeleton->getJointName(i);
-        bool isLeft = baseName.startsWith("Left", Qt::CaseSensitive);
+        bool isLeft = baseName.startsWith(QStringLiteral("Left"), Qt::CaseSensitive);
         float mirror = isLeft ? -1.0f : 1.0f;
         if (isLeft) {
             baseName.remove(0, 4);
-        } else if (baseName.startsWith("Right", Qt::CaseSensitive)) {
+        } else if (baseName.startsWith(QStringLiteral("Right"), Qt::CaseSensitive)) {
             baseName.remove(0, 5);
         }
 
         RotationConstraint* constraint = nullptr;
-        if (0 == baseName.compare("Arm", Qt::CaseSensitive)) {
+        if (0 == baseName.compare(QStringLiteral("Arm"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             //stConstraint->setTwistLimits(-PI / 2.0f, PI / 2.0f);
@@ -1243,7 +1243,7 @@ void AnimInverseKinematics::initConstraints() {
             stConstraint->setSwingLimits(minDots);
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
-        } else if (0 == baseName.compare("UpLeg", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("UpLeg"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             stConstraint->setTwistLimits(-PI / 2.0f, PI / 2.0f);
@@ -1282,9 +1282,9 @@ void AnimInverseKinematics::initConstraints() {
             */
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
-        } else if (0 == baseName.compare("Hand", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("Hand"), Qt::CaseSensitive)) {
             // hand/wrist constraints have been disabled.
-        } else if (baseName.startsWith("Shoulder", Qt::CaseSensitive)) {
+        } else if (baseName.startsWith(QStringLiteral("Shoulder"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             const float MAX_SHOULDER_TWIST = PI / 10.0f;
@@ -1296,7 +1296,7 @@ void AnimInverseKinematics::initConstraints() {
             stConstraint->setSwingLimits(minDots);
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
-        } else if (baseName.startsWith("Spine", Qt::CaseSensitive)) {
+        } else if (baseName.startsWith(QStringLiteral("Spine"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             const float MAX_SPINE_TWIST = PI / 20.0f;
@@ -1307,14 +1307,14 @@ void AnimInverseKinematics::initConstraints() {
             const float MAX_SPINE_ANTERIOR_SWING = PI / 10.0f;
             setEllipticalSwingLimits(stConstraint, MAX_SPINE_LATERAL_SWING, MAX_SPINE_ANTERIOR_SWING);
 
-            if (0 == baseName.compare("Spine1", Qt::CaseSensitive)
-                    || 0 == baseName.compare("Spine", Qt::CaseSensitive)) {
+            if (0 == baseName.compare(QStringLiteral("Spine1"), Qt::CaseSensitive)
+                    || 0 == baseName.compare(QStringLiteral("Spine"), Qt::CaseSensitive)) {
                 stConstraint->setLowerSpine(true);
             }
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
 
-        } else if (0 == baseName.compare("Neck", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("Neck"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             const float MAX_NECK_TWIST = PI / 8.0f;
@@ -1326,7 +1326,7 @@ void AnimInverseKinematics::initConstraints() {
             setEllipticalSwingLimits(stConstraint, MAX_NECK_LATERAL_SWING, MAX_NECK_ANTERIOR_SWING);
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
-        } else if (0 == baseName.compare("Head", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("Head"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             const float MAX_HEAD_TWIST = PI / 6.0f;
@@ -1338,7 +1338,7 @@ void AnimInverseKinematics::initConstraints() {
             setEllipticalSwingLimits(stConstraint, MAX_NECK_LATERAL_SWING, MAX_NECK_ANTERIOR_SWING);
 
             constraint = static_cast<RotationConstraint*>(stConstraint);
-        } else if (0 == baseName.compare("ForeArm", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("ForeArm"), Qt::CaseSensitive)) {
             // The elbow joint rotates about the parent-frame's zAxis (-zAxis) for the Right (Left) arm.
             ElbowConstraint* eConstraint = new ElbowConstraint();
             glm::quat referenceRotation = _defaultRelativePoses[i].rot();
@@ -1369,7 +1369,7 @@ void AnimInverseKinematics::initConstraints() {
             eConstraint->setAngleLimits(minAngle, maxAngle);
 
             constraint = static_cast<RotationConstraint*>(eConstraint);
-        } else if (0 == baseName.compare("Leg", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("Leg"), Qt::CaseSensitive)) {
             // The knee joint rotates about the parent-frame's -xAxis.
             ElbowConstraint* eConstraint = new ElbowConstraint();
             glm::quat referenceRotation = _defaultRelativePoses[i].rot();
@@ -1400,7 +1400,7 @@ void AnimInverseKinematics::initConstraints() {
             eConstraint->setAngleLimits(minAngle, maxAngle);
 
             constraint = static_cast<RotationConstraint*>(eConstraint);
-        } else if (0 == baseName.compare("Foot", Qt::CaseSensitive)) {
+        } else if (0 == baseName.compare(QStringLiteral("Foot"), Qt::CaseSensitive)) {
             SwingTwistConstraint* stConstraint = new SwingTwistConstraint();
             stConstraint->setReferenceRotation(_defaultRelativePoses[i].rot());
             stConstraint->setTwistLimits(-PI / 4.0f, PI / 4.0f);
@@ -1444,12 +1444,12 @@ void AnimInverseKinematics::initLimitCenterPoses() {
     // The limit center rotations for the LeftArm and RightArm form a t-pose.
     // In order for the elbows to look more natural, we rotate them down by the avatar's sides
     const float UPPER_ARM_THETA = PI / 3.0f;  // 60 deg
-    int leftArmIndex = _skeleton->nameToJointIndex("LeftArm");
+    int leftArmIndex = _skeleton->nameToJointIndex(QStringLiteral("LeftArm"));
     const glm::quat armRot = glm::angleAxis(UPPER_ARM_THETA, Vectors::UNIT_X);
     if (leftArmIndex >= 0 && leftArmIndex < (int)_limitCenterPoses.size()) {
         _limitCenterPoses[leftArmIndex].rot() = _limitCenterPoses[leftArmIndex].rot() * armRot;
     }
-    int rightArmIndex = _skeleton->nameToJointIndex("RightArm");
+    int rightArmIndex = _skeleton->nameToJointIndex(QStringLiteral("RightArm"));
     if (rightArmIndex >= 0 && rightArmIndex < (int)_limitCenterPoses.size()) {
         _limitCenterPoses[rightArmIndex].rot() = _limitCenterPoses[rightArmIndex].rot() * armRot;
     }
@@ -1473,8 +1473,8 @@ void AnimInverseKinematics::setSkeletonInternal(AnimSkeleton::ConstPointer skele
     if (skeleton) {
         initConstraints();
         initLimitCenterPoses();
-        _headIndex = _skeleton->nameToJointIndex("Head");
-        _hipsIndex = _skeleton->nameToJointIndex("Hips");
+        _headIndex = _skeleton->nameToJointIndex(QStringLiteral("Head"));
+        _hipsIndex = _skeleton->nameToJointIndex(QStringLiteral("Hips"));
 
         // also cache the _hipsParentIndex for later
         if (_hipsIndex >= 0) {
@@ -1483,8 +1483,8 @@ void AnimInverseKinematics::setSkeletonInternal(AnimSkeleton::ConstPointer skele
             _hipsParentIndex = -1;
         }
 
-        _leftHandIndex = _skeleton->nameToJointIndex("LeftHand");
-        _rightHandIndex = _skeleton->nameToJointIndex("RightHand");
+        _leftHandIndex = _skeleton->nameToJointIndex(QStringLiteral("LeftHand"));
+        _rightHandIndex = _skeleton->nameToJointIndex(QStringLiteral("RightHand"));
     } else {
         clearConstraints();
         _headIndex = -1;
@@ -1725,10 +1725,10 @@ void AnimInverseKinematics::blendToPoses(const AnimPoseVec& targetPoses, const A
 void AnimInverseKinematics::preconditionRelativePosesToAvoidLimbLock(const AnimContext& context, const std::vector<IKTarget>& targets) {
     const int NUM_LIMBS = 4;
     std::pair<int, int> limbs[NUM_LIMBS] = {
-        {_skeleton->nameToJointIndex("LeftHand"), _skeleton->nameToJointIndex("LeftArm")},
-        {_skeleton->nameToJointIndex("RightHand"), _skeleton->nameToJointIndex("RightArm")},
-        {_skeleton->nameToJointIndex("LeftFoot"), _skeleton->nameToJointIndex("LeftUpLeg")},
-        {_skeleton->nameToJointIndex("RightFoot"), _skeleton->nameToJointIndex("RightUpLeg")}
+        {_skeleton->nameToJointIndex(QStringLiteral("LeftHand")), _skeleton->nameToJointIndex(QStringLiteral("LeftArm"))},
+        {_skeleton->nameToJointIndex(QStringLiteral("RightHand")), _skeleton->nameToJointIndex(QStringLiteral("RightArm"))},
+        {_skeleton->nameToJointIndex(QStringLiteral("LeftFoot")), _skeleton->nameToJointIndex(QStringLiteral("LeftUpLeg"))},
+        {_skeleton->nameToJointIndex(QStringLiteral("RightFoot")), _skeleton->nameToJointIndex(QStringLiteral("RightUpLeg"))}
     };
     const float MIN_AXIS_LENGTH = 1.0e-4f;
 
@@ -1776,10 +1776,10 @@ void AnimInverseKinematics::setSecondaryTargets(const AnimContext& context) {
     // special case for arm secondary poses.
     // determine if shoulder joint should look-at position of arm joint.
     bool shoulderShouldLookAtArm = false;
-    const int leftArmIndex = _skeleton->nameToJointIndex("LeftArm");
-    const int rightArmIndex = _skeleton->nameToJointIndex("RightArm");
-    const int leftShoulderIndex = _skeleton->nameToJointIndex("LeftShoulder");
-    const int rightShoulderIndex = _skeleton->nameToJointIndex("RightShoulder");
+    const int leftArmIndex = _skeleton->nameToJointIndex(QStringLiteral("LeftArm"));
+    const int rightArmIndex = _skeleton->nameToJointIndex(QStringLiteral("RightArm"));
+    const int leftShoulderIndex = _skeleton->nameToJointIndex(QStringLiteral("LeftShoulder"));
+    const int rightShoulderIndex = _skeleton->nameToJointIndex(QStringLiteral("RightShoulder"));
     for (auto& iter : _secondaryTargetsInRigFrame) {
         if (iter.first == leftShoulderIndex || iter.first == rightShoulderIndex) {
             shoulderShouldLookAtArm = true;
@@ -1787,13 +1787,13 @@ void AnimInverseKinematics::setSecondaryTargets(const AnimContext& context) {
         }
     }
 
-    AnimPose rigToGeometryPose = AnimPose(glm::inverse(context.getGeometryToRigMatrix()));
+    const AnimPose rigToGeometryPose = AnimPose(glm::inverse(context.getGeometryToRigMatrix()));
     for (auto& iter : _secondaryTargetsInRigFrame) {
         AnimPose absPose = rigToGeometryPose * iter.second;
         absPose.scale() = glm::vec3(1.0f);
 
         AnimPose parentAbsPose;
-        int parentIndex = _skeleton->getParentIndex(iter.first);
+        const int parentIndex = _skeleton->getParentIndex(iter.first);
         if (parentIndex >= 0) {
             parentAbsPose = _skeleton->getAbsolutePose(parentIndex, _relativePoses);
         }
@@ -1802,7 +1802,7 @@ void AnimInverseKinematics::setSecondaryTargets(const AnimContext& context) {
         if (shoulderShouldLookAtArm && (iter.first == leftArmIndex || iter.first == rightArmIndex)) {
 
             AnimPose grandParentAbsPose;
-            int grandParentIndex = _skeleton->getParentIndex(parentIndex);
+            const int grandParentIndex = _skeleton->getParentIndex(parentIndex);
             if (parentIndex >= 0) {
                 grandParentAbsPose = _skeleton->getAbsolutePose(grandParentIndex, _relativePoses);
             }
@@ -1813,7 +1813,7 @@ void AnimInverseKinematics::setSecondaryTargets(const AnimContext& context) {
         }
 
         // Ignore translation on secondary poses, to prevent them from distorting the skeleton.
-        glm::vec3 origTrans = _relativePoses[iter.first].trans();
+        const glm::vec3 origTrans = _relativePoses[iter.first].trans();
         _relativePoses[iter.first] = parentAbsPose.inverse() * absPose;
         _relativePoses[iter.first].trans() = origTrans;
     }

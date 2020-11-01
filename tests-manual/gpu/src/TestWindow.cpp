@@ -145,7 +145,7 @@ void TestWindow::endFrame() {
     _renderDeferred.run(_renderContext, _renderDeferredInputs);
 
     gpu::doInBatch("TestWindow::endFrame::blit", _renderArgs->_context, [&](gpu::Batch& batch) {
-        PROFILE_RANGE_BATCH(batch, "blit");
+        PROFILE_RANGE_BATCH(batch, QStringLiteral("blit"));
         // Blit to screen
         auto framebufferCache = DependencyManager::get<FramebufferCache>();
        // auto framebuffer = framebufferCache->getLightingFramebuffer();

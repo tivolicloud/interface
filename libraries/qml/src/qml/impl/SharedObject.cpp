@@ -137,7 +137,7 @@ void SharedObject::create(OffscreenSurface* surface) {
     // Create a QML engine.
     auto qmlEngine = acquireEngine(surface);
     {
-        PROFILE_RANGE(startup, "new QQmlContext");
+        PROFILE_RANGE(startup, QStringLiteral("new QQmlContext"));
         _qmlContext = new QQmlContext(qmlEngine->rootContext(), qmlEngine);
     }
     surface->onRootContextCreated(_qmlContext);
@@ -147,7 +147,7 @@ void SharedObject::create(OffscreenSurface* surface) {
     if (!qmlEngine->incubationController()) {
         qmlEngine->setIncubationController(_quickWindow->incubationController());
     }
-    _qmlContext->setContextProperty("offscreenWindow", QVariant::fromValue(_quickWindow));
+    _qmlContext->setContextProperty(QStringLiteral("offscreenWindow"), QVariant::fromValue(_quickWindow));
 #endif
 }
 
@@ -226,7 +226,7 @@ static size_t globalEngineRefCount{ 0 };
 #endif
 
 QQmlEngine* SharedObject::acquireEngine(OffscreenSurface* surface) {
-    PROFILE_RANGE(startup, "acquireEngine");
+    PROFILE_RANGE(startup, QStringLiteral("acquireEngine"));
     Q_ASSERT(QThread::currentThread() == qApp->thread());
 
     QQmlEngine* result = nullptr;
@@ -332,7 +332,7 @@ void SharedObject::setSize(const QSize& size) {
     _quickWindow->contentItem()->setSize(size);
 
     if (_rootItem) {
-        _qmlContext->setContextProperty("surfaceSize", size);
+        _qmlContext->setContextProperty(QStringLiteral("surfaceSize"), size);
         _rootItem->setSize(size);
     }
 
@@ -358,7 +358,7 @@ bool SharedObject::preRender(bool sceneGraphSync) {
     if (sceneGraphSync) {
         bool syncResult = true;
         if (!nsightActive()) {
-            PROFILE_RANGE(render_qml_gl, "sync")
+            PROFILE_RANGE(render_qml_gl, QStringLiteral("sync"))
             syncResult = _renderControl->sync();
         }
         wake();

@@ -71,31 +71,31 @@ QScriptValue menuItemPropertiesToScriptValue(QScriptEngine* engine, const MenuIt
  * @property {string} [grouping] - The name of grouping to add this menu item to.
  */
 void menuItemPropertiesFromScriptValue(const QScriptValue& object, MenuItemProperties& properties) {
-    properties.menuName = object.property("menuName").toVariant().toString();
-    properties.menuItemName = object.property("menuItemName").toVariant().toString();
-    properties.isCheckable = object.property("isCheckable").toVariant().toBool();
-    properties.isChecked = object.property("isChecked").toVariant().toBool();
-    properties.isSeparator = object.property("isSeparator").toVariant().toBool();
+    properties.menuName = object.property(QStringLiteral("menuName")).toVariant().toString();
+    properties.menuItemName = object.property(QStringLiteral("menuItemName")).toVariant().toString();
+    properties.isCheckable = object.property(QStringLiteral("isCheckable")).toVariant().toBool();
+    properties.isChecked = object.property(QStringLiteral("isChecked")).toVariant().toBool();
+    properties.isSeparator = object.property(QStringLiteral("isSeparator")).toVariant().toBool();
 
     // handle the shortcut key options in order...
-    QScriptValue shortcutKeyValue = object.property("shortcutKey");
+    QScriptValue shortcutKeyValue = object.property(QStringLiteral("shortcutKey"));
     if (shortcutKeyValue.isValid()) {
         properties.shortcutKey = shortcutKeyValue.toVariant().toString();
         properties.shortcutKeySequence = properties.shortcutKey;
     } else {
-        QScriptValue shortcutKeyEventValue = object.property("shortcutKeyEvent");
+        QScriptValue shortcutKeyEventValue = object.property(QStringLiteral("shortcutKeyEvent"));
         if (shortcutKeyEventValue.isValid()) {
             KeyEvent::fromScriptValue(shortcutKeyEventValue, properties.shortcutKeyEvent);
             properties.shortcutKeySequence = properties.shortcutKeyEvent;
         }
     }
 
-    if (object.property("position").isValid()) {
-        properties.position = object.property("position").toVariant().toInt();
+    if (object.property(QStringLiteral("position")).isValid()) {
+        properties.position = object.property(QStringLiteral("position")).toVariant().toInt();
     }
-    properties.beforeItem = object.property("beforeItem").toVariant().toString();
-    properties.afterItem = object.property("afterItem").toVariant().toString();
-    properties.grouping = object.property("grouping").toVariant().toString();
+    properties.beforeItem = object.property(QStringLiteral("beforeItem")).toVariant().toString();
+    properties.afterItem = object.property(QStringLiteral("afterItem")).toVariant().toString();
+    properties.grouping = object.property(QStringLiteral("grouping")).toVariant().toString();
 }
 
 

@@ -152,7 +152,7 @@ void OculusDisplayPlugin::hmdPresent() {
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
 
     {
-        PROFILE_RANGE_EX(render, "Oculus Blit", 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
+        PROFILE_RANGE_EX(render, QStringLiteral("Oculus Blit"), 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
         int curIndex;
         ovr_GetTextureSwapChainCurrentIndex(_session, _textureSwapChain, &curIndex);
         GLuint curTexId;
@@ -197,7 +197,7 @@ void OculusDisplayPlugin::hmdPresent() {
         }
         ovrLayerHeader* layers = &_sceneLayer.Header;
         {
-            PROFILE_RANGE_EX(render, "Oculus Submit", 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
+            PROFILE_RANGE_EX(render, QStringLiteral("Oculus Submit"), 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
             result = ovr_SubmitFrame(_session, _currentFrame->frameIndex, &_viewScaleDesc, &layers, 1);
         }
         lastSubmitEnd = usecTimestampNow();
@@ -248,12 +248,12 @@ void OculusDisplayPlugin::hmdPresent() {
 
 QJsonObject OculusDisplayPlugin::getHardwareStats() const {
     QJsonObject hardwareStats;
-    hardwareStats["asw_active"] = _aswActive.load();
-    hardwareStats["app_dropped_frame_count"] = _appDroppedFrames.load();
-    hardwareStats["compositor_dropped_frame_count"] = _compositorDroppedFrames.load();
-    hardwareStats["long_render_count"] = _longRenders.load();
-    hardwareStats["long_submit_count"] = _longSubmits.load();
-    hardwareStats["long_frame_count"] = _longFrames.load();
+    hardwareStats[QStringLiteral("asw_active")] = _aswActive.load();
+    hardwareStats[QStringLiteral("app_dropped_frame_count")] = _appDroppedFrames.load();
+    hardwareStats[QStringLiteral("compositor_dropped_frame_count")] = _compositorDroppedFrames.load();
+    hardwareStats[QStringLiteral("long_render_count")] = _longRenders.load();
+    hardwareStats[QStringLiteral("long_submit_count")] = _longSubmits.load();
+    hardwareStats[QStringLiteral("long_frame_count")] = _longFrames.load();
     return hardwareStats;
 }
 

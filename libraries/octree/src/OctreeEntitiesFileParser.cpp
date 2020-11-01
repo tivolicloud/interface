@@ -77,7 +77,7 @@ bool OctreeEntitiesFileParser::parseEntities(QVariantMap& parsedEntities) {
             }
 
             int dataVersionValue = readInteger();
-            parsedEntities["DataVersion"] = dataVersionValue;
+            parsedEntities[QStringLiteral("DataVersion")] = dataVersionValue;
             gotDataVersion = true;
         } else if (key == "Entities") {
             if (gotEntities) {
@@ -90,7 +90,7 @@ bool OctreeEntitiesFileParser::parseEntities(QVariantMap& parsedEntities) {
                 return false;
             }
 
-            parsedEntities["Entities"] = std::move(entitiesValue);
+            parsedEntities[QStringLiteral("Entities")] = std::move(entitiesValue);
             gotEntities = true;
         } else if (key == "Id") {
             if (gotId) {

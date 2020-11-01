@@ -259,9 +259,9 @@ bool gl::compileShader(GLenum shaderDomain,
         int lineNumber = 0;
         for (const auto& s : cstrs) {
             QString str(s);
-            QStringList lines = str.split("\n");
+            QStringList lines = str.split(QStringLiteral("\n"));
             for (auto& line : lines) {
-                qCCritical(glLogging).noquote() << QString("%1: %2").arg(lineNumber++, 5, 10, QChar('0')).arg(line);
+                qCCritical(glLogging).noquote() << QStringLiteral("%1: %2").arg(lineNumber++, 5, 10, QChar('0')).arg(line);
             }
         }
         qCCritical(glLogging) << "GLShader::compileShader - errors:";
@@ -429,8 +429,8 @@ bool gl::linkProgram(GLuint glprogram, std::string& message) {
 }
 
 const QString& getShaderCacheFile() {
-    static const QString SHADER_CACHE_FOLDER{ "shaders" };
-    static const QString SHADER_CACHE_FILE_NAME{ "cache.json" };
+    static const QString SHADER_CACHE_FOLDER{ QStringLiteral("shaders") };
+    static const QString SHADER_CACHE_FILE_NAME{ QStringLiteral("cache.json") };
     static const QString SHADER_CACHE_FILE = FileUtils::standardPath(SHADER_CACHE_FOLDER) + SHADER_CACHE_FILE_NAME;
     return SHADER_CACHE_FILE;
 }

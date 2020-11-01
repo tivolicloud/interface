@@ -139,8 +139,8 @@ void MyHead::simulate(float deltaTime) {
             myAvatar->getControllerPoseInSensorFrame(controller::Action::LEFT_EYE).valid &&
             myAvatar->getControllerPoseInSensorFrame(controller::Action::RIGHT_EYE).valid;
 
-        int leftEyeJointIndex = myAvatar->getJointIndex("LeftEye");
-        int rightEyeJointIndex = myAvatar->getJointIndex("RightEye");
+        int leftEyeJointIndex = myAvatar->getJointIndex(QStringLiteral("LeftEye"));
+        int rightEyeJointIndex = myAvatar->getJointIndex(QStringLiteral("RightEye"));
         bool eyeJointsOverridden = myAvatar->getIsJointOverridden(leftEyeJointIndex) || myAvatar->getIsJointOverridden(rightEyeJointIndex);
 
         bool anyInputTracked = false;

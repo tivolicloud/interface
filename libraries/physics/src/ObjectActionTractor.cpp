@@ -360,14 +360,14 @@ bool ObjectActionTractor::updateArguments(QVariantMap arguments) {
 QVariantMap ObjectActionTractor::getArguments() {
     QVariantMap arguments = ObjectDynamic::getArguments();
     withReadLock([&] {
-        arguments["linearTimeScale"] = _linearTimeScale;
-        arguments["targetPosition"] = vec3ToQMap(_desiredPositionalTarget);
+        arguments[QStringLiteral("linearTimeScale")] = _linearTimeScale;
+        arguments[QStringLiteral("targetPosition")] = vec3ToQMap(_desiredPositionalTarget);
 
-        arguments["targetRotation"] = quatToQMap(_desiredRotationalTarget);
-        arguments["angularTimeScale"] = _angularTimeScale;
+        arguments[QStringLiteral("targetRotation")] = quatToQMap(_desiredRotationalTarget);
+        arguments[QStringLiteral("angularTimeScale")] = _angularTimeScale;
 
-        arguments["otherID"] = _otherID;
-        arguments["otherJointIndex"] = _otherJointIndex;
+        arguments[QStringLiteral("otherID")] = _otherID;
+        arguments[QStringLiteral("otherJointIndex")] = _otherJointIndex;
     });
     return arguments;
 }

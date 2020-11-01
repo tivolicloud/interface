@@ -60,14 +60,14 @@ bool StereoDisplayPlugin::internalActivate() {
     auto screens = qApp->screens();
     for (int i = 0; i < screens.size(); ++i) {
         auto screen = screens.at(i);
-        QString name = QString("Screen %1: %2").arg(i + 1).arg(screen->name());
+        QString name = QStringLiteral("Screen %1: %2").arg(i + 1).arg(screen->name());
         bool checked = false;
         if (screen == qApp->primaryScreen()) {
             checked = true;
         }
         const uint32_t screenIndex = i;
         _container->addMenuItem(PluginType::DISPLAY_PLUGIN, MENU_PATH(), name,
-            [=](bool clicked) { updateScreen(screenIndex); }, true, checked, "Screens");
+            [=](bool clicked) { updateScreen(screenIndex); }, true, checked, QStringLiteral("Screens"));
     }
 
     _container->removeMenu(FRAMERATE);

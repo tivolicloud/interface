@@ -173,10 +173,10 @@ public:
     virtual QVariantMap toVariantMap() const {
         QVariantMap properties;
 
-        properties["pickType"] = (int)getType();
-        properties["enabled"] = isEnabled();
-        properties["filter"] = (unsigned int)getFilter()._flags.to_ulong();
-        properties["maxDistance"] = getMaxDistance();
+        properties[QStringLiteral("pickType")] = (int)getType();
+        properties[QStringLiteral("enabled")] = isEnabled();
+        properties[QStringLiteral("filter")] = (unsigned int)getFilter()._flags.to_ulong();
+        properties[QStringLiteral("maxDistance")] = getMaxDistance();
 
         if (parentTransform) {
             auto transformNodeProperties = parentTransform->toVariantMap();

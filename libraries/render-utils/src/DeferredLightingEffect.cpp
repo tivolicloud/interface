@@ -60,7 +60,7 @@ void DeferredLightingEffect::setupKeyLightBatch(const RenderArgs* args, gpu::Bat
 }
 
 void DeferredLightingEffect::setupKeyLightBatch(const RenderArgs* args, gpu::Batch& batch, const LightStage::Frame& lightFrame) {
-    PerformanceTimer perfTimer("DLE->setupBatch()");
+    PerformanceTimer perfTimer(QStringLiteral("DLE->setupBatch()"));
     graphics::LightPointer keySunLight;
     auto lightStage = args->_scene->getStage<LightStage>();
     if (lightStage) {
@@ -582,17 +582,17 @@ void RenderDeferred::run(const RenderContextPointer& renderContext, const Inputs
 void DefaultLightingSetup::run(const RenderContextPointer& renderContext) {
 
     if (!_defaultLight || !_defaultBackground) {
-        auto defaultSkyboxURL = PathUtils::resourcesUrl() + "images/aurorasky/aurorasky.texmeta.json";
-        auto defaultAmbientURL = PathUtils::resourcesUrl() + "images/aurorasky/aurorasky.texmeta.json";
+        auto defaultSkyboxURL = PathUtils::resourcesUrl() + QStringLiteral("images/aurorasky/aurorasky.texmeta.json");
+        auto defaultAmbientURL = PathUtils::resourcesUrl() + QStringLiteral("images/aurorasky/aurorasky.texmeta.json");
 
         if (!_defaultSkyboxNetworkTexture) {
-            PROFILE_RANGE(render, "Process Default Skybox");
+            PROFILE_RANGE(render, QStringLiteral("Process Default Skybox"));
             _defaultSkyboxNetworkTexture = DependencyManager::get<TextureCache>()->getTexture(
                 defaultSkyboxURL, image::TextureUsage::SKY_TEXTURE);
         }
 
         if (!_defaultAmbientNetworkTexture) {
-            PROFILE_RANGE(render, "Process Default Ambient map");
+            PROFILE_RANGE(render, QStringLiteral("Process Default Ambient map"));
             _defaultAmbientNetworkTexture = DependencyManager::get<TextureCache>()->getTexture(
                 defaultAmbientURL, image::TextureUsage::AMBIENT_TEXTURE);
         }

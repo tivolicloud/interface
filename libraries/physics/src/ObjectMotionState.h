@@ -48,11 +48,11 @@ enum PhysicsMotionType {
  */
 inline QString motionTypeToString(PhysicsMotionType motionType) {
     switch(motionType) {
-        case MOTION_TYPE_STATIC: return QString("static");
-        case MOTION_TYPE_DYNAMIC: return QString("dynamic");
-        case MOTION_TYPE_KINEMATIC: return QString("kinematic");
+        case MOTION_TYPE_STATIC: return QStringLiteral("static");
+        case MOTION_TYPE_DYNAMIC: return QStringLiteral("dynamic");
+        case MOTION_TYPE_KINEMATIC: return QStringLiteral("kinematic");
     }
-    return QString("unknown");
+    return QStringLiteral("unknown");
 }
 
 enum MotionStateType {
@@ -153,7 +153,7 @@ public:
     virtual QUuid getSimulatorID() const = 0;
     virtual void bump(uint8_t priority) {}
 
-    virtual QString getName() const { return ""; }
+    virtual QString getName() const { return QString(); }
     virtual ShapeType getShapeType() const = 0;
 
     virtual void computeCollisionGroupAndMask(int32_t& group, int32_t& mask) const = 0;

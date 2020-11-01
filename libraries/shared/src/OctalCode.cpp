@@ -330,7 +330,7 @@ QString octalCodeToHexString(const unsigned char* octalCode) {
         output = "00";
     } else {
         for (size_t i = 0; i < bytesRequiredForCodeLength(*octalCode); i++) {
-            output.append(QString("%1").arg(octalCode[i], HEX_BYTE_SIZE, HEX_NUMBER_BASE, QChar('0')).toUpper());
+            output.append(QStringLiteral("%1").arg(octalCode[i], HEX_BYTE_SIZE, HEX_NUMBER_BASE, QChar('0')).toUpper());
         }
     }
     return output;

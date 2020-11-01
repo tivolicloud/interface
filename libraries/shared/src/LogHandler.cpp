@@ -85,7 +85,7 @@ void LogHandler::flushRepeatedMessages() {
     for (int m = 0; m < (int)_repeatedMessageRecords.size(); ++m) {
         int repeatCount = _repeatedMessageRecords[m].repeatCount;
         if (repeatCount > 1) {
-            QString repeatLogMessage = QString().setNum(repeatCount) + " repeated log entries - Last entry: \"" 
+            QString repeatLogMessage = QString().setNum(repeatCount) + QStringLiteral(" repeated log entries - Last entry: \"")
                     + _repeatedMessageRecords[m].repeatString + "\"";
             printMessage(LogSuppressed, QMessageLogContext(), repeatLogMessage);
             _repeatedMessageRecords[m].repeatCount = 0;
@@ -108,30 +108,30 @@ QString LogHandler::printMessage(LogMsgType type, const QMessageLogContext& cont
         dateFormatPtr = &DATE_STRING_FORMAT_WITH_MILLISECONDS;
     }
 
-    QString prefixString = QString("[%1] [%2] [%3]").arg(QDateTime::currentDateTime().toString(*dateFormatPtr),
+    QString prefixString = QStringLiteral("[%1] [%2] [%3]").arg(QDateTime::currentDateTime().toString(*dateFormatPtr),
         stringForLogType(type), context.category);
 
     if (_shouldOutputProcessID) {
-        prefixString.append(QString(" [%1]").arg(QCoreApplication::applicationPid()));
+        prefixString.append(QStringLiteral(" [%1]").arg(QCoreApplication::applicationPid()));
     }
 
     if (_shouldOutputThreadID) {
         size_t threadID = (size_t)QThread::currentThreadId();
-        prefixString.append(QString(" [%1]").arg(threadID));
+        prefixString.append(QStringLiteral(" [%1]").arg(threadID));
     }
 
     if (!_targetName.isEmpty()) {
-        prefixString.append(QString(" [%1]").arg(_targetName));
+        prefixString.append(QStringLiteral(" [%1]").arg(_targetName));
     }
 
     // for [qml] console.* messages include an abbreviated source filename
     if (context.category && context.file && !strcmp("qml", context.category)) {
         if (const char* basename = strrchr(context.file, '/')) {
-            prefixString.append(QString(" [%1]").arg(basename+1));
+            prefixString.append(QStringLiteral(" [%1]").arg(basename+1));
         }
     }
 
-    QString logMessage = QString("%1 %2\n").arg(prefixString, message.split('\n').join('\n' + prefixString + " "));
+    QString logMessage = QStringLiteral("%1 %2\n").arg(prefixString, message.split('\n').join('\n' + prefixString + " "));
 
     fprintf(stdout, "%s", qPrintable(logMessage));
 #ifdef Q_OS_WIN

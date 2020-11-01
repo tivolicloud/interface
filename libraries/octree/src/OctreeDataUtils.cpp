@@ -20,10 +20,10 @@
 #include <QFile>
 
 bool OctreeUtils::RawOctreeData::readOctreeDataInfoFromMap(const QVariantMap& map) {
-    if (map.contains("Id") && map.contains("DataVersion") && map.contains("Version")) {
-        id = map["Id"].toUuid();
-        dataVersion = map["DataVersion"].toInt();
-        version = map["Version"].toInt();
+    if (map.contains(QStringLiteral("Id")) && map.contains(QStringLiteral("DataVersion")) && map.contains(QStringLiteral("Version"))) {
+        id = map[QStringLiteral("Id")].toUuid();
+        dataVersion = map[QStringLiteral("DataVersion")].toInt();
+        version = map[QStringLiteral("Version")].toInt();
     }
     readSubclassData(map);
     return true;
@@ -63,11 +63,11 @@ bool OctreeUtils::RawOctreeData::readOctreeDataInfoFromFile(QString path) {
 QByteArray OctreeUtils::RawOctreeData::toByteArray() {
     QByteArray jsonString;
 
-    jsonString += QString("{\n  \"DataVersion\": %1,\n").arg(dataVersion);
+    jsonString += QStringLiteral("{\n  \"DataVersion\": %1,\n").arg(dataVersion);
 
     writeSubclassData(jsonString);
 
-    jsonString += QString(",\n  \"Id\": \"%1\",\n  \"Version\": %2\n}").arg(id.toString()).arg(version);
+    jsonString += QStringLiteral(",\n  \"Id\": \"%1\",\n  \"Version\": %2\n}").arg(id.toString()).arg(version);
 
     return jsonString;
 }
@@ -97,7 +97,7 @@ void OctreeUtils::RawOctreeData::resetIdAndVersion() {
 }
 
 void OctreeUtils::RawEntityData::readSubclassData(const QVariantMap& root) {
-    variantEntityData = root["Entities"].toList();
+    variantEntityData = root[QStringLiteral("Entities")].toList();
 }
 
 void OctreeUtils::RawEntityData::writeSubclassData(QByteArray& root) const {

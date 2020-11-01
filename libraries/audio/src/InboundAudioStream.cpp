@@ -163,8 +163,8 @@ int InboundAudioStream::parseData(ReceivedMessage& message) {
 
             } else {
                 // note: PCM and no codec are identical
-                bool selectedPCM = _selectedCodecName == "pcm" || _selectedCodecName == "";
-                bool packetPCM = codecInPacket == "pcm" || codecInPacket == "";
+                bool selectedPCM = _selectedCodecName == "pcm" || _selectedCodecName.isEmpty();
+                bool packetPCM = codecInPacket == "pcm" || codecInPacket.isEmpty();
                 if (codecInPacket == _selectedCodecName || (packetPCM && selectedPCM)) {
                     auto afterProperties = message.readWithoutCopy(message.getBytesLeftToRead());
                     parseAudioData(message.getType(), afterProperties);
@@ -586,5 +586,5 @@ void InboundAudioStream::cleanupCodec() {
             _decoder = nullptr;
         }
     }
-    _selectedCodecName = "";
+    _selectedCodecName = QString();
 }

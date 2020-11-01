@@ -44,7 +44,7 @@ QScriptClass(scriptEngine) {
                                 QScriptEngine::SkipMethodsInEnumeration |
                                 QScriptEngine::ExcludeSuperClassMethods |
                                 QScriptEngine::ExcludeSuperClassProperties);
-    _proto.setPrototype(global.property("Object").property("prototype"));
+    _proto.setPrototype(global.property(QStringLiteral("Object")).property(QStringLiteral("prototype")));
     
     // Register constructor
     _ctor = engine()->newFunction(construct, _proto);
@@ -165,9 +165,9 @@ void ArrayBufferClass::fromScriptValue(const QScriptValue& object, QByteArray& b
         byteArray = object.toString().toUtf8();
     } else if (object.isArray()) {
         // Array of uint8s eg: [ 128, 3, 25, 234 ]
-        auto Uint8Array = object.engine()->globalObject().property("Uint8Array");
+        auto Uint8Array = object.engine()->globalObject().property(QStringLiteral("Uint8Array"));
         auto typedArray = Uint8Array.construct(QScriptValueList{object});
-        if (QByteArray* buffer = qscriptvalue_cast<QByteArray*>(typedArray.property("buffer"))) {
+        if (QByteArray* buffer = qscriptvalue_cast<QByteArray*>(typedArray.property(QStringLiteral("buffer")))) {
             byteArray = *buffer;
         }
     } else if (object.isObject()) {

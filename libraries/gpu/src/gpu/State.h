@@ -147,7 +147,7 @@ public:
         }
 
         operator QString() const {
-            return QString("{ writeMask = %1, enabled = %2, function = %3 }").arg(writeMask).arg(enabled).arg(function);
+            return QStringLiteral("{ writeMask = %1, enabled = %2, function = %3 }").arg(writeMask).arg(enabled).arg(function);
         }
     };
 

@@ -294,7 +294,7 @@ void ModelBaker::handleFinishedMaterialBaker() {
             if (materialResource) {
                 for (auto materialName : materialResource->parsedMaterials.names) {
                     QJsonObject json;
-                    json[QString("mat::" + QString(materialName.c_str()))] = relativeBakedMaterialURL + "#" + materialName.c_str();
+                    json[QString(QStringLiteral("mat::") + QString(materialName.c_str()))] = relativeBakedMaterialURL + "#" + materialName.c_str();
                     _materialMappingJSON.push_back(json);
                 }
             }

@@ -116,16 +116,16 @@ QMetaMethod PacketReceiver::matchingMethodForListener(PacketType type, QObject* 
     Q_ASSERT_X(slot, "PacketReceiver::matchingMethodForListener", "No slot to call");
 
     // normalize the slot with the expected parameters
-    static const QString SIGNATURE_TEMPLATE("%1(%2)");
-    static const QString NON_SOURCED_MESSAGE_LISTENER_PARAMETERS = "QSharedPointer<ReceivedMessage>";
+    static const QString SIGNATURE_TEMPLATE(QStringLiteral("%1(%2)"));
+    static const QString NON_SOURCED_MESSAGE_LISTENER_PARAMETERS = QStringLiteral("QSharedPointer<ReceivedMessage>");
 
     QSet<QString> possibleSignatures {
         SIGNATURE_TEMPLATE.arg(slot, NON_SOURCED_MESSAGE_LISTENER_PARAMETERS)
     };
 
     if (!PacketTypeEnum::getNonSourcedPackets().contains(type)) {
-        static const QString SOURCED_MESSAGE_LISTENER_PARAMETERS = "QSharedPointer<ReceivedMessage>,QSharedPointer<Node>";
-        static const QString TYPEDEF_SOURCED_MESSAGE_LISTENER_PARAMETERS = "QSharedPointer<ReceivedMessage>,SharedNodePointer";
+        static const QString SOURCED_MESSAGE_LISTENER_PARAMETERS = QStringLiteral("QSharedPointer<ReceivedMessage>,QSharedPointer<Node>");
+        static const QString TYPEDEF_SOURCED_MESSAGE_LISTENER_PARAMETERS = QStringLiteral("QSharedPointer<ReceivedMessage>,SharedNodePointer");
 
         // a sourced packet must take the shared pointer to the ReceivedMessage but optionally could include
         // a shared pointer to the node

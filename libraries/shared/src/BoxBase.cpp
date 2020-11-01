@@ -11,19 +11,19 @@
 QString boxFaceToString(BoxFace face) {
     switch (face) {
         case MIN_X_FACE:
-            return "MIN_X_FACE";
+            return QStringLiteral("MIN_X_FACE");
         case MAX_X_FACE:
-            return "MAX_X_FACE";
+            return QStringLiteral("MAX_X_FACE");
         case MIN_Y_FACE:
-            return "MIN_Y_FACE";
+            return QStringLiteral("MIN_Y_FACE");
         case MAX_Y_FACE:
-            return "MAX_Y_FACE";
+            return QStringLiteral("MAX_Y_FACE");
         case MIN_Z_FACE:
-            return "MIN_Z_FACE";
+            return QStringLiteral("MIN_Z_FACE");
         case MAX_Z_FACE:
-            return "MAX_Z_FACE";
+            return QStringLiteral("MAX_Z_FACE");
         default:
-            return "UNKNOWN_FACE";
+            return QStringLiteral("UNKNOWN_FACE");
     }
 }
 

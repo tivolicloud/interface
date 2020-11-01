@@ -75,21 +75,21 @@ void registerMetaTypes(QScriptEngine* engine) {
 }
 
 QScriptValue vec2ToScriptValue(QScriptEngine* engine, const glm::vec2& vec2) {
-    auto prototype = engine->globalObject().property("__hifi_vec2__");
-    if (!prototype.property("defined").toBool()) {
+    auto prototype = engine->globalObject().property(QStringLiteral("__hifi_vec2__"));
+    if (!prototype.property(QStringLiteral("defined")).toBool()) {
         prototype = engine->evaluate(
-            "__hifi_vec2__ = Object.defineProperties({}, { "
+            QStringLiteral("__hifi_vec2__ = Object.defineProperties({}, { "
             "defined: { value: true },"
             "0: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "1: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } },"
             "u: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "v: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } }"
-            "})"
+            "})")
         );
     }
     QScriptValue value = engine->newObject();
-    value.setProperty("x", vec2.x);
-    value.setProperty("y", vec2.y);
+    value.setProperty(QStringLiteral("x"), vec2.x);
+    value.setProperty(QStringLiteral("y"), vec2.y);
     value.setPrototype(prototype);
     return value;
 }
@@ -104,14 +104,14 @@ void vec2FromScriptValue(const QScriptValue& object, glm::vec2& vec2) {
             vec2.y = list[1].toFloat();
         }
     } else {
-        QScriptValue x = object.property("x");
+        QScriptValue x = object.property(QStringLiteral("x"));
         if (!x.isValid()) {
-            x = object.property("u");
+            x = object.property(QStringLiteral("u"));
         }
 
-        QScriptValue y = object.property("y");
+        QScriptValue y = object.property(QStringLiteral("y"));
         if (!y.isValid()) {
-            y = object.property("v");
+            y = object.property(QStringLiteral("v"));
         }
 
         vec2.x = x.toVariant().toFloat();
@@ -125,8 +125,8 @@ QVariant vec2ToVariant(const glm::vec2 &vec2) {
         return QVariant();
     }
     QVariantMap result;
-    result["x"] = vec2.x;
-    result["y"] = vec2.y;
+    result[QStringLiteral("x")] = vec2.x;
+    result[QStringLiteral("y")] = vec2.y;
     return result;
 }
 
@@ -143,14 +143,14 @@ glm::vec2 vec2FromVariant(const QVariant &object, bool& isValid) {
         isValid = true;
     } else {
         auto map = object.toMap();
-        auto x = map["x"];
+        auto x = map[QStringLiteral("x")];
         if (!x.isValid()) {
-            x = map["u"];
+            x = map[QStringLiteral("u")];
         }
 
-        auto y = map["y"];
+        auto y = map[QStringLiteral("y")];
         if (!y.isValid()) {
-            y = map["v"];
+            y = map[QStringLiteral("v")];
         }
 
         if (x.isValid() && y.isValid()) {
@@ -169,10 +169,10 @@ glm::vec2 vec2FromVariant(const QVariant &object) {
 }
 
 QScriptValue vec3ToScriptValue(QScriptEngine* engine, const glm::vec3& vec3) {
-    auto prototype = engine->globalObject().property("__hifi_vec3__");
-    if (!prototype.property("defined").toBool()) {
+    auto prototype = engine->globalObject().property(QStringLiteral("__hifi_vec3__"));
+    if (!prototype.property(QStringLiteral("defined")).toBool()) {
         prototype = engine->evaluate(
-            "__hifi_vec3__ = Object.defineProperties({}, { "
+            QStringLiteral("__hifi_vec3__ = Object.defineProperties({}, { "
             "defined: { value: true },"
             "0: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "1: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } },"
@@ -183,22 +183,22 @@ QScriptValue vec3ToScriptValue(QScriptEngine* engine, const glm::vec3& vec3) {
             "red: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "green: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } },"
             "blue: { set: function(nv) { return this.z = nv; }, get: function() { return this.z; } }"
-            "})"
+            "})")
         );
     }
     QScriptValue value = engine->newObject();
-    value.setProperty("x", vec3.x);
-    value.setProperty("y", vec3.y);
-    value.setProperty("z", vec3.z);
+    value.setProperty(QStringLiteral("x"), vec3.x);
+    value.setProperty(QStringLiteral("y"), vec3.y);
+    value.setProperty(QStringLiteral("z"), vec3.z);
     value.setPrototype(prototype);
     return value;
 }
 
 QScriptValue vec3ColorToScriptValue(QScriptEngine* engine, const glm::vec3& vec3) {
-    auto prototype = engine->globalObject().property("__hifi_vec3_color__");
-    if (!prototype.property("defined").toBool()) {
+    auto prototype = engine->globalObject().property(QStringLiteral("__hifi_vec3_color__"));
+    if (!prototype.property(QStringLiteral("defined")).toBool()) {
         prototype = engine->evaluate(
-            "__hifi_vec3_color__ = Object.defineProperties({}, { "
+            QStringLiteral("__hifi_vec3_color__ = Object.defineProperties({}, { "
             "defined: { value: true },"
             "0: { set: function(nv) { return this.red = nv; }, get: function() { return this.red; } },"
             "1: { set: function(nv) { return this.green = nv; }, get: function() { return this.green; } },"
@@ -209,13 +209,13 @@ QScriptValue vec3ColorToScriptValue(QScriptEngine* engine, const glm::vec3& vec3
             "x: { set: function(nv) { return this.red = nv; }, get: function() { return this.red; } },"
             "y: { set: function(nv) { return this.green = nv; }, get: function() { return this.green; } },"
             "z: { set: function(nv) { return this.blue = nv; }, get: function() { return this.blue; } }"
-            "})"
+            "})")
         );
     }
     QScriptValue value = engine->newObject();
-    value.setProperty("red", vec3.x);
-    value.setProperty("green", vec3.y);
-    value.setProperty("blue", vec3.z);
+    value.setProperty(QStringLiteral("red"), vec3.x);
+    value.setProperty(QStringLiteral("green"), vec3.y);
+    value.setProperty(QStringLiteral("blue"), vec3.z);
     value.setPrototype(prototype);
     return value;
 }
@@ -238,28 +238,28 @@ void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
             vec3.z = list[2].toFloat();
         }
     } else {
-        QScriptValue x = object.property("x");
+        QScriptValue x = object.property(QStringLiteral("x"));
         if (!x.isValid()) {
-            x = object.property("r");
+            x = object.property(QStringLiteral("r"));
         }
         if (!x.isValid()) {
-            x = object.property("red");
+            x = object.property(QStringLiteral("red"));
         }
 
-        QScriptValue y = object.property("y");
+        QScriptValue y = object.property(QStringLiteral("y"));
         if (!y.isValid()) {
-            y = object.property("g");
+            y = object.property(QStringLiteral("g"));
         }
         if (!y.isValid()) {
-            y = object.property("green");
+            y = object.property(QStringLiteral("green"));
         }
 
-        QScriptValue z = object.property("z");
+        QScriptValue z = object.property(QStringLiteral("z"));
         if (!z.isValid()) {
-            z = object.property("b");
+            z = object.property(QStringLiteral("b"));
         }
         if (!z.isValid()) {
-            z = object.property("blue");
+            z = object.property(QStringLiteral("blue"));
         }
 
         vec3.x = x.toVariant().toFloat();
@@ -269,10 +269,10 @@ void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
 }
 
 QScriptValue u8vec3ToScriptValue(QScriptEngine* engine, const glm::u8vec3& vec3) {
-    auto prototype = engine->globalObject().property("__hifi_u8vec3__");
-    if (!prototype.property("defined").toBool()) {
+    auto prototype = engine->globalObject().property(QStringLiteral("__hifi_u8vec3__"));
+    if (!prototype.property(QStringLiteral("defined")).toBool()) {
         prototype = engine->evaluate(
-            "__hifi_u8vec3__ = Object.defineProperties({}, { "
+            QStringLiteral("__hifi_u8vec3__ = Object.defineProperties({}, { "
             "defined: { value: true },"
             "0: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "1: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } },"
@@ -283,22 +283,22 @@ QScriptValue u8vec3ToScriptValue(QScriptEngine* engine, const glm::u8vec3& vec3)
             "red: { set: function(nv) { return this.x = nv; }, get: function() { return this.x; } },"
             "green: { set: function(nv) { return this.y = nv; }, get: function() { return this.y; } },"
             "blue: { set: function(nv) { return this.z = nv; }, get: function() { return this.z; } }"
-            "})"
+            "})")
         );
     }
     QScriptValue value = engine->newObject();
-    value.setProperty("x", vec3.x);
-    value.setProperty("y", vec3.y);
-    value.setProperty("z", vec3.z);
+    value.setProperty(QStringLiteral("x"), vec3.x);
+    value.setProperty(QStringLiteral("y"), vec3.y);
+    value.setProperty(QStringLiteral("z"), vec3.z);
     value.setPrototype(prototype);
     return value;
 }
 
 QScriptValue u8vec3ColorToScriptValue(QScriptEngine* engine, const glm::u8vec3& vec3) {
-    auto prototype = engine->globalObject().property("__hifi_u8vec3_color__");
-    if (!prototype.property("defined").toBool()) {
+    auto prototype = engine->globalObject().property(QStringLiteral("__hifi_u8vec3_color__"));
+    if (!prototype.property(QStringLiteral("defined")).toBool()) {
         prototype = engine->evaluate(
-            "__hifi_u8vec3_color__ = Object.defineProperties({}, { "
+            QStringLiteral("__hifi_u8vec3_color__ = Object.defineProperties({}, { "
             "defined: { value: true },"
             "0: { set: function(nv) { return this.red = nv; }, get: function() { return this.red; } },"
             "1: { set: function(nv) { return this.green = nv; }, get: function() { return this.green; } },"
@@ -309,13 +309,13 @@ QScriptValue u8vec3ColorToScriptValue(QScriptEngine* engine, const glm::u8vec3& 
             "x: { set: function(nv) { return this.red = nv; }, get: function() { return this.red; } },"
             "y: { set: function(nv) { return this.green = nv; }, get: function() { return this.green; } },"
             "z: { set: function(nv) { return this.blue = nv; }, get: function() { return this.blue; } }"
-            "})"
+            "})")
         );
     }
     QScriptValue value = engine->newObject();
-    value.setProperty("red", vec3.x);
-    value.setProperty("green", vec3.y);
-    value.setProperty("blue", vec3.z);
+    value.setProperty(QStringLiteral("red"), vec3.x);
+    value.setProperty(QStringLiteral("green"), vec3.y);
+    value.setProperty(QStringLiteral("blue"), vec3.z);
     value.setPrototype(prototype);
     return value;
 }
@@ -338,28 +338,28 @@ void u8vec3FromScriptValue(const QScriptValue& object, glm::u8vec3& vec3) {
             vec3.z = list[2].toUInt();
         }
     } else {
-        QScriptValue x = object.property("x");
+        QScriptValue x = object.property(QStringLiteral("x"));
         if (!x.isValid()) {
-            x = object.property("r");
+            x = object.property(QStringLiteral("r"));
         }
         if (!x.isValid()) {
-            x = object.property("red");
+            x = object.property(QStringLiteral("red"));
         }
 
-        QScriptValue y = object.property("y");
+        QScriptValue y = object.property(QStringLiteral("y"));
         if (!y.isValid()) {
-            y = object.property("g");
+            y = object.property(QStringLiteral("g"));
         }
         if (!y.isValid()) {
-            y = object.property("green");
+            y = object.property(QStringLiteral("green"));
         }
 
-        QScriptValue z = object.property("z");
+        QScriptValue z = object.property(QStringLiteral("z"));
         if (!z.isValid()) {
-            z = object.property("b");
+            z = object.property(QStringLiteral("b"));
         }
         if (!z.isValid()) {
-            z = object.property("blue");
+            z = object.property(QStringLiteral("blue"));
         }
 
         vec3.x = x.toVariant().toUInt();
@@ -374,9 +374,9 @@ QVariant vec3toVariant(const glm::vec3& vec3) {
         return QVariant();
     }
     QVariantMap result;
-    result["x"] = vec3.x;
-    result["y"] = vec3.y;
-    result["z"] = vec3.z;
+    result[QStringLiteral("x")] = vec3.x;
+    result[QStringLiteral("y")] = vec3.y;
+    result[QStringLiteral("z")] = vec3.z;
     return result;
 }
 
@@ -412,28 +412,28 @@ glm::vec3 vec3FromVariant(const QVariant& object, bool& valid) {
         }
     } else {
         auto map = object.toMap();
-        auto x = map["x"];
+        auto x = map[QStringLiteral("x")];
         if (!x.isValid()) {
-            x = map["r"];
+            x = map[QStringLiteral("r")];
         }
         if (!x.isValid()) {
-            x = map["red"];
+            x = map[QStringLiteral("red")];
         }
 
-        auto y = map["y"];
+        auto y = map[QStringLiteral("y")];
         if (!y.isValid()) {
-            y = map["g"];
+            y = map[QStringLiteral("g")];
         }
         if (!y.isValid()) {
-            y = map["green"];
+            y = map[QStringLiteral("green")];
         }
 
-        auto z = map["z"];
+        auto z = map[QStringLiteral("z")];
         if (!z.isValid()) {
-            z = map["b"];
+            z = map[QStringLiteral("b")];
         }
         if (!z.isValid()) {
-            z = map["blue"];
+            z = map[QStringLiteral("blue")];
         }
 
         if (x.canConvert<float>() && y.canConvert<float>() && z.canConvert<float>()) {
@@ -453,17 +453,17 @@ glm::vec3 vec3FromVariant(const QVariant& object) {
 
 QVariant u8vec3toVariant(const glm::u8vec3& vec3) {
     QVariantMap result;
-    result["x"] = vec3.x;
-    result["y"] = vec3.y;
-    result["z"] = vec3.z;
+    result[QStringLiteral("x")] = vec3.x;
+    result[QStringLiteral("y")] = vec3.y;
+    result[QStringLiteral("z")] = vec3.z;
     return result;
 }
 
 QVariant u8vec3ColortoVariant(const glm::u8vec3& vec3) {
     QVariantMap result;
-    result["red"] = vec3.x;
-    result["green"] = vec3.y;
-    result["blue"] = vec3.z;
+    result[QStringLiteral("red")] = vec3.x;
+    result[QStringLiteral("green")] = vec3.y;
+    result[QStringLiteral("blue")] = vec3.z;
     return result;
 }
 
@@ -499,28 +499,28 @@ glm::u8vec3 u8vec3FromVariant(const QVariant& object, bool& valid) {
         }
     } else {
         auto map = object.toMap();
-        auto x = map["x"];
+        auto x = map[QStringLiteral("x")];
         if (!x.isValid()) {
-            x = map["r"];
+            x = map[QStringLiteral("r")];
         }
         if (!x.isValid()) {
-            x = map["red"];
+            x = map[QStringLiteral("red")];
         }
 
-        auto y = map["y"];
+        auto y = map[QStringLiteral("y")];
         if (!y.isValid()) {
-            y = map["g"];
+            y = map[QStringLiteral("g")];
         }
         if (!y.isValid()) {
-            y = map["green"];
+            y = map[QStringLiteral("green")];
         }
 
-        auto z = map["z"];
+        auto z = map[QStringLiteral("z")];
         if (!z.isValid()) {
-            z = map["b"];
+            z = map[QStringLiteral("b")];
         }
         if (!z.isValid()) {
-            z = map["blue"];
+            z = map[QStringLiteral("blue")];
         }
 
         if (x.canConvert<uint>() && y.canConvert<uint>() && z.canConvert<uint>()) {
@@ -540,18 +540,18 @@ glm::u8vec3 u8vec3FromVariant(const QVariant& object) {
 
 QScriptValue vec4toScriptValue(QScriptEngine* engine, const glm::vec4& vec4) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("x", vec4.x);
-    obj.setProperty("y", vec4.y);
-    obj.setProperty("z", vec4.z);
-    obj.setProperty("w", vec4.w);
+    obj.setProperty(QStringLiteral("x"), vec4.x);
+    obj.setProperty(QStringLiteral("y"), vec4.y);
+    obj.setProperty(QStringLiteral("z"), vec4.z);
+    obj.setProperty(QStringLiteral("w"), vec4.w);
     return obj;
 }
 
 void vec4FromScriptValue(const QScriptValue& object, glm::vec4& vec4) {
-    vec4.x = object.property("x").toVariant().toFloat();
-    vec4.y = object.property("y").toVariant().toFloat();
-    vec4.z = object.property("z").toVariant().toFloat();
-    vec4.w = object.property("w").toVariant().toFloat();
+    vec4.x = object.property(QStringLiteral("x")).toVariant().toFloat();
+    vec4.y = object.property(QStringLiteral("y")).toVariant().toFloat();
+    vec4.z = object.property(QStringLiteral("z")).toVariant().toFloat();
+    vec4.w = object.property(QStringLiteral("w")).toVariant().toFloat();
 }
 
 QVariant vec4toVariant(const glm::vec4& vec4) {
@@ -560,10 +560,10 @@ QVariant vec4toVariant(const glm::vec4& vec4) {
         return QVariant();
     }
     QVariantMap result;
-    result["x"] = vec4.x;
-    result["y"] = vec4.y;
-    result["z"] = vec4.z;
-    result["w"] = vec4.w;
+    result[QStringLiteral("x")] = vec4.x;
+    result[QStringLiteral("y")] = vec4.y;
+    result[QStringLiteral("z")] = vec4.z;
+    result[QStringLiteral("w")] = vec4.w;
     return result;
 }
 
@@ -584,10 +584,10 @@ glm::vec4 vec4FromVariant(const QVariant& object, bool& valid) {
         valid = true;
     } else {
         auto map = object.toMap();
-        auto x = map["x"];
-        auto y = map["y"];
-        auto z = map["z"];
-        auto w = map["w"];
+        auto x = map[QStringLiteral("x")];
+        auto y = map[QStringLiteral("y")];
+        auto z = map[QStringLiteral("z")];
+        auto w = map[QStringLiteral("w")];
         if (x.canConvert<float>() && y.canConvert<float>() && z.canConvert<float>() && w.canConvert<float>()) {
             v.x = x.toFloat();
             v.y = y.toFloat();
@@ -606,42 +606,42 @@ glm::vec4 vec4FromVariant(const QVariant& object) {
 
 QScriptValue mat4toScriptValue(QScriptEngine* engine, const glm::mat4& mat4) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("r0c0", mat4[0][0]);
-    obj.setProperty("r1c0", mat4[0][1]);
-    obj.setProperty("r2c0", mat4[0][2]);
-    obj.setProperty("r3c0", mat4[0][3]);
-    obj.setProperty("r0c1", mat4[1][0]);
-    obj.setProperty("r1c1", mat4[1][1]);
-    obj.setProperty("r2c1", mat4[1][2]);
-    obj.setProperty("r3c1", mat4[1][3]);
-    obj.setProperty("r0c2", mat4[2][0]);
-    obj.setProperty("r1c2", mat4[2][1]);
-    obj.setProperty("r2c2", mat4[2][2]);
-    obj.setProperty("r3c2", mat4[2][3]);
-    obj.setProperty("r0c3", mat4[3][0]);
-    obj.setProperty("r1c3", mat4[3][1]);
-    obj.setProperty("r2c3", mat4[3][2]);
-    obj.setProperty("r3c3", mat4[3][3]);
+    obj.setProperty(QStringLiteral("r0c0"), mat4[0][0]);
+    obj.setProperty(QStringLiteral("r1c0"), mat4[0][1]);
+    obj.setProperty(QStringLiteral("r2c0"), mat4[0][2]);
+    obj.setProperty(QStringLiteral("r3c0"), mat4[0][3]);
+    obj.setProperty(QStringLiteral("r0c1"), mat4[1][0]);
+    obj.setProperty(QStringLiteral("r1c1"), mat4[1][1]);
+    obj.setProperty(QStringLiteral("r2c1"), mat4[1][2]);
+    obj.setProperty(QStringLiteral("r3c1"), mat4[1][3]);
+    obj.setProperty(QStringLiteral("r0c2"), mat4[2][0]);
+    obj.setProperty(QStringLiteral("r1c2"), mat4[2][1]);
+    obj.setProperty(QStringLiteral("r2c2"), mat4[2][2]);
+    obj.setProperty(QStringLiteral("r3c2"), mat4[2][3]);
+    obj.setProperty(QStringLiteral("r0c3"), mat4[3][0]);
+    obj.setProperty(QStringLiteral("r1c3"), mat4[3][1]);
+    obj.setProperty(QStringLiteral("r2c3"), mat4[3][2]);
+    obj.setProperty(QStringLiteral("r3c3"), mat4[3][3]);
     return obj;
 }
 
 void mat4FromScriptValue(const QScriptValue& object, glm::mat4& mat4) {
-    mat4[0][0] = object.property("r0c0").toVariant().toFloat();
-    mat4[0][1] = object.property("r1c0").toVariant().toFloat();
-    mat4[0][2] = object.property("r2c0").toVariant().toFloat();
-    mat4[0][3] = object.property("r3c0").toVariant().toFloat();
-    mat4[1][0] = object.property("r0c1").toVariant().toFloat();
-    mat4[1][1] = object.property("r1c1").toVariant().toFloat();
-    mat4[1][2] = object.property("r2c1").toVariant().toFloat();
-    mat4[1][3] = object.property("r3c1").toVariant().toFloat();
-    mat4[2][0] = object.property("r0c2").toVariant().toFloat();
-    mat4[2][1] = object.property("r1c2").toVariant().toFloat();
-    mat4[2][2] = object.property("r2c2").toVariant().toFloat();
-    mat4[2][3] = object.property("r3c2").toVariant().toFloat();
-    mat4[3][0] = object.property("r0c3").toVariant().toFloat();
-    mat4[3][1] = object.property("r1c3").toVariant().toFloat();
-    mat4[3][2] = object.property("r2c3").toVariant().toFloat();
-    mat4[3][3] = object.property("r3c3").toVariant().toFloat();
+    mat4[0][0] = object.property(QStringLiteral("r0c0")).toVariant().toFloat();
+    mat4[0][1] = object.property(QStringLiteral("r1c0")).toVariant().toFloat();
+    mat4[0][2] = object.property(QStringLiteral("r2c0")).toVariant().toFloat();
+    mat4[0][3] = object.property(QStringLiteral("r3c0")).toVariant().toFloat();
+    mat4[1][0] = object.property(QStringLiteral("r0c1")).toVariant().toFloat();
+    mat4[1][1] = object.property(QStringLiteral("r1c1")).toVariant().toFloat();
+    mat4[1][2] = object.property(QStringLiteral("r2c1")).toVariant().toFloat();
+    mat4[1][3] = object.property(QStringLiteral("r3c1")).toVariant().toFloat();
+    mat4[2][0] = object.property(QStringLiteral("r0c2")).toVariant().toFloat();
+    mat4[2][1] = object.property(QStringLiteral("r1c2")).toVariant().toFloat();
+    mat4[2][2] = object.property(QStringLiteral("r2c2")).toVariant().toFloat();
+    mat4[2][3] = object.property(QStringLiteral("r3c2")).toVariant().toFloat();
+    mat4[3][0] = object.property(QStringLiteral("r0c3")).toVariant().toFloat();
+    mat4[3][1] = object.property(QStringLiteral("r1c3")).toVariant().toFloat();
+    mat4[3][2] = object.property(QStringLiteral("r2c3")).toVariant().toFloat();
+    mat4[3][3] = object.property(QStringLiteral("r3c3")).toVariant().toFloat();
 }
 
 QVariant mat4ToVariant(const glm::mat4& mat4) {
@@ -651,22 +651,22 @@ QVariant mat4ToVariant(const glm::mat4& mat4) {
     }
     QVariantMap object;
 
-    object["r0c0"] = mat4[0][0];
-    object["r1c0"] = mat4[0][1];
-    object["r2c0"] = mat4[0][2];
-    object["r3c0"] = mat4[0][3];
-    object["r0c1"] = mat4[1][0];
-    object["r1c1"] = mat4[1][1];
-    object["r2c1"] = mat4[1][2];
-    object["r3c1"] = mat4[1][3];
-    object["r0c2"] = mat4[2][0];
-    object["r1c2"] = mat4[2][1];
-    object["r2c2"] = mat4[2][2];
-    object["r3c2"] = mat4[2][3];
-    object["r0c3"] = mat4[3][0];
-    object["r1c3"] = mat4[3][1];
-    object["r2c3"] = mat4[3][2];
-    object["r3c3"] = mat4[3][3];
+    object[QStringLiteral("r0c0")] = mat4[0][0];
+    object[QStringLiteral("r1c0")] = mat4[0][1];
+    object[QStringLiteral("r2c0")] = mat4[0][2];
+    object[QStringLiteral("r3c0")] = mat4[0][3];
+    object[QStringLiteral("r0c1")] = mat4[1][0];
+    object[QStringLiteral("r1c1")] = mat4[1][1];
+    object[QStringLiteral("r2c1")] = mat4[1][2];
+    object[QStringLiteral("r3c1")] = mat4[1][3];
+    object[QStringLiteral("r0c2")] = mat4[2][0];
+    object[QStringLiteral("r1c2")] = mat4[2][1];
+    object[QStringLiteral("r2c2")] = mat4[2][2];
+    object[QStringLiteral("r3c2")] = mat4[2][3];
+    object[QStringLiteral("r0c3")] = mat4[3][0];
+    object[QStringLiteral("r1c3")] = mat4[3][1];
+    object[QStringLiteral("r2c3")] = mat4[3][2];
+    object[QStringLiteral("r3c3")] = mat4[3][3];
 
     return object;
 }
@@ -737,7 +737,7 @@ QScriptValue qVectorVec3ToScriptValue(QScriptEngine* engine, const QVector<glm::
 
 QVector<glm::vec3> qVectorVec3FromScriptValue(const QScriptValue& array) {
     QVector<glm::vec3> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         glm::vec3 newVec3 = glm::vec3();
@@ -748,7 +748,7 @@ QVector<glm::vec3> qVectorVec3FromScriptValue(const QScriptValue& array) {
 }
 
 void qVectorVec3FromScriptValue(const QScriptValue& array, QVector<glm::vec3>& vector) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         glm::vec3 newVec3 = glm::vec3();
@@ -763,18 +763,18 @@ QScriptValue quatToScriptValue(QScriptEngine* engine, const glm::quat& quat) {
         // if quat contains a NaN don't try to convert it
         return obj;
     }
-    obj.setProperty("x", quat.x);
-    obj.setProperty("y", quat.y);
-    obj.setProperty("z", quat.z);
-    obj.setProperty("w", quat.w);
+    obj.setProperty(QStringLiteral("x"), quat.x);
+    obj.setProperty(QStringLiteral("y"), quat.y);
+    obj.setProperty(QStringLiteral("z"), quat.z);
+    obj.setProperty(QStringLiteral("w"), quat.w);
     return obj;
 }
 
 void quatFromScriptValue(const QScriptValue& object, glm::quat &quat) {
-    quat.x = object.property("x").toVariant().toFloat();
-    quat.y = object.property("y").toVariant().toFloat();
-    quat.z = object.property("z").toVariant().toFloat();
-    quat.w = object.property("w").toVariant().toFloat();
+    quat.x = object.property(QStringLiteral("x")).toVariant().toFloat();
+    quat.y = object.property(QStringLiteral("y")).toVariant().toFloat();
+    quat.z = object.property(QStringLiteral("z")).toVariant().toFloat();
+    quat.w = object.property(QStringLiteral("w")).toVariant().toFloat();
 
     // enforce normalized quaternion
     float length = glm::length(quat);
@@ -804,19 +804,19 @@ glm::quat quatFromVariant(const QVariant &object, bool& isValid) {
         isValid = true;
     } else {
         auto map = object.toMap();
-        q.x = map["x"].toFloat(&isValid);
+        q.x = map[QStringLiteral("x")].toFloat(&isValid);
         if (!isValid) {
             return glm::quat();
         }
-        q.y = map["y"].toFloat(&isValid);
+        q.y = map[QStringLiteral("y")].toFloat(&isValid);
         if (!isValid) {
             return glm::quat();
         }
-        q.z = map["z"].toFloat(&isValid);
+        q.z = map[QStringLiteral("z")].toFloat(&isValid);
         if (!isValid) {
             return glm::quat();
         }
-        q.w = map["w"].toFloat(&isValid);
+        q.w = map[QStringLiteral("w")].toFloat(&isValid);
         if (!isValid) {
             return glm::quat();
         }
@@ -835,10 +835,10 @@ QVariant quatToVariant(const glm::quat& quat) {
         return QVariant();
     }
     QVariantMap result;
-    result["x"] = quat.x;
-    result["y"] = quat.y;
-    result["z"] = quat.z;
-    result["w"] = quat.w;
+    result[QStringLiteral("x")] = quat.x;
+    result[QStringLiteral("y")] = quat.y;
+    result[QStringLiteral("z")] = quat.z;
+    result[QStringLiteral("w")] = quat.w;
     return result;
 }
 
@@ -863,7 +863,7 @@ QVector<float> qVectorFloatFromScriptValue(const QScriptValue& array) {
         return QVector<float>();
     }
     QVector<float> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
     newVector.reserve(length);
     for (int i = 0; i < length; i++) {
         if(array.property(i).isNumber()) {
@@ -879,7 +879,7 @@ QVector<QUuid> qVectorQUuidFromScriptValue(const QScriptValue& array) {
         return QVector<QUuid>(); 
     }
     QVector<QUuid> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
     newVector.reserve(length);
     for (int i = 0; i < length; i++) {
         QString uuidAsString = array.property(i).toString();
@@ -908,7 +908,7 @@ QScriptValue qVectorIntToScriptValue(QScriptEngine* engine, const QVector<uint32
 }
 
 void qVectorFloatFromScriptValue(const QScriptValue& array, QVector<float>& vector) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
     
     for (int i = 0; i < length; i++) {
         vector << array.property(i).toVariant().toFloat();
@@ -916,7 +916,7 @@ void qVectorFloatFromScriptValue(const QScriptValue& array, QVector<float>& vect
 }
 
 void qVectorIntFromScriptValue(const QScriptValue& array, QVector<uint32_t>& vector) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         vector << array.property(i).toVariant().toInt();
@@ -925,7 +925,7 @@ void qVectorIntFromScriptValue(const QScriptValue& array, QVector<uint32_t>& vec
 
 QVector<glm::quat> qVectorQuatFromScriptValue(const QScriptValue& array){
     QVector<glm::quat> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         glm::quat newQuat = glm::quat();
@@ -936,7 +936,7 @@ QVector<glm::quat> qVectorQuatFromScriptValue(const QScriptValue& array){
 }
 
 void qVectorQuatFromScriptValue(const QScriptValue& array, QVector<glm::quat>& vector ) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         glm::quat newQuat = glm::quat();
@@ -947,7 +947,7 @@ void qVectorQuatFromScriptValue(const QScriptValue& array, QVector<glm::quat>& v
 
 QVector<bool> qVectorBoolFromScriptValue(const QScriptValue& array){
     QVector<bool> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         newVector << array.property(i).toBool();
@@ -956,7 +956,7 @@ QVector<bool> qVectorBoolFromScriptValue(const QScriptValue& array){
 }
 
 void qVectorBoolFromScriptValue(const QScriptValue& array, QVector<bool>& vector ) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
 
     for (int i = 0; i < length; i++) {
         vector << array.property(i).toBool();
@@ -965,26 +965,26 @@ void qVectorBoolFromScriptValue(const QScriptValue& array, QVector<bool>& vector
 
 QScriptValue qRectToScriptValue(QScriptEngine* engine, const QRect& rect) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("x", rect.x());
-    obj.setProperty("y", rect.y());
-    obj.setProperty("width", rect.width());
-    obj.setProperty("height", rect.height());
+    obj.setProperty(QStringLiteral("x"), rect.x());
+    obj.setProperty(QStringLiteral("y"), rect.y());
+    obj.setProperty(QStringLiteral("width"), rect.width());
+    obj.setProperty(QStringLiteral("height"), rect.height());
     return obj;
 }
 
 void qRectFromScriptValue(const QScriptValue &object, QRect& rect) {
-    rect.setX(object.property("x").toVariant().toInt());
-    rect.setY(object.property("y").toVariant().toInt());
-    rect.setWidth(object.property("width").toVariant().toInt());
-    rect.setHeight(object.property("height").toVariant().toInt());
+    rect.setX(object.property(QStringLiteral("x")).toVariant().toInt());
+    rect.setY(object.property(QStringLiteral("y")).toVariant().toInt());
+    rect.setWidth(object.property(QStringLiteral("width")).toVariant().toInt());
+    rect.setHeight(object.property(QStringLiteral("height")).toVariant().toInt());
 }
 
 QVariant qRectToVariant(const QRect& rect) {
     QVariantMap obj;
-    obj["x"] = rect.x();
-    obj["y"] = rect.y();
-    obj["width"] = rect.width();
-    obj["height"] = rect.height();
+    obj[QStringLiteral("x")] = rect.x();
+    obj[QStringLiteral("y")] = rect.y();
+    obj[QStringLiteral("width")] = rect.width();
+    obj[QStringLiteral("height")] = rect.height();
     return obj;
 }
 
@@ -992,15 +992,15 @@ QRect qRectFromVariant(const QVariant& objectVar, bool& valid) {
     QVariantMap object = objectVar.toMap();
     QRect rect;
     valid = false;
-    rect.setX(object["x"].toInt(&valid));
+    rect.setX(object[QStringLiteral("x")].toInt(&valid));
     if (valid) {
-        rect.setY(object["y"].toInt(&valid));
+        rect.setY(object[QStringLiteral("y")].toInt(&valid));
     }
     if (valid) {
-        rect.setWidth(object["width"].toInt(&valid));
+        rect.setWidth(object[QStringLiteral("width")].toInt(&valid));
     }
     if (valid) {
-        rect.setHeight(object["height"].toInt(&valid));
+        rect.setHeight(object[QStringLiteral("height")].toInt(&valid));
     }
     return rect;
 }
@@ -1012,26 +1012,26 @@ QRect qRectFromVariant(const QVariant& object) {
 
 QScriptValue qRectFToScriptValue(QScriptEngine* engine, const QRectF& rect) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("x", rect.x());
-    obj.setProperty("y", rect.y());
-    obj.setProperty("width", rect.width());
-    obj.setProperty("height", rect.height());
+    obj.setProperty(QStringLiteral("x"), rect.x());
+    obj.setProperty(QStringLiteral("y"), rect.y());
+    obj.setProperty(QStringLiteral("width"), rect.width());
+    obj.setProperty(QStringLiteral("height"), rect.height());
     return obj;
 }
 
 void qRectFFromScriptValue(const QScriptValue &object, QRectF& rect) {
-    rect.setX(object.property("x").toVariant().toFloat());
-    rect.setY(object.property("y").toVariant().toFloat());
-    rect.setWidth(object.property("width").toVariant().toFloat());
-    rect.setHeight(object.property("height").toVariant().toFloat());
+    rect.setX(object.property(QStringLiteral("x")).toVariant().toFloat());
+    rect.setY(object.property(QStringLiteral("y")).toVariant().toFloat());
+    rect.setWidth(object.property(QStringLiteral("width")).toVariant().toFloat());
+    rect.setHeight(object.property(QStringLiteral("height")).toVariant().toFloat());
 }
 
 QVariant qRectFToVariant(const QRectF& rect) {
     QVariantMap obj;
-    obj["x"] = rect.x();
-    obj["y"] = rect.y();
-    obj["width"] = rect.width();
-    obj["height"] = rect.height();
+    obj[QStringLiteral("x")] = rect.x();
+    obj[QStringLiteral("y")] = rect.y();
+    obj[QStringLiteral("width")] = rect.width();
+    obj[QStringLiteral("height")] = rect.height();
     return obj;
 }
 
@@ -1039,15 +1039,15 @@ QRectF qRectFFromVariant(const QVariant& objectVar, bool& valid) {
     QVariantMap object = objectVar.toMap();
     QRectF rect;
     valid = false;
-    rect.setX(object["x"].toFloat(&valid));
+    rect.setX(object[QStringLiteral("x")].toFloat(&valid));
     if (valid) {
-        rect.setY(object["y"].toFloat(&valid));
+        rect.setY(object[QStringLiteral("y")].toFloat(&valid));
     }
     if (valid) {
-        rect.setWidth(object["width"].toFloat(&valid));
+        rect.setWidth(object[QStringLiteral("width")].toFloat(&valid));
     }
     if (valid) {
-        rect.setHeight(object["height"].toFloat(&valid));
+        rect.setHeight(object[QStringLiteral("height")].toFloat(&valid));
     }
     return rect;
 }
@@ -1059,10 +1059,10 @@ QRectF qRectFFromVariant(const QVariant& object) {
 
 QScriptValue qColorToScriptValue(QScriptEngine* engine, const QColor& color) {
     QScriptValue object = engine->newObject();
-    object.setProperty("red", color.red());
-    object.setProperty("green", color.green());
-    object.setProperty("blue", color.blue());
-    object.setProperty("alpha", color.alpha());
+    object.setProperty(QStringLiteral("red"), color.red());
+    object.setProperty(QStringLiteral("green"), color.green());
+    object.setProperty(QStringLiteral("blue"), color.blue());
+    object.setProperty(QStringLiteral("alpha"), color.alpha());
     return object;
 }
 
@@ -1078,19 +1078,19 @@ QScriptValue qColorToScriptValue(QScriptEngine* engine, const QColor& color) {
 QScriptValue aaCubeToScriptValue(QScriptEngine* engine, const AACube& aaCube) {
     QScriptValue obj = engine->newObject();
     const glm::vec3& corner = aaCube.getCorner();
-    obj.setProperty("x", corner.x);
-    obj.setProperty("y", corner.y);
-    obj.setProperty("z", corner.z);
-    obj.setProperty("scale", aaCube.getScale());
+    obj.setProperty(QStringLiteral("x"), corner.x);
+    obj.setProperty(QStringLiteral("y"), corner.y);
+    obj.setProperty(QStringLiteral("z"), corner.z);
+    obj.setProperty(QStringLiteral("scale"), aaCube.getScale());
     return obj;
 }
 
 void aaCubeFromScriptValue(const QScriptValue &object, AACube& aaCube) {
     glm::vec3 corner;
-    corner.x = object.property("x").toVariant().toFloat();
-    corner.y = object.property("y").toVariant().toFloat();
-    corner.z = object.property("z").toVariant().toFloat();
-    float scale = object.property("scale").toVariant().toFloat();
+    corner.x = object.property(QStringLiteral("x")).toVariant().toFloat();
+    corner.y = object.property(QStringLiteral("y")).toVariant().toFloat();
+    corner.z = object.property(QStringLiteral("z")).toVariant().toFloat();
+    float scale = object.property(QStringLiteral("scale")).toVariant().toFloat();
 
     aaCube.setBox(corner, scale);
 }
@@ -1103,8 +1103,8 @@ void qColorFromScriptValue(const QScriptValue& object, QColor& color) {
         color.setNamedColor(object.toString());
             
     } else {
-        QScriptValue alphaValue = object.property("alpha");
-        color.setRgb(object.property("red").toInt32(), object.property("green").toInt32(), object.property("blue").toInt32(),
+        QScriptValue alphaValue = object.property(QStringLiteral("alpha"));
+        color.setRgb(object.property(QStringLiteral("red")).toInt32(), object.property(QStringLiteral("green")).toInt32(), object.property(QStringLiteral("blue")).toInt32(),
             alphaValue.isNumber() ? alphaValue.toInt32() : 255);
     }
 }
@@ -1120,29 +1120,29 @@ void qURLFromScriptValue(const QScriptValue& object, QUrl& url) {
 QScriptValue pickRayToScriptValue(QScriptEngine* engine, const PickRay& pickRay) {
     QScriptValue obj = engine->newObject();
     QScriptValue origin = vec3ToScriptValue(engine, pickRay.origin);
-    obj.setProperty("origin", origin);
+    obj.setProperty(QStringLiteral("origin"), origin);
     QScriptValue direction = vec3ToScriptValue(engine, pickRay.direction);
-    obj.setProperty("direction", direction);
+    obj.setProperty(QStringLiteral("direction"), direction);
     return obj;
 }
 
 void pickRayFromScriptValue(const QScriptValue& object, PickRay& pickRay) {
-    QScriptValue originValue = object.property("origin");
+    QScriptValue originValue = object.property(QStringLiteral("origin"));
     if (originValue.isValid()) {
-        auto x = originValue.property("x");
-        auto y = originValue.property("y");
-        auto z = originValue.property("z");
+        auto x = originValue.property(QStringLiteral("x"));
+        auto y = originValue.property(QStringLiteral("y"));
+        auto z = originValue.property(QStringLiteral("z"));
         if (x.isValid() && y.isValid() && z.isValid()) {
             pickRay.origin.x = x.toVariant().toFloat();
             pickRay.origin.y = y.toVariant().toFloat();
             pickRay.origin.z = z.toVariant().toFloat();
         }
     }
-    QScriptValue directionValue = object.property("direction");
+    QScriptValue directionValue = object.property(QStringLiteral("direction"));
     if (directionValue.isValid()) {
-        auto x = directionValue.property("x");
-        auto y = directionValue.property("y");
-        auto z = directionValue.property("z");
+        auto x = directionValue.property(QStringLiteral("x"));
+        auto y = directionValue.property(QStringLiteral("y"));
+        auto z = directionValue.property(QStringLiteral("z"));
         if (x.isValid() && y.isValid() && z.isValid()) {
             pickRay.direction.x = x.toVariant().toFloat();
             pickRay.direction.y = y.toVariant().toFloat();
@@ -1163,12 +1163,12 @@ void pickRayFromScriptValue(const QScriptValue& object, PickRay& pickRay) {
  */
 QScriptValue collisionToScriptValue(QScriptEngine* engine, const Collision& collision) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("type", collision.type);
-    obj.setProperty("idA", quuidToScriptValue(engine, collision.idA));
-    obj.setProperty("idB", quuidToScriptValue(engine, collision.idB));
-    obj.setProperty("penetration", vec3ToScriptValue(engine, collision.penetration));
-    obj.setProperty("contactPoint", vec3ToScriptValue(engine, collision.contactPoint));
-    obj.setProperty("velocityChange", vec3ToScriptValue(engine, collision.velocityChange));
+    obj.setProperty(QStringLiteral("type"), collision.type);
+    obj.setProperty(QStringLiteral("idA"), quuidToScriptValue(engine, collision.idA));
+    obj.setProperty(QStringLiteral("idB"), quuidToScriptValue(engine, collision.idB));
+    obj.setProperty(QStringLiteral("penetration"), vec3ToScriptValue(engine, collision.penetration));
+    obj.setProperty(QStringLiteral("contactPoint"), vec3ToScriptValue(engine, collision.contactPoint));
+    obj.setProperty(QStringLiteral("velocityChange"), vec3ToScriptValue(engine, collision.velocityChange));
     return obj;
 }
 
@@ -1208,14 +1208,14 @@ void quuidFromScriptValue(const QScriptValue& object, QUuid& uuid) {
  */
 QScriptValue qSizeFToScriptValue(QScriptEngine* engine, const QSizeF& qSizeF) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("width", qSizeF.width());
-    obj.setProperty("height", qSizeF.height());
+    obj.setProperty(QStringLiteral("width"), qSizeF.width());
+    obj.setProperty(QStringLiteral("height"), qSizeF.height());
     return obj;
 }
 
 void qSizeFFromScriptValue(const QScriptValue& object, QSizeF& qSizeF) {
-    qSizeF.setWidth(object.property("width").toVariant().toFloat());
-    qSizeF.setHeight(object.property("height").toVariant().toFloat());
+    qSizeF.setWidth(object.property(QStringLiteral("width")).toVariant().toFloat());
+    qSizeF.setHeight(object.property(QStringLiteral("height")).toVariant().toFloat());
 }
 
 AnimationDetails::AnimationDetails() :
@@ -1251,18 +1251,18 @@ AnimationDetails::AnimationDetails(QString role, QUrl url, float fps, float prio
  */
 QScriptValue animationDetailsToScriptValue(QScriptEngine* engine, const AnimationDetails& details) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("role", details.role);
-    obj.setProperty("url", details.url.toString());
-    obj.setProperty("fps", details.fps);
-    obj.setProperty("priority", details.priority);
-    obj.setProperty("loop", details.loop);
-    obj.setProperty("hold", details.hold);
-    obj.setProperty("startAutomatically", details.startAutomatically);
-    obj.setProperty("firstFrame", details.firstFrame);
-    obj.setProperty("lastFrame", details.lastFrame);
-    obj.setProperty("running", details.running);
-    obj.setProperty("currentFrame", details.currentFrame);
-    obj.setProperty("allowTranslation", details.allowTranslation);
+    obj.setProperty(QStringLiteral("role"), details.role);
+    obj.setProperty(QStringLiteral("url"), details.url.toString());
+    obj.setProperty(QStringLiteral("fps"), details.fps);
+    obj.setProperty(QStringLiteral("priority"), details.priority);
+    obj.setProperty(QStringLiteral("loop"), details.loop);
+    obj.setProperty(QStringLiteral("hold"), details.hold);
+    obj.setProperty(QStringLiteral("startAutomatically"), details.startAutomatically);
+    obj.setProperty(QStringLiteral("firstFrame"), details.firstFrame);
+    obj.setProperty(QStringLiteral("lastFrame"), details.lastFrame);
+    obj.setProperty(QStringLiteral("running"), details.running);
+    obj.setProperty(QStringLiteral("currentFrame"), details.currentFrame);
+    obj.setProperty(QStringLiteral("allowTranslation"), details.allowTranslation);
     return obj;
 }
 
@@ -1292,8 +1292,6 @@ QScriptValue meshesToScriptValue(QScriptEngine* engine, const MeshProxyList &in)
 void meshesFromScriptValue(const QScriptValue& value, MeshProxyList &out) {
     QScriptValueIterator itr(value);
 
-    qDebug() << "in meshesFromScriptValue, value.length =" << value.property("length").toInt32();
-
     while (itr.hasNext()) {
         itr.next();
         MeshProxy* meshProxy = qscriptvalue_cast<MeshProxyList::value_type>(itr.value());
@@ -1313,12 +1311,12 @@ void meshesFromScriptValue(const QScriptValue& value, MeshProxyList &out) {
  */
 QScriptValue meshFaceToScriptValue(QScriptEngine* engine, const MeshFace &meshFace) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("vertices", qVectorIntToScriptValue(engine, meshFace.vertexIndices));
+    obj.setProperty(QStringLiteral("vertices"), qVectorIntToScriptValue(engine, meshFace.vertexIndices));
     return obj;
 }
 
 void meshFaceFromScriptValue(const QScriptValue &object, MeshFace& meshFaceResult) {
-    qVectorIntFromScriptValue(object.property("vertices"), meshFaceResult.vertexIndices);
+    qVectorIntFromScriptValue(object.property(QStringLiteral("vertices")), meshFaceResult.vertexIndices);
 }
 
 QScriptValue qVectorMeshFaceToScriptValue(QScriptEngine* engine, const QVector<MeshFace>& vector) {
@@ -1330,7 +1328,7 @@ QScriptValue qVectorMeshFaceToScriptValue(QScriptEngine* engine, const QVector<M
 }
 
 void qVectorMeshFaceFromScriptValue(const QScriptValue& array, QVector<MeshFace>& result) {
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
     result.clear();
 
     for (int i = 0; i < length; i++) {

@@ -482,7 +482,7 @@ QString AudioClient::getWinDeviceName(wchar_t* guid) {
     hr = pMMDeviceEnumerator->GetDevice(guid, &pEndpoint);
     if (hr == E_NOTFOUND) {
         printf("Audio Error: device not found\n");
-        deviceName = QString("NONE");
+        deviceName = QStringLiteral("NONE");
     } else {
         deviceName = ::getWinDeviceName(pEndpoint);
         pEndpoint->Release();
@@ -597,7 +597,7 @@ QString defaultAudioDeviceName(QAudio::Mode mode) {
         hr = pMMDeviceEnumerator->GetDefaultAudioEndpoint(mode == QAudio::AudioOutput ? eRender : eCapture, eMultimedia, &pEndpoint);
         if (hr == E_NOTFOUND) {
             printf("Audio Error: device not found\n");
-            deviceName = QString("NONE");
+            deviceName = QStringLiteral("NONE");
         } else {
             deviceName = getWinDeviceName(pEndpoint);
             pEndpoint->Release();

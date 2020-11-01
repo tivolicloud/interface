@@ -35,7 +35,7 @@ AABox Overlay2D::getBounds() const {
 void Overlay2D::setProperties(const QVariantMap& properties) {
     Overlay::setProperties(properties);
     
-    auto bounds = properties["bounds"];
+    auto bounds = properties[QStringLiteral("bounds")];
     if (bounds.isValid()) {
         bool valid;
         auto rect = qRectFromVariant(bounds, valid);
@@ -43,23 +43,23 @@ void Overlay2D::setProperties(const QVariantMap& properties) {
     } else {
         QRect oldBounds = _bounds;
         QRect newBounds = oldBounds;
-        if (properties["x"].isValid()) {
-            newBounds.setX(properties["x"].toInt());
+        if (properties[QStringLiteral("x")].isValid()) {
+            newBounds.setX(properties[QStringLiteral("x")].toInt());
         } else {
             newBounds.setX(oldBounds.x());
         }
-        if (properties["y"].isValid()) {
-            newBounds.setY(properties["y"].toInt());
+        if (properties[QStringLiteral("y")].isValid()) {
+            newBounds.setY(properties[QStringLiteral("y")].toInt());
         } else {
             newBounds.setY(oldBounds.y());
         }
-        if (properties["width"].isValid()) {
-            newBounds.setWidth(properties["width"].toInt());
+        if (properties[QStringLiteral("width")].isValid()) {
+            newBounds.setWidth(properties[QStringLiteral("width")].toInt());
         } else {
             newBounds.setWidth(oldBounds.width());
         }
-        if (properties["height"].isValid()) {
-            newBounds.setHeight(properties["height"].toInt());
+        if (properties[QStringLiteral("height")].isValid()) {
+            newBounds.setHeight(properties[QStringLiteral("height")].toInt());
         } else {
             newBounds.setHeight(oldBounds.height());
         }

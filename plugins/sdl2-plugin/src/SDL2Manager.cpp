@@ -185,7 +185,7 @@ void SDL2Manager::pluginUpdate(float deltaTime, const controller::InputCalibrati
             joystick->update(deltaTime, inputCalibrationData);
         }
         
-        PerformanceTimer perfTimer("SDL2Manager::update");
+        PerformanceTimer perfTimer(QStringLiteral("SDL2Manager::update"));
         SDL_GameControllerUpdate();
         SDL_Event event;
         while (SDL_PollEvent(&event)) {

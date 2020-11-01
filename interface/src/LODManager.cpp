@@ -295,16 +295,16 @@ QString LODManager::getLODFeedbackText() {
     QString granularityFeedback;
     switch (boundaryLevelAdjust) {
     case 0: {
-        granularityFeedback = QString(".");
+        granularityFeedback = QStringLiteral(".");
     } break;
     case 1: {
-        granularityFeedback = QString(" at half of standard granularity.");
+        granularityFeedback = QStringLiteral(" at half of standard granularity.");
     } break;
     case 2: {
-        granularityFeedback = QString(" at a third of standard granularity.");
+        granularityFeedback = QStringLiteral(" at a third of standard granularity.");
     } break;
     default: {
-        granularityFeedback = QString(" at 1/%1th of standard granularity.").arg(boundaryLevelAdjust + 1);
+        granularityFeedback = QStringLiteral(" at 1/%1th of standard granularity.").arg(boundaryLevelAdjust + 1);
     } break;
     }
     // distance feedback
@@ -314,15 +314,15 @@ QString LODManager::getLODFeedbackText() {
 
     QString result;
     if (relativeToTwentyTwenty < 1) {
-        result = QString("%2 times further than average vision%3").arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
+        result = QStringLiteral("%2 times further than average vision%3").arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
     } else if (relativeToDefault > 1.01f) {
-        result = QString("20:%1 or %2 times further than average vision%3").arg(relativeToTwentyTwenty).arg(relativeToDefault, 0, 'f', 2).arg(granularityFeedback);
+        result = QStringLiteral("20:%1 or %2 times further than average vision%3").arg(relativeToTwentyTwenty).arg(relativeToDefault, 0, 'f', 2).arg(granularityFeedback);
     } else if (relativeToDefault > 0.99f) {
-        result = QString("20:20 or the default distance for average vision%1").arg(granularityFeedback);
+        result = QStringLiteral("20:20 or the default distance for average vision%1").arg(granularityFeedback);
     } else if (relativeToDefault > 0.01f) {
-        result = QString("20:%1 or %2 of default distance for average vision%3").arg(relativeToTwentyTwenty).arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
+        result = QStringLiteral("20:%1 or %2 of default distance for average vision%3").arg(relativeToTwentyTwenty).arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
     } else {
-        result = QString("%2 of default distance for average vision%3").arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
+        result = QStringLiteral("%2 of default distance for average vision%3").arg(relativeToDefault, 0, 'f', 3).arg(granularityFeedback);
     }
     return result;
 }

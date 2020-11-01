@@ -264,21 +264,21 @@ void AnimSkeleton::buildSkeletonFromJoints(const std::vector<HFMJoint>& joints, 
     _nonMirroredIndices.clear();
     _mirrorMap.reserve(_jointsSize);
     for (int i = 0; i < _jointsSize; i++) {
-        if (_joints[i].name != "Hips" && _joints[i].name != "Spine" &&
-            _joints[i].name != "Spine1" && _joints[i].name != "Spine2" &&
-            _joints[i].name != "Neck" && _joints[i].name != "Head" &&
-            !((_joints[i].name.startsWith("Left") || _joints[i].name.startsWith("Right")) &&
-              _joints[i].name != "LeftEye" && _joints[i].name != "RightEye")) {
+        if (_joints[i].name != QStringLiteral("Hips") && _joints[i].name != QStringLiteral("Spine") &&
+            _joints[i].name != QStringLiteral("Spine1") && _joints[i].name != QStringLiteral("Spine2") &&
+            _joints[i].name != QStringLiteral("Neck") && _joints[i].name != QStringLiteral("Head") &&
+            !((_joints[i].name.startsWith(QStringLiteral("Left")) || _joints[i].name.startsWith(QStringLiteral("Right"))) &&
+              _joints[i].name != QStringLiteral("LeftEye") && _joints[i].name != QStringLiteral("RightEye"))) {
             // HACK: we don't want to mirror some joints so we remember their indices
             // so we can restore them after a future mirror operation
             _nonMirroredIndices.push_back(i);
         }
         int mirrorJointIndex = -1;
-        if (_joints[i].name.startsWith("Left")) {
-            QString mirrorJointName = QString(_joints[i].name).replace(0, 4, "Right");
+        if (_joints[i].name.startsWith(QStringLiteral("Left"))) {
+            QString mirrorJointName = QString(_joints[i].name).replace(0, 4, QStringLiteral("Right"));
             mirrorJointIndex = nameToJointIndex(mirrorJointName);
-        } else if (_joints[i].name.startsWith("Right")) {
-            QString mirrorJointName = QString(_joints[i].name).replace(0, 5, "Left");
+        } else if (_joints[i].name.startsWith(QStringLiteral("Right"))) {
+            QString mirrorJointName = QString(_joints[i].name).replace(0, 5, QStringLiteral("Left"));
             mirrorJointIndex = nameToJointIndex(mirrorJointName);
         }
         if (mirrorJointIndex >= 0) {

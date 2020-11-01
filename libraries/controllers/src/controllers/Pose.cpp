@@ -42,23 +42,23 @@ namespace controller {
     QScriptValue Pose::toScriptValue(QScriptEngine* engine, const Pose& pose) {
         QScriptValue obj = engine->newObject();
         if (pose.isValid()) {
-            obj.setProperty("translation", vec3ToScriptValue(engine, pose.translation));
-            obj.setProperty("rotation", quatToScriptValue(engine, pose.rotation));
-            obj.setProperty("velocity", vec3ToScriptValue(engine, pose.velocity));
-            obj.setProperty("angularVelocity", vec3ToScriptValue(engine, pose.angularVelocity));
-            obj.setProperty("valid", true);
+            obj.setProperty(QStringLiteral("translation"), vec3ToScriptValue(engine, pose.translation));
+            obj.setProperty(QStringLiteral("rotation"), quatToScriptValue(engine, pose.rotation));
+            obj.setProperty(QStringLiteral("velocity"), vec3ToScriptValue(engine, pose.velocity));
+            obj.setProperty(QStringLiteral("angularVelocity"), vec3ToScriptValue(engine, pose.angularVelocity));
+            obj.setProperty(QStringLiteral("valid"), true);
         } else {
-            obj.setProperty("valid", false);
+            obj.setProperty(QStringLiteral("valid"), false);
         }
 
         return obj;
     }
 
     void Pose::fromScriptValue(const QScriptValue& object, Pose& pose) {
-        auto translation = object.property("translation");
-        auto rotation = object.property("rotation");
-        auto velocity = object.property("velocity");
-        auto angularVelocity = object.property("angularVelocity");
+        auto translation = object.property(QStringLiteral("translation"));
+        auto rotation = object.property(QStringLiteral("rotation"));
+        auto velocity = object.property(QStringLiteral("velocity"));
+        auto angularVelocity = object.property(QStringLiteral("angularVelocity"));
         if (translation.isValid() &&
                 rotation.isValid() &&
                 velocity.isValid() &&

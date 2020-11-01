@@ -80,7 +80,7 @@ public:
     ModelResource(const QUrl& url, const ModelLoader& modelLoader) : Resource(url), _modelLoader(modelLoader) {}
     ModelResource(const ModelResource& other);
 
-    QString getType() const override { return "Model"; }
+    QString getType() const override { return QStringLiteral("Model"); }
 
     virtual void deleter() override;
 

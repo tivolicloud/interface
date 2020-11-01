@@ -206,13 +206,13 @@ static QString outOfRangeDataStrategyToString(ViveControllerManager::OutOfRangeD
     switch (strategy) {
     default:
     case ViveControllerManager::OutOfRangeDataStrategy::None:
-        return "None";
+        return QStringLiteral("None");
     case ViveControllerManager::OutOfRangeDataStrategy::Freeze:
-        return "Freeze";
+        return QStringLiteral("Freeze");
     case ViveControllerManager::OutOfRangeDataStrategy::Drop:
-        return "Drop";
+        return QStringLiteral("Drop");
     case ViveControllerManager::OutOfRangeDataStrategy::DropAfterDelay:
-        return "DropAfterDelay";
+        return QStringLiteral("DropAfterDelay");
     }
 }
 
@@ -815,13 +815,13 @@ void ViveControllerManager::loadSettings() {
             const double DEFAULT_ARM_CIRCUMFERENCE = 0.33;
             const double DEFAULT_SHOULDER_WIDTH = 0.48;
             const QString DEFAULT_OUT_OF_RANGE_STRATEGY = "DropAfterDelay";
-            _inputDevice->_armCircumference = settings.value("armCircumference", QVariant(DEFAULT_ARM_CIRCUMFERENCE)).toDouble();
-            _inputDevice->_shoulderWidth = settings.value("shoulderWidth", QVariant(DEFAULT_SHOULDER_WIDTH)).toDouble();
+            _inputDevice->_armCircumference = settings.value(QStringLiteral("armCircumference"), QVariant(DEFAULT_ARM_CIRCUMFERENCE)).toDouble();
+            _inputDevice->_shoulderWidth = settings.value(QStringLiteral("shoulderWidth"), QVariant(DEFAULT_SHOULDER_WIDTH)).toDouble();
             _inputDevice->_outOfRangeDataStrategy = stringToOutOfRangeDataStrategy(settings.value("outOfRangeDataStrategy", QVariant(DEFAULT_OUT_OF_RANGE_STRATEGY)).toString());
         }
 
         const bool DEFAULT_EYE_TRACKING_ENABLED = false;
-        _eyeTrackingEnabled = settings.value("eyeTrackingEnabled", QVariant(DEFAULT_EYE_TRACKING_ENABLED)).toBool();
+        _eyeTrackingEnabled = settings.value(QStringLiteral("eyeTrackingEnabled"), QVariant(DEFAULT_EYE_TRACKING_ENABLED)).toBool();
     }
     settings.endGroup();
 }
@@ -832,12 +832,12 @@ void ViveControllerManager::saveSettings() const {
     settings.beginGroup(nameString);
     {
         if (_inputDevice) {
-            settings.setValue(QString("armCircumference"), _inputDevice->_armCircumference);
-            settings.setValue(QString("shoulderWidth"), _inputDevice->_shoulderWidth);
-            settings.setValue(QString("outOfRangeDataStrategy"), outOfRangeDataStrategyToString(_inputDevice->_outOfRangeDataStrategy));
+            settings.setValue(QStringLiteral("armCircumference"), _inputDevice->_armCircumference);
+            settings.setValue(QStringLiteral("shoulderWidth"), _inputDevice->_shoulderWidth);
+            settings.setValue(QStringLiteral("outOfRangeDataStrategy"), outOfRangeDataStrategyToString(_inputDevice->_outOfRangeDataStrategy));
         }
 
-        settings.setValue(QString("eyeTrackingEnabled"), _eyeTrackingEnabled);
+        settings.setValue(QStringLiteral("eyeTrackingEnabled"), _eyeTrackingEnabled);
     }
     settings.endGroup();
 }
@@ -847,12 +847,12 @@ ViveControllerManager::InputDevice::InputDevice(vr::IVRSystem*& system) :
     controller::InputDevice("Vive"),
     _system(system) {
 
-    _configStringMap[Config::None] = QString("None");
-    _configStringMap[Config::Feet] = QString("Feet");
-    _configStringMap[Config::FeetAndHips] = QString("FeetAndHips");
-    _configStringMap[Config::FeetHipsAndChest] = QString("FeetHipsAndChest");
-    _configStringMap[Config::FeetHipsAndShoulders] = QString("FeetHipsAndShoulders");
-    _configStringMap[Config::FeetHipsChestAndShoulders] = QString("FeetHipsChestAndShoulders");
+    _configStringMap[Config::None] = QStringLiteral("None");
+    _configStringMap[Config::Feet] = QStringLiteral("Feet");
+    _configStringMap[Config::FeetAndHips] = QStringLiteral("FeetAndHips");
+    _configStringMap[Config::FeetHipsAndChest] = QStringLiteral("FeetHipsAndChest");
+    _configStringMap[Config::FeetHipsAndShoulders] = QStringLiteral("FeetHipsAndShoulders");
+    _configStringMap[Config::FeetHipsChestAndShoulders] = QStringLiteral("FeetHipsChestAndShoulders");
 }
 
 void ViveControllerManager::InputDevice::update(float deltaTime, const controller::InputCalibrationData& inputCalibrationData) {
@@ -861,7 +861,7 @@ void ViveControllerManager::InputDevice::update(float deltaTime, const controlle
     _validTrackedObjects.clear();
     _trackedControllers = 0;
 
-    if (_headsetName == "") {
+    if (_headsetName.size() == 0) {
         _headsetName = getOpenVrDeviceName();
         if (_headsetName == "HTC") {
             _headsetName += " Vive";
@@ -876,7 +876,7 @@ void ViveControllerManager::InputDevice::update(float deltaTime, const controlle
         return;
     }
 
-    PerformanceTimer perfTimer("ViveControllerManager::update");
+    PerformanceTimer perfTimer(QStringLiteral("ViveControllerManager::update"));
 
     auto leftHandDeviceIndex = _system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand);
     auto rightHandDeviceIndex = _system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand);
@@ -1001,25 +1001,25 @@ void ViveControllerManager::InputDevice::calibrateNextFrame() {
 QJsonObject ViveControllerManager::InputDevice::configurationSettings() {
     Locker locker(_lock);
     QJsonObject configurationSettings;
-    configurationSettings["trackerConfiguration"] = configToString(_preferedConfig);
-    configurationSettings["HMDHead"] = (_headConfig == HeadConfig::HMD);
-    configurationSettings["handController"] = (_handConfig == HandConfig::HandController);
-    configurationSettings["puckCount"] = (int)_validTrackedObjects.size();
-    configurationSettings["armCircumference"] = (double)(_armCircumference * M_TO_CM);
-    configurationSettings["shoulderWidth"] = (double)(_shoulderWidth * M_TO_CM);
-    configurationSettings["outOfRangeDataStrategy"] = outOfRangeDataStrategyToString(_outOfRangeDataStrategy);
+    configurationSettings[QStringLiteral("trackerConfiguration")] = configToString(_preferedConfig);
+    configurationSettings[QStringLiteral("HMDHead")] = (_headConfig == HeadConfig::HMD);
+    configurationSettings[QStringLiteral("handController")] = (_handConfig == HandConfig::HandController);
+    configurationSettings[QStringLiteral("puckCount")] = (int)_validTrackedObjects.size();
+    configurationSettings[QStringLiteral("armCircumference")] = (double)(_armCircumference * M_TO_CM);
+    configurationSettings[QStringLiteral("shoulderWidth")] = (double)(_shoulderWidth * M_TO_CM);
+    configurationSettings[QStringLiteral("outOfRangeDataStrategy")] = outOfRangeDataStrategyToString(_outOfRangeDataStrategy);
     return configurationSettings;
 }
 
 void ViveControllerManager::InputDevice::emitCalibrationStatus() {
     auto inputConfiguration = DependencyManager::get<InputConfiguration>();
     QJsonObject status = QJsonObject();
-    status["calibrated"] = _calibrated;
-    status["configuration"] = configToString(_preferedConfig);
-    status["head_puck"] = (_headConfig == HeadConfig::Puck);
-    status["hand_pucks"] = (_handConfig == HandConfig::Pucks);
-    status["puckCount"] = (int)_validTrackedObjects.size();
-    status["UI"] = _calibrate;
+    status[QStringLiteral("calibrated")] = _calibrated;
+    status[QStringLiteral("configuration")] = configToString(_preferedConfig);
+    status[QStringLiteral("head_puck")] = (_headConfig == HeadConfig::Puck);
+    status[QStringLiteral("hand_pucks")] = (_handConfig == HandConfig::Pucks);
+    status[QStringLiteral("puckCount")] = (int)_validTrackedObjects.size();
+    status[QStringLiteral("UI")] = _calibrate;
 
     emit inputConfiguration->calibrationStatus(status);
 }

@@ -382,7 +382,7 @@ gpu::TexturePointer processImage(std::shared_ptr<QIODevice> content, const std::
 }
 
 Image processSourceImage(Image&& srcImage, bool cubemap, BackendTarget target) {
-    PROFILE_RANGE(resource_parse, "processSourceImage");
+    PROFILE_RANGE(resource_parse, QStringLiteral("processSourceImage"));
 
     // Take a local copy to force move construction
     // https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#f18-for-consume-parameters-pass-by-x-and-stdmove-the-parameter
@@ -412,7 +412,7 @@ Image processSourceImage(Image&& srcImage, bool cubemap, BackendTarget target) {
     }
 
     if (targetSize != srcImageSize) {
-        PROFILE_RANGE(resource_parse, "processSourceImage Rectify");
+        PROFILE_RANGE(resource_parse, QStringLiteral("processSourceImage Rectify"));
         qCDebug(imagelogging) << "Resizing texture from " << srcImageSize.x << "x" << srcImageSize.y << " to " << targetSize.x << "x" << targetSize.y;
         return localCopy.getScaled(targetSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
@@ -839,7 +839,7 @@ void convertImageToLDRTexture(gpu::Texture* texture, Image&& image, BackendTarge
 #endif
 
 void convertImageToTexture(gpu::Texture* texture, Image& image, BackendTarget target, int face, int baseMipLevel, bool buildMips, const std::atomic<bool>& abortProcessing) {
-    PROFILE_RANGE(resource_parse, "convertToTextureWithMips");
+    PROFILE_RANGE(resource_parse, QStringLiteral("convertToTextureWithMips"));
 
     if (target == BackendTarget::GLES32) {
         convertImageToLDRTexture(texture, std::move(image), target, baseMipLevel, buildMips, abortProcessing, face);
@@ -857,12 +857,12 @@ void convertToTextureWithMips(gpu::Texture* texture, Image&& image, BackendTarge
 }
 
 void convertToTexture(gpu::Texture* texture, Image&& image, BackendTarget target, const std::atomic<bool>& abortProcessing, int face, int mipLevel) {
-    PROFILE_RANGE(resource_parse, "convertToTexture");
+    PROFILE_RANGE(resource_parse, QStringLiteral("convertToTexture"));
     convertImageToTexture(texture, image, target, face, mipLevel, false, abortProcessing);
 }
 
 void processTextureAlpha(const Image& srcImage, bool& validAlpha, bool& alphaAsMask) {
-    PROFILE_RANGE(resource_parse, "processTextureAlpha");
+    PROFILE_RANGE(resource_parse, QStringLiteral("processTextureAlpha"));
     validAlpha = false;
     alphaAsMask = true;
     const uint8 OPAQUE_ALPHA = 255;
@@ -890,7 +890,7 @@ void processTextureAlpha(const Image& srcImage, bool& validAlpha, bool& alphaAsM
 
 gpu::TexturePointer TextureUsage::process2DTextureColorFromImage(Image&& srcImage, const std::string& srcImageName, bool compress,
                                                                  BackendTarget target, bool isStrict, const std::atomic<bool>& abortProcessing) {
-    PROFILE_RANGE(resource_parse, "process2DTextureColorFromImage");
+    PROFILE_RANGE(resource_parse, QStringLiteral("process2DTextureColorFromImage"));
     Image image = processSourceImage(std::move(srcImage), false, target);
 
     bool validAlpha = image.hasAlphaChannel();
@@ -1032,7 +1032,7 @@ Image processBumpMap(Image&& image) {
 gpu::TexturePointer TextureUsage::process2DTextureNormalMapFromImage(Image&& srcImage, const std::string& srcImageName,
                                                                      bool compress, BackendTarget target, bool isBumpMap,
                                                                      const std::atomic<bool>& abortProcessing) {
-    PROFILE_RANGE(resource_parse, "process2DTextureNormalMapFromImage");
+    PROFILE_RANGE(resource_parse, QStringLiteral("process2DTextureNormalMapFromImage"));
     Image image = processSourceImage(std::move(srcImage), false, target);
 
     if (isBumpMap) {
@@ -1072,7 +1072,7 @@ gpu::TexturePointer TextureUsage::process2DTextureNormalMapFromImage(Image&& src
 gpu::TexturePointer TextureUsage::process2DTextureGrayscaleFromImage(Image&& srcImage, const std::string& srcImageName,
                                                                      bool compress, BackendTarget target, bool isInvertedPixels,
                                                                      const std::atomic<bool>& abortProcessing) {
-    PROFILE_RANGE(resource_parse, "process2DTextureGrayscaleFromImage");
+    PROFILE_RANGE(resource_parse, QStringLiteral("process2DTextureGrayscaleFromImage"));
     Image image = processSourceImage(std::move(srcImage), false, target);
 
     if (image.getFormat() != Image::Format_ARGB32) {
@@ -1479,7 +1479,7 @@ static bool isLinearTextureFormat(gpu::Element format) {
 }
 
 void convolveForGGX(const std::vector<Image>& faces, gpu::Texture* texture, BackendTarget target, const std::atomic<bool>& abortProcessing = false) {
-    PROFILE_RANGE(resource_parse, "convolveForGGX");
+    PROFILE_RANGE(resource_parse, QStringLiteral("convolveForGGX"));
     CubeMap source(faces, texture->getNumMips(), abortProcessing);
     CubeMap output(texture->getWidth(), texture->getHeight(), texture->getNumMips());
 
@@ -1501,7 +1501,7 @@ void convolveForGGX(const std::vector<Image>& faces, gpu::Texture* texture, Back
 gpu::TexturePointer TextureUsage::processCubeTextureColorFromImage(Image&& srcImage, const std::string& srcImageName,
                                                                    bool compress, BackendTarget target, int options,
                                                                    const std::atomic<bool>& abortProcessing) {
-    PROFILE_RANGE(resource_parse, "processCubeTextureColorFromImage");
+    PROFILE_RANGE(resource_parse, QStringLiteral("processCubeTextureColorFromImage"));
 
     // Take a local copy to force move construction
     // https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#f18-for-consume-parameters-pass-by-x-and-stdmove-the-parameter
@@ -1574,7 +1574,7 @@ gpu::TexturePointer TextureUsage::processCubeTextureColorFromImage(Image&& srcIm
 
         // Generate irradiance while we are at it
         if (options & CUBE_GENERATE_IRRADIANCE) {
-            PROFILE_RANGE(resource_parse, "generateIrradiance");
+            PROFILE_RANGE(resource_parse, QStringLiteral("generateIrradiance"));
             gpu::Element irradianceFormat;
             // TODO: we could locally compress the irradiance texture on Android, but we don't need to
             if (target == BackendTarget::GLES32) {

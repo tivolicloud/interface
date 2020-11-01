@@ -71,8 +71,8 @@ AudioMixer::AudioMixer(ReceivedMessage& message) :
     auto pluginManager = DependencyManager::set<PluginManager>();
     // Only load codec plugins; for now assume codec plugins have 'codec' in their name.
     auto codecPluginFilter = [](const QJsonObject& metaData) {
-        QJsonValue nameValue = metaData["MetaData"]["name"];
-        return nameValue.toString().contains("codec", Qt::CaseInsensitive);
+        QJsonValue nameValue = metaData[QStringLiteral("MetaData")][QStringLiteral("name")];
+        return nameValue.toString().contains(QStringLiteral("codec"), Qt::CaseInsensitive);
     };
     pluginManager->setPluginFilter(codecPluginFilter);
 
@@ -259,7 +259,7 @@ QString AudioMixer::percentageForMixStats(int counter) {
         float mixPercentage = (float(counter) / _stats.totalMixes) * 100.0f;
         return QString::number(mixPercentage, 'f', 2);
     } else {
-        return QString("0.0");
+        return QStringLiteral("0.0");
     }
 }
 
@@ -274,22 +274,22 @@ void AudioMixer::sendStatsPacket() {
     QJsonObject qtStats;
 
     _slavePool.queueStats(qtStats);
-    statsObject["audio_thread_event_queue"] = qtStats;
+    statsObject[QStringLiteral("audio_thread_event_queue")] = qtStats;
 #endif
 
     // general stats
-    statsObject["useDynamicJitterBuffers"] = _numStaticJitterFrames == DISABLE_STATIC_JITTER_FRAMES;
+    statsObject[QStringLiteral("useDynamicJitterBuffers")] = _numStaticJitterFrames == DISABLE_STATIC_JITTER_FRAMES;
 
-    statsObject["threads"] = _slavePool.numThreads();
+    statsObject[QStringLiteral("threads")] = _slavePool.numThreads();
 
-    statsObject["trailing_mix_ratio"] = _trailingMixRatio;
-    statsObject["throttling_ratio"] = _throttlingRatio;
+    statsObject[QStringLiteral("trailing_mix_ratio")] = _trailingMixRatio;
+    statsObject[QStringLiteral("throttling_ratio")] = _throttlingRatio;
 
-    statsObject["avg_streams_per_frame"] = (float)_stats.sumStreams / (float)_numStatFrames;
-    statsObject["avg_listeners_per_frame"] = (float)_stats.sumListeners / (float)_numStatFrames;
-    statsObject["avg_listeners_(silent)_per_frame"] = (float)_stats.sumListenersSilent / (float)_numStatFrames;
+    statsObject[QStringLiteral("avg_streams_per_frame")] = (float)_stats.sumStreams / (float)_numStatFrames;
+    statsObject[QStringLiteral("avg_listeners_per_frame")] = (float)_stats.sumListeners / (float)_numStatFrames;
+    statsObject[QStringLiteral("avg_listeners_(silent)_per_frame")] = (float)_stats.sumListenersSilent / (float)_numStatFrames;
 
-    statsObject["silent_packets_per_frame"] = (float)_numSilentPackets / (float)_numStatFrames;
+    statsObject[QStringLiteral("silent_packets_per_frame")] = (float)_numSilentPackets / (float)_numStatFrames;
 
     // timing stats
     QJsonObject timingStats;
@@ -310,38 +310,38 @@ void AudioMixer::sendStatsPacket() {
     addTiming(_eventsTiming, "events");
 
 #ifdef HIFI_AUDIO_MIXER_DEBUG
-    timingStats["ns_per_mix"] = (_stats.totalMixes > 0) ?  (float)(_stats.mixTime / _stats.totalMixes) : 0;
+    timingStats[QStringLiteral("ns_per_mix")] = (_stats.totalMixes > 0) ?  (float)(_stats.mixTime / _stats.totalMixes) : 0;
 #endif
 
     // call it "avg_..." to keep it higher in the display, sorted alphabetically
-    statsObject["avg_timing_stats"] = timingStats;
+    statsObject[QStringLiteral("avg_timing_stats")] = timingStats;
 
     // mix stats
     QJsonObject mixStats;
 
-    mixStats["%_hrtf_mixes"] = percentageForMixStats(_stats.hrtfRenders);
-    mixStats["%_manual_stereo_mixes"] = percentageForMixStats(_stats.manualStereoMixes);
-    mixStats["%_manual_echo_mixes"] = percentageForMixStats(_stats.manualEchoMixes);
+    mixStats[QStringLiteral("%_hrtf_mixes")] = percentageForMixStats(_stats.hrtfRenders);
+    mixStats[QStringLiteral("%_manual_stereo_mixes")] = percentageForMixStats(_stats.manualStereoMixes);
+    mixStats[QStringLiteral("%_manual_echo_mixes")] = percentageForMixStats(_stats.manualEchoMixes);
 
-    mixStats["1_hrtf_renders"] = (int)(_stats.hrtfRenders / (float)_numStatFrames);
-    mixStats["1_hrtf_resets"] = (int)(_stats.hrtfResets / (float)_numStatFrames);
-    mixStats["1_hrtf_updates"] = (int)(_stats.hrtfUpdates / (float)_numStatFrames);
+    mixStats[QStringLiteral("1_hrtf_renders")] = (int)(_stats.hrtfRenders / (float)_numStatFrames);
+    mixStats[QStringLiteral("1_hrtf_resets")] = (int)(_stats.hrtfResets / (float)_numStatFrames);
+    mixStats[QStringLiteral("1_hrtf_updates")] = (int)(_stats.hrtfUpdates / (float)_numStatFrames);
 
-    mixStats["2_skipped_streams"] = (int)(_stats.skipped / (float)_numStatFrames);
-    mixStats["2_inactive_streams"] = (int)(_stats.inactive / (float)_numStatFrames);
-    mixStats["2_active_streams"] = (int)(_stats.active / (float)_numStatFrames);
+    mixStats[QStringLiteral("2_skipped_streams")] = (int)(_stats.skipped / (float)_numStatFrames);
+    mixStats[QStringLiteral("2_inactive_streams")] = (int)(_stats.inactive / (float)_numStatFrames);
+    mixStats[QStringLiteral("2_active_streams")] = (int)(_stats.active / (float)_numStatFrames);
 
-    mixStats["3_skippped_to_active"] = (int)(_stats.skippedToActive / (float)_numStatFrames);
-    mixStats["3_skippped_to_inactive"] = (int)(_stats.skippedToInactive / (float)_numStatFrames);
-    mixStats["3_inactive_to_skippped"] = (int)(_stats.inactiveToSkipped / (float)_numStatFrames);
-    mixStats["3_inactive_to_active"] = (int)(_stats.inactiveToActive / (float)_numStatFrames);
-    mixStats["3_active_to_skippped"] = (int)(_stats.activeToSkipped / (float)_numStatFrames);
-    mixStats["3_active_to_inactive"] = (int)(_stats.activeToInactive / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_skippped_to_active")] = (int)(_stats.skippedToActive / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_skippped_to_inactive")] = (int)(_stats.skippedToInactive / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_inactive_to_skippped")] = (int)(_stats.inactiveToSkipped / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_inactive_to_active")] = (int)(_stats.inactiveToActive / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_active_to_skippped")] = (int)(_stats.activeToSkipped / (float)_numStatFrames);
+    mixStats[QStringLiteral("3_active_to_inactive")] = (int)(_stats.activeToInactive / (float)_numStatFrames);
 
-    mixStats["total_mixes"] = _stats.totalMixes;
-    mixStats["avg_mixes_per_block"] = _stats.totalMixes / _numStatFrames;
+    mixStats[QStringLiteral("total_mixes")] = _stats.totalMixes;
+    mixStats[QStringLiteral("avg_mixes_per_block")] = _stats.totalMixes / _numStatFrames;
 
-    statsObject["mix_stats"] = mixStats;
+    statsObject[QStringLiteral("mix_stats")] = mixStats;
 
     _numStatFrames = _numSilentPackets = 0;
     _stats.reset();
@@ -356,17 +356,17 @@ void AudioMixer::sendStatsPacket() {
             QJsonObject nodeStats;
             QString uuidString = uuidStringWithoutCurlyBraces(node->getUUID());
 
-            nodeStats["outbound_kbps"] = node->getOutboundKbps();
+            nodeStats[QStringLiteral("outbound_kbps")] = node->getOutboundKbps();
             nodeStats[USERNAME_UUID_REPLACEMENT_STATS_KEY] = uuidString;
 
-            nodeStats["jitter"] = clientData->getAudioStreamStats();
+            nodeStats[QStringLiteral("jitter")] = clientData->getAudioStreamStats();
 
             listenerStats[uuidString] = nodeStats;
         }
     });
 
     // add the listeners object to the root object
-    statsObject["z_listeners"] = listenerStats;
+    statsObject[QStringLiteral("z_listeners")] = listenerStats;
 
     // send off the stats packets
     ThreadedAssignment::addPacketStatsAndSendStatsPacket(statsObject);

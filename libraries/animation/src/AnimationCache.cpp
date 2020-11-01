@@ -63,7 +63,7 @@ void AnimationReader::run() {
     QThread::currentThread()->setPriority(QThread::LowPriority);
     try {
         if (_data.isEmpty()) {
-            throw QString("Reply is NULL ?!");
+            throw QStringLiteral("Reply is NULL ?!");
         }
         QString urlname = _url.path().toLower();
         bool urlValid = true;
@@ -73,17 +73,17 @@ void AnimationReader::run() {
         if (urlValid) {
             // Parse the FBX directly from the QNetworkReply
             HFMModel::Pointer hfmModel;
-            if (_url.path().toLower().endsWith(".fbx")) {
+            if (_url.path().toLower().endsWith(QStringLiteral(".fbx"))) {
                 hfmModel = FBXSerializer().read(_data, QVariantHash(), _url.path());
-            } else if (_url.path().toLower().endsWith(".gltf") || _url.path().toLower().endsWith(".glb")) {
+            } else if (_url.path().toLower().endsWith(QStringLiteral(".gltf")) || _url.path().toLower().endsWith(QStringLiteral(".glb"))) {
                 hfmModel = GLTFSerializer().read(_data, QVariantHash(), _url.path());
             } else {
-                QString errorStr("usupported format");
+                QString errorStr(QStringLiteral("usupported format"));
                 emit onError(299, errorStr);
             }
             emit onSuccess(hfmModel);
         } else {
-            throw QString("url is invalid");
+            throw QString(QStringLiteral("url is invalid"));
         }
 
     } catch (const QString& error) {

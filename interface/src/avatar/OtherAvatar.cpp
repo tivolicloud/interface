@@ -150,7 +150,7 @@ int OtherAvatar::parseDataFromBuffer(const QByteArray& buffer) {
 const btCollisionShape* OtherAvatar::createCollisionShape(int32_t jointIndex, bool& isBound, std::vector<int32_t>& boundJoints) {
     ShapeInfo shapeInfo;
     isBound = false;
-    QString jointName = "";
+    QString jointName = QString();
     if (jointIndex > -1 && jointIndex < (int32_t)_multiSphereShapes.size()) {
         jointName = _multiSphereShapes[jointIndex].getJointName();
     }
@@ -166,8 +166,8 @@ const btCollisionShape* OtherAvatar::createCollisionShape(int32_t jointIndex, bo
         isBound = true;
         break;
     case BodyLOD::MultiSphereLow:
-        if (jointName.contains("RightHand", Qt::CaseInsensitive) || jointName.contains("LeftHand", Qt::CaseInsensitive))  {
-            if (jointName.size() <= QString("RightHand").size()) {
+        if (jointName.contains(QStringLiteral("RightHand"), Qt::CaseInsensitive) || jointName.contains(QStringLiteral("LeftHand"), Qt::CaseInsensitive))  {
+            if (jointName.size() <= QString(QStringLiteral("RightHand")).size()) {
                 AABox handBound;
                 for (auto &spheres : _multiSphereShapes) {
                     if (spheres.isValid() && spheres.getJointName().contains(jointName, Qt::CaseInsensitive)) {
@@ -265,7 +265,7 @@ void OtherAvatar::setCollisionWithOtherAvatarsFlags() {
 }
 
 void OtherAvatar::simulate(float deltaTime, bool inView) {
-    PROFILE_RANGE(simulation, "simulate");
+    PROFILE_RANGE(simulation, QStringLiteral("simulate"));
 
     _globalPosition = _transit.isActive() ? _transit.getCurrentPosition() : _serverPosition;
     if (!hasParent()) {
@@ -277,9 +277,9 @@ void OtherAvatar::simulate(float deltaTime, bool inView) {
         _simulationInViewRate.increment();
     }
 
-    PerformanceTimer perfTimer("simulate");
+    PerformanceTimer perfTimer(QStringLiteral("simulate"));
     {
-        PROFILE_RANGE(simulation, "updateJoints");
+        PROFILE_RANGE(simulation, QStringLiteral("updateJoints"));
         if (inView) {
             Head* head = getHead();
             if (_hasNewJointData || _transit.isActive()) {
@@ -330,19 +330,19 @@ void OtherAvatar::simulate(float deltaTime, bool inView) {
     }
 
     {
-        PROFILE_RANGE(simulation, "misc");
+        PROFILE_RANGE(simulation, QStringLiteral("misc"));
         measureMotionDerivatives(deltaTime);
         simulateAttachments(deltaTime);
         updatePalms();
     }
     {
-        PROFILE_RANGE(simulation, "entities");
+        PROFILE_RANGE(simulation, QStringLiteral("entities"));
         handleChangedAvatarEntityData();
         updateAttachedAvatarEntities();
     }
 
     {
-        PROFILE_RANGE(simulation, "grabs");
+        PROFILE_RANGE(simulation, QStringLiteral("grabs"));
         applyGrabChanges();
     }
 }
@@ -369,7 +369,7 @@ void OtherAvatar::debugJointData() const {
             float jointScale = skeletonData[i].defaultScale * getTargetScale() * METERS_PER_CENTIMETER;
             auto absoluteRotation = jointData[i].rotationIsDefaultPose ? skeletonData[i].defaultRotation : jointData[i].rotation;
             auto localJointTranslation = jointScale * (jointData[i].translationIsDefaultPose ? skeletonData[i].defaultTranslation : jointData[i].translation);
-            bool isHips = skeletonData[i].jointName == "Hips";
+            bool isHips = skeletonData[i].jointName == QStringLiteral("Hips");
             if (isHips) { 
                 localJointTranslation = glm::vec3(0.0f);
                 drawBones = true;
@@ -400,7 +400,7 @@ void OtherAvatar::debugJointData() const {
 }
 
 void OtherAvatar::handleChangedAvatarEntityData() {
-    PerformanceTimer perfTimer("attachments");
+    PerformanceTimer perfTimer(QStringLiteral("attachments"));
 
     // AVATAR ENTITY UPDATE FLOW
     // - if queueEditEntityMessage() sees "AvatarEntity" HostType it calls _myAvatar->storeAvatarEntityDataPayload()
@@ -532,7 +532,7 @@ void OtherAvatar::handleChangedAvatarEntityData() {
                 // TODO: This is a horrible hack and once properties.constructFromBuffer no longer causes
                 // side effects...remove the following three lines
 
-                const QUuid NULL_ID = QUuid("{00000000-0000-0000-0000-000000000005}");
+                const QUuid NULL_ID = QUuid(QStringLiteral("{00000000-0000-0000-0000-000000000005}"));
                 entity->setParentID(NULL_ID);
                 entity->setParentID(oldParentID);
 

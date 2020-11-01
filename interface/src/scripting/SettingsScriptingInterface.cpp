@@ -23,7 +23,7 @@ SettingsScriptingInterface* SettingsScriptingInterface::getInstance() {
 QVariant SettingsScriptingInterface::getValue(const QString& setting) {
     QVariant value = Setting::Handle<QVariant>(setting).get();
     if (!value.isValid()) {
-        value = "";
+        value = QString();
     }
     return value;
 }
@@ -31,7 +31,7 @@ QVariant SettingsScriptingInterface::getValue(const QString& setting) {
 QVariant SettingsScriptingInterface::getValue(const QString& setting, const QVariant& defaultValue) {
     QVariant value = Setting::Handle<QVariant>(setting, defaultValue).get();
     if (!value.isValid()) {
-        value = "";
+        value = QString();
     }
     return value;
 }
@@ -40,7 +40,7 @@ void SettingsScriptingInterface::setValue(const QString& setting, const QVariant
     if (getValue(setting) == value) {
         return;
     }
-    if (setting.startsWith("private/")) {
+    if (setting.startsWith(QStringLiteral("private/"))) {
         if (_restrictPrivateValues) {
             qWarning() << "SettingsScriptingInterface::setValue -- restricted write: " << setting << value;
             return;

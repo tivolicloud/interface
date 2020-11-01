@@ -54,21 +54,21 @@ void ParabolaPointer::editRenderStatePath(const std::string& state, const QVaria
         bool enabled = false;
         if (!pathMap.isEmpty()) {
             enabled = true;
-            if (pathMap["color"].isValid()) {
-                color = toGlm(u8vec3FromVariant(pathMap["color"]));
+            if (pathMap[QStringLiteral("color")].isValid()) {
+                color = toGlm(u8vec3FromVariant(pathMap[QStringLiteral("color")]));
             }
-            if (pathMap["alpha"].isValid()) {
-                alpha = pathMap["alpha"].toFloat();
+            if (pathMap[QStringLiteral("alpha")].isValid()) {
+                alpha = pathMap[QStringLiteral("alpha")].toFloat();
             }
-            if (pathMap["width"].isValid()) {
-                width = pathMap["width"].toFloat();
+            if (pathMap[QStringLiteral("width")].isValid()) {
+                width = pathMap[QStringLiteral("width")].toFloat();
                 renderState->setPathWidth(width);
             }
-            if (pathMap["isVisibleInSecondaryCamera"].isValid()) {
-                isVisibleInSecondaryCamera = pathMap["isVisibleInSecondaryCamera"].toBool();
+            if (pathMap[QStringLiteral("isVisibleInSecondaryCamera")].isValid()) {
+                isVisibleInSecondaryCamera = pathMap[QStringLiteral("isVisibleInSecondaryCamera")].toBool();
             }
-            if (pathMap["drawInFront"].isValid()) {
-                drawInFront = pathMap["drawInFront"].toBool();
+            if (pathMap[QStringLiteral("drawInFront")].isValid()) {
+                drawInFront = pathMap[QStringLiteral("drawInFront")].toBool();
             }
         }
         renderState->editParabola(color, alpha, width, isVisibleInSecondaryCamera, drawInFront, enabled);
@@ -82,11 +82,11 @@ QVariantMap ParabolaPointer::toVariantMap() const {
     for (auto iter = _renderStates.cbegin(); iter != _renderStates.cend(); iter++) {
         auto renderState = iter->second;
         QVariantMap qRenderState;
-        qRenderState["start"] = renderState->getStartID();
-        qRenderState["end"] = renderState->getEndID();
+        qRenderState[QStringLiteral("start")] = renderState->getStartID();
+        qRenderState[QStringLiteral("end")] = renderState->getEndID();
         qRenderStates[iter->first.c_str()] = qRenderState;
     }
-    qVariantMap["renderStates"] = qRenderStates;
+    qVariantMap[QStringLiteral("renderStates")] = qRenderStates;
 
     QVariantMap qDefaultRenderStates;
     for (auto iter = _defaultRenderStates.cbegin(); iter != _defaultRenderStates.cend(); iter++) {
@@ -94,19 +94,19 @@ QVariantMap ParabolaPointer::toVariantMap() const {
         auto defaultRenderState = iter->second.second;
         QVariantMap qDefaultRenderState;
 
-        qDefaultRenderState["distance"] = distance;
-        qDefaultRenderState["start"] = defaultRenderState->getStartID();
-        qDefaultRenderState["end"] = defaultRenderState->getEndID();
+        qDefaultRenderState[QStringLiteral("distance")] = distance;
+        qDefaultRenderState[QStringLiteral("start")] = defaultRenderState->getStartID();
+        qDefaultRenderState[QStringLiteral("end")] = defaultRenderState->getEndID();
         qDefaultRenderStates[iter->first.c_str()] = qDefaultRenderState;
     }
-    qVariantMap["defaultRenderStates"] = qDefaultRenderStates;
+    qVariantMap[QStringLiteral("defaultRenderStates")] = qDefaultRenderStates;
 
     return qVariantMap;
 }
 
 glm::vec3 ParabolaPointer::getPickOrigin(const PickResultPointer& pickResult) const {
     auto parabolaPickResult = std::static_pointer_cast<ParabolaPickResult>(pickResult);
-    return (parabolaPickResult ? vec3FromVariant(parabolaPickResult->pickVariant["origin"]) : glm::vec3(0.0f));
+    return (parabolaPickResult ? vec3FromVariant(parabolaPickResult->pickVariant[QStringLiteral("origin")]) : glm::vec3(0.0f));
 }
 
 glm::vec3 ParabolaPointer::getPickEnd(const PickResultPointer& pickResult, float distance) const {
@@ -147,7 +147,7 @@ void ParabolaPointer::setVisualPickResultInternal(PickResultPointer pickResult, 
         parabolaPickResult->distance = distance;
         parabolaPickResult->surfaceNormal = surfaceNormal;
         PickParabola parabola = PickParabola(parabolaPickResult->pickVariant);
-        parabolaPickResult->pickVariant["velocity"] = vec3toVariant((intersection - parabola.origin -
+        parabolaPickResult->pickVariant[QStringLiteral("velocity")] = vec3toVariant((intersection - parabola.origin -
             0.5f * parabola.acceleration * parabolaPickResult->parabolicDistance * parabolaPickResult->parabolicDistance) / parabolaPickResult->parabolicDistance);
     }
 }
@@ -235,11 +235,11 @@ void ParabolaPointer::RenderState::update(const glm::vec3& origin, const glm::ve
 std::shared_ptr<StartEndRenderState> ParabolaPointer::buildRenderState(const QVariantMap& propMap) {
     // FIXME: we have to keep using the Overlays interface here, because existing scripts use overlay properties to define pointers
     QUuid startID;
-    if (propMap["start"].isValid()) {
-        QVariantMap startMap = propMap["start"].toMap();
-        if (startMap["type"].isValid()) {
-            startMap.remove("visible");
-            startID = qApp->getOverlays().addOverlay(startMap["type"].toString(), startMap);
+    if (propMap[QStringLiteral("start")].isValid()) {
+        QVariantMap startMap = propMap[QStringLiteral("start")].toMap();
+        if (startMap[QStringLiteral("type")].isValid()) {
+            startMap.remove(QStringLiteral("visible"));
+            startID = qApp->getOverlays().addOverlay(startMap[QStringLiteral("type")].toString(), startMap);
         }
     }
 
@@ -249,36 +249,36 @@ std::shared_ptr<StartEndRenderState> ParabolaPointer::buildRenderState(const QVa
     bool isVisibleInSecondaryCamera = RenderState::ParabolaRenderItem::DEFAULT_PARABOLA_ISVISIBLEINSECONDARYCAMERA;
     bool drawInFront = RenderState::ParabolaRenderItem::DEFAULT_PARABOLA_DRAWINFRONT;
     bool enabled = false;
-    if (propMap["path"].isValid()) {
+    if (propMap[QStringLiteral("path")].isValid()) {
         enabled = true;
-        QVariantMap pathMap = propMap["path"].toMap();
-        if (pathMap["color"].isValid()) {
-            color = toGlm(u8vec3FromVariant(pathMap["color"]));
+        QVariantMap pathMap = propMap[QStringLiteral("path")].toMap();
+        if (pathMap[QStringLiteral("color")].isValid()) {
+            color = toGlm(u8vec3FromVariant(pathMap[QStringLiteral("color")]));
         }
 
-        if (pathMap["alpha"].isValid()) {
-            alpha = pathMap["alpha"].toFloat();
+        if (pathMap[QStringLiteral("alpha")].isValid()) {
+            alpha = pathMap[QStringLiteral("alpha")].toFloat();
         }
 
-        if (pathMap["width"].isValid()) {
-            width = pathMap["width"].toFloat();
+        if (pathMap[QStringLiteral("width")].isValid()) {
+            width = pathMap[QStringLiteral("width")].toFloat();
         }
 
-        if (pathMap["isVisibleInSecondaryCamera"].isValid()) {
-            isVisibleInSecondaryCamera = pathMap["isVisibleInSecondaryCamera"].toBool();
+        if (pathMap[QStringLiteral("isVisibleInSecondaryCamera")].isValid()) {
+            isVisibleInSecondaryCamera = pathMap[QStringLiteral("isVisibleInSecondaryCamera")].toBool();
         }
 
-        if (pathMap["drawInFront"].isValid()) {
-            drawInFront = pathMap["drawInFront"].toBool();
+        if (pathMap[QStringLiteral("drawInFront")].isValid()) {
+            drawInFront = pathMap[QStringLiteral("drawInFront")].toBool();
         }
     }
 
     QUuid endID;
-    if (propMap["end"].isValid()) {
-        QVariantMap endMap = propMap["end"].toMap();
-        if (endMap["type"].isValid()) {
-            endMap.remove("visible");
-            endID = qApp->getOverlays().addOverlay(endMap["type"].toString(), endMap);
+    if (propMap[QStringLiteral("end")].isValid()) {
+        QVariantMap endMap = propMap[QStringLiteral("end")].toMap();
+        if (endMap[QStringLiteral("type")].isValid()) {
+            endMap.remove(QStringLiteral("visible"));
+            endID = qApp->getOverlays().addOverlay(endMap[QStringLiteral("type")].toString(), endMap);
         }
     }
 
@@ -293,9 +293,9 @@ PointerEvent ParabolaPointer::buildPointerEvent(const PickedObject& target, cons
         intersection = parabolaPickResult->intersection;
         surfaceNormal = parabolaPickResult->surfaceNormal;
         const QVariantMap& parabola = parabolaPickResult->pickVariant;
-        origin = vec3FromVariant(parabola["origin"]);
-        velocity = vec3FromVariant(parabola["velocity"]);
-        acceleration = vec3FromVariant(parabola["acceleration"]);
+        origin = vec3FromVariant(parabola[QStringLiteral("origin")]);
+        velocity = vec3FromVariant(parabola[QStringLiteral("velocity")]);
+        acceleration = vec3FromVariant(parabola[QStringLiteral("acceleration")]);
         pickedID = parabolaPickResult->objectID;
     }
 

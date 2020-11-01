@@ -54,10 +54,10 @@ QVariant toVariant(const glm::mat4& mat4) {
 
 QVariant toVariant(const Extents& box) {
     return QVariantMap{
-        { "center", glmVecToVariant(box.minimum + (box.size() / 2.0f)) },
-        { "minimum", glmVecToVariant(box.minimum) },
-        { "maximum", glmVecToVariant(box.maximum) },
-        { "dimensions", glmVecToVariant(box.size()) },
+        { QStringLiteral("center"), glmVecToVariant(box.minimum + (box.size() / 2.0f)) },
+        { QStringLiteral("minimum"), glmVecToVariant(box.minimum) },
+        { QStringLiteral("maximum"), glmVecToVariant(box.maximum) },
+        { QStringLiteral("dimensions"), glmVecToVariant(box.size()) },
     };
 }
 
@@ -71,12 +71,12 @@ QVariant toVariant(const Extents& box) {
  */
 QVariant toVariant(const AABox& box) {
     return QVariantMap{
-        { "brn", glmVecToVariant(box.getCorner()) },
-        { "tfl", glmVecToVariant(box.calcTopFarLeft()) },
-        { "center", glmVecToVariant(box.calcCenter()) },
-        { "minimum", glmVecToVariant(box.getMinimumPoint()) },
-        { "maximum", glmVecToVariant(box.getMaximumPoint()) },
-        { "dimensions", glmVecToVariant(box.getDimensions()) },
+        { QStringLiteral("brn"), glmVecToVariant(box.getCorner()) },
+        { QStringLiteral("tfl"), glmVecToVariant(box.calcTopFarLeft()) },
+        { QStringLiteral("center"), glmVecToVariant(box.calcCenter()) },
+        { QStringLiteral("minimum"), glmVecToVariant(box.getMinimumPoint()) },
+        { QStringLiteral("maximum"), glmVecToVariant(box.getMaximumPoint()) },
+        { QStringLiteral("dimensions"), glmVecToVariant(box.getDimensions()) },
     };
 }
 
@@ -92,17 +92,17 @@ QVariant toVariant(const AABox& box) {
  */
 QVariant toVariant(const gpu::Element& element) {
     return QVariantMap{
-        { "type", gpu::toString(element.getType()) },
-        { "semantic", gpu::toString(element.getSemantic()) },
-        { "dimension", gpu::toString(element.getDimension()) },
-        { "scalarCount", element.getScalarCount() },
-        { "byteSize", element.getSize() },
-        { "BYTES_PER_ELEMENT", element.getSize() / element.getScalarCount() },
+        { QStringLiteral("type"), gpu::toString(element.getType()) },
+        { QStringLiteral("semantic"), gpu::toString(element.getSemantic()) },
+        { QStringLiteral("dimension"), gpu::toString(element.getDimension()) },
+        { QStringLiteral("scalarCount"), element.getScalarCount() },
+        { QStringLiteral("byteSize"), element.getSize() },
+        { QStringLiteral("BYTES_PER_ELEMENT"), element.getSize() / element.getScalarCount() },
      };
 }
 
 QScriptValue jsBindCallback(QScriptValue value) {
-    if (value.isObject() && value.property("callback").isFunction()) {
+    if (value.isObject() && value.property(QStringLiteral("callback")).isFunction()) {
         // value is already a bound callback
         return value;
     }

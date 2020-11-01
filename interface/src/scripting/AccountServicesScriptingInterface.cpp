@@ -53,7 +53,7 @@ const QString AccountServicesScriptingInterface::getUsername() const {
     if (accountManager->isLoggedIn()) {
         return accountManager->getAccountInfo().getUsername();
     } else {
-        return "Unknown user";
+        return QStringLiteral("Unknown user");
     }
 }
 

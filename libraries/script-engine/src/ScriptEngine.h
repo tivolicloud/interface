@@ -205,7 +205,7 @@ public:
      */
     /// registers a global getter/setter
     Q_INVOKABLE void registerGetterSetter(const QString& name, QScriptEngine::FunctionSignature getter,
-                                          QScriptEngine::FunctionSignature setter, const QString& parent = QString(""));
+                                          QScriptEngine::FunctionSignature setter, const QString& parent = QString());
 
     /**jsdoc
      * @function Script.registerFunction

@@ -204,7 +204,7 @@ bool AssetScriptingInterface::jsVerify(bool condition, const QString& error) {
 
 QScriptValue AssetScriptingInterface::jsBindCallback(QScriptValue scope, QScriptValue callback) {
     QScriptValue handler = ::makeScopedHandlerObject(scope, callback);
-    QScriptValue value = handler.property("callback");
+    QScriptValue value = handler.property(QStringLiteral("callback"));
     if (!jsVerify(handler.isObject() && value.isFunction(),
                  QString("jsBindCallback -- .callback is not a function (%1)").arg(value.toVariant().typeName()))) {
         return QScriptValue();
@@ -226,9 +226,9 @@ void AssetScriptingInterface::jsCallback(const QScriptValue& handler,
                                          const QScriptValue& error, const QScriptValue& result) {
     Q_ASSERT(thread() == QThread::currentThread());
     auto errorValue = !error.toBool() ? QScriptValue::NullValue : error;
-    JS_VERIFY(handler.isObject() && handler.property("callback").isFunction(),
+    JS_VERIFY(handler.isObject() && handler.property(QStringLiteral("callback")).isFunction(),
               QString("jsCallback -- .callback is not a function (%1)")
-              .arg(handler.property("callback").toVariant().typeName()));
+              .arg(handler.property(QStringLiteral("callback")).toVariant().typeName()));
     ::callScopedHandlerObject(handler, errorValue, result);
 }
 
@@ -273,14 +273,14 @@ void AssetScriptingInterface::deleteAsset(QScriptValue options, QScriptValue sco
 void AssetScriptingInterface::getAsset(QScriptValue options, QScriptValue scope, QScriptValue callback) {
     JS_VERIFY(options.isObject() || options.isString(), "expected request options Object or URL as first parameter");
 
-    auto decompress = options.property("decompress").toBool() || options.property("compressed").toBool();
-    auto responseType = options.property("responseType").toString().toLower();
-    auto url = options.property("url").toString();
+    auto decompress = options.property(QStringLiteral("decompress")).toBool() || options.property(QStringLiteral("compressed")).toBool();
+    auto responseType = options.property(QStringLiteral("responseType")).toString().toLower();
+    auto url = options.property(QStringLiteral("url")).toString();
     if (options.isString()) {
         url = options.toString();
     }
     if (responseType.isEmpty()) {
-        responseType = "text";
+        responseType = QStringLiteral("text");
     }
     auto asset = AssetUtils::getATPUrl(url).path();
     JS_VERIFY(AssetUtils::isValidHash(asset) || AssetUtils::isValidFilePath(asset),
@@ -509,7 +509,7 @@ void AssetScriptingInterface::loadFromCache(QScriptValue options, QScriptValue s
     bool decompress = false;
     if (options.isString()) {
         url = options.toString();
-        responseType = "text";
+        responseType = QStringLiteral("text");
     } else {
         url = options.property("url").toString();
         responseType = options.property("responseType").isValid() ? options.property("responseType").toString() : "text";

@@ -60,7 +60,7 @@ unsigned int PointerScriptingInterface::createPointer(const PickQuery::PickType&
         return PointerEvent::INVALID_POINTER_ID;
     }
 
-    propertyMap["pointerType"] = (int)type;
+    propertyMap[QStringLiteral("pointerType")] = (int)type;
 
     pointer->setScriptParameters(propertyMap);
 
@@ -109,32 +109,32 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildStylus(const QVariant& 
     QVariantMap propertyMap = properties.toMap();
 
     bool hover = false;
-    if (propertyMap["hover"].isValid()) {
-        hover = propertyMap["hover"].toBool();
+    if (propertyMap[QStringLiteral("hover")].isValid()) {
+        hover = propertyMap[QStringLiteral("hover")].toBool();
     }
 
     bool enabled = false;
-    if (propertyMap["enabled"].isValid()) {
-        enabled = propertyMap["enabled"].toBool();
+    if (propertyMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propertyMap[QStringLiteral("enabled")].toBool();
     }
 
     glm::vec3 modelPositionOffset = DEFAULT_POSITION_OFFSET;
     glm::quat modelRotationOffset = X_ROT_NEG_90;
     glm::vec3 modelDimensions = DEFAULT_MODEL_DIMENSIONS;
 
-    if (propertyMap["model"].isValid()) {
-        QVariantMap modelData = propertyMap["model"].toMap();
+    if (propertyMap[QStringLiteral("model")].isValid()) {
+        QVariantMap modelData = propertyMap[QStringLiteral("model")].toMap();
 
-        if (modelData["positionOffset"].isValid()) {
-            modelPositionOffset = vec3FromVariant(modelData["positionOffset"]);
+        if (modelData[QStringLiteral("positionOffset")].isValid()) {
+            modelPositionOffset = vec3FromVariant(modelData[QStringLiteral("positionOffset")]);
         }
 
-        if (modelData["rotationOffset"].isValid()) {
-            modelRotationOffset = quatFromVariant(modelData["rotationOffset"]);
+        if (modelData[QStringLiteral("rotationOffset")].isValid()) {
+            modelRotationOffset = quatFromVariant(modelData[QStringLiteral("rotationOffset")]);
         }
 
-        if (modelData["dimensions"].isValid()) {
-            modelDimensions = vec3FromVariant(modelData["dimensions"]);
+        if (modelData[QStringLiteral("dimensions")].isValid()) {
+            modelDimensions = vec3FromVariant(modelData[QStringLiteral("dimensions")]);
         }
     }
 
@@ -221,10 +221,10 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildLaserPointer(const QVar
     QVariantMap propertyMap = properties.toMap();
 
 #if defined (Q_OS_ANDROID)
-    QString jointName { "" };
-    if (propertyMap["joint"].isValid()) {
-        QString jointName = propertyMap["joint"].toString();
-        const QString MOUSE_JOINT = "Mouse";
+    QString jointName { QString() };
+    if (propertyMap[QStringLiteral("joint")].isValid()) {
+        QString jointName = propertyMap[QStringLiteral("joint")].toString();
+        const QString MOUSE_JOINT = QStringLiteral("Mouse");
         if (jointName == MOUSE_JOINT) {
             return nullptr;
         }
@@ -232,54 +232,54 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildLaserPointer(const QVar
 #endif
 
     bool faceAvatar = false;
-    if (propertyMap["faceAvatar"].isValid()) {
-        faceAvatar = propertyMap["faceAvatar"].toBool();
+    if (propertyMap[QStringLiteral("faceAvatar")].isValid()) {
+        faceAvatar = propertyMap[QStringLiteral("faceAvatar")].toBool();
     }
 
     bool centerEndY = true;
-    if (propertyMap["centerEndY"].isValid()) {
-        centerEndY = propertyMap["centerEndY"].toBool();
+    if (propertyMap[QStringLiteral("centerEndY")].isValid()) {
+        centerEndY = propertyMap[QStringLiteral("centerEndY")].toBool();
     }
 
     bool lockEnd = false;
-    if (propertyMap["lockEnd"].isValid()) {
-        lockEnd = propertyMap["lockEnd"].toBool();
+    if (propertyMap[QStringLiteral("lockEnd")].isValid()) {
+        lockEnd = propertyMap[QStringLiteral("lockEnd")].toBool();
     }
 
     bool distanceScaleEnd = false;
-    if (propertyMap["distanceScaleEnd"].isValid()) {
-        distanceScaleEnd = propertyMap["distanceScaleEnd"].toBool();
+    if (propertyMap[QStringLiteral("distanceScaleEnd")].isValid()) {
+        distanceScaleEnd = propertyMap[QStringLiteral("distanceScaleEnd")].toBool();
     }
 
     bool scaleWithParent = false;
-    if (propertyMap["scaleWithParent"].isValid()) {
-        scaleWithParent = propertyMap["scaleWithParent"].toBool();
-    } else if (propertyMap["scaleWithAvatar"].isValid()) {
-        scaleWithParent = propertyMap["scaleWithAvatar"].toBool();
+    if (propertyMap[QStringLiteral("scaleWithParent")].isValid()) {
+        scaleWithParent = propertyMap[QStringLiteral("scaleWithParent")].toBool();
+    } else if (propertyMap[QStringLiteral("scaleWithAvatar")].isValid()) {
+        scaleWithParent = propertyMap[QStringLiteral("scaleWithAvatar")].toBool();
     }
 
     bool followNormal = false;
-    if (propertyMap["followNormal"].isValid()) {
-        followNormal = propertyMap["followNormal"].toBool();
+    if (propertyMap[QStringLiteral("followNormal")].isValid()) {
+        followNormal = propertyMap[QStringLiteral("followNormal")].toBool();
     }
     float followNormalStrength = 0.0f;
-    if (propertyMap["followNormalStrength"].isValid()) {
-        followNormalStrength = propertyMap["followNormalStrength"].toFloat();
+    if (propertyMap[QStringLiteral("followNormalStrength")].isValid()) {
+        followNormalStrength = propertyMap[QStringLiteral("followNormalStrength")].toFloat();
     }
 
     bool enabled = false;
-    if (propertyMap["enabled"].isValid()) {
-        enabled = propertyMap["enabled"].toBool();
+    if (propertyMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propertyMap[QStringLiteral("enabled")].toBool();
     }
 
     RenderStateMap renderStates;
-    if (propertyMap["renderStates"].isValid()) {
-        QList<QVariant> renderStateVariants = propertyMap["renderStates"].toList();
+    if (propertyMap[QStringLiteral("renderStates")].isValid()) {
+        QList<QVariant> renderStateVariants = propertyMap[QStringLiteral("renderStates")].toList();
         for (const QVariant& renderStateVariant : renderStateVariants) {
             if (renderStateVariant.isValid()) {
                 QVariantMap renderStateMap = renderStateVariant.toMap();
-                if (renderStateMap["name"].isValid()) {
-                    std::string name = renderStateMap["name"].toString().toStdString();
+                if (renderStateMap[QStringLiteral("name")].isValid()) {
+                    std::string name = renderStateMap[QStringLiteral("name")].toString().toStdString();
                     renderStates[name] = LaserPointer::buildRenderState(renderStateMap);
                 }
             }
@@ -287,14 +287,14 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildLaserPointer(const QVar
     }
 
     DefaultRenderStateMap defaultRenderStates;
-    if (propertyMap["defaultRenderStates"].isValid()) {
-        QList<QVariant> renderStateVariants = propertyMap["defaultRenderStates"].toList();
+    if (propertyMap[QStringLiteral("defaultRenderStates")].isValid()) {
+        QList<QVariant> renderStateVariants = propertyMap[QStringLiteral("defaultRenderStates")].toList();
         for (const QVariant& renderStateVariant : renderStateVariants) {
             if (renderStateVariant.isValid()) {
                 QVariantMap renderStateMap = renderStateVariant.toMap();
-                if (renderStateMap["name"].isValid() && renderStateMap["distance"].isValid()) {
-                    std::string name = renderStateMap["name"].toString().toStdString();
-                    float distance = renderStateMap["distance"].toFloat();
+                if (renderStateMap[QStringLiteral("name")].isValid() && renderStateMap[QStringLiteral("distance")].isValid()) {
+                    std::string name = renderStateMap[QStringLiteral("name")].toString().toStdString();
+                    float distance = renderStateMap[QStringLiteral("distance")].toFloat();
                     defaultRenderStates[name] = std::pair<float, std::shared_ptr<StartEndRenderState>>(distance, LaserPointer::buildRenderState(renderStateMap));
                 }
             }
@@ -302,21 +302,21 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildLaserPointer(const QVar
     }
 
     bool hover = false;
-    if (propertyMap["hover"].isValid()) {
-        hover = propertyMap["hover"].toBool();
+    if (propertyMap[QStringLiteral("hover")].isValid()) {
+        hover = propertyMap[QStringLiteral("hover")].toBool();
     }
 
     PointerTriggers triggers;
     auto userInputMapper = DependencyManager::get<UserInputMapper>();
-    if (propertyMap["triggers"].isValid()) {
-        QList<QVariant> triggerVariants = propertyMap["triggers"].toList();
+    if (propertyMap[QStringLiteral("triggers")].isValid()) {
+        QList<QVariant> triggerVariants = propertyMap[QStringLiteral("triggers")].toList();
         for (const QVariant& triggerVariant : triggerVariants) {
             if (triggerVariant.isValid()) {
                 QVariantMap triggerMap = triggerVariant.toMap();
-                if (triggerMap["action"].isValid() && triggerMap["button"].isValid()) {
-                    controller::Endpoint::Pointer endpoint = userInputMapper->endpointFor(controller::Input(triggerMap["action"].toUInt()));
+                if (triggerMap[QStringLiteral("action")].isValid() && triggerMap[QStringLiteral("button")].isValid()) {
+                    controller::Endpoint::Pointer endpoint = userInputMapper->endpointFor(controller::Input(triggerMap[QStringLiteral("action")].toUInt()));
                     if (endpoint) {
-                        std::string button = triggerMap["button"].toString().toStdString();
+                        std::string button = triggerMap[QStringLiteral("button")].toString().toStdString();
                         triggers.emplace_back(endpoint, button);
                     }
                 }
@@ -416,54 +416,54 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildParabolaPointer(const Q
     QVariantMap propertyMap = properties.toMap();
 
     bool faceAvatar = false;
-    if (propertyMap["faceAvatar"].isValid()) {
-        faceAvatar = propertyMap["faceAvatar"].toBool();
+    if (propertyMap[QStringLiteral("faceAvatar")].isValid()) {
+        faceAvatar = propertyMap[QStringLiteral("faceAvatar")].toBool();
     }
 
     bool centerEndY = true;
-    if (propertyMap["centerEndY"].isValid()) {
-        centerEndY = propertyMap["centerEndY"].toBool();
+    if (propertyMap[QStringLiteral("centerEndY")].isValid()) {
+        centerEndY = propertyMap[QStringLiteral("centerEndY")].toBool();
     }
 
     bool lockEnd = false;
-    if (propertyMap["lockEnd"].isValid()) {
-        lockEnd = propertyMap["lockEnd"].toBool();
+    if (propertyMap[QStringLiteral("lockEnd")].isValid()) {
+        lockEnd = propertyMap[QStringLiteral("lockEnd")].toBool();
     }
 
     bool distanceScaleEnd = false;
-    if (propertyMap["distanceScaleEnd"].isValid()) {
-        distanceScaleEnd = propertyMap["distanceScaleEnd"].toBool();
+    if (propertyMap[QStringLiteral("distanceScaleEnd")].isValid()) {
+        distanceScaleEnd = propertyMap[QStringLiteral("distanceScaleEnd")].toBool();
     }
 
     bool scaleWithParent = true;
-    if (propertyMap["scaleWithParent"].isValid()) {
-        scaleWithParent = propertyMap["scaleWithParent"].toBool();
-    } else if (propertyMap["scaleWithAvatar"].isValid()) {
-        scaleWithParent = propertyMap["scaleWithAvatar"].toBool();
+    if (propertyMap[QStringLiteral("scaleWithParent")].isValid()) {
+        scaleWithParent = propertyMap[QStringLiteral("scaleWithParent")].toBool();
+    } else if (propertyMap[QStringLiteral("scaleWithAvatar")].isValid()) {
+        scaleWithParent = propertyMap[QStringLiteral("scaleWithAvatar")].toBool();
     }
 
     bool followNormal = false;
-    if (propertyMap["followNormal"].isValid()) {
-        followNormal = propertyMap["followNormal"].toBool();
+    if (propertyMap[QStringLiteral("followNormal")].isValid()) {
+        followNormal = propertyMap[QStringLiteral("followNormal")].toBool();
     }
     float followNormalStrength = 0.0f;
-    if (propertyMap["followNormalStrength"].isValid()) {
-        followNormalStrength = propertyMap["followNormalStrength"].toFloat();
+    if (propertyMap[QStringLiteral("followNormalStrength")].isValid()) {
+        followNormalStrength = propertyMap[QStringLiteral("followNormalStrength")].toFloat();
     }
 
     bool enabled = false;
-    if (propertyMap["enabled"].isValid()) {
-        enabled = propertyMap["enabled"].toBool();
+    if (propertyMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propertyMap[QStringLiteral("enabled")].toBool();
     }
 
     RenderStateMap renderStates;
-    if (propertyMap["renderStates"].isValid()) {
-        QList<QVariant> renderStateVariants = propertyMap["renderStates"].toList();
+    if (propertyMap[QStringLiteral("renderStates")].isValid()) {
+        QList<QVariant> renderStateVariants = propertyMap[QStringLiteral("renderStates")].toList();
         for (const QVariant& renderStateVariant : renderStateVariants) {
             if (renderStateVariant.isValid()) {
                 QVariantMap renderStateMap = renderStateVariant.toMap();
-                if (renderStateMap["name"].isValid()) {
-                    std::string name = renderStateMap["name"].toString().toStdString();
+                if (renderStateMap[QStringLiteral("name")].isValid()) {
+                    std::string name = renderStateMap[QStringLiteral("name")].toString().toStdString();
                     renderStates[name] = ParabolaPointer::buildRenderState(renderStateMap);
                 }
             }
@@ -471,14 +471,14 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildParabolaPointer(const Q
     }
 
     DefaultRenderStateMap defaultRenderStates;
-    if (propertyMap["defaultRenderStates"].isValid()) {
-        QList<QVariant> renderStateVariants = propertyMap["defaultRenderStates"].toList();
+    if (propertyMap[QStringLiteral("defaultRenderStates")].isValid()) {
+        QList<QVariant> renderStateVariants = propertyMap[QStringLiteral("defaultRenderStates")].toList();
         for (const QVariant& renderStateVariant : renderStateVariants) {
             if (renderStateVariant.isValid()) {
                 QVariantMap renderStateMap = renderStateVariant.toMap();
-                if (renderStateMap["name"].isValid() && renderStateMap["distance"].isValid()) {
-                    std::string name = renderStateMap["name"].toString().toStdString();
-                    float distance = renderStateMap["distance"].toFloat();
+                if (renderStateMap[QStringLiteral("name")].isValid() && renderStateMap[QStringLiteral("distance")].isValid()) {
+                    std::string name = renderStateMap[QStringLiteral("name")].toString().toStdString();
+                    float distance = renderStateMap[QStringLiteral("distance")].toFloat();
                     defaultRenderStates[name] = std::pair<float, std::shared_ptr<StartEndRenderState>>(distance, ParabolaPointer::buildRenderState(renderStateMap));
                 }
             }
@@ -486,21 +486,21 @@ std::shared_ptr<Pointer> PointerScriptingInterface::buildParabolaPointer(const Q
     }
 
     bool hover = false;
-    if (propertyMap["hover"].isValid()) {
-        hover = propertyMap["hover"].toBool();
+    if (propertyMap[QStringLiteral("hover")].isValid()) {
+        hover = propertyMap[QStringLiteral("hover")].toBool();
     }
 
     PointerTriggers triggers;
     auto userInputMapper = DependencyManager::get<UserInputMapper>();
-    if (propertyMap["triggers"].isValid()) {
-        QList<QVariant> triggerVariants = propertyMap["triggers"].toList();
+    if (propertyMap[QStringLiteral("triggers")].isValid()) {
+        QList<QVariant> triggerVariants = propertyMap[QStringLiteral("triggers")].toList();
         for (const QVariant& triggerVariant : triggerVariants) {
             if (triggerVariant.isValid()) {
                 QVariantMap triggerMap = triggerVariant.toMap();
-                if (triggerMap["action"].isValid() && triggerMap["button"].isValid()) {
-                    controller::Endpoint::Pointer endpoint = userInputMapper->endpointFor(controller::Input(triggerMap["action"].toUInt()));
+                if (triggerMap[QStringLiteral("action")].isValid() && triggerMap[QStringLiteral("button")].isValid()) {
+                    controller::Endpoint::Pointer endpoint = userInputMapper->endpointFor(controller::Input(triggerMap[QStringLiteral("action")].toUInt()));
                     if (endpoint) {
-                        std::string button = triggerMap["button"].toString().toStdString();
+                        std::string button = triggerMap[QStringLiteral("button")].toString().toStdString();
                         triggers.emplace_back(endpoint, button);
                     }
                 }
@@ -517,18 +517,18 @@ void PointerScriptingInterface::editRenderState(unsigned int uid, const QString&
     QVariantMap propMap = properties.toMap();
 
     QVariant startProps;
-    if (propMap["start"].isValid()) {
-        startProps = propMap["start"];
+    if (propMap[QStringLiteral("start")].isValid()) {
+        startProps = propMap[QStringLiteral("start")];
     }
 
     QVariant pathProps;
-    if (propMap["path"].isValid()) {
-        pathProps = propMap["path"];
+    if (propMap[QStringLiteral("path")].isValid()) {
+        pathProps = propMap[QStringLiteral("path")];
     }
 
     QVariant endProps;
-    if (propMap["end"].isValid()) {
-        endProps = propMap["end"];
+    if (propMap[QStringLiteral("end")].isValid()) {
+        endProps = propMap[QStringLiteral("end")];
     }
 
     DependencyManager::get<PointerManager>()->editRenderState(uid, renderState.toStdString(), startProps, pathProps, endProps);

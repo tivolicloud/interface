@@ -110,7 +110,7 @@ scriptable::ScriptableModelPointer GraphicsScriptingInterface::newModel(const sc
 scriptable::ScriptableModelPointer GraphicsScriptingInterface::getModel(const QUuid& uuid) {
     QString error;
     bool success;
-    QString providerType = "unknown";
+    QString providerType = QStringLiteral("unknown");
     if (auto nestable = DependencyManager::get<SpatialParentFinder>()->find(uuid, success).lock()) {
         providerType = SpatiallyNestable::nestableTypeToString(nestable->getNestableType());
         if (auto provider = getModelProvider(uuid)) {
@@ -471,155 +471,155 @@ namespace scriptable {
      */
     QScriptValue scriptableMaterialToScriptValue(QScriptEngine* engine, const scriptable::ScriptableMaterial &material) {
         QScriptValue obj = engine->newObject();
-        obj.setProperty("name", material.name);
-        obj.setProperty("model", material.model);
+        obj.setProperty(QStringLiteral("name"), material.name);
+        obj.setProperty(QStringLiteral("model"), material.model);
 
         bool hasPropertyFallthroughs = !material.propertyFallthroughs.empty();
 
-        const QScriptValue FALLTHROUGH("fallthrough");
+        const QScriptValue FALLTHROUGH(QStringLiteral("fallthrough"));
         if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::OPACITY_VAL_BIT)) {
-            obj.setProperty("opacity", FALLTHROUGH);
+            obj.setProperty(QStringLiteral("opacity"), FALLTHROUGH);
         } else if (material.key.isTranslucentFactor()) {
-            obj.setProperty("opacity", material.opacity);
+            obj.setProperty(QStringLiteral("opacity"), material.opacity);
         }
 
         if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::ALBEDO_VAL_BIT)) {
-            obj.setProperty("albedo", FALLTHROUGH);
+            obj.setProperty(QStringLiteral("albedo"), FALLTHROUGH);
         } else if (material.key.isAlbedo()) {
-            obj.setProperty("albedo", vec3ColorToScriptValue(engine, material.albedo));
+            obj.setProperty(QStringLiteral("albedo"), vec3ColorToScriptValue(engine, material.albedo));
         }
 
         if (material.model.toStdString() == graphics::Material::HIFI_PBR) {
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::OPACITY_CUTOFF_VAL_BIT)) {
-                obj.setProperty("opacityCutoff", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("opacityCutoff"), FALLTHROUGH);
             } else if (material.key.isOpacityCutoff()) {
-                obj.setProperty("opacityCutoff", material.opacityCutoff);
+                obj.setProperty(QStringLiteral("opacityCutoff"), material.opacityCutoff);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::OPACITY_MAP_MODE_BIT)) {
-                obj.setProperty("opacityMapMode", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("opacityMapMode"), FALLTHROUGH);
             } else if (material.key.isOpacityMapMode()) {
-                obj.setProperty("opacityMapMode", material.opacityMapMode);
+                obj.setProperty(QStringLiteral("opacityMapMode"), material.opacityMapMode);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::GLOSSY_VAL_BIT)) {
-                obj.setProperty("roughness", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("roughness"), FALLTHROUGH);
             } else if (material.key.isGlossy()) {
-                obj.setProperty("roughness", material.roughness);
+                obj.setProperty(QStringLiteral("roughness"), material.roughness);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::METALLIC_VAL_BIT)) {
-                obj.setProperty("metallic", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("metallic"), FALLTHROUGH);
             } else if (material.key.isMetallic()) {
-                obj.setProperty("metallic", material.metallic);
+                obj.setProperty(QStringLiteral("metallic"), material.metallic);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::SCATTERING_VAL_BIT)) {
-                obj.setProperty("scattering", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("scattering"), FALLTHROUGH);
             } else if (material.key.isScattering()) {
-                obj.setProperty("scattering", material.scattering);
+                obj.setProperty(QStringLiteral("scattering"), material.scattering);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::UNLIT_VAL_BIT)) {
-                obj.setProperty("unlit", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("unlit"), FALLTHROUGH);
             } else if (material.key.isUnlit()) {
-                obj.setProperty("unlit", material.unlit);
+                obj.setProperty(QStringLiteral("unlit"), material.unlit);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::EMISSIVE_VAL_BIT)) {
-                obj.setProperty("emissive", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("emissive"), FALLTHROUGH);
             } else if (material.key.isEmissive()) {
-                obj.setProperty("emissive", vec3ColorToScriptValue(engine, material.emissive));
+                obj.setProperty(QStringLiteral("emissive"), vec3ColorToScriptValue(engine, material.emissive));
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::EMISSIVE_MAP_BIT)) {
-                obj.setProperty("emissiveMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("emissiveMap"), FALLTHROUGH);
             } else if (!material.emissiveMap.isEmpty()) {
-                obj.setProperty("emissiveMap", material.emissiveMap);
+                obj.setProperty(QStringLiteral("emissiveMap"), material.emissiveMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::ALBEDO_MAP_BIT)) {
-                obj.setProperty("albedoMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("albedoMap"), FALLTHROUGH);
             } else if (!material.albedoMap.isEmpty()) {
-                obj.setProperty("albedoMap", material.albedoMap);
+                obj.setProperty(QStringLiteral("albedoMap"), material.albedoMap);
             }
 
             if (!material.opacityMap.isEmpty()) {
-                obj.setProperty("opacityMap", material.opacityMap);
+                obj.setProperty(QStringLiteral("opacityMap"), material.opacityMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::OCCLUSION_MAP_BIT)) {
-                obj.setProperty("occlusionMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("occlusionMap"), FALLTHROUGH);
             } else if (!material.occlusionMap.isEmpty()) {
-                obj.setProperty("occlusionMap", material.occlusionMap);
+                obj.setProperty(QStringLiteral("occlusionMap"), material.occlusionMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::LIGHT_MAP_BIT)) {
-                obj.setProperty("lightMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("lightMap"), FALLTHROUGH);
             } else if (!material.lightMap.isEmpty()) {
-                obj.setProperty("lightMap", material.lightMap);
+                obj.setProperty(QStringLiteral("lightMap"), material.lightMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::SCATTERING_MAP_BIT)) {
-                obj.setProperty("scatteringMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("scatteringMap"), FALLTHROUGH);
             } else if (!material.scatteringMap.isEmpty()) {
-                obj.setProperty("scatteringMap", material.scatteringMap);
+                obj.setProperty(QStringLiteral("scatteringMap"), material.scatteringMap);
             }
 
             // Only set one of each of these
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::METALLIC_MAP_BIT)) {
-                obj.setProperty("metallicMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("metallicMap"), FALLTHROUGH);
             } else if (!material.metallicMap.isEmpty()) {
-                obj.setProperty("metallicMap", material.metallicMap);
+                obj.setProperty(QStringLiteral("metallicMap"), material.metallicMap);
             } else if (!material.specularMap.isEmpty()) {
-                obj.setProperty("specularMap", material.specularMap);
+                obj.setProperty(QStringLiteral("specularMap"), material.specularMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::ROUGHNESS_MAP_BIT)) {
-                obj.setProperty("roughnessMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("roughnessMap"), FALLTHROUGH);
             } else if (!material.roughnessMap.isEmpty()) {
-                obj.setProperty("roughnessMap", material.roughnessMap);
+                obj.setProperty(QStringLiteral("roughnessMap"), material.roughnessMap);
             } else if (!material.glossMap.isEmpty()) {
-                obj.setProperty("glossMap", material.glossMap);
+                obj.setProperty(QStringLiteral("glossMap"), material.glossMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::MaterialKey::NORMAL_MAP_BIT)) {
-                obj.setProperty("normalMap", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("normalMap"), FALLTHROUGH);
             } else if (!material.normalMap.isEmpty()) {
-                obj.setProperty("normalMap", material.normalMap);
+                obj.setProperty(QStringLiteral("normalMap"), material.normalMap);
             } else if (!material.bumpMap.isEmpty()) {
-                obj.setProperty("bumpMap", material.bumpMap);
+                obj.setProperty(QStringLiteral("bumpMap"), material.bumpMap);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::Material::TEXCOORDTRANSFORM0)) {
-                obj.setProperty("texCoordTransform0", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("texCoordTransform0"), FALLTHROUGH);
             } else if (material.texCoordTransforms[0] != mat4()) {
-                obj.setProperty("texCoordTransform0", mat4toScriptValue(engine, material.texCoordTransforms[0]));
+                obj.setProperty(QStringLiteral("texCoordTransform0"), mat4toScriptValue(engine, material.texCoordTransforms[0]));
             }
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::Material::TEXCOORDTRANSFORM1)) {
-                obj.setProperty("texCoordTransform1", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("texCoordTransform1"), FALLTHROUGH);
             } else if (material.texCoordTransforms[1] != mat4()) {
-                obj.setProperty("texCoordTransform1", mat4toScriptValue(engine, material.texCoordTransforms[1]));
+                obj.setProperty(QStringLiteral("texCoordTransform1"), mat4toScriptValue(engine, material.texCoordTransforms[1]));
             }
 
             // These need to be implemented, but set the fallthrough for now
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::Material::LIGHTMAP_PARAMS)) {
-                obj.setProperty("lightmapParams", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("lightmapParams"), FALLTHROUGH);
             }
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::Material::MATERIAL_PARAMS)) {
-                obj.setProperty("materialParams", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("materialParams"), FALLTHROUGH);
             }
 
             if (hasPropertyFallthroughs && material.propertyFallthroughs.at(graphics::Material::CULL_FACE_MODE)) {
-                obj.setProperty("cullFaceMode", FALLTHROUGH);
+                obj.setProperty(QStringLiteral("cullFaceMode"), FALLTHROUGH);
             } else if (!material.cullFaceMode.isEmpty()) {
-                obj.setProperty("cullFaceMode", material.cullFaceMode);
+                obj.setProperty(QStringLiteral("cullFaceMode"), material.cullFaceMode);
             }
         } else if (material.model.toStdString() == graphics::Material::HIFI_SHADER_SIMPLE) {
-            obj.setProperty("procedural", material.procedural);
+            obj.setProperty(QStringLiteral("procedural"), material.procedural);
         }
 
-        obj.setProperty("defaultFallthrough", material.defaultFallthrough);
+        obj.setProperty(QStringLiteral("defaultFallthrough"), material.defaultFallthrough);
 
         return obj;
     }
@@ -630,8 +630,8 @@ namespace scriptable {
 
     QScriptValue scriptableMaterialLayerToScriptValue(QScriptEngine* engine, const scriptable::ScriptableMaterialLayer &materialLayer) {
         QScriptValue obj = engine->newObject();
-        obj.setProperty("material", scriptableMaterialToScriptValue(engine, materialLayer.material));
-        obj.setProperty("priority", materialLayer.priority);
+        obj.setProperty(QStringLiteral("material"), scriptableMaterialToScriptValue(engine, materialLayer.material));
+        obj.setProperty(QStringLiteral("priority"), materialLayer.priority);
         return obj;
     }
 

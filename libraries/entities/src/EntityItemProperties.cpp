@@ -401,29 +401,29 @@ void EntityItemProperties::setTextEffectFromString(const QString& effect) {
 QString getCollisionGroupAsString(uint16_t group) {
     switch (group) {
         case USER_COLLISION_GROUP_DYNAMIC:
-            return "dynamic";
+            return QStringLiteral("dynamic");
         case USER_COLLISION_GROUP_STATIC:
-            return "static";
+            return QStringLiteral("static");
         case USER_COLLISION_GROUP_KINEMATIC:
-            return "kinematic";
+            return QStringLiteral("kinematic");
         case USER_COLLISION_GROUP_MY_AVATAR:
-            return "myAvatar";
+            return QStringLiteral("myAvatar");
         case USER_COLLISION_GROUP_OTHER_AVATAR:
-            return "otherAvatar";
+            return QStringLiteral("otherAvatar");
     };
-    return "";
+    return QString();
 }
 
 uint16_t getCollisionGroupAsBitMask(const QStringRef& name) {
-    if (0 == name.compare(QString("dynamic"))) {
+    if (0 == name.compare(QStringLiteral("dynamic"))) {
         return USER_COLLISION_GROUP_DYNAMIC;
-    } else if (0 == name.compare(QString("static"))) {
+    } else if (0 == name.compare(QStringLiteral("static"))) {
         return USER_COLLISION_GROUP_STATIC;
-    } else if (0 == name.compare(QString("kinematic"))) {
+    } else if (0 == name.compare(QStringLiteral("kinematic"))) {
         return USER_COLLISION_GROUP_KINEMATIC;
-    } else if (0 == name.compare(QString("myAvatar"))) {
+    } else if (0 == name.compare(QStringLiteral("myAvatar"))) {
         return USER_COLLISION_GROUP_MY_AVATAR;
-    } else if (0 == name.compare(QString("otherAvatar"))) {
+    } else if (0 == name.compare(QStringLiteral("otherAvatar"))) {
         return USER_COLLISION_GROUP_OTHER_AVATAR;
     }
     return 0;
@@ -454,22 +454,22 @@ void EntityItemProperties::setCollisionMaskFromString(const QString& maskString)
 QString EntityItemProperties::getEntityHostTypeAsString() const {
     switch (_entityHostType) {
         case entity::HostType::DOMAIN:
-            return "domain";
+            return QStringLiteral("domain");
         case entity::HostType::AVATAR:
-            return "avatar";
+            return QStringLiteral("avatar");
         case entity::HostType::LOCAL:
-            return "local";
+            return QStringLiteral("local");
         default:
-            return "";
+            return QString();
     }
 }
 
 void EntityItemProperties::setEntityHostTypeFromString(const QString& entityHostType) {
-    if (entityHostType == "domain") {
+    if (entityHostType == QStringLiteral("domain")) {
         _entityHostType = entity::HostType::DOMAIN;
-    } else if (entityHostType == "avatar") {
+    } else if (entityHostType == QStringLiteral("avatar")) {
         _entityHostType = entity::HostType::AVATAR;
-    } else if (entityHostType == "local") {
+    } else if (entityHostType == QStringLiteral("local")) {
         _entityHostType = entity::HostType::LOCAL;
     }
 }
@@ -1333,7 +1333,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  *     direction, if you want them joined. Set to {@link Uuid(0)|Uuid.NULL} if there is none or you don't want to join them.
  * @example <caption>Create a textured PolyVox sphere.</caption>
  * var position = Vec3.sum(MyAvatar.position, Vec3.multiplyQbyV(MyAvatar.orientation, { x: 0, y: 0.5, z: -8 }));
- * var texture = "http://public.highfidelity.com/cozza13/tuscany/Concrete2.jpg";
+ * var texture = "http://public.highfidelity.com/cozza13/tuscany/Concrete2.jpg");
  * var polyVox = Entities.addEntity({
  *     type: "PolyVox",
  *     position: position,
@@ -1645,7 +1645,7 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
         }
     }
     if (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::LastEdited)) {
-        properties.setProperty("lastEdited", convertScriptValue(engine, _lastEdited));
+        properties.setProperty(QStringLiteral("lastEdited"), convertScriptValue(engine, _lastEdited));
     }
     if (!skipDefaults) {
         COPY_PROPERTY_TO_QSCRIPTVALUE(PROP_DIMENSIONS, naturalDimensions); // gettable, but not settable
@@ -1809,10 +1809,10 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
 
     // FIXME: Shouldn't provide a shapeType property for Box and Sphere entities.
     if (_type == EntityTypes::Box) {
-        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_SHAPE_TYPE, shapeType, QString("Box"));
+        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_SHAPE_TYPE, shapeType, QStringLiteral("Box"));
     }
     if (_type == EntityTypes::Sphere) {
-        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_SHAPE_TYPE, shapeType, QString("Sphere"));
+        COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER(PROP_SHAPE_TYPE, shapeType, QStringLiteral("Sphere"));
     }
 
     if (_type == EntityTypes::Box || _type == EntityTypes::Sphere || _type == EntityTypes::Shape) {
@@ -1965,8 +1965,8 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
         if (((!psuedoPropertyFlagsButDesiredEmpty && _desiredProperties.isEmpty()) || _desiredProperties.getHasProperty(PROP_IMAGE_URL)) &&
                 (!skipDefaults || defaultEntityProperties._imageURL != _imageURL)) {
             QScriptValue textures = engine->newObject();
-            textures.setProperty("tex.picture", _imageURL);
-            properties.setProperty("textures", textures);
+            textures.setProperty(QStringLiteral("tex.picture"), _imageURL);
+            properties.setProperty(QStringLiteral("textures"), textures);
         }
     }
 
@@ -2004,10 +2004,10 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
         QScriptValue topFarLeft = vec3ToScriptValue(engine, aaBox.calcTopFarLeft());
         QScriptValue center = vec3ToScriptValue(engine, aaBox.calcCenter());
         QScriptValue boundingBoxDimensions = vec3ToScriptValue(engine, aaBox.getDimensions());
-        boundingBox.setProperty("brn", bottomRightNear);
-        boundingBox.setProperty("tfl", topFarLeft);
-        boundingBox.setProperty("center", center);
-        boundingBox.setProperty("dimensions", boundingBoxDimensions);
+        boundingBox.setProperty(QStringLiteral("brn"), bottomRightNear);
+        boundingBox.setProperty(QStringLiteral("tfl"), topFarLeft);
+        boundingBox.setProperty(QStringLiteral("center"), center);
+        boundingBox.setProperty(QStringLiteral("dimensions"), boundingBoxDimensions);
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER_NO_SKIP(boundingBox, boundingBox); // gettable, but not settable
     }
 
@@ -2035,38 +2035,38 @@ QScriptValue EntityItemProperties::copyToScriptValue(QScriptEngine* engine, bool
          */
         // currently only supported by models
         if (_type == EntityTypes::Model) {
-            renderInfo.setProperty("verticesCount", (int)getRenderInfoVertexCount()); // FIXME - theoretically the number of vertex could be > max int
-            renderInfo.setProperty("texturesSize", (int)getRenderInfoTextureSize()); // FIXME - theoretically the size of textures could be > max int
-            renderInfo.setProperty("hasTransparent", getRenderInfoHasTransparent());
-            renderInfo.setProperty("drawCalls", getRenderInfoDrawCalls());
-            renderInfo.setProperty("texturesCount", getRenderInfoTextureCount());
+            renderInfo.setProperty(QStringLiteral("verticesCount"), (int)getRenderInfoVertexCount()); // FIXME - theoretically the number of vertex could be > max int
+            renderInfo.setProperty(QStringLiteral("texturesSize"), (int)getRenderInfoTextureSize()); // FIXME - theoretically the size of textures could be > max int
+            renderInfo.setProperty(QStringLiteral("hasTransparent"), getRenderInfoHasTransparent());
+            renderInfo.setProperty(QStringLiteral("drawCalls"), getRenderInfoDrawCalls());
+            renderInfo.setProperty(QStringLiteral("texturesCount"), getRenderInfoTextureCount());
         }
 
         COPY_PROPERTY_TO_QSCRIPTVALUE_GETTER_NO_SKIP(renderInfo, renderInfo);  // Gettable but not settable
     }
 
     if (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::ClientOnly)) {
-        properties.setProperty("clientOnly", convertScriptValue(engine, getEntityHostType() == entity::HostType::AVATAR));
+        properties.setProperty(QStringLiteral("clientOnly"), convertScriptValue(engine, getEntityHostType() == entity::HostType::AVATAR));
     }
     if (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::AvatarEntity)) {
-        properties.setProperty("avatarEntity", convertScriptValue(engine, getEntityHostType() == entity::HostType::AVATAR));
+        properties.setProperty(QStringLiteral("avatarEntity"), convertScriptValue(engine, getEntityHostType() == entity::HostType::AVATAR));
     }
     if (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::LocalEntity)) {
-        properties.setProperty("localEntity", convertScriptValue(engine, getEntityHostType() == entity::HostType::LOCAL));
+        properties.setProperty(QStringLiteral("localEntity"), convertScriptValue(engine, getEntityHostType() == entity::HostType::LOCAL));
     }
 
     if (_type != EntityTypes::PolyLine && (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::FaceCamera))) {
-        properties.setProperty("faceCamera", convertScriptValue(engine, getBillboardMode() == BillboardMode::YAW));
+        properties.setProperty(QStringLiteral("faceCamera"), convertScriptValue(engine, getBillboardMode() == BillboardMode::YAW));
     }
     if (!psuedoPropertyFlagsActive || psueudoPropertyFlags.test(EntityPsuedoPropertyFlag::IsFacingAvatar)) {
-        properties.setProperty("isFacingAvatar", convertScriptValue(engine, getBillboardMode() == BillboardMode::FULL));
+        properties.setProperty(QStringLiteral("isFacingAvatar"), convertScriptValue(engine, getBillboardMode() == BillboardMode::FULL));
     }
 
     return properties;
 }
 
 void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool honorReadOnly) {
-    QScriptValue typeScriptValue = object.property("type");
+    QScriptValue typeScriptValue = object.property(QStringLiteral("type"));
     if (typeScriptValue.isValid()) {
         setType(typeScriptValue.toVariant().toString());
     }
@@ -2323,13 +2323,13 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
 
     // Handle conversions from old 'textures' property to "imageURL"
     {
-        QScriptValue V = object.property("textures");
-        if (_type == EntityTypes::Image && V.isValid() && !object.property("imageURL").isValid()) {
+        QScriptValue V = object.property(QStringLiteral("textures"));
+        if (_type == EntityTypes::Image && V.isValid() && !object.property(QStringLiteral("imageURL")).isValid()) {
             bool isValid = false;
             QString textures = QString_convertFromScriptValue(V, isValid);
             if (isValid) {
                 QVariantMap texturesMap = parseTexturesToMap(textures, QVariantMap());
-                auto texPicture = texturesMap.find("tex.picture");
+                auto texPicture = texturesMap.find(QStringLiteral("tex.picture"));
                 if (texPicture != texturesMap.end()) {
                     auto imageURL = texPicture.value().toString();
                     if (_defaultSettings || imageURL != _imageURL) {
@@ -2342,8 +2342,8 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
 
     // Handle old "faceCamera" and "isFacingAvatar" props
     if (_type != EntityTypes::PolyLine) {
-        QScriptValue P = object.property("faceCamera");
-        if (P.isValid() && !object.property("billboardMode").isValid()) {
+        QScriptValue P = object.property(QStringLiteral("faceCamera"));
+        if (P.isValid() && !object.property(QStringLiteral("billboardMode")).isValid()) {
             bool newValue = P.toVariant().toBool();
             bool oldValue = getBillboardMode() == BillboardMode::YAW;
             if (_defaultSettings || newValue != oldValue) {
@@ -2352,8 +2352,8 @@ void EntityItemProperties::copyFromScriptValue(const QScriptValue& object, bool 
         }
     }
     {
-        QScriptValue P = object.property("isFacingAvatar");
-        if (P.isValid() && !object.property("billboardMode").isValid() && !object.property("faceCamera").isValid()) {
+        QScriptValue P = object.property(QStringLiteral("isFacingAvatar"));
+        if (P.isValid() && !object.property(QStringLiteral("billboardMode")).isValid() && !object.property(QStringLiteral("faceCamera")).isValid()) {
             bool newValue = P.toVariant().toBool();
             bool oldValue = getBillboardMode() == BillboardMode::FULL;
             if (_defaultSettings || newValue != oldValue) {
@@ -2655,7 +2655,7 @@ void EntityItemProperties::entityPropertyFlagsFromScriptValue(const QScriptValue
         }
     }
     else if (object.isArray()) {
-        quint32 length = object.property("length").toInt32();
+        quint32 length = object.property(QStringLiteral("length")).toInt32();
         for (quint32 i = 0; i < length; i++) {
             QString propertyName = object.property(i).toString();
             EntityPropertyInfo propertyInfo;
@@ -3063,16 +3063,16 @@ bool EntityItemProperties::getPropertyInfo(const QString& propertyName, EntityPr
  */
 QScriptValue EntityPropertyInfoToScriptValue(QScriptEngine* engine, const EntityPropertyInfo& propertyInfo) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("propertyEnum", propertyInfo.propertyEnum);
-    obj.setProperty("minimum", propertyInfo.minimum.toString());
-    obj.setProperty("maximum", propertyInfo.maximum.toString());
+    obj.setProperty(QStringLiteral("propertyEnum"), propertyInfo.propertyEnum);
+    obj.setProperty(QStringLiteral("minimum"), propertyInfo.minimum.toString());
+    obj.setProperty(QStringLiteral("maximum"), propertyInfo.maximum.toString());
     return obj;
 }
 
 void EntityPropertyInfoFromScriptValue(const QScriptValue& object, EntityPropertyInfo& propertyInfo) {
-    propertyInfo.propertyEnum = (EntityPropertyList)object.property("propertyEnum").toVariant().toUInt();
-    propertyInfo.minimum = object.property("minimum").toVariant();
-    propertyInfo.maximum = object.property("maximum").toVariant();
+    propertyInfo.propertyEnum = (EntityPropertyList)object.property(QStringLiteral("propertyEnum")).toVariant().toUInt();
+    propertyInfo.minimum = object.property(QStringLiteral("minimum")).toVariant();
+    propertyInfo.maximum = object.property(QStringLiteral("maximum")).toVariant();
 }
 
 // TODO: Implement support for edit packets that can span an MTU sized buffer. We need to implement a mechanism for the
@@ -4467,412 +4467,412 @@ QList<QString> EntityItemProperties::listChangedProperties() {
 
     // Core
     if (simulationOwnerChanged()) {
-        out += "simulationOwner";
+        out += QStringLiteral("simulationOwner");
     }
     if (parentIDChanged()) {
-        out += "parentID";
+        out += QStringLiteral("parentID");
     }
     if (parentJointIndexChanged()) {
-        out += "parentJointIndex";
+        out += QStringLiteral("parentJointIndex");
     }
     if (visibleChanged()) {
-        out += "visible";
+        out += QStringLiteral("visible");
     }
     if (locallyVisibleChanged()) {
-        out += "locallyVisible";
+        out += QStringLiteral("locallyVisible");
     }
     if (nameChanged()) {
-        out += "name";
+        out += QStringLiteral("name");
     }
     if (lockedChanged()) {
-        out += "locked";
+        out += QStringLiteral("locked");
     }
     if (userDataChanged()) {
-        out += "userData";
+        out += QStringLiteral("userData");
     }
     if (privateUserDataChanged()) {
-        out += "privateUserData";
+        out += QStringLiteral("privateUserData");
     }
     if (hrefChanged()) {
-        out += "href";
+        out += QStringLiteral("href");
     }  
     if (descriptionChanged()) {
-        out += "description";
+        out += QStringLiteral("description");
     }
     if (entityPriorityChanged()) { 
-        out += "entityPriority";
+        out += QStringLiteral("entityPriority");
     }
     if (containsPositionChange()) {
-        out += "position";
+        out += QStringLiteral("position");
     }
     if (dimensionsChanged()) {
-        out += "dimensions";
+        out += QStringLiteral("dimensions");
     }
     if (rotationChanged()) {
-        out += "rotation";
+        out += QStringLiteral("rotation");
     }
     if (registrationPointChanged()) {
-        out += "registrationPoint";
+        out += QStringLiteral("registrationPoint");
     }
     if (createdChanged()) {
-        out += "created";
+        out += QStringLiteral("created");
     }
     if (lastEditedByChanged()) {
-        out += "lastEditedBy";
+        out += QStringLiteral("lastEditedBy");
     }
     if (entityHostTypeChanged()) {
-        out += "entityHostType";
+        out += QStringLiteral("entityHostType");
     }
     if (owningAvatarIDChanged()) {
-        out += "owningAvatarID";
+        out += QStringLiteral("owningAvatarID");
     }
     if (queryAACubeChanged()) {
-        out += "queryAACube";
+        out += QStringLiteral("queryAACube");
     }
     if (canCastShadowChanged()) {
-        out += "canCastShadow";
+        out += QStringLiteral("canCastShadow");
     }
     if (isVisibleInSecondaryCameraChanged()) {
-        out += "isVisibleInSecondaryCamera";
+        out += QStringLiteral("isVisibleInSecondaryCamera");
     }
     if (renderLayerChanged()) {
-        out += "renderLayer";
+        out += QStringLiteral("renderLayer");
     }
     if (primitiveModeChanged()) {
-        out += "primitiveMode";
+        out += QStringLiteral("primitiveMode");
     }
     if (ignorePickIntersectionChanged()) {
-        out += "ignorePickIntersection";
+        out += QStringLiteral("ignorePickIntersection");
     }
     getGrab().listChangedProperties(out);
 
     // Physics
     if (densityChanged()) {
-        out += "density";
+        out += QStringLiteral("density");
     }
     if (velocityChanged()) {
-        out += "velocity";
+        out += QStringLiteral("velocity");
     }
     if (angularVelocityChanged()) {
-        out += "angularVelocity";
+        out += QStringLiteral("angularVelocity");
     }
     if (gravityChanged()) {
-        out += "gravity";
+        out += QStringLiteral("gravity");
     }
     if (accelerationChanged()) {
-        out += "acceleration";
+        out += QStringLiteral("acceleration");
     }
     if (dampingChanged()) {
-        out += "damping";
+        out += QStringLiteral("damping");
     }
     if (angularDampingChanged()) {
-        out += "angularDamping";
+        out += QStringLiteral("angularDamping");
     }
     if (restitutionChanged()) {
-        out += "restitution";
+        out += QStringLiteral("restitution");
     }
     if (frictionChanged()) {
-        out += "friction";
+        out += QStringLiteral("friction");
     }
     if (lifetimeChanged()) {
-        out += "lifetime";
+        out += QStringLiteral("lifetime");
     }
     if (collisionlessChanged()) {
-        out += "collisionless";
+        out += QStringLiteral("collisionless");
     }
     if (collisionMaskChanged()) {
-        out += "collisionMask";
+        out += QStringLiteral("collisionMask");
     }
     if (dynamicChanged()) {
-        out += "dynamic";
+        out += QStringLiteral("dynamic");
     }
     if (collisionSoundURLChanged()) {
-        out += "collisionSoundURL";
+        out += QStringLiteral("collisionSoundURL");
     }
     if (actionDataChanged()) {
-        out += "actionData";
+        out += QStringLiteral("actionData");
     }
 
     // Cloning
     if (cloneableChanged()) {
-        out += "cloneable";
+        out += QStringLiteral("cloneable");
     }
     if (cloneLifetimeChanged()) {
-        out += "cloneLifetime";
+        out += QStringLiteral("cloneLifetime");
     }
     if (cloneLimitChanged()) {
-        out += "cloneLimit";
+        out += QStringLiteral("cloneLimit");
     }
     if (cloneDynamicChanged()) {
-        out += "cloneDynamic";
+        out += QStringLiteral("cloneDynamic");
     }
     if (cloneAvatarEntityChanged()) {
-        out += "cloneAvatarEntity";
+        out += QStringLiteral("cloneAvatarEntity");
     }
     if (cloneOriginIDChanged()) {
-        out += "cloneOriginID";
+        out += QStringLiteral("cloneOriginID");
     }
     if (cloneGrabbableChanged()) {
-        out += "cloneGrabbable";
+        out += QStringLiteral("cloneGrabbable");
     }
 
     // Scripts
     if (scriptChanged()) {
-        out += "script";
+        out += QStringLiteral("script");
     }
     if (scriptTimestampChanged()) {
-        out += "scriptTimestamp";
+        out += QStringLiteral("scriptTimestamp");
     }
     if (serverScriptsChanged()) {
-        out += "serverScripts";
+        out += QStringLiteral("serverScripts");
     }
 
     // Certifiable Properties
     if (itemNameChanged()) {
-        out += "itemName";
+        out += QStringLiteral("itemName");
     }
     if (itemDescriptionChanged()) {
-        out += "itemDescription";
+        out += QStringLiteral("itemDescription");
     }
     if (itemCategoriesChanged()) {
-        out += "itemCategories";
+        out += QStringLiteral("itemCategories");
     }
     if (itemArtistChanged()) {
-        out += "itemArtist";
+        out += QStringLiteral("itemArtist");
     }
     if (itemLicenseChanged()) {
-        out += "itemLicense";
+        out += QStringLiteral("itemLicense");
     }
     if (limitedRunChanged()) {
-        out += "limitedRun";
+        out += QStringLiteral("limitedRun");
     }
     if (marketplaceIDChanged()) {
-        out += "marketplaceID";
+        out += QStringLiteral("marketplaceID");
     }
     if (editionNumberChanged()) {
-        out += "editionNumber";
+        out += QStringLiteral("editionNumber");
     }
     if (entityInstanceNumberChanged()) {
-        out += "entityInstanceNumber";
+        out += QStringLiteral("entityInstanceNumber");
     }
     if (certificateIDChanged()) {
-        out += "certificateID";
+        out += QStringLiteral("certificateID");
     }
     if (certificateTypeChanged()) {
-        out += "certificateType";
+        out += QStringLiteral("certificateType");
     }
     if (staticCertificateVersionChanged()) {
-        out += "staticCertificateVersion";
+        out += QStringLiteral("staticCertificateVersion");
     }
 
     // Common
     if (shapeTypeChanged()) {
-        out += "shapeType";
+        out += QStringLiteral("shapeType");
     }
     if (compoundShapeURLChanged()) {
-        out += "compoundShapeURL";
+        out += QStringLiteral("compoundShapeURL");
     }
     if (colorChanged()) {
-        out += "color";
+        out += QStringLiteral("color");
     }
     if (alphaChanged()) {
-        out += "alpha";
+        out += QStringLiteral("alpha");
     }
     getPulse().listChangedProperties(out);
     if (texturesChanged()) {
-        out += "textures";
+        out += QStringLiteral("textures");
     }
     if (billboardModeChanged()) {
-        out += "billboardMode";
+        out += QStringLiteral("billboardMode");
     }
 
     // Particles
     if (maxParticlesChanged()) {
-        out += "maxParticles";
+        out += QStringLiteral("maxParticles");
     }
     if (lifespanChanged()) {
-        out += "lifespan";
+        out += QStringLiteral("lifespan");
     }
     if (isEmittingChanged()) {
-        out += "isEmitting";
+        out += QStringLiteral("isEmitting");
     }
     if (emitRateChanged()) {
-        out += "emitRate";
+        out += QStringLiteral("emitRate");
     }
     if (emitSpeedChanged()) {
-        out += "emitSpeed";
+        out += QStringLiteral("emitSpeed");
     }
     if (speedSpreadChanged()) {
-        out += "speedSpread";
+        out += QStringLiteral("speedSpread");
     }
     if (emitOrientationChanged()) {
-        out += "emitOrientation";
+        out += QStringLiteral("emitOrientation");
     }
     if (emitDimensionsChanged()) {
-        out += "emitDimensions";
+        out += QStringLiteral("emitDimensions");
     }
     if (emitRadiusStartChanged()) {
-        out += "emitRadiusStart";
+        out += QStringLiteral("emitRadiusStart");
     }
     if (polarStartChanged()) {
-        out += "polarStart";
+        out += QStringLiteral("polarStart");
     }
     if (polarFinishChanged()) {
-        out += "polarFinish";
+        out += QStringLiteral("polarFinish");
     }
     if (azimuthStartChanged()) {
-        out += "azimuthStart";
+        out += QStringLiteral("azimuthStart");
     }
     if (azimuthFinishChanged()) {
-        out += "azimuthFinish";
+        out += QStringLiteral("azimuthFinish");
     }
     if (emitAccelerationChanged()) {
-        out += "emitAcceleration";
+        out += QStringLiteral("emitAcceleration");
     }
     if (accelerationSpreadChanged()) {
-        out += "accelerationSpread";
+        out += QStringLiteral("accelerationSpread");
     }
     if (particleRadiusChanged()) {
-        out += "particleRadius";
+        out += QStringLiteral("particleRadius");
     }
     if (radiusSpreadChanged()) {
-        out += "radiusSpread";
+        out += QStringLiteral("radiusSpread");
     }
     if (radiusStartChanged()) {
-        out += "radiusStart";
+        out += QStringLiteral("radiusStart");
     }
     if (radiusFinishChanged()) {
-        out += "radiusFinish";
+        out += QStringLiteral("radiusFinish");
     }
     if (colorSpreadChanged()) {
-        out += "colorSpread";
+        out += QStringLiteral("colorSpread");
     }
     if (colorStartChanged()) {
-        out += "colorStart";
+        out += QStringLiteral("colorStart");
     }
     if (colorFinishChanged()) {
-        out += "colorFinish";
+        out += QStringLiteral("colorFinish");
     }
     if (alphaSpreadChanged()) {
-        out += "alphaSpread";
+        out += QStringLiteral("alphaSpread");
     }
     if (alphaStartChanged()) {
-        out += "alphaStart";
+        out += QStringLiteral("alphaStart");
     }
     if (alphaFinishChanged()) {
-        out += "alphaFinish";
+        out += QStringLiteral("alphaFinish");
     }
     if (emitterShouldTrailChanged()) {
-        out += "emitterShouldTrail";
+        out += QStringLiteral("emitterShouldTrail");
     }
     if (particleSpinChanged()) {
-        out += "particleSpin";
+        out += QStringLiteral("particleSpin");
     }
     if (spinSpreadChanged()) {
-        out += "spinSpread";
+        out += QStringLiteral("spinSpread");
     }
     if (spinStartChanged()) {
-        out += "spinStart";
+        out += QStringLiteral("spinStart");
     }
     if (spinFinishChanged()) {
-        out += "spinFinish";
+        out += QStringLiteral("spinFinish");
     }
     if (rotateWithEntityChanged()) {
-        out += "rotateWithEntity";
+        out += QStringLiteral("rotateWithEntity");
     }
 
     // Model
     if (modelURLChanged()) {
-        out += "modelURL";
+        out += QStringLiteral("modelURL");
     }
     if (modelScaleChanged()) {
-        out += "scale";
+        out += QStringLiteral("scale");
     }
     if (jointRotationsSetChanged()) {
-        out += "jointRotationsSet";
+        out += QStringLiteral("jointRotationsSet");
     }
     if (jointRotationsChanged()) {
-        out += "jointRotations";
+        out += QStringLiteral("jointRotations");
     }
     if (jointTranslationsSetChanged()) {
-        out += "jointTranslationsSet";
+        out += QStringLiteral("jointTranslationsSet");
     }
     if (jointTranslationsChanged()) {
-        out += "jointTranslations";
+        out += QStringLiteral("jointTranslations");
     }
     if (relayParentJointsChanged()) {
-        out += "relayParentJoints";
+        out += QStringLiteral("relayParentJoints");
     }
     if (groupCulledChanged()) {
-        out += "groupCulled";
+        out += QStringLiteral("groupCulled");
     }
     if (blendshapeCoefficientsChanged()) {
-        out += "blendshapeCoefficients";
+        out += QStringLiteral("blendshapeCoefficients");
     }
     getAnimation().listChangedProperties(out);
 
     // Light
     if (isSpotlightChanged()) {
-        out += "isSpotlight";
+        out += QStringLiteral("isSpotlight");
     }
     if (intensityChanged()) {
-        out += "intensity";
+        out += QStringLiteral("intensity");
     }
     if (exponentChanged()) {
-        out += "exponent";
+        out += QStringLiteral("exponent");
     }
     if (cutoffChanged()) {
-        out += "cutoff";
+        out += QStringLiteral("cutoff");
     }
     if (falloffRadiusChanged()) {
-        out += "falloffRadius";
+        out += QStringLiteral("falloffRadius");
     }
 
     // Text
     if (textChanged()) {
-        out += "text";
+        out += QStringLiteral("text");
     }
     if (lineHeightChanged()) {
-        out += "lineHeight";
+        out += QStringLiteral("lineHeight");
     }
     if (textColorChanged()) {
-        out += "textColor";
+        out += QStringLiteral("textColor");
     }
     if (textAlphaChanged()) {
-        out += "textAlpha";
+        out += QStringLiteral("textAlpha");
     }
     if (backgroundColorChanged()) {
-        out += "backgroundColor";
+        out += QStringLiteral("backgroundColor");
     }
     if (backgroundAlphaChanged()) {
-        out += "backgroundAlpha";
+        out += QStringLiteral("backgroundAlpha");
     }
     if (leftMarginChanged()) {
-        out += "leftMargin";
+        out += QStringLiteral("leftMargin");
     }
     if (rightMarginChanged()) {
-        out += "rightMargin";
+        out += QStringLiteral("rightMargin");
     }
     if (topMarginChanged()) {
-        out += "topMargin";
+        out += QStringLiteral("topMargin");
     }
     if (bottomMarginChanged()) {
-        out += "bottomMargin";
+        out += QStringLiteral("bottomMargin");
     }
     if (unlitChanged()) {
-        out += "unlit";
+        out += QStringLiteral("unlit");
     }
     if (fontChanged()) {
-        out += "font";
+        out += QStringLiteral("font");
     }
     if (textEffectChanged()) {
-        out += "textEffect";
+        out += QStringLiteral("textEffect");
     }
     if (textEffectColorChanged()) {
-        out += "textEffectColor";
+        out += QStringLiteral("textEffectColor");
     }
     if (textEffectThicknessChanged()) {
-        out += "textEffectThickness";
+        out += QStringLiteral("textEffectThickness");
     }
 
     // Zone
@@ -4882,184 +4882,184 @@ QList<QString> EntityItemProperties::listChangedProperties() {
     getHaze().listChangedProperties(out);
     getBloom().listChangedProperties(out);
     if (flyingAllowedChanged()) {
-        out += "flyingAllowed";
+        out += QStringLiteral("flyingAllowed");
     }
     if (ghostingAllowedChanged()) {
-        out += "ghostingAllowed";
+        out += QStringLiteral("ghostingAllowed");
     }
     if (filterURLChanged()) {
-        out += "filterURL";
+        out += QStringLiteral("filterURL");
     }
     if (keyLightModeChanged()) {
-        out += "keyLightMode";
+        out += QStringLiteral("keyLightMode");
     }
     if (ambientLightModeChanged()) {
-        out += "ambientLightMode";
+        out += QStringLiteral("ambientLightMode");
     }
     if (skyboxModeChanged()) {
-        out += "skyboxMode";
+        out += QStringLiteral("skyboxMode");
     }
     if (hazeModeChanged()) {
-        out += "hazeMode";
+        out += QStringLiteral("hazeMode");
     }
     if (bloomModeChanged()) {
-        out += "bloomMode";
+        out += QStringLiteral("bloomMode");
     }
     if (avatarPriorityChanged()) {
-        out += "avatarPriority";
+        out += QStringLiteral("avatarPriority");
     }
     if (zoneCullingModeChanged()) {
-        out += "zoneCullingMode";
+        out += QStringLiteral("zoneCullingMode");
     }
     if (toneMappingModeChanged()) {
-        out += "toneMappingMode";
+        out += QStringLiteral("toneMappingMode");
     }
     // Polyvox
     if (voxelVolumeSizeChanged()) {
-        out += "voxelVolumeSize";
+        out += QStringLiteral("voxelVolumeSize");
     }
     if (voxelDataChanged()) {
-        out += "voxelData";
+        out += QStringLiteral("voxelData");
     }
     if (voxelSurfaceStyleChanged()) {
-        out += "voxelSurfaceStyle";
+        out += QStringLiteral("voxelSurfaceStyle");
     }
     if (xTextureURLChanged()) {
-        out += "xTextureURL";
+        out += QStringLiteral("xTextureURL");
     }
     if (yTextureURLChanged()) {
-        out += "yTextureURL";
+        out += QStringLiteral("yTextureURL");
     }
     if (zTextureURLChanged()) {
-        out += "zTextureURL";
+        out += QStringLiteral("zTextureURL");
     }
     if (xNNeighborIDChanged()) {
-        out += "xNNeighborID";
+        out += QStringLiteral("xNNeighborID");
     }
     if (yNNeighborIDChanged()) {
-        out += "yNNeighborID";
+        out += QStringLiteral("yNNeighborID");
     }
     if (zNNeighborIDChanged()) {
-        out += "zNNeighborID";
+        out += QStringLiteral("zNNeighborID");
     }
     if (xPNeighborIDChanged()) {
-        out += "xPNeighborID";
+        out += QStringLiteral("xPNeighborID");
     }
     if (yPNeighborIDChanged()) {
-        out += "yPNeighborID";
+        out += QStringLiteral("yPNeighborID");
     }
     if (zPNeighborIDChanged()) {
-        out += "zPNeighborID";
+        out += QStringLiteral("zPNeighborID");
     }
 
     // Web
     if (sourceUrlChanged()) {
-        out += "sourceUrl";
+        out += QStringLiteral("sourceUrl");
     }
     if (dpiChanged()) {
-        out += "dpi";
+        out += QStringLiteral("dpi");
     }
     if (scriptURLChanged()) {
-        out += "scriptURL";
+        out += QStringLiteral("scriptURL");
     }
     if (maxFPSChanged()) {
-        out += "maxFPS";
+        out += QStringLiteral("maxFPS");
     }
     if (inputModeChanged()) {
-        out += "inputMode";
+        out += QStringLiteral("inputMode");
     }
     if (transparentBackgroundChanged()) {
-        out += "transparentBackground";
+        out += QStringLiteral("transparentBackground");
     }
 
     // Polyline
     if (linePointsChanged()) {
-        out += "linePoints";
+        out += QStringLiteral("linePoints");
     }
     if (strokeWidthsChanged()) {
-        out += "strokeWidths";
+        out += QStringLiteral("strokeWidths");
     }
     if (normalsChanged()) {
-        out += "normals";
+        out += QStringLiteral("normals");
     }
     if (strokeColorsChanged()) {
-        out += "strokeColors";
+        out += QStringLiteral("strokeColors");
     }
     if (isUVModeStretchChanged()) {
-        out += "isUVModeStretch";
+        out += QStringLiteral("isUVModeStretch");
     }
     if (glowChanged()) {
-        out += "glow";
+        out += QStringLiteral("glow");
     }
     if (faceCameraChanged()) {
-        out += "faceCamera";
+        out += QStringLiteral("faceCamera");
     }
     if (showKeyboardFocusHighlightChanged()) {
-        out += "showKeyboardFocusHighlight";
+        out += QStringLiteral("showKeyboardFocusHighlight");
     }
 
     // Shape
     if (shapeChanged()) {
-        out += "shape";
+        out += QStringLiteral("shape");
     }
 
     // Material
     if (materialURLChanged()) {
-        out += "materialURL";
+        out += QStringLiteral("materialURL");
     }
     if (materialMappingModeChanged()) {
-        out += "materialMappingMode";
+        out += QStringLiteral("materialMappingMode");
     }
     if (priorityChanged()) {
-        out += "priority";
+        out += QStringLiteral("priority");
     }
     if (parentMaterialNameChanged()) {
-        out += "parentMaterialName";
+        out += QStringLiteral("parentMaterialName");
     }
     if (materialMappingPosChanged()) {
-        out += "materialMappingPos";
+        out += QStringLiteral("materialMappingPos");
     }
     if (materialMappingScaleChanged()) {
-        out += "materialMappingScale";
+        out += QStringLiteral("materialMappingScale");
     }
     if (materialMappingRotChanged()) {
-        out += "materialMappingRot";
+        out += QStringLiteral("materialMappingRot");
     }
     if (materialDataChanged()) {
-        out += "materialData";
+        out += QStringLiteral("materialData");
     }
     if (materialRepeatChanged()) {
-        out += "materialRepeat";
+        out += QStringLiteral("materialRepeat");
     }
 
     // Image
     if (imageURLChanged()) {
-        out += "imageURL";
+        out += QStringLiteral("imageURL");
     }
     if (emissiveChanged()) {
-        out += "emissive";
+        out += QStringLiteral("emissive");
     }
     if (keepAspectRatioChanged()) {
-        out += "keepAspectRatio";
+        out += QStringLiteral("keepAspectRatio");
     }
     if (subImageChanged()) {
-        out += "subImage";
+        out += QStringLiteral("subImage");
     }
 
     // Grid
     if (followCameraChanged()) {
-        out += "followCamera";
+        out += QStringLiteral("followCamera");
     }
     if (majorGridEveryChanged()) {
-        out += "majorGridEvery";
+        out += QStringLiteral("majorGridEvery");
     }
     if (minorGridEveryChanged()) {
-        out += "minorGridEvery";
+        out += QStringLiteral("minorGridEvery");
     }
 
     // Gizmo
     if (gizmoTypeChanged()) {
-        out += "gizmoType";
+        out += QStringLiteral("gizmoType");
     }
     getRing().listChangedProperties(out);
 
@@ -5121,7 +5121,7 @@ QByteArray EntityItemProperties::getStaticCertificateJSON() const {
     quint32 staticCertificateVersion = getStaticCertificateVersion();
 
     if (!getAnimation().getURL().isEmpty()) {
-        json["animationURL"] = getAnimation().getURL();
+        json[QStringLiteral("animationURL")] = getAnimation().getURL();
     }
     if (staticCertificateVersion >= 3) {
         ADD_STRING_PROPERTY(certificateType, CertificateType);
@@ -5144,7 +5144,7 @@ QByteArray EntityItemProperties::getStaticCertificateJSON() const {
     }
     ADD_ENUM_PROPERTY(shapeType, ShapeType);
     ADD_INT_PROPERTY(staticCertificateVersion, StaticCertificateVersion);
-    json["type"] = EntityTypes::getEntityTypeName(getType());
+    json[QStringLiteral("type")] = EntityTypes::getEntityTypeName(getType());
 
     return QJsonDocument(json).toJson(QJsonDocument::Compact);
 }
@@ -5235,7 +5235,7 @@ bool EntityItemProperties::verifyStaticCertificateProperties() {
 }
 
 void EntityItemProperties::convertToCloneProperties(const EntityItemID& entityIDToClone) {
-    setName(getName() + "-clone-" + entityIDToClone.toString());
+    setName(getName() + QStringLiteral("-clone-") + entityIDToClone.toString());
     setLocked(false);
     setParentID(QUuid());
     setParentJointIndex(-1);
@@ -5288,9 +5288,9 @@ void EntityItemProperties::propertiesToBlob(QScriptEngine& scriptEngine, const Q
     QJsonDocument jsonProperties = QJsonDocument::fromVariant(variantProperties);
     // the ID of the parent/avatar changes from session to session.  use a special UUID to indicate the avatar
     QJsonObject jsonObject = jsonProperties.object();
-    if (jsonObject.contains("parentID")) {
-        if (QUuid(jsonObject["parentID"].toString()) == myAvatarID) {
-            jsonObject["parentID"] = AVATAR_SELF_ID.toString();
+    if (jsonObject.contains(QStringLiteral("parentID"))) {
+        if (QUuid(jsonObject[QStringLiteral("parentID")].toString()) == myAvatarID) {
+            jsonObject[QStringLiteral("parentID")] = AVATAR_SELF_ID.toString();
         }
     }
     blob = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact);
@@ -5298,16 +5298,16 @@ void EntityItemProperties::propertiesToBlob(QScriptEngine& scriptEngine, const Q
 }
 
 QDebug& operator<<(QDebug& dbg, const EntityPropertyFlags& f) {
-    QString result = "[ ";
+    QString result = QStringLiteral("[ ");
 
     for (int i = 0; i < PROP_AFTER_LAST_ITEM; i++) {
         auto prop = EntityPropertyList(i);
         if (f.getHasProperty(prop)) {
-            result = result + _enumsToPropertyStrings[prop] + " ";
+            result = result + _enumsToPropertyStrings[prop] + QStringLiteral(" ");
         }
     }
 
-    result += "]";
+    result += QStringLiteral("]");
     dbg.nospace() << result;
     return dbg;
 }

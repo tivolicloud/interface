@@ -26,7 +26,7 @@ void TraceTests::testTraceSerialization() {
     tracer->startTracing();
     {
         auto start = usecTimestampNow();
-        PROFILE_RANGE(test, "TestEvent")
+        PROFILE_RANGE(test, QStringLiteral("TestEvent"));
         for (size_t i = 0; i < 10000; ++i) {
             SAMPLE_PROFILE_COUNTER(0.1f, test, "TestCounter", { { "i", (int)i } })
         }

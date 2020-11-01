@@ -234,7 +234,7 @@ ShapeKey GizmoEntityRenderer::getShapeKey() {
 }
 
 void GizmoEntityRenderer::doRender(RenderArgs* args) {
-    PerformanceTimer perfTimer("RenderableGizmoEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderableGizmoEntityItem::render"));
     Q_ASSERT(args->_batch);
 
     gpu::Batch& batch = *args->_batch;

@@ -99,11 +99,11 @@ GPUIdent* GPUIdent::ensureQuery(const QString& vendor, const QString& renderer) 
         QString convert(const LARGE_INTEGER& version) {
             QString value;
             value.append(QString::number(uint32_t(((version.HighPart & 0xFFFF0000) >> 16) & 0x0000FFFF)));
-            value.append(".");
+            value.append(QStringLiteral("."));
             value.append(QString::number(uint32_t((version.HighPart) & 0x0000FFFF)));
-            value.append(".");
+            value.append(QStringLiteral("."));
             value.append(QString::number(uint32_t(((version.LowPart & 0xFFFF0000) >> 16) & 0x0000FFFF)));
-            value.append(".");
+            value.append(QStringLiteral("."));
             value.append(QString::number(uint32_t((version.LowPart) & 0x0000FFFF)));
             return value;
         }

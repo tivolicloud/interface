@@ -689,7 +689,7 @@ bool sphericalHarmonicsFromTexture(const gpu::Texture& cubeTexture, std::vector<
         return false;
     }
 
-    PROFILE_RANGE(render_gpu, "sphericalHarmonicsFromTexture");
+    PROFILE_RANGE(render_gpu, QStringLiteral("sphericalHarmonicsFromTexture"));
 
     const uint sqOrder = order*order;
 
@@ -722,7 +722,7 @@ bool sphericalHarmonicsFromTexture(const gpu::Texture& cubeTexture, std::vector<
 
     // for each face of cube texture
     for(int face=0; face < gpu::Texture::NUM_CUBE_FACES; face++) {
-        PROFILE_RANGE(render_gpu, "ProcessFace");
+        PROFILE_RANGE(render_gpu, QStringLiteral("ProcessFace"));
 
         auto data = cubeTexture.accessStoredMipFace(0, face)->readData();
         if (data == nullptr) {

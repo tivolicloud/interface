@@ -50,7 +50,7 @@ public:
     NetworkTexture(const NetworkTexture& other);
     ~NetworkTexture() override;
 
-    QString getType() const override { return "NetworkTexture"; }
+    QString getType() const override { return QStringLiteral("NetworkTexture"); }
 
     int getOriginalWidth() const { return _originalWidth; }
     int getOriginalHeight() const { return _originalHeight; }

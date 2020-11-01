@@ -30,7 +30,7 @@ ThreadedAssignment::ThreadedAssignment(ReceivedMessage& message) :
     _statsTimer(this)
 {
     // use <mixer-type> as a temporary targetName name until commonInit can be called later
-    LogHandler::getInstance().setTargetName(QString("<%1>").arg(getTypeName()));
+    LogHandler::getInstance().setTargetName(QStringLiteral("<%1>").arg(getTypeName()));
 
     static const int STATS_TIMEOUT_MS = 1000;
     _statsTimer.setInterval(STATS_TIMEOUT_MS); // 1s, Qt::CoarseTimer acceptable
@@ -110,21 +110,21 @@ void ThreadedAssignment::addPacketStatsAndSendStatsPacket(QJsonObject statsObjec
     auto nodeList = DependencyManager::get<NodeList>();
 
 #ifdef DEBUG_EVENT_QUEUE
-    statsObject["nodelist_event_queue_size"] = ::hifi::qt::getEventQueueSize(nodeList->thread());
+    statsObject[QStringLiteral("nodelist_event_queue_size")] = ::hifi::qt::getEventQueueSize(nodeList->thread());
 #endif
 
     QJsonObject ioStats;
-    ioStats["inbound_kbps"] = nodeList->getInboundKbps();
-    ioStats["inbound_pps"] = nodeList->getInboundPPS();
-    ioStats["outbound_kbps"] = nodeList->getOutboundKbps();
-    ioStats["outbound_pps"] = nodeList->getOutboundPPS();
+    ioStats[QStringLiteral("inbound_kbps")] = nodeList->getInboundKbps();
+    ioStats[QStringLiteral("inbound_pps")] = nodeList->getInboundPPS();
+    ioStats[QStringLiteral("outbound_kbps")] = nodeList->getOutboundKbps();
+    ioStats[QStringLiteral("outbound_pps")] = nodeList->getOutboundPPS();
 
-    statsObject["io_stats"] = ioStats;
+    statsObject[QStringLiteral("io_stats")] = ioStats;
 
     QJsonObject assignmentStats;
-    assignmentStats["numQueuedCheckIns"] = _numQueuedCheckIns;
+    assignmentStats[QStringLiteral("numQueuedCheckIns")] = _numQueuedCheckIns;
 
-    statsObject["assignmentStats"] = assignmentStats;
+    statsObject[QStringLiteral("assignmentStats")] = assignmentStats;
 
     nodeList->sendStatsToDomainServer(statsObject);
 }

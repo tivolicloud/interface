@@ -489,11 +489,11 @@ void Flow::calculateConstraints(const std::shared_ptr<AnimSkeleton>& skeleton,
         auto jointChildren = skeleton->getChildrenOfJoint(i);
         // auto childIndex = jointChildren.size() > 0 ? jointChildren[0] : -1;
         auto group = QStringRef(&name, 0, 3).toString().toUpper();
-        auto split = name.split("_");
+        auto split = name.split(QStringLiteral("_"));
         bool isSimJoint = (group == simPrefix);
         bool isFlowJoint = split.size() > 2 && split[0].toUpper() == flowPrefix;
         if (isFlowJoint || isSimJoint) {
-            group = "";
+            group = QString();
             if (isSimJoint) {
                 for (int j = 1; j < name.size() - 1; j++) {
                     bool toFloatSuccess;

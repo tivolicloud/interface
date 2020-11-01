@@ -185,9 +185,9 @@ void TreeModel::loadFromFile(const QString& filename) {
             }
 
             QList<QVariant> columnData;
-            columnData << QString("root");
-            columnData << QString("root");
-            columnData << QString("root");
+            columnData << QStringLiteral("root");
+            columnData << QStringLiteral("root");
+            columnData << QStringLiteral("root");
 
             // create root item
             _rootItem = new TreeItem(columnData);

@@ -334,9 +334,9 @@ void Rig::overrideAnimation(const QString& url, float fps, bool loop, float firs
         // find an unused AnimClip clipNode
         std::shared_ptr<AnimClip> clip;
         if (clipNodeEnum == UserAnimState::A) {
-            clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("userAnimA"));
+            clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("userAnimA")));
         } else {
-            clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("userAnimB"));
+            clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("userAnimB")));
         }
 
         if (clip) {
@@ -355,9 +355,9 @@ void Rig::overrideAnimation(const QString& url, float fps, bool loop, float firs
     _userAnimState = { clipNodeEnum, url, fps, loop, firstFrame, lastFrame };
 
     // notify the userAnimStateMachine the desired state.
-    _animVars.set("userAnimNone", false);
-    _animVars.set("userAnimA", clipNodeEnum == UserAnimState::A);
-    _animVars.set("userAnimB", clipNodeEnum == UserAnimState::B);
+    _animVars.set(QStringLiteral("userAnimNone"), false);
+    _animVars.set(QStringLiteral("userAnimA"), clipNodeEnum == UserAnimState::A);
+    _animVars.set(QStringLiteral("userAnimB"), clipNodeEnum == UserAnimState::B);
 }
 
 void Rig::restoreAnimation() {
@@ -365,9 +365,9 @@ void Rig::restoreAnimation() {
         _userAnimState.clipNodeEnum = UserAnimState::None;
 
         // notify the userAnimStateMachine the desired state.
-        _animVars.set("userAnimNone", true);
-        _animVars.set("userAnimA", false);
-        _animVars.set("userAnimB", false);
+        _animVars.set(QStringLiteral("userAnimNone"), true);
+        _animVars.set(QStringLiteral("userAnimA"), false);
+        _animVars.set(QStringLiteral("userAnimB"), false);
     }
 }
 
@@ -391,15 +391,15 @@ void Rig::overrideHandAnimation(bool isLeft, const QString& url, float fps, bool
         std::shared_ptr<AnimClip> clip;
         if (isLeft) {
             if (clipNodeEnum == HandAnimState::A) {
-                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("leftHandAnimA"));
+                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("leftHandAnimA")));
             } else {
-                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("leftHandAnimB"));
+                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("leftHandAnimB")));
             }
         } else {
             if (clipNodeEnum == HandAnimState::A) {
-                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("rightHandAnimA"));
+                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("rightHandAnimA")));
             } else {
-                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName("rightHandAnimB"));
+                clip = std::dynamic_pointer_cast<AnimClip>(_animNode->findByName(QStringLiteral("rightHandAnimB")));
             }
         }
 
@@ -419,15 +419,15 @@ void Rig::overrideHandAnimation(bool isLeft, const QString& url, float fps, bool
     if (isLeft) {
         // store current hand anim state.
         _leftHandAnimState = { clipNodeEnum, url, fps, loop, firstFrame, lastFrame };
-        _animVars.set("leftHandAnimNone", false);
-        _animVars.set("leftHandAnimA", clipNodeEnum == HandAnimState::A);
-        _animVars.set("leftHandAnimB", clipNodeEnum == HandAnimState::B);
+        _animVars.set(QStringLiteral("leftHandAnimNone"), false);
+        _animVars.set(QStringLiteral("leftHandAnimA"), clipNodeEnum == HandAnimState::A);
+        _animVars.set(QStringLiteral("leftHandAnimB"), clipNodeEnum == HandAnimState::B);
     } else {
         // store current hand anim state.
         _rightHandAnimState = { clipNodeEnum, url, fps, loop, firstFrame, lastFrame };
-        _animVars.set("rightHandAnimNone", false);
-        _animVars.set("rightHandAnimA", clipNodeEnum == HandAnimState::A);
-        _animVars.set("rightHandAnimB", clipNodeEnum == HandAnimState::B);
+        _animVars.set(QStringLiteral("rightHandAnimNone"), false);
+        _animVars.set(QStringLiteral("rightHandAnimA"), clipNodeEnum == HandAnimState::A);
+        _animVars.set(QStringLiteral("rightHandAnimB"), clipNodeEnum == HandAnimState::B);
     }
 }
 
@@ -437,18 +437,18 @@ void Rig::restoreHandAnimation(bool isLeft) {
             _leftHandAnimState.clipNodeEnum = HandAnimState::None;
 
             // notify the handAnimStateMachine the desired state.
-            _animVars.set("leftHandAnimNone", true);
-            _animVars.set("leftHandAnimA", false);
-            _animVars.set("leftHandAnimB", false);
+            _animVars.set(QStringLiteral("leftHandAnimNone"), true);
+            _animVars.set(QStringLiteral("leftHandAnimA"), false);
+            _animVars.set(QStringLiteral("leftHandAnimB"), false);
         }
     } else {
         if (_rightHandAnimState.clipNodeEnum != HandAnimState::None) {
             _rightHandAnimState.clipNodeEnum = HandAnimState::None;
 
             // notify the handAnimStateMachine the desired state.
-            _animVars.set("rightHandAnimNone", true);
-            _animVars.set("rightHandAnimA", false);
-            _animVars.set("rightHandAnimB", false);
+            _animVars.set(QStringLiteral("rightHandAnimNone"), true);
+            _animVars.set(QStringLiteral("rightHandAnimA"), false);
+            _animVars.set(QStringLiteral("rightHandAnimB"), false);
         }
     }
 }
@@ -466,9 +466,9 @@ void Rig::overrideNetworkAnimation(const QString& url, float fps, bool loop, flo
         // find an unused AnimClip clipNode
         std::shared_ptr<AnimClip> clip;
         if (clipNodeEnum == NetworkAnimState::A) {
-            clip = std::dynamic_pointer_cast<AnimClip>(_networkNode->findByName("userNetworkAnimA"));
+            clip = std::dynamic_pointer_cast<AnimClip>(_networkNode->findByName(QStringLiteral("userNetworkAnimA")));
         } else {
-            clip = std::dynamic_pointer_cast<AnimClip>(_networkNode->findByName("userNetworkAnimB"));
+            clip = std::dynamic_pointer_cast<AnimClip>(_networkNode->findByName(QStringLiteral("userNetworkAnimB")));
         }
         if (clip) {
             // set parameters
@@ -486,9 +486,9 @@ void Rig::overrideNetworkAnimation(const QString& url, float fps, bool loop, flo
     _networkAnimState = { clipNodeEnum, url, fps, loop, firstFrame, lastFrame };
 
     // notify the userAnimStateMachine the desired state.
-    _networkVars.set("transitAnimStateMachine", false);
-    _networkVars.set("userNetworkAnimA", clipNodeEnum == NetworkAnimState::A);
-    _networkVars.set("userNetworkAnimB", clipNodeEnum == NetworkAnimState::B);
+    _networkVars.set(QStringLiteral("transitAnimStateMachine"), false);
+    _networkVars.set(QStringLiteral("userNetworkAnimA"), clipNodeEnum == NetworkAnimState::A);
+    _networkVars.set(QStringLiteral("userNetworkAnimB"), clipNodeEnum == NetworkAnimState::B);
     if (!_computeNetworkAnimation) {
         _networkAnimState.blendTime = 0.0f;
         _computeNetworkAnimation = true;
@@ -496,29 +496,29 @@ void Rig::overrideNetworkAnimation(const QString& url, float fps, bool loop, flo
 }
 
 void Rig::triggerNetworkRole(const QString& role) {
-    _networkVars.set("transitAnimStateMachine", false);
-    _networkVars.set("idleAnim", false);
-    _networkVars.set("userNetworkAnimA", false);
-    _networkVars.set("userNetworkAnimB", false);
-    _networkVars.set("preTransitAnim", false);
-    _networkVars.set("preTransitAnim", false);
-    _networkVars.set("transitAnim", false);
-    _networkVars.set("postTransitAnim", false);
+    _networkVars.set(QStringLiteral("transitAnimStateMachine"), false);
+    _networkVars.set(QStringLiteral("idleAnim"), false);
+    _networkVars.set(QStringLiteral("userNetworkAnimA"), false);
+    _networkVars.set(QStringLiteral("userNetworkAnimB"), false);
+    _networkVars.set(QStringLiteral("preTransitAnim"), false);
+    _networkVars.set(QStringLiteral("preTransitAnim"), false);
+    _networkVars.set(QStringLiteral("transitAnim"), false);
+    _networkVars.set(QStringLiteral("postTransitAnim"), false);
     _computeNetworkAnimation = true;
-    if (role == "idleAnim") {
-        _networkVars.set("idleAnim", true);
+    if (role == QStringLiteral("idleAnim")) {
+        _networkVars.set(QStringLiteral("idleAnim"), true);
         _networkAnimState.clipNodeEnum = NetworkAnimState::None;
         _computeNetworkAnimation = false;
         _networkAnimState.blendTime = 0.0f;
-    } else if (role == "preTransitAnim") {
-        _networkVars.set("preTransitAnim", true);
+    } else if (role == QStringLiteral("preTransitAnim")) {
+        _networkVars.set(QStringLiteral("preTransitAnim"), true);
         _networkAnimState.clipNodeEnum = NetworkAnimState::PreTransit;
         _networkAnimState.blendTime = 0.0f;
-    } else if (role == "transitAnim") {
-        _networkVars.set("transitAnim", true);
+    } else if (role == QStringLiteral("transitAnim")) {
+        _networkVars.set(QStringLiteral("transitAnim"), true);
         _networkAnimState.clipNodeEnum = NetworkAnimState::Transit;
-    } else if (role == "postTransitAnim") {
-        _networkVars.set("postTransitAnim", true);
+    } else if (role == QStringLiteral("postTransitAnim")) {
+        _networkVars.set(QStringLiteral("postTransitAnim"), true);
         _networkAnimState.clipNodeEnum = NetworkAnimState::PostTransit;
     }
     
@@ -531,9 +531,9 @@ void Rig::restoreNetworkAnimation() {
             _computeNetworkAnimation = false;
         }
         _networkAnimState.clipNodeEnum = NetworkAnimState::None;
-        _networkVars.set("transitAnimStateMachine", true);
-        _networkVars.set("userNetworkAnimA", false);
-        _networkVars.set("userNetworkAnimB", false);
+        _networkVars.set(QStringLiteral("transitAnimStateMachine"), true);
+        _networkVars.set(QStringLiteral("userNetworkAnimA"), false);
+        _networkVars.set(QStringLiteral("userNetworkAnimB"), false);
     }
 }
 
@@ -546,7 +546,7 @@ QStringList Rig::getAnimationRoles() const {
             if (clipNode) {
                 // filter out the userAnims, they are for internal use only.
                 // also don't return additive blend node clips as valid roles.
-                if (!clipNode->getID().startsWith("userAnim") && clipNode->getBlendType() == AnimBlendType_Normal) {
+                if (!clipNode->getID().startsWith(QStringLiteral("userAnim")) && clipNode->getBlendType() == AnimBlendType_Normal) {
                     list.append(node->getID());
                 }
             }
@@ -651,18 +651,18 @@ void Rig::initJointStates(const HFMModel& hfmModel, const glm::mat4& modelOffset
 
     buildAbsoluteRigPoses(_animSkeleton->getRelativeDefaultPoses(), _absoluteDefaultPoses);
 
-    _rootJointIndex = indexOfJoint("Hips");
-    _leftEyeJointIndex = indexOfJoint("LeftEye");
-    _rightEyeJointIndex = indexOfJoint("RightEye");
-    _leftHandJointIndex = indexOfJoint("LeftHand");
+    _rootJointIndex = indexOfJoint(QStringLiteral("Hips"));
+    _leftEyeJointIndex = indexOfJoint(QStringLiteral("LeftEye"));
+    _rightEyeJointIndex = indexOfJoint(QStringLiteral("RightEye"));
+    _leftHandJointIndex = indexOfJoint(QStringLiteral("LeftHand"));
     _leftElbowJointIndex = _leftHandJointIndex >= 0 ? hfmModel.joints.at(_leftHandJointIndex).parentIndex : -1;
     _leftShoulderJointIndex = _leftElbowJointIndex >= 0 ? hfmModel.joints.at(_leftElbowJointIndex).parentIndex : -1;
-    _rightHandJointIndex = indexOfJoint("RightHand");
+    _rightHandJointIndex = indexOfJoint(QStringLiteral("RightHand"));
     _rightElbowJointIndex = _rightHandJointIndex >= 0 ? hfmModel.joints.at(_rightHandJointIndex).parentIndex : -1;
     _rightShoulderJointIndex = _rightElbowJointIndex >= 0 ? hfmModel.joints.at(_rightElbowJointIndex).parentIndex : -1;
 
-    _leftEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint("LeftEye"));
-    _rightEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint("RightEye"));
+    _leftEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint(QStringLiteral("LeftEye")));
+    _rightEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint(QStringLiteral("RightEye")));
 }
 
 void Rig::reset(const HFMModel& hfmModel) {
@@ -697,18 +697,18 @@ void Rig::reset(const HFMModel& hfmModel) {
 
     buildAbsoluteRigPoses(_animSkeleton->getRelativeDefaultPoses(), _absoluteDefaultPoses);
 
-    _rootJointIndex = indexOfJoint("Hips");;
-    _leftEyeJointIndex = indexOfJoint("LeftEye");
-    _rightEyeJointIndex = indexOfJoint("RightEye");
-    _leftHandJointIndex = indexOfJoint("LeftHand");
+    _rootJointIndex = indexOfJoint(QStringLiteral("Hips"));;
+    _leftEyeJointIndex = indexOfJoint(QStringLiteral("LeftEye"));
+    _rightEyeJointIndex = indexOfJoint(QStringLiteral("RightEye"));
+    _leftHandJointIndex = indexOfJoint(QStringLiteral("LeftHand"));
     _leftElbowJointIndex = _leftHandJointIndex >= 0 ? hfmModel.joints.at(_leftHandJointIndex).parentIndex : -1;
     _leftShoulderJointIndex = _leftElbowJointIndex >= 0 ? hfmModel.joints.at(_leftElbowJointIndex).parentIndex : -1;
-    _rightHandJointIndex = indexOfJoint("RightHand");
+    _rightHandJointIndex = indexOfJoint(QStringLiteral("RightHand"));
     _rightElbowJointIndex = _rightHandJointIndex >= 0 ? hfmModel.joints.at(_rightHandJointIndex).parentIndex : -1;
     _rightShoulderJointIndex = _rightElbowJointIndex >= 0 ? hfmModel.joints.at(_rightElbowJointIndex).parentIndex : -1;
 
-    _leftEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint("LeftEye"));
-    _rightEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint("RightEye"));
+    _leftEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint(QStringLiteral("LeftEye")));
+    _rightEyeJointChildren = _animSkeleton->getChildrenOfJoint(indexOfJoint(QStringLiteral("RightEye")));
 
     if (!_animGraphURL.isEmpty()) {
         _animNode.reset();
@@ -745,7 +745,7 @@ QString Rig::nameOfJoint(int jointIndex) const {
     if (_animSkeleton) {
         return _animSkeleton->getJointName(jointIndex);
     } else {
-        return "";
+        return QString();
     }
 }
 
@@ -1083,10 +1083,10 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
 
         // sine wave LFO var for testing.
         static float t = 0.0f;
-        _animVars.set("sine", 2.0f * 0.5f * sinf(t) + 0.5f);
-        _animVars.set("moveForwardSpeed", _averageForwardSpeed.getAverage());
-        _animVars.set("moveBackwardSpeed", -_averageForwardSpeed.getAverage());
-        _animVars.set("moveLateralSpeed", fabsf(_averageLateralSpeed.getAverage()));
+        _animVars.set(QStringLiteral("sine"), 2.0f * 0.5f * sinf(t) + 0.5f);
+        _animVars.set(QStringLiteral("moveForwardSpeed"), _averageForwardSpeed.getAverage());
+        _animVars.set(QStringLiteral("moveBackwardSpeed"), -_averageForwardSpeed.getAverage());
+        _animVars.set(QStringLiteral("moveLateralSpeed"), fabsf(_averageLateralSpeed.getAverage()));
 
         const float MOVE_ENTER_SPEED_THRESHOLD = 0.2f; // m/sec
         const float MOVE_EXIT_SPEED_THRESHOLD = 0.07f;  // m/sec
@@ -1184,228 +1184,228 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
                 if (fabsf(forwardSpeed) > 0.5f * fabsf(lateralSpeed)) {
                     if (forwardSpeed > 0.0f) {
                         // forward
-                        _animVars.set("isMovingForward", true);
-                        _animVars.set("isMovingBackward", false);
-                        _animVars.set("isMovingRight", false);
-                        _animVars.set("isMovingLeft", false);
-                        _animVars.set("isMovingRightHmd", false);
-                        _animVars.set("isMovingLeftHmd", false);
-                        _animVars.set("isNotMoving", false);
+                        _animVars.set(QStringLiteral("isMovingForward"), true);
+                        _animVars.set(QStringLiteral("isMovingBackward"), false);
+                        _animVars.set(QStringLiteral("isMovingRight"), false);
+                        _animVars.set(QStringLiteral("isMovingLeft"), false);
+                        _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+                        _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+                        _animVars.set(QStringLiteral("isNotMoving"), false);
 
                     } else {
                         // backward
-                        _animVars.set("isMovingBackward", true);
-                        _animVars.set("isMovingForward", false);
-                        _animVars.set("isMovingRight", false);
-                        _animVars.set("isMovingLeft", false);
-                        _animVars.set("isMovingRightHmd", false);
-                        _animVars.set("isMovingLeftHmd", false);
-                        _animVars.set("isNotMoving", false);
+                        _animVars.set(QStringLiteral("isMovingBackward"), true);
+                        _animVars.set(QStringLiteral("isMovingForward"), false);
+                        _animVars.set(QStringLiteral("isMovingRight"), false);
+                        _animVars.set(QStringLiteral("isMovingLeft"), false);
+                        _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+                        _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+                        _animVars.set(QStringLiteral("isNotMoving"), false);
                     }
                 } else {
                     if (lateralSpeed > 0.0f) {
                         // right
                         if (!_headEnabled) {
-                            _animVars.set("isMovingRight", true);
-                            _animVars.set("isMovingLeft", false);
-                            _animVars.set("isMovingRightHmd", false);
-                            _animVars.set("isMovingLeftHmd", false);
+                            _animVars.set(QStringLiteral("isMovingRight"), true);
+                            _animVars.set(QStringLiteral("isMovingLeft"), false);
+                            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+                            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
                         } else {
-                            _animVars.set("isMovingRight", false);
-                            _animVars.set("isMovingLeft", false);
-                            _animVars.set("isMovingRightHmd", true);
-                            _animVars.set("isMovingLeftHmd", false);
+                            _animVars.set(QStringLiteral("isMovingRight"), false);
+                            _animVars.set(QStringLiteral("isMovingLeft"), false);
+                            _animVars.set(QStringLiteral("isMovingRightHmd"), true);
+                            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
                         }
-                        _animVars.set("isMovingForward", false);
-                        _animVars.set("isMovingBackward", false);
-                        _animVars.set("isNotMoving", false);
+                        _animVars.set(QStringLiteral("isMovingForward"), false);
+                        _animVars.set(QStringLiteral("isMovingBackward"), false);
+                        _animVars.set(QStringLiteral("isNotMoving"), false);
                     } else {
                         // left
                         if (!_headEnabled) {
-                            _animVars.set("isMovingRight", false);
-                            _animVars.set("isMovingLeft", true);
-                            _animVars.set("isMovingRightHmd", false);
-                            _animVars.set("isMovingLeftHmd", false);
+                            _animVars.set(QStringLiteral("isMovingRight"), false);
+                            _animVars.set(QStringLiteral("isMovingLeft"), true);
+                            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+                            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
                         } else {
-                            _animVars.set("isMovingRight", false);
-                            _animVars.set("isMovingLeft", false);
-                            _animVars.set("isMovingRightHmd", false);
-                            _animVars.set("isMovingLeftHmd", true);
+                            _animVars.set(QStringLiteral("isMovingRight"), false);
+                            _animVars.set(QStringLiteral("isMovingLeft"), false);
+                            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+                            _animVars.set(QStringLiteral("isMovingLeftHmd"), true);
                         }
-                        _animVars.set("isMovingForward", false);
-                        _animVars.set("isMovingBackward", false);
-                        _animVars.set("isNotMoving", false);
+                        _animVars.set(QStringLiteral("isMovingForward"), false);
+                        _animVars.set(QStringLiteral("isMovingBackward"), false);
+                        _animVars.set(QStringLiteral("isNotMoving"), false);
                     }
                 }
             }
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", true);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), true);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
 
         } else if (_state == RigRole::Turn) {
             if (turningSpeed > 0.0f) {
                 // turning right
-                _animVars.set("isTurningRight", true);
-                _animVars.set("isTurningLeft", false);
-                _animVars.set("isNotTurning", false);
+                _animVars.set(QStringLiteral("isTurningRight"), true);
+                _animVars.set(QStringLiteral("isTurningLeft"), false);
+                _animVars.set(QStringLiteral("isNotTurning"), false);
             } else {
                 // turning left
-                _animVars.set("isTurningRight", false);
-                _animVars.set("isTurningLeft", true);
-                _animVars.set("isNotTurning", false);
+                _animVars.set(QStringLiteral("isTurningRight"), false);
+                _animVars.set(QStringLiteral("isTurningLeft"), true);
+                _animVars.set(QStringLiteral("isNotTurning"), false);
             }
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", true);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), true);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
 
         } else if (_state == RigRole::Idle) {
             // default anim vars to notMoving and notTurning
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", true);
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", true);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), true);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), true);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
 
         } else if (_state == RigRole::Hover) {
             // flying.
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", true);
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", true);
-            _animVars.set("isNotFlying", false);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", true);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), true);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), true);
+            _animVars.set(QStringLiteral("isNotFlying"), false);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), true);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
 
         } else if (_state == RigRole::Takeoff) {
             // jumping in-air
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", true);
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), true);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
 
             bool takeOffRun = forwardSpeed > 0.1f;
             if (takeOffRun) {
-                _animVars.set("isTakeoffStand", false);
-                _animVars.set("isTakeoffRun", true);
+                _animVars.set(QStringLiteral("isTakeoffStand"), false);
+                _animVars.set(QStringLiteral("isTakeoffRun"), true);
             } else {
-                _animVars.set("isTakeoffStand", true);
-                _animVars.set("isTakeoffRun", false);
+                _animVars.set(QStringLiteral("isTakeoffStand"), true);
+                _animVars.set(QStringLiteral("isTakeoffRun"), false);
             }
 
-            _animVars.set("isNotTakeoff", false);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", false);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
-
+            _animVars.set(QStringLiteral("isNotTakeoff"), false);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), false);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
+            
         } else if (_state == RigRole::InAir) {
             // jumping in-air
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", true);
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isSeated", false);
-            _animVars.set("isNotSeated", true);
-            _animVars.set("isSeatedTurningRight", false);
-            _animVars.set("isSeatedTurningLeft", false);
-            _animVars.set("isSeatedNotTurning", false);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), true);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isSeated"), false);
+            _animVars.set(QStringLiteral("isNotSeated"), true);
+            _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+            _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+            _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
 
             bool inAirRun = forwardSpeed > 0.1f;
             if (inAirRun) {
-                _animVars.set("isInAirStand", false);
-                _animVars.set("isInAirRun", true);
+                _animVars.set(QStringLiteral("isInAirStand"), false);
+                _animVars.set(QStringLiteral("isInAirRun"), true);
             } else {
-                _animVars.set("isInAirStand", true);
-                _animVars.set("isInAirRun", false);
+                _animVars.set(QStringLiteral("isInAirStand"), true);
+                _animVars.set(QStringLiteral("isInAirRun"), false);
             }
-            _animVars.set("isNotInAir", false);
+            _animVars.set(QStringLiteral("isNotInAir"), false);
 
             // We want to preserve the apparent jump height in sensor space.
             const float jumpHeight = std::max(sensorToWorldScale * DEFAULT_AVATAR_JUMP_HEIGHT, DEFAULT_AVATAR_MIN_JUMP_HEIGHT);
@@ -1416,62 +1416,62 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
             // compute inAirAlpha blend based on velocity
             float alpha = glm::clamp((-workingVelocity.y * sensorToWorldScale) / jumpSpeed, -1.0f, 1.0f) + 1.0f;
 
-            _animVars.set("inAirAlpha", alpha);
+            _animVars.set(QStringLiteral("inAirAlpha"), alpha);
         } else if (_state == RigRole::Seated) {
             if (fabsf(_previousControllerParameters.inputX) <= INPUT_DEADZONE_THRESHOLD) {
                 // seated not turning
-                _animVars.set("isSeatedTurningRight", false);
-                _animVars.set("isSeatedTurningLeft", false);
-                _animVars.set("isSeatedNotTurning", true);
+                _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+                _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+                _animVars.set(QStringLiteral("isSeatedNotTurning"), true);
             } else if (_previousControllerParameters.inputX > 0.0f) {
                 // seated turning right
-                _animVars.set("isSeatedTurningRight", true);
-                _animVars.set("isSeatedTurningLeft", false);
-                _animVars.set("isSeatedNotTurning", false);
+                _animVars.set(QStringLiteral("isSeatedTurningRight"), true);
+                _animVars.set(QStringLiteral("isSeatedTurningLeft"), false);
+                _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
             } else {
                 // seated turning left
-                _animVars.set("isSeatedTurningRight", false);
-                _animVars.set("isSeatedTurningLeft", true);
-                _animVars.set("isSeatedNotTurning", false);
+                _animVars.set(QStringLiteral("isSeatedTurningRight"), false);
+                _animVars.set(QStringLiteral("isSeatedTurningLeft"), true);
+                _animVars.set(QStringLiteral("isSeatedNotTurning"), false);
             }
 
-            _animVars.set("isMovingForward", false);
-            _animVars.set("isMovingBackward", false);
-            _animVars.set("isMovingRight", false);
-            _animVars.set("isMovingLeft", false);
-            _animVars.set("isMovingRightHmd", false);
-            _animVars.set("isMovingLeftHmd", false);
-            _animVars.set("isNotMoving", false);
-            _animVars.set("isTurningRight", false);
-            _animVars.set("isTurningLeft", false);
-            _animVars.set("isNotTurning", true);
-            _animVars.set("isFlying", false);
-            _animVars.set("isNotFlying", true);
-            _animVars.set("isTakeoffStand", false);
-            _animVars.set("isTakeoffRun", false);
-            _animVars.set("isNotTakeoff", true);
-            _animVars.set("isInAirStand", false);
-            _animVars.set("isInAirRun", false);
-            _animVars.set("isNotInAir", true);
-            _animVars.set("isSeated", true);
-            _animVars.set("isNotSeated", false);
+            _animVars.set(QStringLiteral("isMovingForward"), false);
+            _animVars.set(QStringLiteral("isMovingBackward"), false);
+            _animVars.set(QStringLiteral("isMovingRight"), false);
+            _animVars.set(QStringLiteral("isMovingLeft"), false);
+            _animVars.set(QStringLiteral("isMovingRightHmd"), false);
+            _animVars.set(QStringLiteral("isMovingLeftHmd"), false);
+            _animVars.set(QStringLiteral("isNotMoving"), false);
+            _animVars.set(QStringLiteral("isTurningRight"), false);
+            _animVars.set(QStringLiteral("isTurningLeft"), false);
+            _animVars.set(QStringLiteral("isNotTurning"), true);
+            _animVars.set(QStringLiteral("isFlying"), false);
+            _animVars.set(QStringLiteral("isNotFlying"), true);
+            _animVars.set(QStringLiteral("isTakeoffStand"), false);
+            _animVars.set(QStringLiteral("isTakeoffRun"), false);
+            _animVars.set(QStringLiteral("isNotTakeoff"), true);
+            _animVars.set(QStringLiteral("isInAirStand"), false);
+            _animVars.set(QStringLiteral("isInAirRun"), false);
+            _animVars.set(QStringLiteral("isNotInAir"), true);
+            _animVars.set(QStringLiteral("isSeated"), true);
+            _animVars.set(QStringLiteral("isNotSeated"), false);
         }
 
         t += deltaTime;
 
         if (_enableInverseKinematics) {
-            _animVars.set("ikOverlayAlpha", 1.0f);
+            _animVars.set(QStringLiteral("ikOverlayAlpha"), 1.0f);
         } else {
-            _animVars.set("ikOverlayAlpha", 0.0f);
-            _animVars.set("splineIKEnabled", false);
-            _animVars.set("leftHandIKEnabled", false);
-            _animVars.set("rightHandIKEnabled", false);
-            _animVars.set("leftFootIKEnabled", false);
-            _animVars.set("rightFootIKEnabled", false);
-            _animVars.set("leftHandPoleVectorEnabled", false);
-            _animVars.set("rightHandPoleVectorEnabled", false);
-            _animVars.set("leftFootPoleVectorEnabled", false);
-            _animVars.set("rightFootPoleVectorEnabled", false);
+            _animVars.set(QStringLiteral("ikOverlayAlpha"), 0.0f);
+            _animVars.set(QStringLiteral("splineIKEnabled"), false);
+            _animVars.set(QStringLiteral("leftHandIKEnabled"), false);
+            _animVars.set(QStringLiteral("rightHandIKEnabled"), false);
+            _animVars.set(QStringLiteral("leftFootIKEnabled"), false);
+            _animVars.set(QStringLiteral("rightFootIKEnabled"), false);
+            _animVars.set(QStringLiteral("leftHandPoleVectorEnabled"), false);
+            _animVars.set(QStringLiteral("rightHandPoleVectorEnabled"), false);
+            _animVars.set(QStringLiteral("leftFootPoleVectorEnabled"), false);
+            _animVars.set(QStringLiteral("rightFootPoleVectorEnabled"), false);
         }
         _lastEnableInverseKinematics = _enableInverseKinematics;
 
@@ -1490,31 +1490,31 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
                 }
 
 
-                _animVars.set("isInputForward", false);
-                _animVars.set("isInputBackward", false);
-                _animVars.set("isInputRight", false);
-                _animVars.set("isInputLeft", false);
+                _animVars.set(QStringLiteral("isInputForward"), false);
+                _animVars.set(QStringLiteral("isInputBackward"), false);
+                _animVars.set(QStringLiteral("isInputRight"), false);
+                _animVars.set(QStringLiteral("isInputLeft"), false);
 
                 // directly reflects input
-                _animVars.set("isNotInput", true);  
+                _animVars.set(QStringLiteral("isNotInput"), true);  
 
                 // no input + speed drops to SLOW_SPEED_THRESHOLD
                 // (don't transition run->idle - slow to walk first)
-                _animVars.set("isNotInputSlow", _isMovingWithMomentum);
+                _animVars.set(QStringLiteral("isNotInputSlow"), _isMovingWithMomentum);
 
                 // no input + speed didn't get above HAS_MOMENTUM_THRESHOLD since last idle
                 // (brief inputs and movement adjustments)
-                _animVars.set("isNotInputNoMomentum", !_isMovingWithMomentum);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), !_isMovingWithMomentum);
 
 
             } else {
-                _animVars.set("isInputForward", false);
-                _animVars.set("isInputBackward", false);
-                _animVars.set("isInputRight", false);
-                _animVars.set("isInputLeft", false);
-                _animVars.set("isNotInput", true);
-                _animVars.set("isNotInputSlow", false);
-                _animVars.set("isNotInputNoMomentum", false);
+                _animVars.set(QStringLiteral("isInputForward"), false);
+                _animVars.set(QStringLiteral("isInputBackward"), false);
+                _animVars.set(QStringLiteral("isInputRight"), false);
+                _animVars.set(QStringLiteral("isInputLeft"), false);
+                _animVars.set(QStringLiteral("isNotInput"), true);
+                _animVars.set(QStringLiteral("isNotInputSlow"), false);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), false);
             }
         } else if (fabsf(_previousControllerParameters.inputZ) >= fabsf(_previousControllerParameters.inputX)) {
             if (fabsf(forwardSpeed) > HAS_MOMENTUM_THRESHOLD) {
@@ -1523,22 +1523,22 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
 
             if (_previousControllerParameters.inputZ > 0.0f) {
                 // forward
-                _animVars.set("isInputForward", true);
-                _animVars.set("isInputBackward", false);
-                _animVars.set("isInputRight", false);
-                _animVars.set("isInputLeft", false);
-                _animVars.set("isNotInput", false);
-                _animVars.set("isNotInputSlow", false);
-                _animVars.set("isNotInputNoMomentum", false);
+                _animVars.set(QStringLiteral("isInputForward"), true);
+                _animVars.set(QStringLiteral("isInputBackward"), false);
+                _animVars.set(QStringLiteral("isInputRight"), false);
+                _animVars.set(QStringLiteral("isInputLeft"), false);
+                _animVars.set(QStringLiteral("isNotInput"), false);
+                _animVars.set(QStringLiteral("isNotInputSlow"), false);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), false);
             } else {
                 // backward
-                _animVars.set("isInputForward", false);
-                _animVars.set("isInputBackward", true);
-                _animVars.set("isInputRight", false);
-                _animVars.set("isInputLeft", false);
-                _animVars.set("isNotInput", false);
-                _animVars.set("isNotInputSlow", false);
-                _animVars.set("isNotInputNoMomentum", false);
+                _animVars.set(QStringLiteral("isInputForward"), false);
+                _animVars.set(QStringLiteral("isInputBackward"), true);
+                _animVars.set(QStringLiteral("isInputRight"), false);
+                _animVars.set(QStringLiteral("isInputLeft"), false);
+                _animVars.set(QStringLiteral("isNotInput"), false);
+                _animVars.set(QStringLiteral("isNotInputSlow"), false);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), false);
             }
         } else {
             if (fabsf(lateralSpeed) > HAS_MOMENTUM_THRESHOLD) {
@@ -1548,31 +1548,31 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
             if (_previousControllerParameters.inputX > 0.0f) {
                 // right
                 if (!_headEnabled) {
-                    _animVars.set("isInputRight", true);
+                    _animVars.set(QStringLiteral("isInputRight"), true);
                 } else {
-                    _animVars.set("isInputRight", false);
+                    _animVars.set(QStringLiteral("isInputRight"), false);
                 }
 
-                _animVars.set("isInputLeft", false);
-                _animVars.set("isInputForward", false);
-                _animVars.set("isInputBackward", false);
-                _animVars.set("isNotInput", false);
-                _animVars.set("isNotInputSlow", false);
-                _animVars.set("isNotInputNoMomentum", false);
+                _animVars.set(QStringLiteral("isInputLeft"), false);
+                _animVars.set(QStringLiteral("isInputForward"), false);
+                _animVars.set(QStringLiteral("isInputBackward"), false);
+                _animVars.set(QStringLiteral("isNotInput"), false);
+                _animVars.set(QStringLiteral("isNotInputSlow"), false);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), false);
             } else {
                 // left
                 if (!_headEnabled) {
-                    _animVars.set("isInputLeft", true);
+                    _animVars.set(QStringLiteral("isInputLeft"), true);
                 } else {
-                    _animVars.set("isInputLeft", false);
+                    _animVars.set(QStringLiteral("isInputLeft"), false);
                 }
 
-                _animVars.set("isInputForward", false);
-                _animVars.set("isInputBackward", false);
-                _animVars.set("isInputRight", false);
-                _animVars.set("isNotInput", false);
-                _animVars.set("isNotInputSlow", false);
-                _animVars.set("isNotInputNoMomentum", false);
+                _animVars.set(QStringLiteral("isInputForward"), false);
+                _animVars.set(QStringLiteral("isInputBackward"), false);
+                _animVars.set(QStringLiteral("isInputRight"), false);
+                _animVars.set(QStringLiteral("isNotInput"), false);
+                _animVars.set(QStringLiteral("isNotInputSlow"), false);
+                _animVars.set(QStringLiteral("isNotInputNoMomentum"), false);
             }
         }
 
@@ -1676,12 +1676,12 @@ void Rig::updateAnimationStateHandlers() { // called on avatar update thread (wh
 
 void Rig::updateAnimations(float deltaTime, const glm::mat4& rootTransform, const glm::mat4& rigToWorldTransform) {
     DETAILED_PROFILE_RANGE_EX(simulation_animation_detail, __FUNCTION__, 0xffff00ff, 0);
-    DETAILED_PERFORMANCE_TIMER("updateAnimations");
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("updateAnimations"));
 
     setModelOffset(rootTransform);
 
     if (_animNode && _enabledAnimations) {
-        DETAILED_PERFORMANCE_TIMER("handleTriggers");
+        DETAILED_PERFORMANCE_TIMER(QStringLiteral("handleTriggers"));
 
         ++_evaluationCount;
 
@@ -1766,9 +1766,9 @@ void Rig::computeHeadFromHMD(const AnimPose& hmdPose, glm::vec3& headPositionOut
     const glm::quat& hmdOrientation = hmdPose.rot() * Quaternions::Y_180;
 
     // TODO: cache jointIndices
-    int rightEyeIndex = indexOfJoint("RightEye");
-    int leftEyeIndex = indexOfJoint("LeftEye");
-    int headIndex = indexOfJoint("Head");
+    int rightEyeIndex = indexOfJoint(QStringLiteral("RightEye"));
+    int leftEyeIndex = indexOfJoint(QStringLiteral("LeftEye"));
+    int headIndex = indexOfJoint(QStringLiteral("Head"));
 
     glm::vec3 absRightEyePos = rightEyeIndex != -1 ? getAbsoluteDefaultPose(rightEyeIndex).trans() : DEFAULT_RIGHT_EYE_POS;
     glm::vec3 absLeftEyePos = leftEyeIndex != -1 ? getAbsoluteDefaultPose(leftEyeIndex).trans() : DEFAULT_LEFT_EYE_POS;
@@ -1785,25 +1785,25 @@ void Rig::computeHeadFromHMD(const AnimPose& hmdPose, glm::vec3& headPositionOut
 void Rig::updateHead(bool headEnabled, bool hipsEnabled, const AnimPose& headPose) {
     if (_animSkeleton) {
         if (headEnabled) {
-            _animVars.set("splineIKEnabled", true);
-            _animVars.set("headPosition", headPose.trans());
-            _animVars.set("headRotation", headPose.rot());
+            _animVars.set(QStringLiteral("splineIKEnabled"), true);
+            _animVars.set(QStringLiteral("headPosition"), headPose.trans());
+            _animVars.set(QStringLiteral("headRotation"), headPose.rot());
             if (hipsEnabled) {
                 // Since there is an explicit hips ik target, switch the head to use the more flexible Spline IK chain type.
                 // this will allow the spine to compress/expand and bend more natrually, ensuring that it can reach the head target position.
-                _animVars.set("headType", (int)IKTarget::Type::Spline);
-                _animVars.unset("headWeight");  // use the default weight for this target.
+                _animVars.set(QStringLiteral("headType"), (int)IKTarget::Type::Spline);
+                _animVars.unset(QStringLiteral("headWeight"));  // use the default weight for this target.
             } else {
                 // When there is no hips IK target, use the HmdHead IK chain type.  This will make the spine very stiff,
                 // but because the IK _hipsOffset is enabled, the hips will naturally follow underneath the head.
-                _animVars.set("headType", (int)IKTarget::Type::HmdHead);
-                _animVars.set("headWeight", 8.0f);
+                _animVars.set(QStringLiteral("headType"), (int)IKTarget::Type::HmdHead);
+                _animVars.set(QStringLiteral("headWeight"), 8.0f);
             }
         } else {
-            _animVars.set("splineIKEnabled", false);
-            _animVars.unset("headPosition");
-            _animVars.set("headRotation", headPose.rot());
-            _animVars.set("headType", (int)IKTarget::Type::Unknown);
+            _animVars.set(QStringLiteral("splineIKEnabled"), false);
+            _animVars.unset(QStringLiteral("headPosition"));
+            _animVars.set(QStringLiteral("headRotation"), headPose.rot());
+            _animVars.set(QStringLiteral("headType"), (int)IKTarget::Type::Unknown);
         }
     }
 }
@@ -1812,7 +1812,7 @@ glm::vec3 Rig::deflectHandFromTorso(const glm::vec3& handPosition, const HFMJoin
                                     const HFMJointShapeInfo& spine1ShapeInfo, const HFMJointShapeInfo& spine2ShapeInfo) const {
     glm::vec3 position = handPosition;
     glm::vec3 displacement;
-    int hipsJoint = indexOfJoint("Hips");
+    int hipsJoint = indexOfJoint(QStringLiteral("Hips"));
     if (hipsJoint >= 0) {
         AnimPose hipsPose;
         if (getAbsoluteJointPoseInRigFrame(hipsJoint, hipsPose)) {
@@ -1822,7 +1822,7 @@ glm::vec3 Rig::deflectHandFromTorso(const glm::vec3& handPosition, const HFMJoin
         }
     }
 
-    int spineJoint = indexOfJoint("Spine");
+    int spineJoint = indexOfJoint(QStringLiteral("Spine"));
     if (spineJoint >= 0) {
         AnimPose spinePose;
         if (getAbsoluteJointPoseInRigFrame(spineJoint, spinePose)) {
@@ -1832,7 +1832,7 @@ glm::vec3 Rig::deflectHandFromTorso(const glm::vec3& handPosition, const HFMJoin
         }
     }
 
-    int spine1Joint = indexOfJoint("Spine1");
+    int spine1Joint = indexOfJoint(QStringLiteral("Spine1"));
     if (spine1Joint >= 0) {
         AnimPose spine1Pose;
         if (getAbsoluteJointPoseInRigFrame(spine1Joint, spine1Pose)) {
@@ -1842,7 +1842,7 @@ glm::vec3 Rig::deflectHandFromTorso(const glm::vec3& handPosition, const HFMJoin
         }
     }
 
-    int spine2Joint = indexOfJoint("Spine2");
+    int spine2Joint = indexOfJoint(QStringLiteral("Spine2"));
     if (spine2Joint >= 0) {
         AnimPose spine2Pose;
         if (getAbsoluteJointPoseInRigFrame(spine2Joint, spine2Pose)) {
@@ -1866,12 +1866,12 @@ void Rig::updateHands(bool leftHandEnabled, bool rightHandEnabled, bool hipsEnab
 
     if (headEnabled) {
         // always do IK if head is enabled
-        _animVars.set("leftHandIKEnabled", true);
-        _animVars.set("rightHandIKEnabled", true);
+        _animVars.set(QStringLiteral("leftHandIKEnabled"), true);
+        _animVars.set(QStringLiteral("rightHandIKEnabled"), true);
     } else {
         // only do IK if we have a valid foot.
-        _animVars.set("leftHandIKEnabled", leftHandEnabled);
-        _animVars.set("rightHandIKEnabled", rightHandEnabled);
+        _animVars.set(QStringLiteral("leftHandIKEnabled"), leftHandEnabled);
+        _animVars.set(QStringLiteral("rightHandIKEnabled"), rightHandEnabled);
     }
 
     if (leftHandEnabled) {
@@ -1888,43 +1888,43 @@ void Rig::updateHands(bool leftHandEnabled, bool rightHandEnabled, bool hipsEnab
             handPosition = deflectHandFromTorso(handPosition, hipsShapeInfo, spineShapeInfo, spine1ShapeInfo, spine2ShapeInfo);
         }
 
-        _animVars.set("leftHandPosition", handPosition);
-        _animVars.set("leftHandRotation", handRotation);
-        _animVars.set("leftHandType", (int)IKTarget::Type::RotationAndPosition);
+        _animVars.set(QStringLiteral("leftHandPosition"), handPosition);
+        _animVars.set(QStringLiteral("leftHandRotation"), handRotation);
+        _animVars.set(QStringLiteral("leftHandType"), (int)IKTarget::Type::RotationAndPosition);
 
         // compute pole vector
-        int handJointIndex = _animSkeleton->nameToJointIndex("LeftHand");
-        int armJointIndex = _animSkeleton->nameToJointIndex("LeftArm");
-        int elbowJointIndex = _animSkeleton->nameToJointIndex("LeftForeArm");
-        int oppositeArmJointIndex = _animSkeleton->nameToJointIndex("RightArm");
+        int handJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftHand"));
+        int armJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftArm"));
+        int elbowJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftForeArm"));
+        int oppositeArmJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightArm"));
         if (ENABLE_POLE_VECTORS && handJointIndex >= 0 && armJointIndex >= 0 && elbowJointIndex >= 0 && oppositeArmJointIndex >= 0) {
             glm::vec3 poleVector;
             bool usePoleVector = calculateElbowPoleVector(handJointIndex, elbowJointIndex, armJointIndex, oppositeArmJointIndex, poleVector);
             if (usePoleVector) {
                 glm::vec3 sensorPoleVector = transformVectorFast(rigToSensorMatrix, poleVector);
-                _animVars.set("leftHandPoleVectorEnabled", true);
-                _animVars.set("leftHandPoleReferenceVector", Vectors::UNIT_X);
-                _animVars.set("leftHandPoleVector", transformVectorFast(sensorToRigMatrix, sensorPoleVector));
+                _animVars.set(QStringLiteral("leftHandPoleVectorEnabled"), true);
+                _animVars.set(QStringLiteral("leftHandPoleReferenceVector"), Vectors::UNIT_X);
+                _animVars.set(QStringLiteral("leftHandPoleVector"), transformVectorFast(sensorToRigMatrix, sensorPoleVector));
             } else {
-                _animVars.set("leftHandPoleVectorEnabled", false);
+                _animVars.set(QStringLiteral("leftHandPoleVectorEnabled"), false);
             }
         } else {
-            _animVars.set("leftHandPoleVectorEnabled", false);
+            _animVars.set(QStringLiteral("leftHandPoleVectorEnabled"), false);
         }
     } else {
         // need this for two bone ik
         _animVars.set(LEFT_HAND_IK_POSITION_VAR, MAIN_STATE_MACHINE_LEFT_HAND_POSITION);
         _animVars.set(LEFT_HAND_IK_ROTATION_VAR, MAIN_STATE_MACHINE_LEFT_HAND_ROTATION);
 
-        _animVars.set("leftHandPoleVectorEnabled", false);
-        _animVars.unset("leftHandPosition");
-        _animVars.unset("leftHandRotation");
+        _animVars.set(QStringLiteral("leftHandPoleVectorEnabled"), false);
+        _animVars.unset(QStringLiteral("leftHandPosition"));
+        _animVars.unset(QStringLiteral("leftHandRotation"));
 
         if (headEnabled) {
-            _animVars.set("leftHandType", (int)IKTarget::Type::HipsRelativeRotationAndPosition);
+            _animVars.set(QStringLiteral("leftHandType"), (int)IKTarget::Type::HipsRelativeRotationAndPosition);
         } else {
             // disable hand IK for desktop mode
-            _animVars.set("leftHandType", (int)IKTarget::Type::Unknown);
+            _animVars.set(QStringLiteral("leftHandType"), (int)IKTarget::Type::Unknown);
         }
     }
 
@@ -1942,29 +1942,29 @@ void Rig::updateHands(bool leftHandEnabled, bool rightHandEnabled, bool hipsEnab
             handPosition = deflectHandFromTorso(handPosition, hipsShapeInfo, spineShapeInfo, spine1ShapeInfo, spine2ShapeInfo);
         }
 
-        _animVars.set("rightHandPosition", handPosition);
-        _animVars.set("rightHandRotation", handRotation);
-        _animVars.set("rightHandType", (int)IKTarget::Type::RotationAndPosition);
+        _animVars.set(QStringLiteral("rightHandPosition"), handPosition);
+        _animVars.set(QStringLiteral("rightHandRotation"), handRotation);
+        _animVars.set(QStringLiteral("rightHandType"), (int)IKTarget::Type::RotationAndPosition);
 
         // compute pole vector
-        int handJointIndex = _animSkeleton->nameToJointIndex("RightHand");
-        int armJointIndex = _animSkeleton->nameToJointIndex("RightArm");
-        int elbowJointIndex = _animSkeleton->nameToJointIndex("RightForeArm");
-        int oppositeArmJointIndex = _animSkeleton->nameToJointIndex("LeftArm");
+        int handJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightHand"));
+        int armJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightArm"));
+        int elbowJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightForeArm"));
+        int oppositeArmJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftArm"));
 
         if (ENABLE_POLE_VECTORS && handJointIndex >= 0 && armJointIndex >= 0 && elbowJointIndex >= 0 && oppositeArmJointIndex >= 0) {
             glm::vec3 poleVector;
             bool usePoleVector = calculateElbowPoleVector(handJointIndex, elbowJointIndex, armJointIndex, oppositeArmJointIndex, poleVector);
             if (usePoleVector) {
                 glm::vec3 sensorPoleVector = transformVectorFast(rigToSensorMatrix, poleVector);
-                _animVars.set("rightHandPoleVectorEnabled", true);
-                _animVars.set("rightHandPoleReferenceVector", -Vectors::UNIT_X);
-                _animVars.set("rightHandPoleVector", transformVectorFast(sensorToRigMatrix, sensorPoleVector));
+                _animVars.set(QStringLiteral("rightHandPoleVectorEnabled"), true);
+                _animVars.set(QStringLiteral("rightHandPoleReferenceVector"), -Vectors::UNIT_X);
+                _animVars.set(QStringLiteral("rightHandPoleVector"), transformVectorFast(sensorToRigMatrix, sensorPoleVector));
             } else {
-                _animVars.set("rightHandPoleVectorEnabled", false);
+                _animVars.set(QStringLiteral("rightHandPoleVectorEnabled"), false);
             }
         } else {
-            _animVars.set("rightHandPoleVectorEnabled", false);
+            _animVars.set(QStringLiteral("rightHandPoleVectorEnabled"), false);
         }
     } else {
 
@@ -1972,15 +1972,15 @@ void Rig::updateHands(bool leftHandEnabled, bool rightHandEnabled, bool hipsEnab
         _animVars.set(RIGHT_HAND_IK_POSITION_VAR, MAIN_STATE_MACHINE_RIGHT_HAND_POSITION);
         _animVars.set(RIGHT_HAND_IK_ROTATION_VAR, MAIN_STATE_MACHINE_RIGHT_HAND_ROTATION);
 
-        _animVars.set("rightHandPoleVectorEnabled", false);
-        _animVars.unset("rightHandPosition");
-        _animVars.unset("rightHandRotation");
+        _animVars.set(QStringLiteral("rightHandPoleVectorEnabled"), false);
+        _animVars.unset(QStringLiteral("rightHandPosition"));
+        _animVars.unset(QStringLiteral("rightHandRotation"));
 
         if (headEnabled) {
-            _animVars.set("rightHandType", (int)IKTarget::Type::HipsRelativeRotationAndPosition);
+            _animVars.set(QStringLiteral("rightHandType"), (int)IKTarget::Type::HipsRelativeRotationAndPosition);
         } else {
             // disable hand IK for desktop mode
-            _animVars.set("rightHandType", (int)IKTarget::Type::Unknown);
+            _animVars.set(QStringLiteral("rightHandType"), (int)IKTarget::Type::Unknown);
         }
     }
 }
@@ -1989,19 +1989,19 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
                      const AnimPose& leftFootPose, const AnimPose& rightFootPose,
                      const glm::mat4& rigToSensorMatrix, const glm::mat4& sensorToRigMatrix) {
 
-    int hipsIndex = indexOfJoint("Hips");
+    int hipsIndex = indexOfJoint(QStringLiteral("Hips"));
     const float KNEE_POLE_VECTOR_BLEND_FACTOR = 0.85f;
 
     bool isSeated = _state == RigRole::Seated;
 
     if (headEnabled && !isSeated) {
         // enable leg IK if head is enabled and we arent sitting down.
-        _animVars.set("leftFootIKEnabled", true);
-        _animVars.set("rightFootIKEnabled", true);
+        _animVars.set(QStringLiteral("leftFootIKEnabled"), true);
+        _animVars.set(QStringLiteral("rightFootIKEnabled"), true);
     } else {
         // only do IK if we have a valid foot.
-        _animVars.set("leftFootIKEnabled", leftFootEnabled);
-        _animVars.set("rightFootIKEnabled", rightFootEnabled);
+        _animVars.set(QStringLiteral("leftFootIKEnabled"), leftFootEnabled);
+        _animVars.set(QStringLiteral("rightFootIKEnabled"), rightFootEnabled);
     }
 
     if (leftFootEnabled) {
@@ -2013,9 +2013,9 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         _animVars.set(LEFT_FOOT_IK_POSITION_VAR, LEFT_FOOT_POSITION);
         _animVars.set(LEFT_FOOT_IK_ROTATION_VAR, LEFT_FOOT_ROTATION);
 
-        int footJointIndex = _animSkeleton->nameToJointIndex("LeftFoot");
-        int kneeJointIndex = _animSkeleton->nameToJointIndex("LeftLeg");
-        int upLegJointIndex = _animSkeleton->nameToJointIndex("LeftUpLeg");
+        int footJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftFoot"));
+        int kneeJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftLeg"));
+        int upLegJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("LeftUpLeg"));
         glm::vec3 poleVector = calculateKneePoleVector(footJointIndex, kneeJointIndex, upLegJointIndex, hipsIndex, leftFootPose);
         glm::vec3 sensorPoleVector = transformVectorFast(rigToSensorMatrix, poleVector);
 
@@ -2028,8 +2028,8 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         glm::quat smoothDeltaRot = safeMix(deltaRot, Quaternions::IDENTITY, KNEE_POLE_VECTOR_BLEND_FACTOR);
         _prevLeftFootPoleVector = smoothDeltaRot * _prevLeftFootPoleVector;
 
-        _animVars.set("leftFootPoleVectorEnabled", true);
-        _animVars.set("leftFootPoleVector", transformVectorFast(sensorToRigMatrix, _prevLeftFootPoleVector));
+        _animVars.set(QStringLiteral("leftFootPoleVectorEnabled"), true);
+        _animVars.set(QStringLiteral("leftFootPoleVector"), transformVectorFast(sensorToRigMatrix, _prevLeftFootPoleVector));
     } else {
         // We want to drive the IK from the underlying animation.
         // This gives us the ability to squat while in the HMD, without the feet from dipping under the floor.
@@ -2037,7 +2037,7 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         _animVars.set(LEFT_FOOT_IK_ROTATION_VAR, MAIN_STATE_MACHINE_LEFT_FOOT_ROTATION);
 
         // We want to match the animated knee pose as close as possible, so don't use poleVectors
-        _animVars.set("leftFootPoleVectorEnabled", false);
+        _animVars.set(QStringLiteral("leftFootPoleVectorEnabled"), false);
         _prevLeftFootPoleVectorValid = false;
     }
 
@@ -2049,9 +2049,9 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         _animVars.set(RIGHT_FOOT_IK_POSITION_VAR, RIGHT_FOOT_POSITION);
         _animVars.set(RIGHT_FOOT_IK_ROTATION_VAR, RIGHT_FOOT_ROTATION);
 
-        int footJointIndex = _animSkeleton->nameToJointIndex("RightFoot");
-        int kneeJointIndex = _animSkeleton->nameToJointIndex("RightLeg");
-        int upLegJointIndex = _animSkeleton->nameToJointIndex("RightUpLeg");
+        int footJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightFoot"));
+        int kneeJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightLeg"));
+        int upLegJointIndex = _animSkeleton->nameToJointIndex(QStringLiteral("RightUpLeg"));
         glm::vec3 poleVector = calculateKneePoleVector(footJointIndex, kneeJointIndex, upLegJointIndex, hipsIndex, rightFootPose);
         glm::vec3 sensorPoleVector = transformVectorFast(rigToSensorMatrix, poleVector);
 
@@ -2064,8 +2064,8 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         glm::quat smoothDeltaRot = safeMix(deltaRot, Quaternions::IDENTITY, KNEE_POLE_VECTOR_BLEND_FACTOR);
         _prevRightFootPoleVector = smoothDeltaRot * _prevRightFootPoleVector;
 
-        _animVars.set("rightFootPoleVectorEnabled", true);
-        _animVars.set("rightFootPoleVector", transformVectorFast(sensorToRigMatrix, _prevRightFootPoleVector));
+        _animVars.set(QStringLiteral("rightFootPoleVectorEnabled"), true);
+        _animVars.set(QStringLiteral("rightFootPoleVector"), transformVectorFast(sensorToRigMatrix, _prevRightFootPoleVector));
     } else {
         // We want to drive the IK from the underlying animation.
         // This gives us the ability to squat while in the HMD, without the feet from dipping under the floor.
@@ -2073,7 +2073,7 @@ void Rig::updateFeet(bool leftFootEnabled, bool rightFootEnabled, bool headEnabl
         _animVars.set(RIGHT_FOOT_IK_ROTATION_VAR, MAIN_STATE_MACHINE_RIGHT_FOOT_ROTATION);
 
         // We want to match the animated knee pose as close as possible, so don't use poleVectors
-        _animVars.set("rightFootPoleVectorEnabled", false);
+        _animVars.set(QStringLiteral("rightFootPoleVectorEnabled"), false);
         _prevRightFootPoleVectorValid = false;
     }
 }
@@ -2082,37 +2082,37 @@ void Rig::updateReactions(const ControllerParameters& params) {
 
     // trigger reactions
     if (params.reactionTriggers[AVATAR_REACTION_POSITIVE]) {
-        _animVars.set("reactionPositiveTrigger", true);
+        _animVars.set(QStringLiteral("reactionPositiveTrigger"), true);
     } else {
-        _animVars.set("reactionPositiveTrigger", false);
+        _animVars.set(QStringLiteral("reactionPositiveTrigger"), false);
     }
 
     if (params.reactionTriggers[AVATAR_REACTION_NEGATIVE]) {
-        _animVars.set("reactionNegativeTrigger", true);
+        _animVars.set(QStringLiteral("reactionNegativeTrigger"), true);
     } else {
-        _animVars.set("reactionNegativeTrigger", false);
+        _animVars.set(QStringLiteral("reactionNegativeTrigger"), false);
     }
 
     // begin end reactions
     bool enabled = params.reactionEnabledFlags[AVATAR_REACTION_RAISE_HAND];
-    _animVars.set("reactionRaiseHandEnabled", enabled);
-    _animVars.set("reactionRaiseHandDisabled", !enabled);
+    _animVars.set(QStringLiteral("reactionRaiseHandEnabled"), enabled);
+    _animVars.set(QStringLiteral("reactionRaiseHandDisabled"), !enabled);
 
     enabled = params.reactionEnabledFlags[AVATAR_REACTION_APPLAUD];
-    _animVars.set("reactionApplaudEnabled", enabled);
-    _animVars.set("reactionApplaudDisabled", !enabled);
+    _animVars.set(QStringLiteral("reactionApplaudEnabled"), enabled);
+    _animVars.set(QStringLiteral("reactionApplaudDisabled"), !enabled);
 
     enabled = params.reactionEnabledFlags[AVATAR_REACTION_POINT];
-    _animVars.set("reactionPointEnabled", enabled);
-    _animVars.set("reactionPointDisabled", !enabled);
+    _animVars.set(QStringLiteral("reactionPointEnabled"), enabled);
+    _animVars.set(QStringLiteral("reactionPointDisabled"), !enabled);
 
     // determine if we should ramp off IK
     if (_enableInverseKinematics) {
         bool reactionPlaying = false;
         std::shared_ptr<AnimStateMachine> mainStateMachine = std::dynamic_pointer_cast<AnimStateMachine>(_animNode->findByName("mainStateMachine"));
         std::shared_ptr<AnimStateMachine> idleStateMachine = std::dynamic_pointer_cast<AnimStateMachine>(_animNode->findByName("idle"));
-        if (mainStateMachine && mainStateMachine->getCurrentStateID() == "idle" && idleStateMachine) {
-            reactionPlaying = idleStateMachine->getCurrentStateID().startsWith("reaction");
+        if (mainStateMachine && mainStateMachine->getCurrentStateID() == QStringLiteral("idle") && idleStateMachine) {
+            reactionPlaying = idleStateMachine->getCurrentStateID().startsWith(QStringLiteral("reaction"));
         }
 
         bool isSeated = _state == RigRole::Seated;
@@ -2122,7 +2122,7 @@ void Rig::updateReactions(const ControllerParameters& params) {
         if ((reactionPlaying || isSeated) && !hmdMode) {
             // TODO: make this smooth.
             // disable head IK while reaction is playing, but only in "desktop" mode.
-            _animVars.set("headType", (int)IKTarget::Type::Unknown);
+            _animVars.set(QStringLiteral("headType"), (int)IKTarget::Type::Unknown);
         }
     }
 }
@@ -2136,7 +2136,7 @@ void Rig::updateEyeJoint(int index, const glm::vec3& modelTranslation, const glm
         const glm::mat4 worldToRig = glm::inverse(rigToWorld);
         const glm::vec3 lookAtVector = glm::normalize(transformPoint(worldToRig, lookAtSpot) - _internalPoseSet._absolutePoses[index].trans());
 
-        int headIndex = indexOfJoint("Head");
+        int headIndex = indexOfJoint(QStringLiteral("Head"));
         glm::quat headQuat;
         if (headIndex >= 0) {
             headQuat = _internalPoseSet._absolutePoses[headIndex].rot();
@@ -2283,11 +2283,11 @@ void Rig::updateFromControllerParameters(const ControllerParameters& params, flo
                 _talkIdleInterpTime = 1.0f;
             }
             float easeOutInValue = _talkIdleInterpTime < 0.5f ? 4.0f * powf(_talkIdleInterpTime, 3.0f) : 4.0f * powf((_talkIdleInterpTime - 1.0f), 3.0f) + 1.0f;
-            _animVars.set("talkOverlayAlpha", easeOutInValue);
-            _animVars.set("idleOverlayAlpha", easeOutInValue);  // backward compatibility for older anim graphs.
+            _animVars.set(QStringLiteral("talkOverlayAlpha"), easeOutInValue);
+            _animVars.set(QStringLiteral("idleOverlayAlpha"), easeOutInValue);  // backward compatibility for older anim graphs.
         } else {
-            _animVars.set("talkOverlayAlpha", 1.0f);
-            _animVars.set("idleOverlayAlpha", 1.0f);  // backward compatibility for older anim graphs.
+            _animVars.set(QStringLiteral("talkOverlayAlpha"), 1.0f);
+            _animVars.set(QStringLiteral("idleOverlayAlpha"), 1.0f);  // backward compatibility for older anim graphs.
         }
     } else {
         if (_talkIdleInterpTime < 1.0f) {
@@ -2297,11 +2297,11 @@ void Rig::updateFromControllerParameters(const ControllerParameters& params, flo
             }
             float easeOutInValue = _talkIdleInterpTime < 0.5f ? 4.0f * powf(_talkIdleInterpTime, 3.0f) : 4.0f * powf((_talkIdleInterpTime - 1.0f), 3.0f) + 1.0f;
             float talkAlpha = 1.0f - easeOutInValue;
-            _animVars.set("talkOverlayAlpha", talkAlpha);
-            _animVars.set("idleOverlayAlpha", talkAlpha);  // backward compatibility for older anim graphs.
+            _animVars.set(QStringLiteral("talkOverlayAlpha"), talkAlpha);
+            _animVars.set(QStringLiteral("idleOverlayAlpha"), talkAlpha);  // backward compatibility for older anim graphs.
         } else {
-            _animVars.set("talkOverlayAlpha", 0.0f);
-            _animVars.set("idleOverlayAlpha", 0.0f);  // backward compatibility for older anim graphs.
+            _animVars.set(QStringLiteral("talkOverlayAlpha"), 0.0f);
+            _animVars.set(QStringLiteral("idleOverlayAlpha"), 0.0f);  // backward compatibility for older anim graphs.
         }
     }
 
@@ -2333,21 +2333,21 @@ void Rig::updateFromControllerParameters(const ControllerParameters& params, flo
 
     if (_headEnabled) {
         // Blend IK chains toward the joint limit centers, this should stablize head and hand ik.
-        _animVars.set("solutionSource", (int)AnimInverseKinematics::SolutionSource::RelaxToLimitCenterPoses);
+        _animVars.set(QStringLiteral("solutionSource"), (int)AnimInverseKinematics::SolutionSource::RelaxToLimitCenterPoses);
     } else {
         // Blend IK chains toward the UnderPoses, so some of the animaton motion is present in the IK solution.
-        _animVars.set("solutionSource", (int)AnimInverseKinematics::SolutionSource::RelaxToUnderPoses);
+        _animVars.set(QStringLiteral("solutionSource"), (int)AnimInverseKinematics::SolutionSource::RelaxToUnderPoses);
     }
 
     // if the hips or the feet are being controlled.
     if (hipsEnabled || rightFootEnabled || leftFootEnabled) {
         // replace the feet animation with the default pose, this is to prevent unexpected toe wiggling.
-        _animVars.set("defaultPoseOverlayAlpha", 1.0f);
-        _animVars.set("defaultPoseOverlayBoneSet", (int)AnimOverlay::BothFeetBoneSet);
+        _animVars.set(QStringLiteral("defaultPoseOverlayAlpha"), 1.0f);
+        _animVars.set(QStringLiteral("defaultPoseOverlayBoneSet"), (int)AnimOverlay::BothFeetBoneSet);
     } else {
         // feet should follow source animation
-        _animVars.unset("defaultPoseOverlayAlpha");
-        _animVars.unset("defaultPoseOverlayBoneSet");
+        _animVars.unset(QStringLiteral("defaultPoseOverlayAlpha"));
+        _animVars.unset(QStringLiteral("defaultPoseOverlayBoneSet"));
     }
 
     if (hipsEnabled) {
@@ -2368,35 +2368,35 @@ void Rig::updateFromControllerParameters(const ControllerParameters& params, flo
 
         AnimPose hips = _hipsBlendHelper.update(params.primaryControllerPoses[PrimaryControllerType_Hips], dt);
 
-        _animVars.set("hipsType", (int)IKTarget::Type::RotationAndPosition);
-        _animVars.set("hipsPosition", hips.trans());
-        _animVars.set("hipsRotation", hips.rot());
+        _animVars.set(QStringLiteral("hipsType"), (int)IKTarget::Type::RotationAndPosition);
+        _animVars.set(QStringLiteral("hipsPosition"), hips.trans());
+        _animVars.set(QStringLiteral("hipsRotation"), hips.rot());
     } else {
-        _animVars.set("hipsType", (int)IKTarget::Type::Unknown);
+        _animVars.set(QStringLiteral("hipsType"), (int)IKTarget::Type::Unknown);
     }
 
     if (hipsEnabled && spine2Enabled) {
-        _animVars.set("spine2Type", (int)IKTarget::Type::Spline);
-        _animVars.set("spine2Position", params.primaryControllerPoses[PrimaryControllerType_Spine2].trans());
-        _animVars.set("spine2Rotation", params.primaryControllerPoses[PrimaryControllerType_Spine2].rot());
+        _animVars.set(QStringLiteral("spine2Type"), (int)IKTarget::Type::Spline);
+        _animVars.set(QStringLiteral("spine2Position"), params.primaryControllerPoses[PrimaryControllerType_Spine2].trans());
+        _animVars.set(QStringLiteral("spine2Rotation"), params.primaryControllerPoses[PrimaryControllerType_Spine2].rot());
     } else {
-        _animVars.set("spine2Type", (int)IKTarget::Type::Unknown);
+        _animVars.set(QStringLiteral("spine2Type"), (int)IKTarget::Type::Unknown);
     }
 
     // set secondary targets
     static const std::vector<QString> secondaryControllerJointNames = {
-        "LeftShoulder",
-        "RightShoulder",
-        "LeftArm",
-        "RightArm",
-        "LeftForeArm",
-        "RightForeArm",
-        "LeftUpLeg",
-        "RightUpLeg",
-        "LeftLeg",
-        "RightLeg",
-        "LeftToeBase",
-        "RightToeBase"
+        QStringLiteral("LeftShoulder"),
+        QStringLiteral("RightShoulder"),
+        QStringLiteral("LeftArm"),
+        QStringLiteral("RightArm"),
+        QStringLiteral("LeftForeArm"),
+        QStringLiteral("RightForeArm"),
+        QStringLiteral("LeftUpLeg"),
+        QStringLiteral("RightUpLeg"),
+        QStringLiteral("LeftLeg"),
+        QStringLiteral("RightLeg"),
+        QStringLiteral("LeftToeBase"),
+        QStringLiteral("RightToeBase")
     };
 
     std::shared_ptr<AnimInverseKinematics> ikNode = getAnimInverseKinematicsNode();
@@ -2486,11 +2486,11 @@ void Rig::initAnimGraph(const QUrl& url) {
                 NetworkAnimState origState = _networkAnimState;
                 _networkAnimState = { NetworkAnimState::None, "", 30.0f, false, 0.0f, 0.0f };
                 if (_networkAnimState.clipNodeEnum == NetworkAnimState::PreTransit) {
-                    triggerNetworkRole("preTransitAnim");
+                    triggerNetworkRole(QStringLiteral("preTransitAnim"));
                 } else if (_networkAnimState.clipNodeEnum == NetworkAnimState::Transit) {
-                    triggerNetworkRole("transitAnim");
+                    triggerNetworkRole(QStringLiteral("transitAnim"));
                 } else if (_networkAnimState.clipNodeEnum == NetworkAnimState::PostTransit) {
-                    triggerNetworkRole("postTransitAnim");
+                    triggerNetworkRole(QStringLiteral("postTransitAnim"));
                 }
             }
            
@@ -2521,7 +2521,7 @@ bool Rig::getModelRegistrationPoint(glm::vec3& modelRegistrationPointOut) const 
 }
 
 void Rig::applyOverridePoses() {
-    DETAILED_PERFORMANCE_TIMER("override");
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("override"));
     if (_numOverrides == 0 || !_animSkeleton) {
         return;
     }
@@ -2538,7 +2538,7 @@ void Rig::applyOverridePoses() {
 }
 
 void Rig::buildAbsoluteRigPoses(const AnimPoseVec& relativePoses, AnimPoseVec& absolutePosesOut) const {
-    DETAILED_PERFORMANCE_TIMER("buildAbsolute");
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("buildAbsolute"));
     if (!_animSkeleton) {
         return;
     }
@@ -2620,8 +2620,8 @@ void Rig::copyJointsIntoJointData(QVector<JointData>& jointDataVec) const {
 }
 
 void Rig::copyJointsFromJointData(const QVector<JointData>& jointDataVec) {
-    DETAILED_PROFILE_RANGE(simulation_animation_detail, "copyJoints");
-    DETAILED_PERFORMANCE_TIMER("copyJoints");
+    DETAILED_PROFILE_RANGE(simulation_animation_detail, QStringLiteral("copyJoints"));
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("copyJoints"));
 
     if (!_animSkeleton) {
         return;
@@ -2694,7 +2694,7 @@ void Rig::computeAvatarBoundingCapsule(
     }
 
     glm::vec3 hipsPosition(0.0f);
-    int hipsIndex = indexOfJoint("Hips");
+    int hipsIndex = indexOfJoint(QStringLiteral("Hips"));
     if (hipsIndex >= 0) {
         hipsPosition = transformPoint(_geometryToRigTransform, _animSkeleton->getAbsoluteDefaultPose(hipsIndex).trans());
     }
@@ -2710,7 +2710,7 @@ void Rig::computeAvatarBoundingCapsule(
 
     // To reduce the radius of the bounding capsule to be tight with the torso, we only consider joints
     // from the head to the hips when computing the rest of the bounding capsule.
-    int index = indexOfJoint("Head");
+    int index = indexOfJoint(QStringLiteral("Head"));
     while (index != -1) {
         const HFMJointShapeInfo& shapeInfo = hfmModel.joints.at(index).shapeInfo;
         AnimPose pose = _animSkeleton->getAbsoluteDefaultPose(index);
@@ -2756,9 +2756,9 @@ float Rig::getUnscaledEyeHeight() const {
     // Typically it will be the unit conversion from cm to m.
     float scaleFactor = geomToRigWithoutAvatarScale.scale().x;  // in practice this always a uniform scale factor.
 
-    int headTopJoint = indexOfJoint("HeadTop_End");
-    int headJoint = indexOfJoint("Head");
-    int eyeJoint = indexOfJoint("LeftEye") != -1 ? indexOfJoint("LeftEye") : indexOfJoint("RightEye");
+    int headTopJoint = indexOfJoint(QStringLiteral("HeadTop_End"));
+    int headJoint = indexOfJoint(QStringLiteral("Head"));
+    int eyeJoint = indexOfJoint(QStringLiteral("LeftEye")) != -1 ? indexOfJoint(QStringLiteral("LeftEye")) : indexOfJoint(QStringLiteral("RightEye"));
     int toeJoint = indexOfJoint("LeftToeBase") != -1 ? indexOfJoint("LeftToeBase") : indexOfJoint("RightToeBase");
 
     // Makes assumption that the y = 0 plane in geometry is the ground plane.

@@ -27,7 +27,7 @@ bool Grab::fromByteArray(const QByteArray& grabData) {
     QUuid newOwnerID { QUuid() };
     QUuid newTargetID { QUuid() };
     int newParentJointIndex { -1 };
-    QString newHand { "none" };
+    QString newHand { QStringLiteral("none") };
     glm::vec3 newPositionalOffset { glm::vec3(0.0f) };
     glm::quat newRotationalOffset { glm::quat() };
 

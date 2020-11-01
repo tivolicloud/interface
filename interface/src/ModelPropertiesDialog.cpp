@@ -114,15 +114,15 @@ void ModelPropertiesDialog::reset() {
 
     QVariantHash jointHash = _originalMapping.value(JOINT_FIELD).toHash();
 
-    setJointText(_leftEyeJoint, jointHash.value("jointEyeLeft").toString());
-    setJointText(_rightEyeJoint, jointHash.value("jointEyeRight").toString());
-    setJointText(_neckJoint, jointHash.value("jointNeck").toString());
+    setJointText(_leftEyeJoint, jointHash.value(QStringLiteral("jointEyeLeft")).toString());
+    setJointText(_rightEyeJoint, jointHash.value(QStringLiteral("jointEyeRight")).toString());
+    setJointText(_neckJoint, jointHash.value(QStringLiteral("jointNeck")).toString());
 
-    setJointText(_rootJoint, jointHash.value("jointRoot").toString());
-    setJointText(_leanJoint, jointHash.value("jointLean").toString());
-    setJointText(_headJoint, jointHash.value("jointHead").toString());
-    setJointText(_leftHandJoint, jointHash.value("jointLeftHand").toString());
-    setJointText(_rightHandJoint, jointHash.value("jointRightHand").toString());
+    setJointText(_rootJoint, jointHash.value(QStringLiteral("jointRoot")).toString());
+    setJointText(_leanJoint, jointHash.value(QStringLiteral("jointLean")).toString());
+    setJointText(_headJoint, jointHash.value(QStringLiteral("jointHead")).toString());
+    setJointText(_leftHandJoint, jointHash.value(QStringLiteral("jointLeftHand")).toString());
+    setJointText(_rightHandJoint, jointHash.value(QStringLiteral("jointRightHand")).toString());
 }
 
 void ModelPropertiesDialog::chooseTextureDirectory() {

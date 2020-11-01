@@ -120,7 +120,7 @@ QString LoginDialog::oculusUserID() const {
     if (auto oculusPlatformPlugin = PluginManager::getInstance()->getOculusPlatformPlugin()) {
         return oculusPlatformPlugin->getOculusUserID();
     }
-    return "";
+    return QString();
 }
 
 void LoginDialog::dismissLoginDialog() {
@@ -373,7 +373,7 @@ QString errorStringFromAPIObject(const QJsonValue& apiObject) {
     } else if (apiObject.isString()) {
         return apiObject.toString();
     } else {
-        return "is invalid";
+        return QStringLiteral("is invalid");
     }
 }
 

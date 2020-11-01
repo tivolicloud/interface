@@ -131,37 +131,37 @@ void AnimationPropertyGroup::setFromOldAnimationSettings(const QString& value) {
     QJsonObject settingsAsJsonObject = settingsAsJson.object();
     QVariantMap settingsMap = settingsAsJsonObject.toVariantMap();
 
-    if (settingsMap.contains("fps")) {
-        fps = settingsMap["fps"].toFloat();
+    if (settingsMap.contains(QStringLiteral("fps"))) {
+        fps = settingsMap[QStringLiteral("fps")].toFloat();
     }
 
     // old settings had frameIndex
-    if (settingsMap.contains("frameIndex")) {
-        currentFrame = settingsMap["frameIndex"].toFloat();
+    if (settingsMap.contains(QStringLiteral("frameIndex"))) {
+        currentFrame = settingsMap[QStringLiteral("frameIndex")].toFloat();
     }
 
-    if (settingsMap.contains("running")) {
-        running = settingsMap["running"].toBool();
+    if (settingsMap.contains(QStringLiteral("running"))) {
+        running = settingsMap[QStringLiteral("running")].toBool();
     }
 
-    if (settingsMap.contains("firstFrame")) {
-        firstFrame = settingsMap["firstFrame"].toFloat();
+    if (settingsMap.contains(QStringLiteral("firstFrame"))) {
+        firstFrame = settingsMap[QStringLiteral("firstFrame")].toFloat();
     }
 
-    if (settingsMap.contains("lastFrame")) {
-        lastFrame = settingsMap["lastFrame"].toFloat();
+    if (settingsMap.contains(QStringLiteral("lastFrame"))) {
+        lastFrame = settingsMap[QStringLiteral("lastFrame")].toFloat();
     }
 
-    if (settingsMap.contains("loop")) {
-        running = settingsMap["loop"].toBool();
+    if (settingsMap.contains(QStringLiteral("loop"))) {
+        running = settingsMap[QStringLiteral("loop")].toBool();
     }
 
-    if (settingsMap.contains("hold")) {
-        running = settingsMap["hold"].toBool();
+    if (settingsMap.contains(QStringLiteral("hold"))) {
+        running = settingsMap[QStringLiteral("hold")].toBool();
     }
 
-    if (settingsMap.contains("allowTranslation")) {
-        allowTranslation = settingsMap["allowTranslation"].toBool();
+    if (settingsMap.contains(QStringLiteral("allowTranslation"))) {
+        allowTranslation = settingsMap[QStringLiteral("allowTranslation")].toBool();
     }
 
 

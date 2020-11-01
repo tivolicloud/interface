@@ -289,21 +289,21 @@ bool ObjectConstraintSlider::updateArguments(QVariantMap arguments) {
 QVariantMap ObjectConstraintSlider::getArguments() {
     QVariantMap arguments = ObjectDynamic::getArguments();
     withReadLock([&] {
-        arguments["point"] = vec3ToQMap(_pointInA);
-        arguments["axis"] = vec3ToQMap(_axisInA);
-        arguments["otherEntityID"] = _otherID;
-        arguments["otherPoint"] = vec3ToQMap(_pointInB);
-        arguments["otherAxis"] = vec3ToQMap(_axisInB);
-        arguments["linearLow"] = _linearLow;
-        arguments["linearHigh"] = _linearHigh;
-        arguments["angularLow"] = _angularLow;
-        arguments["angularHigh"] = _angularHigh;
+        arguments[QStringLiteral("point")] = vec3ToQMap(_pointInA);
+        arguments[QStringLiteral("axis")] = vec3ToQMap(_axisInA);
+        arguments[QStringLiteral("otherEntityID")] = _otherID;
+        arguments[QStringLiteral("otherPoint")] = vec3ToQMap(_pointInB);
+        arguments[QStringLiteral("otherAxis")] = vec3ToQMap(_axisInB);
+        arguments[QStringLiteral("linearLow")] = _linearLow;
+        arguments[QStringLiteral("linearHigh")] = _linearHigh;
+        arguments[QStringLiteral("angularLow")] = _angularLow;
+        arguments[QStringLiteral("angularHigh")] = _angularHigh;
         if (_constraint) {
-            arguments["linearPosition"] = static_cast<btSliderConstraint*>(_constraint)->getLinearPos();
-            arguments["angularPosition"] = static_cast<btSliderConstraint*>(_constraint)->getAngularPos();
+            arguments[QStringLiteral("linearPosition")] = static_cast<btSliderConstraint*>(_constraint)->getLinearPos();
+            arguments[QStringLiteral("angularPosition")] = static_cast<btSliderConstraint*>(_constraint)->getAngularPos();
         } else {
-            arguments["linearPosition"] = 0.0f;
-            arguments["angularPosition"] = 0.0f;
+            arguments[QStringLiteral("linearPosition")] = 0.0f;
+            arguments[QStringLiteral("angularPosition")] = 0.0f;
         }
     });
     return arguments;

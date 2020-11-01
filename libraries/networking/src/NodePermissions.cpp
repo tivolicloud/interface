@@ -44,58 +44,58 @@ QStringList NodePermissions::standardNames = QList<QString>()
     << NodePermissions::standardNameFriends.first;
 
 NodePermissions::NodePermissions(QMap<QString, QVariant> perms) {
-    _id = perms["permissions_id"].toString().toLower();
-    if (perms.contains("group_id")) {
-        _groupID = perms["group_id"].toUuid();
+    _id = perms[QStringLiteral("permissions_id")].toString().toLower();
+    if (perms.contains(QStringLiteral("group_id"))) {
+        _groupID = perms[QStringLiteral("group_id")].toUuid();
         if (!_groupID.isNull()) {
             _groupIDSet = true;
         }
     }
-    if (perms.contains("rank_id")) {
-        _rankID = QUuid(perms["rank_id"].toString());
+    if (perms.contains(QStringLiteral("rank_id"))) {
+        _rankID = QUuid(perms[QStringLiteral("rank_id")].toString());
     }
 
     permissions = NodePermissions::Permissions();
-    permissions |= perms["id_can_connect"].toBool() ? Permission::canConnectToDomain : Permission::none;
-    permissions |= perms["id_can_adjust_locks"].toBool() ? Permission::canAdjustLocks : Permission::none;
-    permissions |= perms["id_can_rez"].toBool() ? Permission::canRezPermanentEntities : Permission::none;
-    permissions |= perms["id_can_rez_tmp"].toBool() ? Permission::canRezTemporaryEntities : Permission::none;
-    permissions |= perms["id_can_rez_certified"].toBool() ? Permission::canRezPermanentCertifiedEntities : Permission::none;
-    permissions |= perms["id_can_rez_tmp_certified"].toBool() ? Permission::canRezTemporaryCertifiedEntities : Permission::none;
-    permissions |= perms["id_can_write_to_asset_server"].toBool() ? Permission::canWriteToAssetServer : Permission::none;
-    permissions |= perms["id_can_connect_past_max_capacity"].toBool() ?
+    permissions |= perms[QStringLiteral("id_can_connect")].toBool() ? Permission::canConnectToDomain : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_adjust_locks")].toBool() ? Permission::canAdjustLocks : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_rez")].toBool() ? Permission::canRezPermanentEntities : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_rez_tmp")].toBool() ? Permission::canRezTemporaryEntities : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_rez_certified")].toBool() ? Permission::canRezPermanentCertifiedEntities : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_rez_tmp_certified")].toBool() ? Permission::canRezTemporaryCertifiedEntities : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_write_to_asset_server")].toBool() ? Permission::canWriteToAssetServer : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_connect_past_max_capacity")].toBool() ?
         Permission::canConnectPastMaxCapacity : Permission::none;
-    permissions |= perms["id_can_kick"].toBool() ? Permission::canKick : Permission::none;
-    permissions |= perms["id_can_replace_content"].toBool() ? Permission::canReplaceDomainContent : Permission::none;
-    permissions |= perms["id_can_get_and_set_private_user_data"].toBool() ? Permission::canGetAndSetPrivateUserData : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_kick")].toBool() ? Permission::canKick : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_replace_content")].toBool() ? Permission::canReplaceDomainContent : Permission::none;
+    permissions |= perms[QStringLiteral("id_can_get_and_set_private_user_data")].toBool() ? Permission::canGetAndSetPrivateUserData : Permission::none;
 }
 
 QVariant NodePermissions::toVariant(QHash<QUuid, GroupRank> groupRanks) {
     QMap<QString, QVariant> values;
-    values["permissions_id"] = _id;
+    values[QStringLiteral("permissions_id")] = _id;
     if (_groupIDSet) {
-        values["group_id"] = _groupID;
+        values[QStringLiteral("group_id")] = _groupID;
 
         if (!_rankID.isNull()) {
-            values["rank_id"] = _rankID;
+            values[QStringLiteral("rank_id")] = _rankID;
         }
 
         if (groupRanks.contains(_rankID)) {
-            values["rank_name"] = groupRanks[_rankID].name;
-            values["rank_order"] = groupRanks[_rankID].order;
+            values[QStringLiteral("rank_name")] = groupRanks[_rankID].name;
+            values[QStringLiteral("rank_order")] = groupRanks[_rankID].order;
         }
     }
-    values["id_can_connect"] = can(Permission::canConnectToDomain);
-    values["id_can_adjust_locks"] = can(Permission::canAdjustLocks);
-    values["id_can_rez"] = can(Permission::canRezPermanentEntities);
-    values["id_can_rez_tmp"] = can(Permission::canRezTemporaryEntities);
-    values["id_can_rez_certified"] = can(Permission::canRezPermanentCertifiedEntities);
-    values["id_can_rez_tmp_certified"] = can(Permission::canRezTemporaryCertifiedEntities);
-    values["id_can_write_to_asset_server"] = can(Permission::canWriteToAssetServer);
-    values["id_can_connect_past_max_capacity"] = can(Permission::canConnectPastMaxCapacity);
-    values["id_can_kick"] = can(Permission::canKick);
-    values["id_can_replace_content"] = can(Permission::canReplaceDomainContent);
-    values["id_can_get_and_set_private_user_data"] = can(Permission::canGetAndSetPrivateUserData);
+    values[QStringLiteral("id_can_connect")] = can(Permission::canConnectToDomain);
+    values[QStringLiteral("id_can_adjust_locks")] = can(Permission::canAdjustLocks);
+    values[QStringLiteral("id_can_rez")] = can(Permission::canRezPermanentEntities);
+    values[QStringLiteral("id_can_rez_tmp")] = can(Permission::canRezTemporaryEntities);
+    values[QStringLiteral("id_can_rez_certified")] = can(Permission::canRezPermanentCertifiedEntities);
+    values[QStringLiteral("id_can_rez_tmp_certified")] = can(Permission::canRezTemporaryCertifiedEntities);
+    values[QStringLiteral("id_can_write_to_asset_server")] = can(Permission::canWriteToAssetServer);
+    values[QStringLiteral("id_can_connect_past_max_capacity")] = can(Permission::canConnectPastMaxCapacity);
+    values[QStringLiteral("id_can_kick")] = can(Permission::canKick);
+    values[QStringLiteral("id_can_replace_content")] = can(Permission::canReplaceDomainContent);
+    values[QStringLiteral("id_can_get_and_set_private_user_data")] = can(Permission::canGetAndSetPrivateUserData);
     return QVariant(values);
 }
 

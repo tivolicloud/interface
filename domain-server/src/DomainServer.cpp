@@ -282,7 +282,7 @@ DomainServer::DomainServer(int argc, char* argv[]) :
 
     auto whitelist = _settingsManager.valueOrDefaultValueForKeyPath(AC_SUBNET_WHITELIST_SETTING_PATH).toStringList();
     for (auto& subnet : whitelist) {
-        auto netmaskParts = subnet.trimmed().split("/");
+        auto netmaskParts = subnet.trimmed().split(QStringLiteral("/"));
 
         if (netmaskParts.size() > 2) {
             qDebug() << "Ignoring subnet in whitelist, malformed: " << subnet;
@@ -2339,8 +2339,8 @@ bool DomainServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
                 QRegExp formDataFieldsRegex(R":(name="(restore-file.*)".*filename="(.+)"):");
                 auto matchIndex = formDataFieldsRegex.indexIn(dispositionValue);
 
-                QString formItemName = "";
-                QString uploadedFilename = "";
+                QString formItemName = QString();
+                QString uploadedFilename = QString();
                 if (matchIndex != -1) {
                     formItemName = formDataFieldsRegex.cap(1);
                     uploadedFilename = formDataFieldsRegex.cap(2);

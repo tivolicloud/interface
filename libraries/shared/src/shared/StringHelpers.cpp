@@ -12,7 +12,7 @@
 
 /// Note: this will not preserve line breaks in the original input.
 QString simpleWordWrap(const QString& input, int maxCharactersPerLine) {
-    QStringList words = input.split(QRegExp("\\s+"));
+    QStringList words = input.split(QRegExp(QStringLiteral("\\s+")));
     QString output;
     QString currentLine;
     foreach(const auto& word, words) {
@@ -20,10 +20,10 @@ QString simpleWordWrap(const QString& input, int maxCharactersPerLine) {
 
         // if this next word would fit, include it
         if (newLength <= maxCharactersPerLine) {
-            currentLine += " " + word;
+            currentLine += QStringLiteral(" ") + word;
         } else {
             if (!output.isEmpty()) {
-                output += "\n";
+                output += QStringLiteral("\n");
             }
             output += currentLine;
             currentLine = word;
@@ -33,7 +33,7 @@ QString simpleWordWrap(const QString& input, int maxCharactersPerLine) {
     // if there is remaining text in the current line, append it to the end
     if (!currentLine.isEmpty()) {
         if (!output.isEmpty()) {
-            output += "\n";
+            output += QStringLiteral("\n");
         }
         output += currentLine;
     }

@@ -57,7 +57,7 @@ static AnimPose computeHipsInSensorFrame(MyAvatar* myAvatar, bool isFlying) {
     glm::mat4 worldToSensorMat = glm::inverse(myAvatar->getSensorToWorldMatrix());
 
     // check for pinned hips.
-    auto hipsIndex = myAvatar->getJointIndex("Hips");
+    auto hipsIndex = myAvatar->getJointIndex(QStringLiteral("Hips"));
     if (myAvatar->isJointPinned(hipsIndex)) {
         Transform avatarTransform = myAvatar->getTransform();
         AnimPose result = AnimPose(worldToSensorMat * avatarTransform.getMatrix() * Matrices::Y_180);
@@ -94,7 +94,7 @@ static AnimPose computeHipsInSensorFrame(MyAvatar* myAvatar, bool isFlying) {
         const glm::quat tiltRot = glm::angleAxis(TILT_ANGLE, glm::normalize(transformVectorFast(avatarToSensorMat, -Vectors::UNIT_X)));
 
         glm::vec3 headPos;
-        int headIndex = myAvatar->getJointIndex("Head");
+        int headIndex = myAvatar->getJointIndex(QStringLiteral("Head"));
         if (headIndex != -1) {
             headPos = transformPoint(avatarToSensorMat, myAvatar->getAbsoluteJointTranslationInObjectFrame(headIndex));
         } else {

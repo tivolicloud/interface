@@ -28,7 +28,7 @@ UpdateDialog::UpdateDialog(QQuickItem* parent) :
         _updateAvailableDetails = "v" + latestVersion.versionString + " released on "
             + QString(buildData[latestVersion]["releaseTime"]).replace("  ", " ");
 
-        _releaseNotes = "";
+        _releaseNotes = QString();
 
         auto it = buildData.end();
         while (it != buildData.begin()) {

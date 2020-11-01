@@ -25,6 +25,6 @@ Transform MyAvatarHeadTransformNode::getTransform() {
 
 QVariantMap MyAvatarHeadTransformNode::toVariantMap() const {
     QVariantMap map;
-    map["joint"] = "Avatar";
+    map[QStringLiteral("joint")] = QStringLiteral("Avatar");
     return map;
 }

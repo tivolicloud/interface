@@ -29,7 +29,7 @@ QString formatException(const QScriptValue& exception) {
 
     result = QString(SCRIPT_EXCEPTION_FORMAT).arg(note, message, fileName, lineNumber);
     if (!stacktrace.isEmpty()) {
-        result += QString("\n[Backtrace]%1%2").arg(SCRIPT_BACKTRACE_SEP).arg(stacktrace);
+        result += QStringLiteral("\n[Backtrace]%1%2").arg(SCRIPT_BACKTRACE_SEP).arg(stacktrace);
     }
     return result;
 }

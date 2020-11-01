@@ -53,13 +53,13 @@ const AnimPoseVec& AnimBlendLinearMove::evaluate(const AnimVariantMap& animVars,
     _desiredSpeed = animVars.lookup(_desiredSpeedVar, _desiredSpeed);
 
     float speed = 0.0f;
-    if (_alphaVar.contains("Lateral")) {
-        speed = animVars.lookup("moveLateralSpeed", speed);
-    } else if (_alphaVar.contains("Backward")) {
-        speed = animVars.lookup("moveBackwardSpeed", speed);
+    if (_alphaVar.contains(QStringLiteral("Lateral"))) {
+        speed = animVars.lookup(QStringLiteral("moveLateralSpeed"), speed);
+    } else if (_alphaVar.contains(QStringLiteral("Backward"))) {
+        speed = animVars.lookup(QStringLiteral("moveBackwardSpeed"), speed);
     } else {
         //this is forward movement
-        speed = animVars.lookup("moveForwardSpeed", speed);
+        speed = animVars.lookup(QStringLiteral("moveForwardSpeed"), speed);
     }
     _alpha = calculateAlpha(speed, _characteristicSpeeds);
     float parentDebugAlpha = context.getDebugAlpha(_id);
@@ -154,7 +154,7 @@ void AnimBlendLinearMove::setFrameAndPhase(float dt, float alpha, int prevPoseIn
 
     // detect loop trigger events
     if (_phase >= 1.0f) {
-        triggersOut.setTrigger(_id + "OnLoop");
+        triggersOut.setTrigger(_id + QStringLiteral("OnLoop"));
         _phase = glm::fract(_phase);
     }
 

@@ -31,14 +31,14 @@ bool TextureMeta::deserialize(const QByteArray& data, TextureMeta* meta) {
     }
 
     auto root = doc.object();
-    if (root.contains("original")) {
-        meta->original = root["original"].toString();
+    if (root.contains(QStringLiteral("original"))) {
+        meta->original = root[QStringLiteral("original")].toString();
     }
-    if (root.contains("uncompressed")) {
-        meta->uncompressed = root["uncompressed"].toString();
+    if (root.contains(QStringLiteral("uncompressed"))) {
+        meta->uncompressed = root[QStringLiteral("uncompressed")].toString();
     }
-    if (root.contains("compressed")) {
-        auto compressed = root["compressed"].toObject();
+    if (root.contains(QStringLiteral("compressed"))) {
+        auto compressed = root[QStringLiteral("compressed")].toObject();
         for (auto it = compressed.constBegin(); it != compressed.constEnd(); it++) {
             khronos::gl::texture::InternalFormat format;
             auto formatName = it.key().toLatin1();
@@ -47,8 +47,8 @@ bool TextureMeta::deserialize(const QByteArray& data, TextureMeta* meta) {
             }
         }
     }
-    if (root.contains("version")) {
-        meta->version = root["version"].toInt();
+    if (root.contains(QStringLiteral("version"))) {
+        meta->version = root[QStringLiteral("version")].toInt();
     }
 
     return true;
@@ -63,10 +63,10 @@ QByteArray TextureMeta::serialize() {
         const char* name = khronos::gl::texture::toString(kv.first);
         compressed[name] = kv.second.toString();
     }
-    root["original"] = original.toString();
-    root["uncompressed"] = uncompressed.toString();
-    root["compressed"] = compressed;
-    root["version"] = KTX_VERSION;
+    root[QStringLiteral("original")] = original.toString();
+    root[QStringLiteral("uncompressed")] = uncompressed.toString();
+    root[QStringLiteral("compressed")] = compressed;
+    root[QStringLiteral("version")] = KTX_VERSION;
     doc.setObject(root);
 
     return doc.toJson();

@@ -69,7 +69,7 @@ bool ObjectDynamic::updateArguments(QVariantMap arguments) {
         QString previousTag = _tag;
 
         bool ttlSet = true;
-        float ttl = EntityDynamicInterface::extractFloatArgument("dynamic", arguments, "ttl", ttlSet, false);
+        float ttl = EntityDynamicInterface::extractFloatArgument(QStringLiteral("dynamic"), arguments, QStringLiteral("ttl"), ttlSet, false);
         if (ttlSet) {
             quint64 now = usecTimestampNow();
             _expires = now + (quint64)(ttl * USECS_PER_SECOND);
@@ -78,7 +78,7 @@ bool ObjectDynamic::updateArguments(QVariantMap arguments) {
         }
 
         bool tagSet = true;
-        QString tag = EntityDynamicInterface::extractStringArgument("dynamic", arguments, "tag", tagSet, false);
+        QString tag = EntityDynamicInterface::extractStringArgument(QStringLiteral("dynamic"), arguments, QStringLiteral("tag"), tagSet, false);
         if (tagSet) {
             _tag = tag;
         } else {
@@ -130,24 +130,24 @@ QVariantMap ObjectDynamic::getArguments() {
     QVariantMap arguments;
     withReadLock([&]{
         if (_expires == 0) {
-            arguments["ttl"] = 0.0f;
+            arguments[QStringLiteral("ttl")] = 0.0f;
         } else {
             quint64 now = usecTimestampNow();
-            arguments["ttl"] = (float)(_expires - now) / (float)USECS_PER_SECOND;
+            arguments[QStringLiteral("ttl")] = (float)(_expires - now) / (float)USECS_PER_SECOND;
         }
-        arguments["tag"] = _tag;
+        arguments[QStringLiteral("tag")] = _tag;
 
         EntityItemPointer entity = _ownerEntity.lock();
         if (entity) {
             ObjectMotionState* motionState = static_cast<ObjectMotionState*>(entity->getPhysicsInfo());
             if (motionState) {
-                arguments["::active"] = motionState->isActive();
-                arguments["::motion-type"] = motionTypeToString(motionState->getMotionType());
+                arguments[QStringLiteral("::active")] = motionState->isActive();
+                arguments[QStringLiteral("::motion-type")] = motionTypeToString(motionState->getMotionType());
             } else {
-                arguments["::no-motion-state"] = true;
+                arguments[QStringLiteral("::no-motion-state")] = true;
             }
         }
-        arguments["isMine"] = isMine();
+        arguments[QStringLiteral("isMine")] = isMine();
     });
     return arguments;
 }

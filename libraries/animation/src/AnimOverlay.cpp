@@ -104,7 +104,7 @@ void AnimOverlay::buildFullBodyBoneSet() {
 void AnimOverlay::buildUpperBodyBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int spineJoint = _skeleton->nameToJointIndex("Spine");
+    int spineJoint = _skeleton->nameToJointIndex(QStringLiteral("Spine"));
     for_each_child_joint(_skeleton, spineJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -113,8 +113,8 @@ void AnimOverlay::buildUpperBodyBoneSet() {
 void AnimOverlay::buildLowerBodyBoneSet() {
     assert(_skeleton);
     buildFullBodyBoneSet();
-    int hipsJoint = _skeleton->nameToJointIndex("Hips");
-    int spineJoint = _skeleton->nameToJointIndex("Spine");
+    int hipsJoint = _skeleton->nameToJointIndex(QStringLiteral("Hips"));
+    int spineJoint = _skeleton->nameToJointIndex(QStringLiteral("Spine"));
     _boneSetVec.resize(_skeleton->getNumJoints());
     for_each_child_joint(_skeleton, spineJoint, [&](int i) {
         _boneSetVec[i] = 0.0f;
@@ -125,7 +125,7 @@ void AnimOverlay::buildLowerBodyBoneSet() {
 void AnimOverlay::buildLeftArmBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int leftShoulderJoint = _skeleton->nameToJointIndex("LeftShoulder");
+    int leftShoulderJoint = _skeleton->nameToJointIndex(QStringLiteral("LeftShoulder"));
     for_each_child_joint(_skeleton, leftShoulderJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -134,7 +134,7 @@ void AnimOverlay::buildLeftArmBoneSet() {
 void AnimOverlay::buildRightArmBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int rightShoulderJoint = _skeleton->nameToJointIndex("RightShoulder");
+    int rightShoulderJoint = _skeleton->nameToJointIndex(QStringLiteral("RightShoulder"));
     for_each_child_joint(_skeleton, rightShoulderJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -143,7 +143,7 @@ void AnimOverlay::buildRightArmBoneSet() {
 void AnimOverlay::buildAboveTheHeadBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int headJoint = _skeleton->nameToJointIndex("Head");
+    int headJoint = _skeleton->nameToJointIndex(QStringLiteral("Head"));
     for_each_child_joint(_skeleton, headJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -152,7 +152,7 @@ void AnimOverlay::buildAboveTheHeadBoneSet() {
 void AnimOverlay::buildBelowTheHeadBoneSet() {
     assert(_skeleton);
     buildFullBodyBoneSet();
-    int headJoint = _skeleton->nameToJointIndex("Head");
+    int headJoint = _skeleton->nameToJointIndex(QStringLiteral("Head"));
     for_each_child_joint(_skeleton, headJoint, [&](int i) {
         _boneSetVec[i] = 0.0f;
     });
@@ -161,14 +161,14 @@ void AnimOverlay::buildBelowTheHeadBoneSet() {
 void AnimOverlay::buildHeadOnlyBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int headJoint = _skeleton->nameToJointIndex("Head");
+    int headJoint = _skeleton->nameToJointIndex(QStringLiteral("Head"));
     _boneSetVec[headJoint] = 1.0f;
 }
 
 void AnimOverlay::buildSpineOnlyBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int spineJoint = _skeleton->nameToJointIndex("Spine");
+    int spineJoint = _skeleton->nameToJointIndex(QStringLiteral("Spine"));
     _boneSetVec[spineJoint] = 1.0f;
 }
 
@@ -183,7 +183,7 @@ void AnimOverlay::buildEmptyBoneSet() {
 void AnimOverlay::buildLeftHandBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int handJoint = _skeleton->nameToJointIndex("LeftHand");
+    int handJoint = _skeleton->nameToJointIndex(QStringLiteral("LeftHand"));
     for_each_child_joint(_skeleton, handJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -192,7 +192,7 @@ void AnimOverlay::buildLeftHandBoneSet() {
 void AnimOverlay::buildRightHandBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int handJoint = _skeleton->nameToJointIndex("RightHand");
+    int handJoint = _skeleton->nameToJointIndex(QStringLiteral("RightHand"));
     for_each_child_joint(_skeleton, handJoint, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
@@ -201,18 +201,18 @@ void AnimOverlay::buildRightHandBoneSet() {
 void AnimOverlay::buildHipsOnlyBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int hipsJoint = _skeleton->nameToJointIndex("Hips");
+    int hipsJoint = _skeleton->nameToJointIndex(QStringLiteral("Hips"));
     _boneSetVec[hipsJoint] = 1.0f;
 }
 
 void AnimOverlay::buildBothFeetBoneSet() {
     assert(_skeleton);
     buildEmptyBoneSet();
-    int rightFoot = _skeleton->nameToJointIndex("RightFoot");
+    int rightFoot = _skeleton->nameToJointIndex(QStringLiteral("RightFoot"));
     for_each_child_joint(_skeleton, rightFoot, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });
-    int leftFoot = _skeleton->nameToJointIndex("LeftFoot");
+    int leftFoot = _skeleton->nameToJointIndex(QStringLiteral("LeftFoot"));
     for_each_child_joint(_skeleton, leftFoot, [&](int i) {
         _boneSetVec[i] = 1.0f;
     });

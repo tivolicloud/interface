@@ -552,15 +552,15 @@ void Avatar::relayJointDataToChildren() {
  * @typedef {string} AvatarSimulationRate
  */
 float Avatar::getSimulationRate(const QString& rateName) const {
-    if (rateName == "") {
+    if (rateName.isEmpty()) {
         return _simulationRate.rate();
-    } else if (rateName == "avatar") {
+    } else if (rateName == QStringLiteral("avatar")) {
         return _simulationRate.rate();
-    } else if (rateName == "avatarInView") {
+    } else if (rateName == QStringLiteral("avatarInView")) {
         return _simulationInViewRate.rate();
-    } else if (rateName == "skeletonModel") {
+    } else if (rateName == QStringLiteral("skeletonModel")) {
         return _skeletonModelSimulationRate.rate();
-    } else if (rateName == "jointData") {
+    } else if (rateName == QStringLiteral("jointData")) {
         return _jointDataSimulationRate.rate();
     }
     return 0.0f;
@@ -593,7 +593,7 @@ void Avatar::applyPositionDelta(const glm::vec3& delta) {
 }
 
 void Avatar::measureMotionDerivatives(float deltaTime) {
-    PerformanceTimer perfTimer("derivatives");
+    PerformanceTimer perfTimer(QStringLiteral("derivatives"));
     // linear
     const float MIN_DELTA_TIME = 0.001f;
     const float safeDeltaTime = glm::max(deltaTime, MIN_DELTA_TIME);
@@ -728,10 +728,10 @@ void Avatar::postUpdate(float deltaTime, const render::ScenePointer& scene) {
 
     if (isMyAvatar() ? showMyLookAtTarget : showOtherLookAtTarget) {
         glm::vec3 lookAtTarget = getHead()->getLookAtPosition();
-        DebugDraw::getInstance().addMarker(QString("look-at-") + getID().toString(),
+        DebugDraw::getInstance().addMarker(QStringLiteral("look-at-") + getID().toString(),
                                            glm::quat(), lookAtTarget, glm::vec4(1), 1.0f);
     } else {
-        DebugDraw::getInstance().removeMarker(QString("look-at-") + getID().toString());
+        DebugDraw::getInstance().removeMarker(QStringLiteral("look-at-") + getID().toString());
     }
 
     if (isMyAvatar() ? showMyLookAtVectors : showOtherLookAtVectors) {
@@ -739,7 +739,7 @@ void Avatar::postUpdate(float deltaTime, const render::ScenePointer& scene) {
         const glm::vec4 BLUE(0.0f, 0.0f, _lookAtSnappingEnabled ? 1.0f : 0.25f, 1.0f);
         const glm::vec4 RED(_lookAtSnappingEnabled ? 1.0f : 0.25f, 0.0f, 0.0f, 1.0f);
 
-        int leftEyeJoint = getJointIndex("LeftEye");
+        int leftEyeJoint = getJointIndex(QStringLiteral("LeftEye"));
         glm::vec3 leftEyePosition;
         glm::quat leftEyeRotation;
 
@@ -748,7 +748,7 @@ void Avatar::postUpdate(float deltaTime, const render::ScenePointer& scene) {
             DebugDraw::getInstance().drawRay(leftEyePosition, leftEyePosition + leftEyeRotation * Vectors::UNIT_Z * EYE_RAY_LENGTH, BLUE);
         }
 
-        int rightEyeJoint = getJointIndex("RightEye");
+        int rightEyeJoint = getJointIndex(QStringLiteral("RightEye"));
         glm::vec3 rightEyePosition;
         glm::quat rightEyeRotation;
         if (_skeletonModel->getJointPositionInWorldFrame(rightEyeJoint, rightEyePosition) &&
@@ -779,8 +779,8 @@ void Avatar::render(RenderArgs* renderArgs) {
 
         if (_handState & LEFT_HAND_POINTING_FLAG) {
             if (_handState & IS_FINGER_POINTING_FLAG) {
-                int leftIndexTip = getJointIndex("LeftHandIndex4");
-                int leftIndexTipJoint = getJointIndex("LeftHandIndex3");
+                int leftIndexTip = getJointIndex(QStringLiteral("LeftHandIndex4"));
+                int leftIndexTipJoint = getJointIndex(QStringLiteral("LeftHandIndex3"));
                 havePosition = _skeletonModel->getJointPositionInWorldFrame(leftIndexTip, position);
                 haveRotation = _skeletonModel->getJointRotationInWorldFrame(leftIndexTipJoint, rotation);
             } else {
@@ -803,8 +803,8 @@ void Avatar::render(RenderArgs* renderArgs) {
         if (_handState & RIGHT_HAND_POINTING_FLAG) {
 
             if (_handState & IS_FINGER_POINTING_FLAG) {
-                int rightIndexTip = getJointIndex("RightHandIndex4");
-                int rightIndexTipJoint = getJointIndex("RightHandIndex3");
+                int rightIndexTip = getJointIndex(QStringLiteral("RightHandIndex4"));
+                int rightIndexTipJoint = getJointIndex(QStringLiteral("RightHandIndex3"));
                 havePosition = _skeletonModel->getJointPositionInWorldFrame(rightIndexTip, position);
                 haveRotation = _skeletonModel->getJointRotationInWorldFrame(rightIndexTipJoint, rotation);
             } else {
@@ -936,7 +936,7 @@ bool Avatar::shouldRenderHead(const RenderArgs* renderArgs) const {
 
 void Avatar::simulateAttachments(float deltaTime) {
     assert(_attachmentModels.size() == _attachmentModelsTexturesLoaded.size());
-    PerformanceTimer perfTimer("attachments");
+    PerformanceTimer perfTimer(QStringLiteral("attachments"));
     for (int i = 0; i < (int)_attachmentModels.size(); i++) {
         const AttachmentData& attachment = _attachmentData.at(i);
         auto& model = _attachmentModels.at(i);
@@ -1068,9 +1068,9 @@ void Avatar::renderDisplayName(gpu::Batch& batch, const ViewFrustum& view, const
     if (shouldShowReceiveStats) {
         float kilobitsPerSecond = getAverageBytesReceivedPerSecond() / (float) BYTES_PER_KILOBIT;
 
-        QString statsFormat = QString("(%1 Kbps, %2 Hz)");
+        QString statsFormat = QStringLiteral("(%1 Kbps, %2 Hz)");
         if (!renderedDisplayName.isEmpty()) {
-            statsFormat.prepend(" - ");
+            statsFormat.prepend(QStringLiteral(" - "));
         }
         renderedDisplayName += statsFormat.arg(QString::number(kilobitsPerSecond, 'f', 2)).arg(getReceiveRate());
     }
@@ -1247,7 +1247,7 @@ glm::quat Avatar::getAbsoluteJointRotationInObjectFrame(int index) const {
         case CAMERA_MATRIX_INDEX: {
             glm::quat rotation;
             if (_skeletonModel && _skeletonModel->isActive()) {
-                int headJointIndex = getJointIndex("Head");
+                int headJointIndex = getJointIndex(QStringLiteral("Head"));
                 if (headJointIndex >= 0) {
                     _skeletonModel->getAbsoluteJointRotationInRigFrame(headJointIndex, rotation);
                 }
@@ -1299,7 +1299,7 @@ glm::vec3 Avatar::getAbsoluteJointTranslationInObjectFrame(int index) const {
         case CAMERA_MATRIX_INDEX: {
             glm::vec3 translation;
             if (_skeletonModel && _skeletonModel->isActive()) {
-                int headJointIndex = getJointIndex("Head");
+                int headJointIndex = getJointIndex(QStringLiteral("Head"));
                 if (headJointIndex >= 0) {
                     _skeletonModel->getAbsoluteJointTranslationInRigFrame(headJointIndex, translation);
                 }
@@ -1686,7 +1686,7 @@ void Avatar::setAttachmentData(const QVector<AttachmentData>& attachmentData) {
 }
 
 int Avatar::parseDataFromBuffer(const QByteArray& buffer) {
-    PerformanceTimer perfTimer("unpack");
+    PerformanceTimer perfTimer(QStringLiteral("unpack"));
     if (!_initialized) {
         // now that we have data for this Avatar we are go for init
         init();
@@ -1878,7 +1878,7 @@ void Avatar::setOrientationViaScript(const glm::quat& orientation) {
 }
 
 void Avatar::updatePalms() {
-    PerformanceTimer perfTimer("palms");
+    PerformanceTimer perfTimer(QStringLiteral("palms"));
     // update thread-safe caches
     _leftPalmRotationCache.set(getUncachedLeftPalmRotation());
     _rightPalmRotationCache.set(getUncachedRightPalmRotation());
@@ -1937,9 +1937,9 @@ QList<QVariant> Avatar::getSkeleton() {
             list.reserve(skeleton->getNumJoints());
             for (int i = 0; i < skeleton->getNumJoints(); i++) {
                 QVariantMap obj;
-                obj["name"] = skeleton->getJointName(i);
-                obj["index"] = i;
-                obj["parentIndex"] = skeleton->getParentIndex(i);
+                obj[QStringLiteral("name")] = skeleton->getJointName(i);
+                obj[QStringLiteral("index")] = i;
+                obj[QStringLiteral("parentIndex")] = skeleton->getParentIndex(i);
                 list.push_back(obj);
             }
             return list;

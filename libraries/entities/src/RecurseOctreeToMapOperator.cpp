@@ -48,7 +48,7 @@ bool RecurseOctreeToMapOperator::postRecursion(const OctreeElementPointer& eleme
     EntityItemProperties defaultProperties;
 
     EntityTreeElementPointer entityTreeElement = std::static_pointer_cast<EntityTreeElement>(element);
-    QVariantList entitiesQList = qvariant_cast<QVariantList>(_map["Entities"]);
+    QVariantList entitiesQList = qvariant_cast<QVariantList>(_map[QStringLiteral("Entities")]);
 
     entityTreeElement->forEachEntity([&](EntityItemPointer entityItem) {
         if (_skipThoseWithBadParents && !entityItem->isParentIDValid()) {
@@ -77,7 +77,7 @@ bool RecurseOctreeToMapOperator::postRecursion(const OctreeElementPointer& eleme
         entitiesQList << qScriptValues.toVariant();
     });
 
-    _map["Entities"] = entitiesQList;
+    _map[QStringLiteral("Entities")] = entitiesQList;
     if (element == _top) {
         _withinTop = false;
     }

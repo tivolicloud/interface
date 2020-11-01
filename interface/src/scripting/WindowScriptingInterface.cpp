@@ -145,7 +145,7 @@ void WindowScriptingInterface::openUrl(const QUrl& url) {
         } else {
 #if defined(Q_OS_ANDROID)
             QMap<QString, QString> args;
-            args["url"] = url.toString();
+            args[QStringLiteral("url")] = url.toString();
             AndroidHelper::instance().requestActivity("WebView", true, args);
 #else
             QDesktopServices::openUrl(url);
@@ -164,7 +164,7 @@ void WindowScriptingInterface::openAndroidActivity(const QString& activityName, 
 QString fixupPathForMac(const QString& directory) {
     // On OS X `directory` does not work as expected unless a file is included in the path, so we append a bogus
     // filename if the directory is valid.
-    QString path = "";
+    QString path = QString();
     QFileInfo fileInfo = QFileInfo(directory);
     if (fileInfo.isDir()) {
         fileInfo.setFile(directory, "__HIFI_INVALID_FILE__");

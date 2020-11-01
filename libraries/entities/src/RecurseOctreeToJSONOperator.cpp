@@ -39,12 +39,12 @@ void RecurseOctreeToJSONOperator::processEntity(const EntityItemPointer& entity)
         : EntityItemPropertiesToScriptValue(_engine, entity->getProperties());
 
     if (_comma) {
-        _json += ',';
+        _json += QStringLiteral(",");
     };
     _comma = true;
-    _json += "\n    ";
+    _json += QStringLiteral("\n    ");
 
     // Override default toString():
-    qScriptValues.setProperty("toString", _toStringMethod);
+    qScriptValues.setProperty(QStringLiteral("toString"), _toStringMethod);
     _json += qScriptValues.toString();
 }

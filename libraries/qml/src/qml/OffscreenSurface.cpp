@@ -326,7 +326,7 @@ void OffscreenSurface::loadInternal(const QUrl& qmlSource,
                                     QQuickItem* parent,
                                     const QmlContextObjectCallback& callback,
                                     const QmlContextCallback& contextCallback) {
-    PROFILE_RANGE_EX(app, "OffscreenSurface::loadInternal", 0xffff00ff, 0, { std::make_pair("url", qmlSource.toDisplayString()) });
+    PROFILE_RANGE_EX(app, QStringLiteral("OffscreenSurface::loadInternal"), 0xffff00ff, 0, { std::make_pair("url", qmlSource.toDisplayString()) });
     if (QThread::currentThread() != thread()) {
         qFatal("Called load on a non-surface thread");
     }
@@ -361,7 +361,7 @@ void OffscreenSurface::loadInternal(const QUrl& qmlSource,
     contextCallback(targetContext);
     QQmlComponent* qmlComponent;
     {
-        PROFILE_RANGE(app, "new QQmlComponent");
+        PROFILE_RANGE(app, QStringLiteral("new QQmlComponent"));
         qmlComponent = new QQmlComponent(getSurfaceContext()->engine(), finalQmlSource, QQmlComponent::PreferSynchronous);
     }
     if (qmlComponent->isLoading()) {
@@ -377,7 +377,7 @@ void OffscreenSurface::finishQmlLoad(QQmlComponent* qmlComponent,
                                      QQmlContext* qmlContext,
                                      QQuickItem* parent,
                                      const QmlContextObjectCallback& callback) {
-    PROFILE_RANGE(app, "finishQmlLoad");
+    PROFILE_RANGE(app, QStringLiteral("finishQmlLoad"));
     disconnect(qmlComponent, &QQmlComponent::statusChanged, this, 0);
     if (qmlComponent->isError()) {
         for (const auto& error : qmlComponent->errors()) {
@@ -418,7 +418,7 @@ void OffscreenSurface::finishQmlLoad(QQmlComponent* qmlComponent,
         newItem->setFlag(QQuickItem::ItemIsFocusScope, true);
 #ifdef DEBUG
         for (auto frame : newObject->findChildren<QQuickItem *>("Frame")) {
-            frame->setProperty("qmlFile", qmlComponent->url());
+            frame->setProperty(QStringLiteral("qmlFile"), qmlComponent->url());
         }
 #endif
     }

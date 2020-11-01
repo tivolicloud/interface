@@ -32,7 +32,7 @@ public:
 
     static void emitAudioPacket(const void* audioData, size_t bytes, quint16& sequenceNumber, bool isStereo,
                                 const Transform& transform, glm::vec3 avatarBoundingBoxCorner, glm::vec3 avatarBoundingBoxScale,
-                                PacketType packetType, QString codecName = QString(""));
+                                PacketType packetType, QString codecName = QString());
 
     // threadsafe
     // moves injector->getLocalBuffer() to another thread (so removes its parent)

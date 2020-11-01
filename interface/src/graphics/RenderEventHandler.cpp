@@ -20,15 +20,15 @@ RenderEventHandler::RenderEventHandler(CheckCall checkCall, RenderCall renderCal
     _renderCall(renderCall)
 {
     // Transfer to a new thread
-    moveToNewNamedThread(this, "RenderThread", [this](QThread* renderThread) {
-        hifi::qt::addBlockingForbiddenThread("Render", renderThread);
+    moveToNewNamedThread(this, QStringLiteral("RenderThread"), [this](QThread* renderThread) {
+        hifi::qt::addBlockingForbiddenThread(QStringLiteral("Render"), renderThread);
         _lastTimeRendered.start();
     }, std::bind(&RenderEventHandler::initialize, this), QThread::HighestPriority);
 }
 
 void RenderEventHandler::initialize() {
-    setObjectName("Render");
-    PROFILE_SET_THREAD_NAME("Render");
+    setObjectName(QStringLiteral("Render"));
+    PROFILE_SET_THREAD_NAME(QStringLiteral("Render"));
     setCrashAnnotation("render_thread_id", std::to_string((size_t)QThread::currentThreadId()));
 }
 

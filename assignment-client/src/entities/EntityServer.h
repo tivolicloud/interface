@@ -43,7 +43,7 @@ public:
     virtual const char* getMyLoggingServerTargetName() const override { return MODEL_SERVER_LOGGING_TARGET_NAME; }
     virtual const char* getMyDefaultPersistFilename() const override { return LOCAL_MODELS_PERSIST_FILE; }
     virtual PacketType getMyEditNackType() const override { return PacketType::EntityEditNack; }
-    virtual QString getMyDomainSettingsKey() const override { return QString("entity_server_settings"); }
+    virtual QString getMyDomainSettingsKey() const override { return QStringLiteral("entity_server_settings"); }
 
     // subclass may implement these method
     virtual void beforeRun() override;

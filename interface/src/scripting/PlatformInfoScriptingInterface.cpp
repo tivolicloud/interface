@@ -79,7 +79,7 @@ QString PlatformInfoScriptingInterface::getCPUBrand() {
     
     return QString::fromStdString(hostStream.str());
 #else
-    return QString("NO IMPLEMENTED");
+    return QStringLiteral("NO IMPLEMENTED");
 #endif
 }
 
@@ -136,7 +136,7 @@ QString PlatformInfoScriptingInterface::getGraphicsCardType() {
     // unkown graphics card
     return "UNKNOWN";
 #else
-    return QString("NO IMPLEMENTED");
+    return QStringLiteral("NO IMPLEMENTED");
 #endif
 }
 

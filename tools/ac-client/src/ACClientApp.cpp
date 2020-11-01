@@ -87,7 +87,7 @@ ACClientApp::ACClientApp(int argc, char* argv[]) :
     }
 
     if (parser.isSet(authOption)) {
-        QStringList pieces = parser.value(authOption).split(":");
+        QStringList pieces = parser.value(authOption).split(QStringLiteral(":"));
         if (pieces.size() != 2) {
             qDebug() << "-u should be followed by username:password";
             parser.showHelp();

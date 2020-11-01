@@ -75,7 +75,7 @@ public:
     virtual const char* getMyLoggingServerTargetName() const = 0;
     virtual const char* getMyDefaultPersistFilename() const = 0;
     virtual PacketType getMyEditNackType() const = 0;
-    virtual QString getMyDomainSettingsKey() const { return QString("octree_server_settings"); }
+    virtual QString getMyDomainSettingsKey() const { return QStringLiteral("octree_server_settings"); }
 
     // subclass may implement these method
     virtual void beforeRun() { }

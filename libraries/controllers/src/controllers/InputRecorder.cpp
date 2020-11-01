@@ -55,23 +55,23 @@ namespace controller {
         angularVelocity.append(pose.angularVelocity.y);
         angularVelocity.append(pose.angularVelocity.z);
 
-        newPose["translation"] = translation;
-        newPose["rotation"] = rotation;
-        newPose["velocity"] = velocity;
-        newPose["angularVelocity"] = angularVelocity;
-        newPose["valid"] = pose.valid;
+        newPose[QStringLiteral("translation")] = translation;
+        newPose[QStringLiteral("rotation")] = rotation;
+        newPose[QStringLiteral("velocity")] = velocity;
+        newPose[QStringLiteral("angularVelocity")] = angularVelocity;
+        newPose[QStringLiteral("valid")] = pose.valid;
 
         return newPose;
     }
 
     Pose jsonObjectToPose(const QJsonObject object) {
         Pose pose;
-        QJsonArray translation = object["translation"].toArray();
-        QJsonArray rotation = object["rotation"].toArray();
-        QJsonArray velocity = object["velocity"].toArray();
-        QJsonArray angularVelocity = object["angularVelocity"].toArray();
+        QJsonArray translation = object[QStringLiteral("translation")].toArray();
+        QJsonArray rotation = object[QStringLiteral("rotation")].toArray();
+        QJsonArray velocity = object[QStringLiteral("velocity")].toArray();
+        QJsonArray angularVelocity = object[QStringLiteral("angularVelocity")].toArray();
 
-        pose.valid = object["valid"].toBool();
+        pose.valid = object[QStringLiteral("valid")].toBool();
 
         pose.translation.x = translation[0].toDouble();
         pose.translation.y = translation[1].toDouble();
@@ -164,8 +164,8 @@ namespace controller {
 
     QJsonObject InputRecorder::recordDataToJson() {
         QJsonObject data;
-        data["frameCount"] = _framesRecorded;
-        data["version"] = "0.0";
+        data[QStringLiteral("frameCount")] = _framesRecorded;
+        data[QStringLiteral("version")] = "0.0";
         
         QJsonArray actionArrayList;
         QJsonArray poseArrayList;
@@ -173,8 +173,8 @@ namespace controller {
             QJsonArray actionArray;
             for (const auto action: actionState) {
                 QJsonObject actionJson;
-                actionJson["name"] = action.first;
-                actionJson["value"] = action.second;
+                actionJson[QStringLiteral("name")] = action.first;
+                actionJson[QStringLiteral("value")] = action.second;
                 actionArray.append(actionJson);
             }
             actionArrayList.append(actionArray);
@@ -184,15 +184,15 @@ namespace controller {
             QJsonArray poseArray;
             for (const auto pose: poseState) {
                 QJsonObject poseJson;
-                poseJson["name"] = pose.first;
-                poseJson["pose"] = poseToJsonObject(pose.second);
+                poseJson[QStringLiteral("name")] = pose.first;
+                poseJson[QStringLiteral("pose")] = poseToJsonObject(pose.second);
                 poseArray.append(poseJson);
             }
             poseArrayList.append(poseArray);
         }
 
-        data["actionList"] = actionArrayList;
-        data["poseList"] = poseArrayList;
+        data[QStringLiteral("actionList")] = actionArrayList;
+        data[QStringLiteral("poseList")] = poseArrayList;
 
         return data;
     }
@@ -225,17 +225,17 @@ namespace controller {
         
         bool success = false;
         QJsonObject data = openFile(filePath, success);
-        auto keyValue = data.find("version");
+        auto keyValue = data.find(QStringLiteral("version"));
         if (success && keyValue != data.end()) {
-            _framesRecorded = data["frameCount"].toInt();
-            QJsonArray actionArrayList = data["actionList"].toArray();
-            QJsonArray poseArrayList = data["poseList"].toArray();
+            _framesRecorded = data[QStringLiteral("frameCount")].toInt();
+            QJsonArray actionArrayList = data[QStringLiteral("actionList")].toArray();
+            QJsonArray poseArrayList = data[QStringLiteral("poseList")].toArray();
 
             for (int actionIndex = 0; actionIndex < actionArrayList.size(); actionIndex++) {
                 QJsonArray actionState = actionArrayList[actionIndex].toArray();
                 for (int index = 0; index < actionState.size(); index++) {
                     QJsonObject actionObject = actionState[index].toObject();
-                    _currentFrameActions[actionObject["name"].toString()] = actionObject["value"].toDouble();
+                    _currentFrameActions[actionObject[QStringLiteral("name")].toString()] = actionObject[QStringLiteral("value")].toDouble();
                 }
                 _actionStateList.push_back(_currentFrameActions);
                 _currentFrameActions.clear();
@@ -245,7 +245,7 @@ namespace controller {
                 QJsonArray poseState = poseArrayList[poseIndex].toArray();
                 for (int index = 0; index < poseState.size(); index++) {
                     QJsonObject poseObject = poseState[index].toObject();
-                    _currentFramePoses[poseObject["name"].toString()] = jsonObjectToPose(poseObject["pose"].toObject());
+                    _currentFramePoses[poseObject[QStringLiteral("name")].toString()] = jsonObjectToPose(poseObject["pose"].toObject());
                 }
                 _poseStateList.push_back(_currentFramePoses);
                 _currentFramePoses.clear();

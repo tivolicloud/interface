@@ -104,9 +104,9 @@ void Settings::getBoolValue(const QString& name, bool& boolValue) {
 void Settings::setVec3Value(const QString& name, const glm::vec3& vecValue) {
     beginGroup(name);
     {
-        setValue(QString("x"), vecValue.x);
-        setValue(QString("y"), vecValue.y);
-        setValue(QString("z"), vecValue.z);
+        setValue(QStringLiteral("x"), vecValue.x);
+        setValue(QStringLiteral("y"), vecValue.y);
+        setValue(QStringLiteral("z"), vecValue.z);
     }
     endGroup();
 }
@@ -116,9 +116,9 @@ void Settings::getVec3ValueIfValid(const QString& name, glm::vec3& vecValue) {
     {
         bool ok = true;
         const QVariant badDefaultValue = NAN;
-        float x = value(QString("x"), badDefaultValue).toFloat(&ok);
-        float y = value(QString("y"), badDefaultValue).toFloat(&ok);
-        float z = value(QString("z"), badDefaultValue).toFloat(&ok);
+        float x = value(QStringLiteral("x"), badDefaultValue).toFloat(&ok);
+        float y = value(QStringLiteral("y"), badDefaultValue).toFloat(&ok);
+        float z = value(QStringLiteral("z"), badDefaultValue).toFloat(&ok);
         if (ok && (!glm::isnan(x) && !glm::isnan(y) && !glm::isnan(z))) {
             vecValue = glm::vec3(x, y, z);
         }
@@ -129,10 +129,10 @@ void Settings::getVec3ValueIfValid(const QString& name, glm::vec3& vecValue) {
 void Settings::setQuatValue(const QString& name, const glm::quat& quatValue) {
     beginGroup(name);
     {
-        setValue(QString("x"), quatValue.x);
-        setValue(QString("y"), quatValue.y);
-        setValue(QString("z"), quatValue.z);
-        setValue(QString("w"), quatValue.w);
+        setValue(QStringLiteral("x"), quatValue.x);
+        setValue(QStringLiteral("y"), quatValue.y);
+        setValue(QStringLiteral("z"), quatValue.z);
+        setValue(QStringLiteral("w"), quatValue.w);
     }
     endGroup();
 }
@@ -142,10 +142,10 @@ void Settings::getQuatValueIfValid(const QString& name, glm::quat& quatValue) {
     {
         bool ok = true;
         const QVariant badDefaultValue = NAN;
-        float x = value(QString("x"), badDefaultValue).toFloat(&ok);
-        float y = value(QString("y"), badDefaultValue).toFloat(&ok);
-        float z = value(QString("z"), badDefaultValue).toFloat(&ok);
-        float w = value(QString("w"), badDefaultValue).toFloat(&ok);
+        float x = value(QStringLiteral("x"), badDefaultValue).toFloat(&ok);
+        float y = value(QStringLiteral("y"), badDefaultValue).toFloat(&ok);
+        float z = value(QStringLiteral("z"), badDefaultValue).toFloat(&ok);
+        float w = value(QStringLiteral("w"), badDefaultValue).toFloat(&ok);
         if (ok && (!glm::isnan(x) && !glm::isnan(y) && !glm::isnan(z) && !glm::isnan(w))) {
             quatValue = glm::quat(w, x, y, z);
         }

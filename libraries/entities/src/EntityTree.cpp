@@ -186,7 +186,7 @@ void EntityTree::readBitstreamToTree(const unsigned char* bitstream,
 
     // move entities
     if (_entityMover.hasMovingEntities()) {
-        PerformanceTimer perfTimer("recurseTreeWithOperator");
+        PerformanceTimer perfTimer(QStringLiteral("recurseTreeWithOperator"));
         recurseTreeWithOperator(&_entityMover);
         _entityMover.reset();
     }
@@ -1274,164 +1274,164 @@ void EntityTree::fixupTerseEditLogging(EntityItemProperties& properties, QList<Q
     lastTerseLog = now;
 
     if (properties.simulationOwnerChanged()) {
-        int simIndex = changedProperties.indexOf("simulationOwner");
+        int simIndex = changedProperties.indexOf(QStringLiteral("simulationOwner"));
         if (simIndex >= 0) {
             SimulationOwner simOwner = properties.getSimulationOwner();
-            changedProperties[simIndex] = QString("simulationOwner:") + QString::number((int)simOwner.getPriority());
+            changedProperties[simIndex] = QStringLiteral("simulationOwner:") + QString::number((int)simOwner.getPriority());
         }
     }
 
     if (properties.velocityChanged()) {
-        int index = changedProperties.indexOf("velocity");
+        int index = changedProperties.indexOf(QStringLiteral("velocity"));
         if (index >= 0) {
             glm::vec3 value = properties.getVelocity();
-            changedProperties[index] = QString("velocity:") +
-                QString::number((int)value.x) + "," +
-                QString::number((int)value.y) + "," +
+            changedProperties[index] = QStringLiteral("velocity:") +
+                QString::number((int)value.x) + QStringLiteral(",") +
+                QString::number((int)value.y) + QStringLiteral(",") +
                 QString::number((int)value.z);
         }
     }
 
     if (properties.gravityChanged()) {
-        int index = changedProperties.indexOf("gravity");
+        int index = changedProperties.indexOf(QStringLiteral("gravity"));
         if (index >= 0) {
             glm::vec3 value = properties.getGravity();
-            QString changeHint = "0";
+            QString changeHint = QStringLiteral("0");
             if (value.x + value.y + value.z > 0) {
-                changeHint = "+";
+                changeHint = QStringLiteral("+");
             } else if (value.x + value.y + value.z < 0) {
-                changeHint = "-";
+                changeHint = QStringLiteral("-");
             }
-            changedProperties[index] = QString("gravity:") + changeHint;
+            changedProperties[index] = QStringLiteral("gravity:") + changeHint;
         }
     }
 
     if (properties.actionDataChanged()) {
-        int index = changedProperties.indexOf("actionData");
+        int index = changedProperties.indexOf(QStringLiteral("actionData"));
         if (index >= 0) {
             QByteArray value = properties.getActionData();
             QString changeHint = serializedDynamicsToDebugString(value);
-            changedProperties[index] = QString("actionData:") + changeHint;
+            changedProperties[index] = QStringLiteral("actionData:") + changeHint;
         }
     }
 
     if (properties.collisionlessChanged()) {
-        int index = changedProperties.indexOf("collisionless");
+        int index = changedProperties.indexOf(QStringLiteral("collisionless"));
         if (index >= 0) {
             bool value = properties.getCollisionless();
-            QString changeHint = "0";
+            QString changeHint = QStringLiteral("0");
             if (value) {
                 changeHint = "1";
             }
-            changedProperties[index] = QString("collisionless:") + changeHint;
+            changedProperties[index] = QStringLiteral("collisionless:") + changeHint;
         }
     }
 
     if (properties.dynamicChanged()) {
-        int index = changedProperties.indexOf("dynamic");
+        int index = changedProperties.indexOf(QStringLiteral("dynamic"));
         if (index >= 0) {
             bool value = properties.getDynamic();
-            QString changeHint = "0";
+            QString changeHint = QStringLiteral("0");
             if (value) {
-                changeHint = "1";
+                changeHint = QStringLiteral("1");
             }
-            changedProperties[index] = QString("dynamic:") + changeHint;
+            changedProperties[index] = QStringLiteral("dynamic:") + changeHint;
         }
     }
 
     if (properties.lockedChanged()) {
-        int index = changedProperties.indexOf("locked");
+        int index = changedProperties.indexOf(QStringLiteral("locked"));
         if (index >= 0) {
             bool value = properties.getLocked();
-            QString changeHint = "0";
+            QString changeHint = QStringLiteral("0");
             if (value) {
-                changeHint = "1";
+                changeHint = QStringLiteral("1");
             }
-            changedProperties[index] = QString("locked:") + changeHint;
+            changedProperties[index] = QStringLiteral("locked:") + changeHint;
         }
     }
 
     if (properties.userDataChanged()) {
-        int index = changedProperties.indexOf("userData");
+        int index = changedProperties.indexOf(QStringLiteral("userData"));
         if (index >= 0) {
             QString changeHint = properties.getUserData();
-            changedProperties[index] = QString("userData:") + changeHint;
+            changedProperties[index] = QStringLiteral("userData:") + changeHint;
         }
     }
 
     if (properties.privateUserDataChanged()) {
-        int index = changedProperties.indexOf("privateUserData");
+        int index = changedProperties.indexOf(QStringLiteral("privateUserData"));
         if (index >= 0) {
             QString changeHint = properties.getPrivateUserData();
-            changedProperties[index] = QString("privateUserData:") + changeHint;
+            changedProperties[index] = QStringLiteral("privateUserData:") + changeHint;
         }
     }
 
     if (properties.parentJointIndexChanged()) {
-        int index = changedProperties.indexOf("parentJointIndex");
+        int index = changedProperties.indexOf(QStringLiteral("parentJointIndex"));
         if (index >= 0) {
             quint16 value = properties.getParentJointIndex();
-            changedProperties[index] = QString("parentJointIndex:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("parentJointIndex:") + QString::number((int)value);
         }
     }
     if (properties.parentIDChanged()) {
-        int index = changedProperties.indexOf("parentID");
+        int index = changedProperties.indexOf(QStringLiteral("parentID"));
         if (index >= 0) {
             QUuid value = properties.getParentID();
-            changedProperties[index] = QString("parentID:") + value.toString();
+            changedProperties[index] = QStringLiteral("parentID:") + value.toString();
         }
     }
 
     if (properties.jointRotationsSetChanged()) {
-        int index = changedProperties.indexOf("jointRotationsSet");
+        int index = changedProperties.indexOf(QStringLiteral("jointRotationsSet"));
         if (index >= 0) {
             auto value = properties.getJointRotationsSet().size();
-            changedProperties[index] = QString("jointRotationsSet:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("jointRotationsSet:") + QString::number((int)value);
         }
     }
     if (properties.jointRotationsChanged()) {
-        int index = changedProperties.indexOf("jointRotations");
+        int index = changedProperties.indexOf(QStringLiteral("jointRotations"));
         if (index >= 0) {
             auto value = properties.getJointRotations().size();
-            changedProperties[index] = QString("jointRotations:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("jointRotations:") + QString::number((int)value);
         }
     }
     if (properties.jointTranslationsSetChanged()) {
-        int index = changedProperties.indexOf("jointTranslationsSet");
+        int index = changedProperties.indexOf(QStringLiteral("jointTranslationsSet"));
         if (index >= 0) {
             auto value = properties.getJointTranslationsSet().size();
-            changedProperties[index] = QString("jointTranslationsSet:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("jointTranslationsSet:") + QString::number((int)value);
         }
     }
     if (properties.jointTranslationsChanged()) {
-        int index = changedProperties.indexOf("jointTranslations");
+        int index = changedProperties.indexOf(QStringLiteral("jointTranslations"));
         if (index >= 0) {
             auto value = properties.getJointTranslations().size();
-            changedProperties[index] = QString("jointTranslations:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("jointTranslations:") + QString::number((int)value);
         }
     }
     if (properties.queryAACubeChanged()) {
-        int index = changedProperties.indexOf("queryAACube");
+        int index = changedProperties.indexOf(QStringLiteral("queryAACube"));
         glm::vec3 center = properties.getQueryAACube().calcCenter();
-        changedProperties[index] = QString("queryAACube:") +
-            QString::number((int)center.x) + "," +
-            QString::number((int)center.y) + "," +
-            QString::number((int)center.z) + "/" +
+        changedProperties[index] = QStringLiteral("queryAACube:") +
+            QString::number((int)center.x) + QStringLiteral(",") +
+            QString::number((int)center.y) + QStringLiteral(",") +
+            QString::number((int)center.z) + QStringLiteral("/") +
             QString::number(properties.getQueryAACube().getDimensions().x);
     }
     if (properties.positionChanged()) {
-        int index = changedProperties.indexOf("position");
+        int index = changedProperties.indexOf(QStringLiteral("position"));
         glm::vec3 pos = properties.getPosition();
-        changedProperties[index] = QString("position:") +
-            QString::number((int)pos.x) + "," +
-            QString::number((int)pos.y) + "," +
+        changedProperties[index] = QStringLiteral("position:") +
+            QString::number((int)pos.x) + QStringLiteral(",") +
+            QString::number((int)pos.y) + QStringLiteral(",") +
             QString::number((int)pos.z);
     }
     if (properties.lifetimeChanged()) {
-        int index = changedProperties.indexOf("lifetime");
+        int index = changedProperties.indexOf(QStringLiteral("lifetime"));
         if (index >= 0) {
             float value = properties.getLifetime();
-            changedProperties[index] = QString("lifetime:") + QString::number((int)value);
+            changedProperties[index] = QStringLiteral("lifetime:") + QString::number((int)value);
         }
     }
 }
@@ -1694,7 +1694,7 @@ void EntityTree::sendChallengeOwnershipPacket(const QString& certID, const QStri
 
     QByteArray text = computeNonce(entityItemID, ownerKey);
 
-    if (text == "") {
+    if (text.isEmpty()) {
         qCDebug(entities) << "CRITICAL ERROR: Couldn't compute nonce. Deleting entity...";
         withWriteLock([&] {
             deleteEntity(entityItemID, true);
@@ -2290,7 +2290,7 @@ void EntityTree::fixupNeedsParentFixups() {
     }
 
     if (moveOperator.hasMovingEntities()) {
-        PerformanceTimer perfTimer("recurseTreeWithOperator");
+        PerformanceTimer perfTimer(QStringLiteral("recurseTreeWithOperator"));
         recurseTreeWithOperator(&moveOperator);
     }
 
@@ -2353,8 +2353,8 @@ void EntityTree::preUpdate() {
 }
 
 void EntityTree::update(bool simulate) {
-    PROFILE_RANGE(simulation_physics, "UpdateTree");
-    PerformanceTimer perfTimer("updateTree");
+    PROFILE_RANGE(simulation_physics, QStringLiteral("UpdateTree"));
+    PerformanceTimer perfTimer(QStringLiteral("updateTree"));
     if (simulate && _simulation) {
         withWriteLock([&] {
             _simulation->updateEntities();
@@ -2749,7 +2749,7 @@ QVector<EntityItemID> EntityTree::sendEntities(EntityEditPacketSender* packetSen
         }
     }
     if (moveOperator.hasMovingEntities()) {
-        PerformanceTimer perfTimer("recurseTreeWithOperator");
+        PerformanceTimer perfTimer(QStringLiteral("recurseTreeWithOperator"));
         localTree->recurseTreeWithOperator(&moveOperator);
     }
 
@@ -2819,7 +2819,7 @@ bool EntityTree::sendEntitiesOperation(const OctreeElementPointer& element, void
                 properties.setParentID(getMapped(oldParentID));
                 // But do not add root offset in this case.
             } else { // Should not happen, but let's try to be helpful...
-                item->globalizeProperties(properties, "Cannot find %3 parent of %2 %1", args->root);
+                item->globalizeProperties(properties, QStringLiteral("Cannot find %3 parent of %2 %1"), args->root);
             }
         }
 
@@ -2857,11 +2857,11 @@ bool EntityTree::sendEntitiesOperation(const OctreeElementPointer& element, void
 
 bool EntityTree::writeToMap(QVariantMap& entityDescription, OctreeElementPointer element, bool skipDefaultValues,
                             bool skipThoseWithBadParents) {
-    if (! entityDescription.contains("Entities")) {
-        entityDescription["Entities"] = QVariantList();
+    if (! entityDescription.contains(QStringLiteral("Entities"))) {
+        entityDescription[QStringLiteral("Entities")] = QVariantList();
     }
-    entityDescription["DataVersion"] = _persistDataVersion;
-    entityDescription["Id"] = _persistID;
+    entityDescription[QStringLiteral("DataVersion")] = _persistDataVersion;
+    entityDescription[QStringLiteral("Id")] = _persistID;
     QScriptEngine scriptEngine;
     RecurseOctreeToMapOperator theOperator(entityDescription, element, &scriptEngine, skipDefaultValues,
                                             skipThoseWithBadParents, _myAvatar);
@@ -2875,67 +2875,67 @@ void convertGrabUserDataToProperties(EntityItemProperties& properties) {
     GrabPropertyGroup& grabProperties = properties.getGrab();
     QJsonObject userData = QJsonDocument::fromJson(properties.getUserData().toUtf8()).object();
 
-    QJsonValue grabbableKeyValue = userData["grabbableKey"];
+    QJsonValue grabbableKeyValue = userData[QStringLiteral("grabbableKey")];
     if (grabbableKeyValue.isObject()) {
         QJsonObject grabbableKey = grabbableKeyValue.toObject();
 
-        QJsonValue wantsTrigger = grabbableKey["wantsTrigger"];
+        QJsonValue wantsTrigger = grabbableKey[QStringLiteral("wantsTrigger")];
         if (wantsTrigger.isBool()) {
             grabProperties.setTriggerable(wantsTrigger.toBool());
         }
-        QJsonValue triggerable = grabbableKey["triggerable"];
+        QJsonValue triggerable = grabbableKey[QStringLiteral("triggerable")];
         if (triggerable.isBool()) {
             grabProperties.setTriggerable(triggerable.toBool());
         }
-        QJsonValue grabbable = grabbableKey["grabbable"];
+        QJsonValue grabbable = grabbableKey[QStringLiteral("grabbable")];
         if (grabbable.isBool()) {
             grabProperties.setGrabbable(grabbable.toBool());
         }
-        QJsonValue ignoreIK = grabbableKey["ignoreIK"];
+        QJsonValue ignoreIK = grabbableKey[QStringLiteral("ignoreIK")];
         if (ignoreIK.isBool()) {
             grabProperties.setGrabFollowsController(ignoreIK.toBool());
         }
-        QJsonValue kinematic = grabbableKey["kinematic"];
+        QJsonValue kinematic = grabbableKey[QStringLiteral("kinematic")];
         if (kinematic.isBool()) {
             grabProperties.setGrabKinematic(kinematic.toBool());
         }
-        QJsonValue equippable = grabbableKey["equippable"];
+        QJsonValue equippable = grabbableKey[QStringLiteral("equippable")];
         if (equippable.isBool()) {
             grabProperties.setEquippable(equippable.toBool());
         }
 
         grabProperties.setGrabDelegateToParent(true);
 
-        if (grabbableKey["spatialKey"].isObject()) {
-            QJsonObject spatialKey = grabbableKey["spatialKey"].toObject();
+        if (grabbableKey[QStringLiteral("spatialKey")].isObject()) {
+            QJsonObject spatialKey = grabbableKey[QStringLiteral("spatialKey")].toObject();
             grabProperties.setEquippable(true);
-            if (spatialKey["leftRelativePosition"].isObject()) {
-                grabProperties.setEquippableLeftPosition(qMapToVec3(spatialKey["leftRelativePosition"].toVariant()));
+            if (spatialKey[QStringLiteral("leftRelativePosition")].isObject()) {
+                grabProperties.setEquippableLeftPosition(qMapToVec3(spatialKey[QStringLiteral("leftRelativePosition")].toVariant()));
             }
-            if (spatialKey["rightRelativePosition"].isObject()) {
-                grabProperties.setEquippableRightPosition(qMapToVec3(spatialKey["rightRelativePosition"].toVariant()));
+            if (spatialKey[QStringLiteral("rightRelativePosition")].isObject()) {
+                grabProperties.setEquippableRightPosition(qMapToVec3(spatialKey[QStringLiteral("rightRelativePosition")].toVariant()));
             }
-            if (spatialKey["relativeRotation"].isObject()) {
-                grabProperties.setEquippableLeftRotation(qMapToQuat(spatialKey["relativeRotation"].toVariant()));
-                grabProperties.setEquippableRightRotation(qMapToQuat(spatialKey["relativeRotation"].toVariant()));
+            if (spatialKey[QStringLiteral("relativeRotation")].isObject()) {
+                grabProperties.setEquippableLeftRotation(qMapToQuat(spatialKey[QStringLiteral("relativeRotation")].toVariant()));
+                grabProperties.setEquippableRightRotation(qMapToQuat(spatialKey[QStringLiteral("relativeRotation")].toVariant()));
             }
         }
     }
 
-    QJsonValue wearableValue = userData["wearable"];
+    QJsonValue wearableValue = userData[QStringLiteral("wearable")];
     if (wearableValue.isObject()) {
         QJsonObject wearable = wearableValue.toObject();
-        QJsonObject joints = wearable["joints"].toObject();
-        if (joints["LeftHand"].isArray()) {
-            QJsonArray leftHand = joints["LeftHand"].toArray();
+        QJsonObject joints = wearable[QStringLiteral("joints")].toObject();
+        if (joints[QStringLiteral("LeftHand")].isArray()) {
+            QJsonArray leftHand = joints[QStringLiteral("LeftHand")].toArray();
             if (leftHand.size() == 2) {
                 grabProperties.setEquippable(true);
                 grabProperties.setEquippableLeftPosition(qMapToVec3(leftHand[0].toVariant()));
                 grabProperties.setEquippableLeftRotation(qMapToQuat(leftHand[1].toVariant()));
             }
         }
-        if (joints["RightHand"].isArray()) {
-            QJsonArray rightHand = joints["RightHand"].toArray();
+        if (joints[QStringLiteral("RightHand")].isArray()) {
+            QJsonArray rightHand = joints[QStringLiteral("RightHand")].toArray();
             if (rightHand.size() == 2) {
                 grabProperties.setEquippable(true);
                 grabProperties.setEquippableRightPosition(qMapToVec3(rightHand[0].toVariant()));
@@ -2944,39 +2944,39 @@ void convertGrabUserDataToProperties(EntityItemProperties& properties) {
         }
     }
 
-    QJsonValue equipHotspotsValue = userData["equipHotspots"];
+    QJsonValue equipHotspotsValue = userData[QStringLiteral("equipHotspots")];
     if (equipHotspotsValue.isArray()) {
         QJsonArray equipHotspots = equipHotspotsValue.toArray();
         if (equipHotspots.size() > 0) {
             // just take the first one
             QJsonObject firstHotSpot = equipHotspots[0].toObject();
-            QJsonObject joints = firstHotSpot["joints"].toObject();
-            if (joints["LeftHand"].isArray()) {
-                QJsonArray leftHand = joints["LeftHand"].toArray();
+            QJsonObject joints = firstHotSpot[QStringLiteral("joints")].toObject();
+            if (joints[QStringLiteral("LeftHand")].isArray()) {
+                QJsonArray leftHand = joints[QStringLiteral("LeftHand")].toArray();
                 if (leftHand.size() == 2) {
                     grabProperties.setEquippableLeftPosition(qMapToVec3(leftHand[0].toVariant()));
                     grabProperties.setEquippableLeftRotation(qMapToQuat(leftHand[1].toVariant()));
                 }
             }
-            if (joints["RightHand"].isArray()) {
-                QJsonArray rightHand = joints["RightHand"].toArray();
+            if (joints[QStringLiteral("RightHand")].isArray()) {
+                QJsonArray rightHand = joints[QStringLiteral("RightHand")].toArray();
                 if (rightHand.size() == 2) {
                     grabProperties.setEquippable(true);
                     grabProperties.setEquippableRightPosition(qMapToVec3(rightHand[0].toVariant()));
                     grabProperties.setEquippableRightRotation(qMapToQuat(rightHand[1].toVariant()));
                 }
             }
-            QJsonValue indicatorURL = firstHotSpot["modelURL"];
+            QJsonValue indicatorURL = firstHotSpot[QStringLiteral("modelURL")];
             if (indicatorURL.isString()) {
                 grabProperties.setEquippableIndicatorURL(indicatorURL.toString());
             }
-            QJsonValue indicatorScale = firstHotSpot["modelScale"];
+            QJsonValue indicatorScale = firstHotSpot[QStringLiteral("modelScale")];
             if (indicatorScale.isDouble()) {
                 grabProperties.setEquippableIndicatorScale(glm::vec3((float)indicatorScale.toDouble()));
             } else if (indicatorScale.isObject()) {
                 grabProperties.setEquippableIndicatorScale(qMapToVec3(indicatorScale.toVariant()));
             }
-            QJsonValue indicatorOffset = firstHotSpot["position"];
+            QJsonValue indicatorOffset = firstHotSpot[QStringLiteral("position")];
             if (indicatorOffset.isObject()) {
                 grabProperties.setEquippableIndicatorOffset(qMapToVec3(indicatorOffset.toVariant()));
             }
@@ -2987,19 +2987,19 @@ void convertGrabUserDataToProperties(EntityItemProperties& properties) {
 
 bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
     // These are needed to deal with older content (before adding inheritance modes)
-    int contentVersion = map["Version"].toInt();
+    int contentVersion = map[QStringLiteral("Version")].toInt();
 
-    if (map.contains("Id")) {
-        _persistID = map["Id"].toUuid();
+    if (map.contains(QStringLiteral("Id"))) {
+        _persistID = map[QStringLiteral("Id")].toUuid();
     }
 
-    if (map.contains("DataVersion")) {
-        _persistDataVersion = map["DataVersion"].toInt();
+    if (map.contains(QStringLiteral("DataVersion"))) {
+        _persistDataVersion = map[QStringLiteral("DataVersion")].toInt();
     }
 
     _namedPaths.clear();
-    if (map.contains("Paths")) {
-        QVariantMap namedPathsMap = map["Paths"].toMap();
+    if (map.contains(QStringLiteral("Paths"))) {
+        QVariantMap namedPathsMap = map[QStringLiteral("Paths")].toMap();
         for(QVariantMap::const_iterator iter = namedPathsMap.begin(); iter != namedPathsMap.end(); ++iter) {
             QString namedPathName = iter.key();
             QString namedPathViewPoint = iter.value().toString();
@@ -3011,7 +3011,7 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
     // and iterated over.  Each member of this list is converted to a QVariantMap, then
     // to a QScriptValue, and then to EntityItemProperties.  These properties are used
     // to add the new entity to the EntityTree.
-    QVariantList entitiesQList = map["Entities"].toList();
+    QVariantList entitiesQList = map[QStringLiteral("Entities")].toList();
     QScriptEngine scriptEngine;
 
     if (entitiesQList.length() == 0) {
@@ -3027,13 +3027,11 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
         QVariantMap entityMap = entityVariant.toMap();
 
         // handle parentJointName for wearables
-        if (_myAvatar && entityMap.contains("parentJointName") && entityMap.contains("parentID") &&
-            QUuid(entityMap["parentID"].toString()) == AVATAR_SELF_ID) {
+        if (_myAvatar && entityMap.contains(QStringLiteral("parentJointName")) && entityMap.contains(QStringLiteral("parentID")) &&
+            QUuid(entityMap[QStringLiteral("parentID")].toString()) == AVATAR_SELF_ID) {
 
-            entityMap["parentJointIndex"] = _myAvatar->getJointIndex(entityMap["parentJointName"].toString());
+            entityMap[QStringLiteral("parentJointIndex")] = _myAvatar->getJointIndex(entityMap[QStringLiteral("parentJointName")].toString());
 
-            qCDebug(entities) << "Found parentJointName " << entityMap["parentJointName"].toString() <<
-                " mapped it to parentJointIndex " << entityMap["parentJointIndex"].toInt();
         }
 
         QScriptValue entityScriptValue = variantMapToScriptValue(entityMap, scriptEngine);
@@ -3041,8 +3039,8 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
         EntityItemPropertiesFromScriptValueIgnoreReadOnly(entityScriptValue, properties);
 
         EntityItemID entityItemID;
-        if (entityMap.contains("id")) {
-            entityItemID = EntityItemID(QUuid(entityMap["id"].toString()));
+        if (entityMap.contains(QStringLiteral("id"))) {
+            entityItemID = EntityItemID(QUuid(entityMap[QStringLiteral("id")].toString()));
         } else {
             entityItemID = EntityItemID(QUuid::createUuid());
         }
@@ -3050,8 +3048,8 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
         // Convert old clientOnly bool to new entityHostType enum
         // (must happen before setOwningAvatarID below)
         if (contentVersion < (int)EntityVersion::EntityHostTypes) {
-            if (entityMap.contains("clientOnly")) {
-                properties.setEntityHostType(entityMap["clientOnly"].toBool() ? entity::HostType::AVATAR : entity::HostType::DOMAIN);
+            if (entityMap.contains(QStringLiteral("clientOnly"))) {
+                properties.setEntityHostType(entityMap[QStringLiteral("clientOnly")].toBool() ? entity::HostType::AVATAR : entity::HostType::DOMAIN);
             }
         }
 
@@ -3067,16 +3065,16 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
             properties.setKeyLightMode(COMPONENT_MODE_ENABLED);
 
             // The ambient URL has been moved from "keyLight" to "ambientLight"
-            if (entityMap.contains("keyLight")) {
-                QVariantMap keyLightObject = entityMap["keyLight"].toMap();
-                properties.getAmbientLight().setAmbientURL(keyLightObject["ambientURL"].toString());
+            if (entityMap.contains(QStringLiteral("keyLight"))) {
+                QVariantMap keyLightObject = entityMap[QStringLiteral("keyLight")].toMap();
+                properties.getAmbientLight().setAmbientURL(keyLightObject[QStringLiteral("ambientURL")].toString());
             }
 
             // Copy the skybox URL if the ambient URL is empty, as this is the legacy behaviour
             // Use skybox value only if it is not empty, else set ambientMode to inherit (to use default URL)
             properties.setAmbientLightMode(COMPONENT_MODE_ENABLED);
-            if (properties.getAmbientLight().getAmbientURL() == "") {
-                if (properties.getSkybox().getURL() != "") {
+            if (properties.getAmbientLight().getAmbientURL().isEmpty()) {
+                if (!properties.getSkybox().getURL().isEmpty()) {
                     properties.getAmbientLight().setAmbientURL(properties.getSkybox().getURL());
                 } else {
                     properties.setAmbientLightMode(COMPONENT_MODE_INHERIT);
@@ -3085,7 +3083,7 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
 
             // The background should be enabled if the mode is skybox
             // Note that if the values are default then they are not stored in the JSON file
-            if (entityMap.contains("backgroundMode") && (entityMap["backgroundMode"].toString() == "skybox")) {
+            if (entityMap.contains(QStringLiteral("backgroundMode")) && (entityMap[QStringLiteral("backgroundMode")].toString() == QStringLiteral("skybox"))) {
                 properties.setSkyboxMode(COMPONENT_MODE_ENABLED);
             } else {
                 properties.setSkyboxMode(COMPONENT_MODE_INHERIT);
@@ -3094,21 +3092,21 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
 
         // Convert old materials so that they use materialData instead of userData
         if (contentVersion < (int)EntityVersion::MaterialData && properties.getType() == EntityTypes::EntityType::Material) {
-            if (properties.getMaterialURL().startsWith("userData")) {
+            if (properties.getMaterialURL().startsWith(QStringLiteral("userData"))) {
                 QString materialURL = properties.getMaterialURL();
-                properties.setMaterialURL(materialURL.replace("userData", "materialData"));
+                properties.setMaterialURL(materialURL.replace(QStringLiteral("userData"), QStringLiteral("materialData")));
 
                 QJsonObject userData = QJsonDocument::fromJson(properties.getUserData().toUtf8()).object();
                 QJsonObject materialData;
-                QJsonValue materialVersion = userData["materialVersion"];
+                QJsonValue materialVersion = userData[QStringLiteral("materialVersion")];
                 if (!materialVersion.isNull()) {
-                    materialData.insert("materialVersion", materialVersion);
-                    userData.remove("materialVersion");
+                    materialData.insert(QStringLiteral("materialVersion"), materialVersion);
+                    userData.remove(QStringLiteral("materialVersion"));
                 }
-                QJsonValue materials = userData["materials"];
+                QJsonValue materials = userData[QStringLiteral("materials")];
                 if (!materials.isNull()) {
-                    materialData.insert("materials", materials);
-                    userData.remove("materials");
+                    materialData.insert(QStringLiteral("materials"), materials);
+                    userData.remove(QStringLiteral("materials"));
                 }
 
                 properties.setMaterialData(QJsonDocument(materialData).toJson());
@@ -3119,13 +3117,13 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
         // Convert old cloneable entities so they use cloneableData instead of userData
         if (contentVersion < (int)EntityVersion::CloneableData) {
             QJsonObject userData = QJsonDocument::fromJson(properties.getUserData().toUtf8()).object();
-            QJsonObject grabbableKey = userData["grabbableKey"].toObject();
-            QJsonValue cloneable = grabbableKey["cloneable"];
+            QJsonObject grabbableKey = userData[QStringLiteral("grabbableKey")].toObject();
+            QJsonValue cloneable = grabbableKey[QStringLiteral("cloneable")];
             if (cloneable.isBool() && cloneable.toBool()) {
-                QJsonValue cloneLifetime = grabbableKey["cloneLifetime"];
-                QJsonValue cloneLimit = grabbableKey["cloneLimit"];
-                QJsonValue cloneDynamic = grabbableKey["cloneDynamic"];
-                QJsonValue cloneAvatarEntity = grabbableKey["cloneAvatarEntity"];
+                QJsonValue cloneLifetime = grabbableKey[QStringLiteral("cloneLifetime")];
+                QJsonValue cloneLimit = grabbableKey[QStringLiteral("cloneLimit")];
+                QJsonValue cloneDynamic = grabbableKey[QStringLiteral("cloneDynamic")];
+                QJsonValue cloneAvatarEntity = grabbableKey[QStringLiteral("cloneAvatarEntity")];
 
                 // This is cloneable, we need to convert the properties
                 properties.setCloneable(true);
@@ -3149,8 +3147,8 @@ bool EntityTree::readFromMap(QVariantMap& map, const bool isImport) {
         }
 
         if (contentVersion < (int)EntityVersion::FixPropertiesFromCleanup) {
-            if (entityMap.contains("created")) {
-                quint64 created = QDateTime::fromString(entityMap["created"].toString().trimmed(), Qt::ISODate).toMSecsSinceEpoch() * 1000;
+            if (entityMap.contains(QStringLiteral("created"))) {
+                quint64 created = QDateTime::fromString(entityMap[QStringLiteral("created")].toString().trimmed(), Qt::ISODate).toMSecsSinceEpoch() * 1000;
                 properties.setCreated(created);
             }
         }
@@ -3353,7 +3351,7 @@ void EntityTree::updateEntityQueryAACube(SpatiallyNestablePointer object, Entity
     updateEntityQueryAACubeWorker(object, packetSender, moveOperator, force, tellServer);
 
     if (moveOperator.hasMovingEntities()) {
-        PerformanceTimer perfTimer("recurseTreeWithOperator");
+        PerformanceTimer perfTimer(QStringLiteral("recurseTreeWithOperator"));
         recurseTreeWithOperator(&moveOperator);
     }
 }

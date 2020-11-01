@@ -115,20 +115,20 @@ void SoundProcessor::run() {
     QString fileName = url.fileName().toLower();
     qCDebug(audio) << "Processing sound file" << fileName;
 
-    static const QString WAV_EXTENSION = ".wav";
-    static const QString MP3_EXTENSION = ".mp3";
-    static const QString RAW_EXTENSION = ".raw";
-    static const QString STEREO_RAW_EXTENSION = ".stereo.raw";
+    static const QString WAV_EXTENSION = QStringLiteral(".wav");
+    static const QString MP3_EXTENSION = QStringLiteral(".mp3");
+    static const QString RAW_EXTENSION = QStringLiteral(".raw");
+    static const QString STEREO_RAW_EXTENSION = QStringLiteral(".stereo.raw");
     QString fileType;
 
     QByteArray outputAudioByteArray;
     AudioProperties properties;
 
     if (fileName.endsWith(WAV_EXTENSION)) {
-        fileType = "WAV";
+        fileType = QStringLiteral("WAV");
         properties = interpretAsWav(_data, outputAudioByteArray);
     } else if (fileName.endsWith(MP3_EXTENSION)) {
-        fileType = "MP3";
+        fileType = QStringLiteral("MP3");
         properties = interpretAsMP3(_data, outputAudioByteArray);
     } else if (fileName.endsWith(STEREO_RAW_EXTENSION)) {
         // check if this was a stereo raw file

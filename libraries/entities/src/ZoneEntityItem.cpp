@@ -526,7 +526,7 @@ void ZoneEntityItem::fetchCollisionGeometryResource() {
 bool ZoneEntityItem::matchesJSONFilters(const QJsonObject& jsonFilters) const {
     // currently the only property filter we handle in ZoneEntityItem is value of avatarPriority
 
-    static const QString AVATAR_PRIORITY_PROPERTY = "avatarPriority";
+    static const QString AVATAR_PRIORITY_PROPERTY =QStringLiteral("avatarPriority");
 
     // If set match zones of interest to avatar mixer:
     if (jsonFilters.contains(AVATAR_PRIORITY_PROPERTY) && jsonFilters[AVATAR_PRIORITY_PROPERTY].toBool()

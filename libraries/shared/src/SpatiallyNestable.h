@@ -41,7 +41,7 @@ public:
     virtual const QUuid getID() const;
     virtual void setID(const QUuid& id);
 
-    virtual QString getName() const { return "SpatiallyNestable"; }
+    virtual QString getName() const { return QStringLiteral("SpatiallyNestable"); }
 
     virtual const QUuid getParentID() const;
     virtual void setParentID(const QUuid& parentID);
@@ -211,7 +211,7 @@ public:
     bool tranlationChangedSince(quint64 time) const { return _translationChanged > time; }
     bool rotationChangedSince(quint64 time) const { return _rotationChanged > time; }
 
-    void dump(const QString& prefix = "") const;
+    void dump(const QString& prefix = QString()) const;
 
     virtual void locationChanged(bool tellPhysics = true, bool tellChildren = true); // called when a this object's location has changed
     virtual void dimensionsChanged() { _queryAACubeSet = false; } // called when a this object's dimensions have changed

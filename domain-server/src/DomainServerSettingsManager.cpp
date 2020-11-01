@@ -1516,7 +1516,7 @@ QJsonObject DomainServerSettingsManager::settingsResponseObjectForType(const QSt
                                 } else {
                                     // users are allowed not to provide a default for string values
                                     // if so we set to the empty string
-                                    result = QString("");
+                                    result = QString();
                                 }
                             } else {
                                 result = QJsonValue::fromVariant(variantValue);
@@ -2223,7 +2223,7 @@ void DomainServerSettingsManager::debugDumpGroupsState() {
     qDebug() << "_groupMembership";
     foreach (QString userName, _groupMembership.keys()) {
         QHash<QUuid, QUuid>& groupsForUser = _groupMembership[userName.toLower()];
-        QString line = "";
+        QString line = QString();
         foreach (QUuid groupID, groupsForUser.keys()) {
             line += " g=" + groupID.toString() + ",r=" + groupsForUser[groupID].toString();
         }

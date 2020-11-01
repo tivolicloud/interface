@@ -215,7 +215,7 @@ QString AddressManager::currentFacingPath() const {
         // rotate the user by 180 degrees
         orientation = orientation * glm::angleAxis(PI, Vectors::UP);
 
-        return "/" + createByteArray(position) + "/" + createByteArray(orientation);
+        return QStringLiteral("/") + createByteArray(position) + QStringLiteral("/") + createByteArray(orientation);
     } else {
         qCDebug(networking) << "Cannot create address path without a getter for position/orientation.";
         return QString();

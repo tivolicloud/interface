@@ -240,7 +240,7 @@ AvatarSharedPointer AvatarHashMap::findAvatar(const QUuid& sessionUUID) const {
 
 void AvatarHashMap::processAvatarDataPacket(QSharedPointer<ReceivedMessage> message, SharedNodePointer sendingNode) {
     DETAILED_PROFILE_RANGE(network, __FUNCTION__);
-    PerformanceTimer perfTimer("receiveAvatar");
+    PerformanceTimer perfTimer(QStringLiteral("receiveAvatar"));
     // enumerate over all of the avatars in this packet
     // only add them if mixerWeakPointer points to something (meaning that mixer is still around)
     while (message->getBytesLeftToRead()) {

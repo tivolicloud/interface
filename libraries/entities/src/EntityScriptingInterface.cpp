@@ -236,31 +236,31 @@ void synchronizeSpatialKey(const GrabPropertyGroup& grabProperties, QJsonObject&
     if (grabProperties.equippableLeftPositionChanged() || grabProperties.equippableRightPositionChanged() ||
         grabProperties.equippableRightRotationChanged() || grabProperties.equippableIndicatorURLChanged() ||
         grabProperties.equippableIndicatorScaleChanged() || grabProperties.equippableIndicatorOffsetChanged()) {
-        QJsonObject spatialKey = grabbableKey["spatialKey"].toObject();
+        QJsonObject spatialKey = grabbableKey[QStringLiteral(u"spatialKey")].toObject();
 
         if (grabProperties.equippableLeftPositionChanged()) {
             if (grabProperties.getEquippableLeftPosition() == INITIAL_LEFT_EQUIPPABLE_POSITION) {
-                spatialKey.remove("leftRelativePosition");
+                spatialKey.remove(QStringLiteral(u"leftRelativePosition"));
             } else {
-                spatialKey["leftRelativePosition"] =
+                spatialKey[QStringLiteral(u"leftRelativePosition")] =
                     QJsonValue::fromVariant(vec3ToQMap(grabProperties.getEquippableLeftPosition()));
             }
         }
         if (grabProperties.equippableRightPositionChanged()) {
             if (grabProperties.getEquippableRightPosition() == INITIAL_RIGHT_EQUIPPABLE_POSITION) {
-                spatialKey.remove("rightRelativePosition");
+                spatialKey.remove(QStringLiteral(u"rightRelativePosition"));
             } else {
-                spatialKey["rightRelativePosition"] =
+                spatialKey[QStringLiteral(u"rightRelativePosition")] =
                     QJsonValue::fromVariant(vec3ToQMap(grabProperties.getEquippableRightPosition()));
             }
         }
         if (grabProperties.equippableLeftRotationChanged()) {
-            spatialKey["relativeRotation"] = QJsonValue::fromVariant(quatToQMap(grabProperties.getEquippableLeftRotation()));
+            spatialKey[QStringLiteral(u"relativeRotation")] = QJsonValue::fromVariant(quatToQMap(grabProperties.getEquippableLeftRotation()));
         } else if (grabProperties.equippableRightRotationChanged()) {
-            spatialKey["relativeRotation"] = QJsonValue::fromVariant(quatToQMap(grabProperties.getEquippableRightRotation()));
+            spatialKey[QStringLiteral(u"relativeRotation")] = QJsonValue::fromVariant(quatToQMap(grabProperties.getEquippableRightRotation()));
         }
 
-        grabbableKey["spatialKey"] = spatialKey;
+        grabbableKey[QStringLiteral(u"spatialKey")] = spatialKey;
         userDataChanged = true;
     }
 }
@@ -270,58 +270,58 @@ void synchronizeGrabbableKey(const GrabPropertyGroup& grabProperties, QJsonObjec
         grabProperties.grabFollowsControllerChanged() || grabProperties.grabKinematicChanged() ||
         grabProperties.equippableChanged() || grabProperties.equippableLeftPositionChanged() ||
         grabProperties.equippableRightPositionChanged() || grabProperties.equippableRightRotationChanged()) {
-        QJsonObject grabbableKey = userData["grabbableKey"].toObject();
+        QJsonObject grabbableKey = userData[QStringLiteral(u"grabbableKey")].toObject();
 
         if (grabProperties.triggerableChanged()) {
             if (grabProperties.getTriggerable()) {
-                grabbableKey["triggerable"] = true;
+                grabbableKey[QStringLiteral(u"triggerable")] = true;
             } else {
-                grabbableKey.remove("triggerable");
+                grabbableKey.remove(QStringLiteral(u"triggerable"));
             }
         }
         if (grabProperties.grabbableChanged()) {
             if (grabProperties.getGrabbable()) {
-                grabbableKey.remove("grabbable");
+                grabbableKey.remove(QStringLiteral(u"grabbable"));
             } else {
-                grabbableKey["grabbable"] = false;
+                grabbableKey[QStringLiteral(u"grabbable")] = false;
             }
         }
         if (grabProperties.grabFollowsControllerChanged()) {
             if (grabProperties.getGrabFollowsController()) {
-                grabbableKey.remove("ignoreIK");
+                grabbableKey.remove(QStringLiteral(u"ignoreIK"));
             } else {
-                grabbableKey["ignoreIK"] = false;
+                grabbableKey[QStringLiteral(u"ignoreIK")] = false;
             }
         }
         if (grabProperties.grabKinematicChanged()) {
             if (grabProperties.getGrabKinematic()) {
-                grabbableKey.remove("kinematic");
+                grabbableKey.remove(QStringLiteral(u"kinematic"));
             } else {
-                grabbableKey["kinematic"] = false;
+                grabbableKey[QStringLiteral(u"kinematic")] = false;
             }
         }
         if (grabProperties.equippableChanged()) {
             if (grabProperties.getEquippable()) {
-                grabbableKey["equippable"] = true;
+                grabbableKey[QStringLiteral(u"equippable")] = true;
             } else {
-                grabbableKey.remove("equippable");
+                grabbableKey.remove(QStringLiteral(u"equippable"));
             }
         }
 
-        if (grabbableKey.contains("spatialKey")) {
+        if (grabbableKey.contains(QStringLiteral(u"spatialKey"))) {
             synchronizeSpatialKey(grabProperties, grabbableKey, userDataChanged);
         }
 
-        userData["grabbableKey"] = grabbableKey;
+        userData[QStringLiteral(u"grabbableKey")] = grabbableKey;
         userDataChanged = true;
     }
 }
 
 void synchronizeGrabJoints(const GrabPropertyGroup& grabProperties, QJsonObject& joints) {
-    QJsonArray rightHand = joints["RightHand"].toArray();
+    QJsonArray rightHand = joints[QStringLiteral(u"RightHand")].toArray();
     QJsonObject rightHandPosition = rightHand.size() > 0 ? rightHand[0].toObject() : QJsonObject();
     QJsonObject rightHandRotation = rightHand.size() > 1 ? rightHand[1].toObject() : QJsonObject();
-    QJsonArray leftHand = joints["LeftHand"].toArray();
+    QJsonArray leftHand = joints[QStringLiteral(u"LeftHand")].toArray();
     QJsonObject leftHandPosition = leftHand.size() > 0 ? leftHand[0].toObject() : QJsonObject();
     QJsonObject leftHandRotation = leftHand.size() > 1 ? leftHand[1].toObject() : QJsonObject();
 
@@ -341,20 +341,20 @@ void synchronizeGrabJoints(const GrabPropertyGroup& grabProperties, QJsonObject&
     rightHand = QJsonArray();
     rightHand.append(rightHandPosition);
     rightHand.append(rightHandRotation);
-    joints["RightHand"] = rightHand;
+    joints[QStringLiteral(u"RightHand")] = rightHand;
     leftHand = QJsonArray();
     leftHand.append(leftHandPosition);
     leftHand.append(leftHandRotation);
-    joints["LeftHand"] = leftHand;
+    joints[QStringLiteral(u"LeftHand")] = leftHand;
 }
 
 void synchronizeEquipHotspot(const GrabPropertyGroup& grabProperties, QJsonObject& userData, bool& userDataChanged) {
     if (grabProperties.equippableLeftPositionChanged() || grabProperties.equippableRightPositionChanged() ||
         grabProperties.equippableRightRotationChanged() || grabProperties.equippableIndicatorURLChanged() ||
         grabProperties.equippableIndicatorScaleChanged() || grabProperties.equippableIndicatorOffsetChanged()) {
-        QJsonArray equipHotspots = userData["equipHotspots"].toArray();
+        QJsonArray equipHotspots = userData[QStringLiteral(u"equipHotspots")].toArray();
         QJsonObject equipHotspot = equipHotspots[0].toObject();
-        QJsonObject joints = equipHotspot["joints"].toObject();
+        QJsonObject joints = equipHotspot[QStringLiteral(u"joints")].toObject();
 
         synchronizeGrabJoints(grabProperties, joints);
 
@@ -363,18 +363,18 @@ void synchronizeEquipHotspot(const GrabPropertyGroup& grabProperties, QJsonObjec
         }
         if (grabProperties.equippableIndicatorScaleChanged()) {
             QJsonObject scale = QJsonValue::fromVariant(vec3ToQMap(grabProperties.getEquippableIndicatorScale())).toObject();
-            equipHotspot["radius"] = scale;
-            equipHotspot["modelScale"] = scale;
+            equipHotspot[QStringLiteral(u"radius")] = scale;
+            equipHotspot[QStringLiteral(u"modelScale")] = scale;
         }
         if (grabProperties.equippableIndicatorOffsetChanged()) {
-            equipHotspot["position"] =
+            equipHotspot[QStringLiteral(u"position")] =
                 QJsonValue::fromVariant(vec3ToQMap(grabProperties.getEquippableIndicatorOffset())).toObject();
         }
 
-        equipHotspot["joints"] = joints;
+        equipHotspot[QStringLiteral(u"joints")] = joints;
         equipHotspots = QJsonArray();
         equipHotspots.append(equipHotspot);
-        userData["equipHotspots"] = equipHotspots;
+        userData[QStringLiteral(u"equipHotspots")] = equipHotspots;
         userDataChanged = true;
     }
 }
@@ -383,13 +383,13 @@ void synchronizeWearable(const GrabPropertyGroup& grabProperties, QJsonObject& u
     if (grabProperties.equippableLeftPositionChanged() || grabProperties.equippableRightPositionChanged() ||
         grabProperties.equippableRightRotationChanged() || grabProperties.equippableIndicatorURLChanged() ||
         grabProperties.equippableIndicatorScaleChanged() || grabProperties.equippableIndicatorOffsetChanged()) {
-        QJsonObject wearable = userData["wearable"].toObject();
-        QJsonObject joints = wearable["joints"].toObject();
+        QJsonObject wearable = userData[QStringLiteral(u"wearable")].toObject();
+        QJsonObject joints = wearable[QStringLiteral(u"joints")].toObject();
 
         synchronizeGrabJoints(grabProperties, joints);
 
-        wearable["joints"] = joints;
-        userData["wearable"] = wearable;
+        wearable[QStringLiteral(u"joints")] = joints;
+        userData[QStringLiteral(u"wearable")] = wearable;
         userDataChanged = true;
     }
 }
@@ -414,13 +414,13 @@ void synchronizeEditedGrabProperties(EntityItemProperties& properties, const QSt
         }
         QJsonObject userData = QJsonDocument::fromJson(userDataString).object();
 
-        if (userData.contains("grabbableKey")) {
+        if (userData.contains(QStringLiteral(u"grabbableKey"))) {
             synchronizeGrabbableKey(grabProperties, userData, userDataChanged);
         }
-        if (userData.contains("equipHotspots")) {
+        if (userData.contains(QStringLiteral(u"equipHotspots"))) {
             synchronizeEquipHotspot(grabProperties, userData, userDataChanged);
         }
-        if (userData.contains("wearable")) {
+        if (userData.contains(QStringLiteral(u"wearable"))) {
             synchronizeWearable(grabProperties, userData, userDataChanged);
         }
 
@@ -639,31 +639,31 @@ QScriptValue EntityScriptingInterface::getMultipleEntityPropertiesInternal(QScri
     EntityPsuedoPropertyFlags psuedoPropertyFlags;
     const auto readExtendedPropertyStringValue = [&](QScriptValue extendedProperty) {
         const auto extendedPropertyString = extendedProperty.toString();
-        if (extendedPropertyString == "id") {
+        if (extendedPropertyString == QStringLiteral(u"id")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::ID);
-        } else if (extendedPropertyString == "type") {
+        } else if (extendedPropertyString == QStringLiteral(u"type")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::Type);
-        } else if (extendedPropertyString == "age") {
+        } else if (extendedPropertyString == QStringLiteral(u"age")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::Age);
-        } else if (extendedPropertyString == "ageAsText") {
+        } else if (extendedPropertyString == QStringLiteral(u"ageAsText")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::AgeAsText);
-        } else if (extendedPropertyString == "lastEdited") {
+        } else if (extendedPropertyString == QStringLiteral(u"lastEdited")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::LastEdited);
-        } else if (extendedPropertyString == "boundingBox") {
+        } else if (extendedPropertyString == QStringLiteral(u"boundingBox")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::BoundingBox);
-        } else if (extendedPropertyString == "originalTextures") {
+        } else if (extendedPropertyString == QStringLiteral(u"originalTextures")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::OriginalTextures);
-        } else if (extendedPropertyString == "renderInfo") {
+        } else if (extendedPropertyString == QStringLiteral(u"renderInfo")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::RenderInfo);
-        } else if (extendedPropertyString == "clientOnly") {
+        } else if (extendedPropertyString == QStringLiteral(u"clientOnly")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::ClientOnly);
-        } else if (extendedPropertyString == "avatarEntity") {
+        } else if (extendedPropertyString == QStringLiteral(u"avatarEntity")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::AvatarEntity);
-        } else if (extendedPropertyString == "localEntity") {
+        } else if (extendedPropertyString == QStringLiteral(u"localEntity")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::LocalEntity);
-        } else if (extendedPropertyString == "faceCamera") {
+        } else if (extendedPropertyString == QStringLiteral(u"faceCamera")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::FaceCamera);
-        } else if (extendedPropertyString == "isFacingAvatar") {
+        } else if (extendedPropertyString == QStringLiteral(u"isFacingAvatar")) {
             psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::IsFacingAvatar);
         }
     };
@@ -672,7 +672,7 @@ QScriptValue EntityScriptingInterface::getMultipleEntityPropertiesInternal(QScri
         readExtendedPropertyStringValue(extendedDesiredProperties);
         psuedoPropertyFlags.set(EntityPsuedoPropertyFlag::FlagsActive);
     } else if (extendedDesiredProperties.isArray()) {
-        const quint32 length = extendedDesiredProperties.property("length").toInt32();
+        const quint32 length = extendedDesiredProperties.property(QStringLiteral(u"length")).toInt32();
         for (quint32 i = 0; i < length; i++) {
             readExtendedPropertyStringValue(extendedDesiredProperties.property(i));
         }
@@ -693,7 +693,7 @@ QScriptValue EntityScriptingInterface::getMultipleEntityPropertiesInternal(QScri
     }
     QVector<EntityPropertiesResult> resultProperties;
     if (_entityTree) {
-        PROFILE_RANGE(script_entities, "EntityScriptingInterface::getMultipleEntityProperties>Obtaining Properties");
+        PROFILE_RANGE(script_entities, QStringLiteral(u"EntityScriptingInterface::getMultipleEntityProperties>Obtaining Properties"));
         int i = 0;
         const int lockAmount = 500;
         int size = entityIDs.size();
@@ -728,13 +728,13 @@ QScriptValue EntityScriptingInterface::getMultipleEntityPropertiesInternal(QScri
     QScriptValue finalResult = engine->newArray(resultProperties.size());
     quint32 i = 0;
     if (needsScriptSemantics) {
-        PROFILE_RANGE(script_entities, "EntityScriptingInterface::getMultipleEntityProperties>Script Semantics");
+        PROFILE_RANGE(script_entities, QStringLiteral(u"EntityScriptingInterface::getMultipleEntityProperties>Script Semantics"));
         foreach (const auto& result, resultProperties) {
             finalResult.setProperty(i++, convertPropertiesToScriptSemantics(result.properties, result.scalesWithParent)
                                              .copyToScriptValue(engine, false, false, false, psuedoPropertyFlags));
         }
     } else {
-        PROFILE_RANGE(script_entities, "EntityScriptingInterface::getMultipleEntityProperties>Skip Script Semantics");
+        PROFILE_RANGE(script_entities, QStringLiteral(u"EntityScriptingInterface::getMultipleEntityProperties>Skip Script Semantics"));
         foreach (const auto& result, resultProperties) {
             finalResult.setProperty(i++, result.properties.copyToScriptValue(engine, false, false, false, psuedoPropertyFlags));
         }
@@ -1137,19 +1137,19 @@ QVector<QUuid> EntityScriptingInterface::findEntitiesInFrustum(QVariantMap frust
 
     QVector<QUuid> result;
 
-    const QString POSITION_PROPERTY = "position";
+    const QString POSITION_PROPERTY = QStringLiteral("position");
     bool positionOK = frustum.contains(POSITION_PROPERTY);
     glm::vec3 position = positionOK ? qMapToVec3(frustum[POSITION_PROPERTY]) : glm::vec3();
 
-    const QString ORIENTATION_PROPERTY = "orientation";
+    const QString ORIENTATION_PROPERTY = QStringLiteral("orientation");
     bool orientationOK = frustum.contains(ORIENTATION_PROPERTY);
     glm::quat orientation = orientationOK ? qMapToQuat(frustum[ORIENTATION_PROPERTY]) : glm::quat();
 
-    const QString PROJECTION_PROPERTY = "projection";
+    const QString PROJECTION_PROPERTY = QStringLiteral("projection");
     bool projectionOK = frustum.contains(PROJECTION_PROPERTY);
     glm::mat4 projection = projectionOK ? qMapToMat4(frustum[PROJECTION_PROPERTY]) : glm::mat4();
 
-    const QString CENTER_RADIUS_PROPERTY = "centerRadius";
+    const QString CENTER_RADIUS_PROPERTY = QStringLiteral("centerRadius");
     bool centerRadiusOK = frustum.contains(CENTER_RADIUS_PROPERTY);
     float centerRadius = centerRadiusOK ? frustum[CENTER_RADIUS_PROPERTY].toFloat() : 0.0f;
 
@@ -1301,13 +1301,13 @@ bool EntityPropertyMetadataRequest::script(EntityItemID entityID, QScriptValue h
     QObject::connect(request, &LocalScriptStatusRequest::finished, _engine, [=]() mutable {
         auto details = request->result().toMap();
         QScriptValue err, result;
-        if (details.contains("isError")) {
-            if (!details.contains("message")) {
-                details["message"] = details["errorInfo"];
+        if (details.contains(QStringLiteral(u"isError"))) {
+            if (!details.contains(QStringLiteral(u"message"))) {
+                details[QStringLiteral(u"message")] = details[QStringLiteral(u"errorInfo")];
             }
             err = _engine->makeError(_engine->toScriptValue(details));
         } else {
-            details["success"] = true;
+            details[QStringLiteral(u"success")] = true;
             result = _engine->toScriptValue(details);
         }
         callScopedHandlerObject(handler, err, result);
@@ -1339,18 +1339,18 @@ bool EntityPropertyMetadataRequest::serverScripts(EntityItemID entityID, QScript
             return;
         }
         QVariantMap details;
-        details["success"] = request->getResponseReceived();
-        details["isRunning"] = request->getIsRunning();
-        details["status"] = EntityScriptStatus_::valueToKey(request->getStatus()).toLower();
-        details["errorInfo"] = request->getErrorInfo();
+        details[QStringLiteral(u"success")] = request->getResponseReceived();
+        details[QStringLiteral(u"isRunning")] = request->getIsRunning();
+        details[QStringLiteral(u"status")] = EntityScriptStatus_::valueToKey(request->getStatus()).toLower();
+        details[QStringLiteral(u"errorInfo")] = request->getErrorInfo();
 
         QScriptValue err, result;
-        if (!details["success"].toBool()) {
-            if (!details.contains("message") && details.contains("errorInfo")) {
-                details["message"] = details["errorInfo"];
+        if (!details[QStringLiteral(u"success")].toBool()) {
+            if (!details.contains(QStringLiteral(u"message")) && details.contains(QStringLiteral(u"errorInfo"))) {
+                details[QStringLiteral(u"message")] = details["errorInfo"];
             }
-            if (details["message"].toString().isEmpty()) {
-                details["message"] = "entity server script details not found";
+            if (details[QStringLiteral(u"message")].toString().isEmpty()) {
+                details[QStringLiteral(u"message")] = "entity server script details not found";
             }
             err = engine->makeError(engine->toScriptValue(details));
         } else {
@@ -1398,9 +1398,9 @@ bool EntityScriptingInterface::queryPropertyMetadata(const QUuid& entityID,
 
     EntityPropertyMetadataRequest request(engine);
 
-    if (name == "script") {
+    if (name == QStringLiteral(u"script")) {
         return request.script(entityID, handler);
-    } else if (name == "serverScripts") {
+    } else if (name == QStringLiteral(u"serverScripts")) {
         return request.serverScripts(entityID, handler);
     } else {
         engine->raiseException(engine->makeError("metadata for property " + name + " is not yet queryable"));
@@ -1450,38 +1450,38 @@ bool EntityScriptingInterface::getDrawZoneBoundaries() const {
 
 QScriptValue RayToEntityIntersectionResultToScriptValue(QScriptEngine* engine, const RayToEntityIntersectionResult& value) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("intersects", value.intersects);
-    obj.setProperty("accurate", value.accurate);
+    obj.setProperty(QStringLiteral(u"intersects"), value.intersects);
+    obj.setProperty(QStringLiteral(u"accurate"), value.accurate);
     QScriptValue entityItemValue = EntityItemIDtoScriptValue(engine, value.entityID);
-    obj.setProperty("entityID", entityItemValue);
-    obj.setProperty("distance", value.distance);
-    obj.setProperty("face", boxFaceToString(value.face));
+    obj.setProperty(QStringLiteral(u"entityID"), entityItemValue);
+    obj.setProperty(QStringLiteral(u"distance"), value.distance);
+    obj.setProperty(QStringLiteral(u"face"), boxFaceToString(value.face));
 
     QScriptValue intersection = vec3ToScriptValue(engine, value.intersection);
-    obj.setProperty("intersection", intersection);
+    obj.setProperty(QStringLiteral(u"intersection"), intersection);
     QScriptValue surfaceNormal = vec3ToScriptValue(engine, value.surfaceNormal);
-    obj.setProperty("surfaceNormal", surfaceNormal);
-    obj.setProperty("extraInfo", engine->toScriptValue(value.extraInfo));
+    obj.setProperty(QStringLiteral(u"surfaceNormal"), surfaceNormal);
+    obj.setProperty(QStringLiteral(u"extraInfo"), engine->toScriptValue(value.extraInfo));
     return obj;
 }
 
 void RayToEntityIntersectionResultFromScriptValue(const QScriptValue& object, RayToEntityIntersectionResult& value) {
-    value.intersects = object.property("intersects").toVariant().toBool();
-    value.accurate = object.property("accurate").toVariant().toBool();
-    QScriptValue entityIDValue = object.property("entityID");
+    value.intersects = object.property(QStringLiteral(u"intersects")).toVariant().toBool();
+    value.accurate = object.property(QStringLiteral(u"accurate")).toVariant().toBool();
+    QScriptValue entityIDValue = object.property(QStringLiteral(u"entityID"));
     quuidFromScriptValue(entityIDValue, value.entityID);
-    value.distance = object.property("distance").toVariant().toFloat();
-    value.face = boxFaceFromString(object.property("face").toVariant().toString());
+    value.distance = object.property(QStringLiteral(u"distance")).toVariant().toFloat();
+    value.face = boxFaceFromString(object.property(QStringLiteral(u"face")).toVariant().toString());
 
-    QScriptValue intersection = object.property("intersection");
+    QScriptValue intersection = object.property(QStringLiteral(u"intersection"));
     if (intersection.isValid()) {
         vec3FromScriptValue(intersection, value.intersection);
     }
-    QScriptValue surfaceNormal = object.property("surfaceNormal");
+    QScriptValue surfaceNormal = object.property(QStringLiteral(u"surfaceNormal"));
     if (surfaceNormal.isValid()) {
         vec3FromScriptValue(surfaceNormal, value.surfaceNormal);
     }
-    value.extraInfo = object.property("extraInfo").toVariant().toMap();
+    value.extraInfo = object.property(QStringLiteral(u"extraInfo")).toVariant().toMap();
 }
 
 bool EntityScriptingInterface::polyVoxWorker(QUuid entityID, std::function<bool(PolyVoxEntityItem&)> actor) {
@@ -2072,16 +2072,16 @@ bool EntityScriptingInterface::isChildOfParent(const QUuid& childID, const QUuid
 QString EntityScriptingInterface::getNestableType(const QUuid& id) {
     QSharedPointer<SpatialParentFinder> parentFinder = DependencyManager::get<SpatialParentFinder>();
     if (!parentFinder) {
-        return "unknown";
+        return QStringLiteral(u"unknown");
     }
     bool success;
     SpatiallyNestableWeakPointer objectWP = parentFinder->find(id, success);
     if (!success) {
-        return "unknown";
+        return QStringLiteral(u"unknown");
     }
     SpatiallyNestablePointer object = objectWP.lock();
     if (!object) {
-        return "unknown";
+        return QStringLiteral(u"unknown");
     }
     NestableType nestableType = object->getNestableType();
     return SpatiallyNestable::nestableTypeToString(nestableType);

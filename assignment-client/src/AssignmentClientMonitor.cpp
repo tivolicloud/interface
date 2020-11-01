@@ -109,9 +109,9 @@ void AssignmentClientMonitor::childProcessFinished(qint64 pid, quint16 listenPor
     }
 
     if (_childProcesses.remove(pid)) {
-        message.append(" Removed from internal map.");
+        message.append(QStringLiteral(" Removed from internal map."));
     } else {
-        message.append(" Could not find process in internal map.");
+        message.append(QStringLiteral(" Could not find process in internal map."));
     }
 
     switch (exitStatus) {
@@ -177,38 +177,38 @@ void AssignmentClientMonitor::spawnChildClient() {
 
     // unparse the parts of the command-line that the child cares about
     QStringList _childArguments;
-    if (_assignmentPool != "") {
+    if (_assignmentPool.size() > 0) {
         _childArguments.append("--" + ASSIGNMENT_POOL_OPTION);
         _childArguments.append(_assignmentPool);
     }
     if (!_walletUUID.isNull()) {
-        _childArguments.append("--" + ASSIGNMENT_WALLET_DESTINATION_ID_OPTION);
+        _childArguments.append(QStringLiteral("--") + ASSIGNMENT_WALLET_DESTINATION_ID_OPTION);
         _childArguments.append(_walletUUID.toString());
     }
-    if (_assignmentServerHostname != "") {
-        _childArguments.append("--" + CUSTOM_ASSIGNMENT_SERVER_HOSTNAME_OPTION);
+    if (_assignmentServerHostname.size() > 0) {
+        _childArguments.append(QStringLiteral("--") + CUSTOM_ASSIGNMENT_SERVER_HOSTNAME_OPTION);
         _childArguments.append(_assignmentServerHostname);
     }
     if (_assignmentServerPort != DEFAULT_DOMAIN_SERVER_PORT) {
-        _childArguments.append("--" + CUSTOM_ASSIGNMENT_SERVER_PORT_OPTION);
+        _childArguments.append(QStringLiteral("--") + CUSTOM_ASSIGNMENT_SERVER_PORT_OPTION);
         _childArguments.append(QString::number(_assignmentServerPort));
     }
     if (_requestAssignmentType != Assignment::AllTypes) {
-        _childArguments.append("--" + ASSIGNMENT_TYPE_OVERRIDE_OPTION);
+        _childArguments.append(QStringLiteral("--") + ASSIGNMENT_TYPE_OVERRIDE_OPTION);
         _childArguments.append(QString::number(_requestAssignmentType));
     }
 
     if (listenPort) {
-        _childArguments.append("-" + ASSIGNMENT_CLIENT_LISTEN_PORT_OPTION);
+        _childArguments.append(QStringLiteral("-") + ASSIGNMENT_CLIENT_LISTEN_PORT_OPTION);
         _childArguments.append(QString::number(listenPort));
     }
 
     // tell children which assignment monitor port to use
     // for now they simply talk to us on localhost
-    _childArguments.append("--" + ASSIGNMENT_CLIENT_MONITOR_PORT_OPTION);
+    _childArguments.append(QStringLiteral("--") + ASSIGNMENT_CLIENT_MONITOR_PORT_OPTION);
     _childArguments.append(QString::number(DependencyManager::get<NodeList>()->getLocalSockAddr().getPort()));
 
-    _childArguments.append("--" + PARENT_PID_OPTION);
+    _childArguments.append(QStringLiteral("--") + PARENT_PID_OPTION);
     _childArguments.append(QString::number(QCoreApplication::applicationPid()));
 
     QString nowString, stdoutFilenameTemp, stderrFilenameTemp, stdoutPathTemp, stderrPathTemp;
@@ -216,7 +216,7 @@ void AssignmentClientMonitor::spawnChildClient() {
 
     if (_wantsChildFileLogging) {
         // Setup log files
-        const QString DATETIME_FORMAT = "yyyyMMdd.hh.mm.ss.zzz";
+        const QString DATETIME_FORMAT = QStringLiteral("yyyyMMdd.hh.mm.ss.zzz");
 
         if (!_logDirectory.exists()) {
             qDebug() << "Log directory (" << _logDirectory.absolutePath() << ") does not exist, creating.";
@@ -224,8 +224,8 @@ void AssignmentClientMonitor::spawnChildClient() {
         }
 
         nowString = QDateTime::currentDateTime().toString(DATETIME_FORMAT);
-        stdoutFilenameTemp = QString("ac-%1-stdout.txt").arg(nowString);
-        stderrFilenameTemp = QString("ac-%1-stderr.txt").arg(nowString);
+        stdoutFilenameTemp = QStringLiteral("ac-%1-stdout.txt").arg(nowString);
+        stderrFilenameTemp = QStringLiteral("ac-%1-stderr.txt").arg(nowString);
         stdoutPathTemp = _logDirectory.absoluteFilePath(stdoutFilenameTemp);
         stderrPathTemp = _logDirectory.absoluteFilePath(stderrFilenameTemp);
 
@@ -247,8 +247,8 @@ void AssignmentClientMonitor::spawnChildClient() {
     if (_wantsChildFileLogging) {
 
         // Update log path to use PID in filename
-        auto stdoutFilename = QString("ac-%1_%2-stdout.txt").arg(nowString).arg(assignmentClient->processId());
-        auto stderrFilename = QString("ac-%1_%2-stderr.txt").arg(nowString).arg(assignmentClient->processId());
+        auto stdoutFilename = QStringLiteral("ac-%1_%2-stdout.txt").arg(nowString).arg(assignmentClient->processId());
+        auto stderrFilename = QStringLiteral("ac-%1_%2-stderr.txt").arg(nowString).arg(assignmentClient->processId());
         stdoutPath = _logDirectory.absoluteFilePath(stdoutFilename);
         stderrPath = _logDirectory.absoluteFilePath(stderrFilename);
 
@@ -376,7 +376,7 @@ void AssignmentClientMonitor::handleChildStatusPacket(QSharedPointer<ReceivedMes
 }
 
 bool AssignmentClientMonitor::handleHTTPRequest(HTTPConnection* connection, const QUrl& url, bool skipSubHandler) {
-    if (url.path() == "/status") {
+    if (url.path() == QStringLiteral("/status")) {
         QByteArray response;
 
         QJsonObject status;
@@ -384,14 +384,14 @@ bool AssignmentClientMonitor::handleHTTPRequest(HTTPConnection* connection, cons
         for (auto& ac : _childProcesses) {
             QJsonObject server;
 
-            server["pid"] = ac.process->processId();
-            server["logStdout"] = ac.logStdoutPath;
-            server["logStderr"] = ac.logStderrPath;
+            server[QStringLiteral("pid")] = ac.process->processId();
+            server[QStringLiteral("logStdout")] = ac.logStdoutPath;
+            server[QStringLiteral("logStderr")] = ac.logStderrPath;
 
             servers[QString::number(ac.process->processId())] = server;
         }
 
-        status["servers"] = servers;
+        status[QStringLiteral("servers")] = servers;
 
         QJsonDocument document { status };
 

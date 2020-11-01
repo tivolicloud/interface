@@ -20,7 +20,7 @@ QString getMetaverseAPIDomain() {
     if (processEnvironment.contains("HIFI_METAVERSE_URL")) {
         return processEnvironment.value("HIFI_METAVERSE_URL");
     }
-    return "https://tivolicloud.com";
+    return QStringLiteral("https://tivolicloud.com");
 }
 
 
@@ -28,23 +28,23 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     Q_UNUSED(context);
 
     QString date = QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss");
-    QString txt = QString("[%1] ").arg(date);
+    QString txt = QStringLiteral("[%1] ").arg(date);
 
     switch (type) {
       case QtDebugMsg:
-         txt += QString("{Debug} \t\t %1").arg(message);
+         txt += QStringLiteral("{Debug} \t\t %1").arg(message);
          break;
       case QtWarningMsg:
-         txt += QString("{Warning} \t %1").arg(message);
+         txt += QStringLiteral("{Warning} \t %1").arg(message);
          break;
       case QtCriticalMsg:
-         txt += QString("{Critical} \t %1").arg(message);
+         txt += QStringLiteral("{Critical} \t %1").arg(message);
          break;
       case QtFatalMsg:
-          txt += QString("{Fatal} \t\t %1").arg(message);
+          txt += QStringLiteral("{Fatal} \t\t %1").arg(message);
          break;
       case QtInfoMsg:
-          txt += QString("{Info} \t %1").arg(message);
+          txt += QStringLiteral("{Info} \t %1").arg(message);
           break;
    }
 

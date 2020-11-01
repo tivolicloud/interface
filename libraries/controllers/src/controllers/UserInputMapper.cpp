@@ -178,7 +178,7 @@ QString UserInputMapper::getDeviceName(uint16 deviceID) {
     if (_registeredDevices.find(deviceID) != _registeredDevices.end()) {
         return _registeredDevices[deviceID]->_name;
     }
-    return QString("unknown");
+    return QStringLiteral("unknown");
 }
 
 int UserInputMapper::findDevice(QString name) const {
@@ -195,14 +195,14 @@ QVector<QString> UserInputMapper::getDeviceNames() {
     Locker locker(_lock);
     QVector<QString> result;
     for (const auto& device : _registeredDevices) {
-        QString deviceName = device.second->_name.split(" (")[0];
+        QString deviceName = device.second->_name.split(QStringLiteral(" ("))[0];
         result << deviceName;
     }
     return result;
 }
 
 int UserInputMapper::findAction(const QString& actionName) const {
-    return findDeviceInput("Actions." + actionName).getChannel();
+    return findDeviceInput(QStringLiteral("Actions.") + actionName).getChannel();
 }
 
 Input UserInputMapper::findDeviceInput(const QString& inputName) const {
@@ -399,39 +399,39 @@ void handFromScriptValue(const QScriptValue& object, controller::Hand& hand);
 
 QScriptValue inputToScriptValue(QScriptEngine* engine, const Input& input) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("device", input.getDevice());
-    obj.setProperty("channel", input.getChannel());
-    obj.setProperty("type", (unsigned short)input.getType());
-    obj.setProperty("id", input.getID());
+    obj.setProperty(QStringLiteral("device"), input.getDevice());
+    obj.setProperty(QStringLiteral("channel"), input.getChannel());
+    obj.setProperty(QStringLiteral("type"), (unsigned short)input.getType());
+    obj.setProperty(QStringLiteral("id"), input.getID());
     return obj;
 }
 
 void inputFromScriptValue(const QScriptValue& object, Input& input) {
-    input.id = object.property("id").toInt32();
+    input.id = object.property(QStringLiteral("id")).toInt32();
 }
 
 QScriptValue actionToScriptValue(QScriptEngine* engine, const Action& action) {
     QScriptValue obj = engine->newObject();
     auto userInputMapper = DependencyManager::get<UserInputMapper>();
-    obj.setProperty("action", (int)action);
-    obj.setProperty("actionName", userInputMapper->getActionName(action));
+    obj.setProperty(QStringLiteral("action"), (int)action);
+    obj.setProperty(QStringLiteral("actionName"), userInputMapper->getActionName(action));
     return obj;
 }
 
 void actionFromScriptValue(const QScriptValue& object, Action& action) {
-    action = Action(object.property("action").toVariant().toInt());
+    action = Action(object.property(QStringLiteral("action")).toVariant().toInt());
 }
 
 QScriptValue inputPairToScriptValue(QScriptEngine* engine, const Input::NamedPair& inputPair) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("input", inputToScriptValue(engine, inputPair.first));
-    obj.setProperty("inputName", inputPair.second);
+    obj.setProperty(QStringLiteral("input"), inputToScriptValue(engine, inputPair.first));
+    obj.setProperty(QStringLiteral("inputName"), inputPair.second);
     return obj;
 }
 
 void inputPairFromScriptValue(const QScriptValue& object, Input::NamedPair& inputPair) {
-    inputFromScriptValue(object.property("input"), inputPair.first);
-    inputPair.second = QString(object.property("inputName").toVariant().toString());
+    inputFromScriptValue(object.property(QStringLiteral("input")), inputPair.first);
+    inputPair.second = QString(object.property(QStringLiteral("inputName")).toVariant().toString());
 }
 
 QScriptValue handToScriptValue(QScriptEngine* engine, const controller::Hand& hand) {
@@ -669,7 +669,7 @@ Endpoint::Pointer UserInputMapper::endpointFor(const QScriptValue& endpoint) {
     }
 
     if (endpoint.isArray()) {
-        int length = endpoint.property("length").toInteger();
+        int length = endpoint.property(QStringLiteral("length")).toInteger();
         Endpoint::List children;
         for (int i = 0; i < length; i++) {
             QScriptValue arrayItem = endpoint.property(i);
@@ -885,7 +885,7 @@ Conditional::Pointer UserInputMapper::conditionalFor(const QJSValue& condition) 
 
 Conditional::Pointer UserInputMapper::conditionalFor(const QScriptValue& condition) {
     if (condition.isArray()) {
-        int length = condition.property("length").toInteger();
+        int length = condition.property(QStringLiteral("length")).toInteger();
         Conditional::List children;
         for (int i = 0; i < length; i++) {
             Conditional::Pointer destination = conditionalFor(condition.property(i));
@@ -1024,8 +1024,8 @@ Endpoint::Pointer UserInputMapper::parseDestination(const QJsonValue& value) {
 Endpoint::Pointer UserInputMapper::parseAxis(const QJsonValue& value) {
     if (value.isObject()) {
         auto object = value.toObject();
-        if (object.contains("makeAxis")) {
-            auto axisValue = object.value("makeAxis");
+        if (object.contains(QStringLiteral("makeAxis"))) {
+            auto axisValue = object.value(QStringLiteral("makeAxis"));
             if (axisValue.isArray()) {
                 auto axisArray = axisValue.toArray();
                 static const int AXIS_ARRAY_SIZE = 2; // axis can only have 2 children

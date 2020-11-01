@@ -338,7 +338,7 @@ public:
         // The context string will get too long if we accumulate it properly
         //QString newContext = context + QString("/") + itr->Get_Current_Parent_Name();
         // so we use this four-character indentation
-        QString newContext = context + QString(".../");
+        QString newContext = context + QStringLiteral(".../");
         process(itr, newContext);
 
         // count the children
@@ -389,7 +389,7 @@ public:
         float time = (btScalar)MSECS_PER_SECOND * itr->Get_Current_Parent_Total_Time();
         if (_file.error() == QFileDevice::NoError) {
             QTextStream s(&_file);
-            s << name << " = " << time << "\n";
+            s << name << QStringLiteral(" = ") << time << QStringLiteral("\n");
         }
     }
 protected:
@@ -406,10 +406,10 @@ void PhysicsEngine::harvestPerformanceStats() {
         // hunt for stepSimulation context
         itr->First();
         for (int32_t childIndex = 0; !itr->Is_Done(); ++childIndex) {
-            if (QString(itr->Get_Current_Name()) == "stepSimulation") {
+            if (QString(itr->Get_Current_Name()) == QStringLiteral("stepSimulation")) {
                 itr->Enter_Child(childIndex);
                 StatsHarvester harvester;
-                harvester.recurse(itr, "physics/");
+                harvester.recurse(itr, QStringLiteral("physics/"));
                 break;
             }
             itr->Next();
@@ -423,10 +423,10 @@ void PhysicsEngine::printPerformanceStatsToFile(const QString& filename) {
         // hunt for stepSimulation context
         itr->First();
         for (int32_t childIndex = 0; !itr->Is_Done(); ++childIndex) {
-            if (QString(itr->Get_Current_Name()) == "stepSimulation") {
+            if (QString(itr->Get_Current_Name()) == QStringLiteral("stepSimulation")) {
                 itr->Enter_Child(childIndex);
                 StatsWriter writer(filename);
-                writer.recurse(itr, "");
+                writer.recurse(itr, QString());
                 break;
             }
             itr->Next();
@@ -464,7 +464,7 @@ void PhysicsEngine::doOwnershipInfection(const btCollisionObject* objectA, const
 }
 
 void PhysicsEngine::updateContactMap() {
-    DETAILED_PROFILE_RANGE(simulation_physics, "updateContactMap");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("updateContactMap"));
     BT_PROFILE("updateContactMap");
     ++_numContactFrames;
 

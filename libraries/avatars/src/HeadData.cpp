@@ -114,13 +114,13 @@ void HeadData::setBlendshape(QString name, float val) {
     } else {
         // check to see if this is a legacy blendshape that is present in
         // ARKit blendshapes but is split. i.e. has left and right halfs.
-        if (name == "LipsUpperUp") {
+        if (name ==QStringLiteral( "LipsUpperUp")) {
             _blendshapeCoefficients[(int)Blendshapes::MouthUpperUp_L] = val;
             _blendshapeCoefficients[(int)Blendshapes::MouthUpperUp_R] = val;
-        } else if (name == "LipsLowerDown") {
+        } else if (name == QStringLiteral("LipsLowerDown")) {
             _blendshapeCoefficients[(int)Blendshapes::MouthLowerDown_L] = val;
             _blendshapeCoefficients[(int)Blendshapes::MouthLowerDown_R] = val;
-        } else if (name == "Sneer") {
+        } else if (name == QStringLiteral("Sneer")) {
             _blendshapeCoefficients[(int)Blendshapes::NoseSneer_L] = val;
             _blendshapeCoefficients[(int)Blendshapes::NoseSneer_R] = val;
         }

@@ -153,12 +153,12 @@ bool MixerAvatar::validateFSTHash(const QString& publicKey) const {
 }
 
 QByteArray MixerAvatar::canonicalJson(const QString fstFile) {
-    QStringList fstLines = fstFile.split("\n", Qt::SkipEmptyParts);
+    QStringList fstLines = fstFile.split(QStringLiteral("\n"), Qt::SkipEmptyParts);
     static const QString fstKeywordsReg {
         "(marketplaceID|itemDescription|itemCategories|itemArtist|itemLicenseUrl|limitedRun|itemName|"
         "filename|texdir|script|editionNumber|certificateID)"
     };
-    QRegularExpression fstLineRegExp { QString("^\\s*") + fstKeywordsReg + "\\s*=\\s*(\\S.*)$" };
+    QRegularExpression fstLineRegExp { QStringLiteral("^\\s*") + fstKeywordsReg + QStringLiteral("\\s*=\\s*(\\S.*)$") };
     QStringListIterator fstLineIter(fstLines);
 
     QJsonObject certifiedItems;
@@ -194,7 +194,7 @@ QByteArray MixerAvatar::canonicalJson(const QString fstFile) {
     }
     if (!scripts.empty()) {
         scripts.sort();
-        certifiedItems["script"] = QJsonArray::fromStringList(scripts);
+        certifiedItems[QStringLiteral("script")] = QJsonArray::fromStringList(scripts);
     }
 
     QJsonDocument jsonDocCertifiedItems(certifiedItems);
@@ -216,8 +216,8 @@ void MixerAvatar::ownerRequestComplete() {
         _verifyState = ownerResponse;
         _pendingEvent = true;
     } else {
-        auto jsonData = QJsonDocument::fromJson(networkReply->readAll())["data"];
-        if (!jsonData.isUndefined() && !jsonData.toObject()["message"].isUndefined()) {
+        auto jsonData = QJsonDocument::fromJson(networkReply->readAll())[QStringLiteral("data")];
+        if (!jsonData.isUndefined() && !jsonData.toObject()[QStringLiteral("message")].isUndefined()) {
             qCDebug(avatars) << "Owner lookup failed for" << getDisplayName() << "("
                 << getSessionUUID() << ") :"
                 << jsonData.toObject()["message"].toString();
@@ -240,7 +240,7 @@ void MixerAvatar::requestCurrentOwnership() {
     networkRequest.setUrl(requestURL);
 
     QJsonObject request;
-    request["certificate_id"] = _certificateIdFromFST;
+    request[QStringLiteral("certificate_id")] = _certificateIdFromFST;
     QNetworkReply* networkReply = networkAccessManager.put(networkRequest, QJsonDocument(request).toJson());
     connect(networkReply, &QNetworkReply::finished, this, &MixerAvatar::ownerRequestComplete);
 }

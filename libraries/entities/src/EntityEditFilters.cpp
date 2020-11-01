@@ -109,11 +109,11 @@ bool EntityEditFilters::filter(glm::vec3& position, EntityItemProperties& proper
                             QScriptValue topFarLeft = vec3ToScriptValue(filterData.engine, aaBox.calcTopFarLeft());
                             QScriptValue center = vec3ToScriptValue(filterData.engine, aaBox.calcCenter());
                             QScriptValue boundingBoxDimensions = vec3ToScriptValue(filterData.engine, aaBox.getDimensions());
-                            boundingBox.setProperty("brn", bottomRightNear);
-                            boundingBox.setProperty("tfl", topFarLeft);
-                            boundingBox.setProperty("center", center);
-                            boundingBox.setProperty("dimensions", boundingBoxDimensions);
-                            zoneValues.setProperty("boundingBox", boundingBox);
+                            boundingBox.setProperty(QStringLiteral("brn"), bottomRightNear);
+                            boundingBox.setProperty(QStringLiteral("tfl"), topFarLeft);
+                            boundingBox.setProperty(QStringLiteral("center"), center);
+                            boundingBox.setProperty(QStringLiteral("dimensions"), boundingBoxDimensions);
+                            zoneValues.setProperty(QStringLiteral("boundingBox"), boundingBox);
                         }
                     }
 
@@ -223,7 +223,7 @@ static bool hasCorrectSyntax(const QScriptProgram& program) {
         const auto error = syntaxCheck.errorMessage();
         const auto line = QString::number(syntaxCheck.errorLineNumber());
         const auto column = QString::number(syntaxCheck.errorColumnNumber());
-        const auto message = QString("[SyntaxError] %1 in %2:%3(%4)").arg(error, program.fileName(), line, column);
+        const auto message = QStringLiteral("[SyntaxError] %1 in %2:%3(%4)").arg(error, program.fileName(), line, column);
         qCritical() << qPrintable(message);
         return false;
     }
@@ -240,7 +240,7 @@ static bool hadUncaughtExceptions(QScriptEngine& engine, const QString& fileName
         auto message = QString(SCRIPT_EXCEPTION_FORMAT).arg(exception, fileName, line);
         if (!backtrace.empty()) {
             static const auto lineSeparator = "\n    ";
-            message += QString("\n[Backtrace]%1%2").arg(lineSeparator, backtrace.join(lineSeparator));
+            message += QStringLiteral("\n[Backtrace]%1%2").arg(lineSeparator, backtrace.join(lineSeparator));
         }
         qCritical() << qPrintable(message);
         return true;
@@ -259,11 +259,11 @@ void EntityEditFilters::scriptRequestFinished(EntityItemID entityID) {
         if (hasCorrectSyntax(program)) {
             // create a QScriptEngine for this script
             QScriptEngine* engine = new QScriptEngine();
-            engine->setObjectName("filter:" + entityID.toString());
+            engine->setObjectName(QStringLiteral("filter:") + entityID.toString());
             engine->setProperty("type", "edit_filter");
             engine->setProperty("fileName", urlString);
             engine->setProperty("entityID", entityID);
-            engine->globalObject().setProperty("Script", engine->newQObject(engine));
+            engine->globalObject().setProperty(QStringLiteral("Script"), engine->newQObject(engine));
             DependencyManager::get<ScriptInitializers>()->runScriptInitializers(engine);
             engine->evaluate(scriptContents, urlString);
             if (!hadUncaughtExceptions(*engine, urlString)) {
@@ -279,12 +279,12 @@ void EntityEditFilters::scriptRequestFinished(EntityItemID entityID) {
                 // now get the filter function
                 auto global = engine->globalObject();
                 auto entitiesObject = engine->newObject();
-                entitiesObject.setProperty("ADD_FILTER_TYPE", EntityTree::FilterType::Add);
-                entitiesObject.setProperty("EDIT_FILTER_TYPE", EntityTree::FilterType::Edit);
-                entitiesObject.setProperty("PHYSICS_FILTER_TYPE", EntityTree::FilterType::Physics);
-                entitiesObject.setProperty("DELETE_FILTER_TYPE", EntityTree::FilterType::Delete);
-                global.setProperty("Entities", entitiesObject);
-                filterData.filterFn = global.property("filter");
+                entitiesObject.setProperty(QStringLiteral("ADD_FILTER_TYPE"), EntityTree::FilterType::Add);
+                entitiesObject.setProperty(QStringLiteral("EDIT_FILTER_TYPE"), EntityTree::FilterType::Edit);
+                entitiesObject.setProperty(QStringLiteral("PHYSICS_FILTER_TYPE"), EntityTree::FilterType::Physics);
+                entitiesObject.setProperty(QStringLiteral("DELETE_FILTER_TYPE"), EntityTree::FilterType::Delete);
+                global.setProperty(QStringLiteral("Entities"), entitiesObject);
+                filterData.filterFn = global.property(QStringLiteral("filter"));
                 if (!filterData.filterFn.isFunction()) {
                     qDebug() << "Filter function specified but not found. Will reject all edits for those without lock rights.";
                     delete engine;

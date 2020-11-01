@@ -52,9 +52,9 @@ public:
 
         auto nestable = _spatiallyNestable.lock();
         if (nestable) {
-            map["parentID"] = nestable->getID();
-            map["parentJointIndex"] = _jointIndex;
-            map["baseParentScale"] = vec3toVariant(_baseScale);
+            map[QStringLiteral("parentID")] = nestable->getID();
+            map[QStringLiteral("parentJointIndex")] = _jointIndex;
+            map[QStringLiteral("baseParentScale")] = vec3toVariant(_baseScale);
         }
 
         return map;

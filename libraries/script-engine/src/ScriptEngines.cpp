@@ -89,7 +89,7 @@ QUrl normalizeScriptURL(const QUrl& rawScriptURL) {
         return rawScriptURL;
     } else {
         // don't accidently support gopher
-        return QUrl("");
+        return QUrl(QString());
     }
 }
 
@@ -211,9 +211,9 @@ QVariantList getPublicChildNodes(TreeNodeFolder* parent) {
         if (node->getType() == TREE_NODE_TYPE_FOLDER) {
             TreeNodeFolder* folder = static_cast<TreeNodeFolder*>(node);
             QVariantMap resultNode;
-            resultNode.insert("name", node->getName());
-            resultNode.insert("type", "folder");
-            resultNode.insert("children", getPublicChildNodes(folder));
+            resultNode.insert(QStringLiteral("name"), node->getName());
+            resultNode.insert(QStringLiteral("type"), QStringLiteral("folder"));
+            resultNode.insert(QStringLiteral("children"), getPublicChildNodes(folder));
             result.append(resultNode);
             continue;
         }
@@ -222,9 +222,9 @@ QVariantList getPublicChildNodes(TreeNodeFolder* parent) {
             continue;
         }
         QVariantMap resultNode;
-        resultNode.insert("name", node->getName());
-        resultNode.insert("type", "script");
-        resultNode.insert("url", script->getFullPath());
+        resultNode.insert(QStringLiteral("name"), node->getName());
+        resultNode.insert(QStringLiteral("type"), "script");
+        resultNode.insert(QStringLiteral("url"), script->getFullPath());
         result.append(resultNode);
     }
     return result;
@@ -254,8 +254,8 @@ QVariantList ScriptEngines::getLocal() {
             continue;
         }
         QVariantMap resultNode;
-        resultNode.insert("name", node->getName());
-        resultNode.insert("path", script->getFullPath());
+        resultNode.insert(QStringLiteral("name"), node->getName());
+        resultNode.insert(QStringLiteral("path"), script->getFullPath());
         result.append(resultNode);
     }
     return result;
@@ -279,7 +279,7 @@ QVariantList ScriptEngines::getRunning() {
             runningScriptURL = QUrl::fromLocalFile(runningScriptURL.toDisplayString(QUrl::FormattingOptions(QUrl::FullyEncoded)));
         }
         QVariantMap resultNode;
-        resultNode.insert("name", runningScriptURL.fileName());
+        resultNode.insert(QStringLiteral("name"), runningScriptURL.fileName());
         QUrl displayURL = expandScriptUrl(runningScriptURL);
         QString displayURLString;
         if (displayURL.isLocalFile()) {
@@ -288,9 +288,9 @@ QVariantList ScriptEngines::getRunning() {
             displayURLString = displayURL.toDisplayString(QUrl::FormattingOptions(QUrl::FullyEncoded));
         }
         // The path contains the exact path/URL of the script, which also is used in the stopScript function.
-        resultNode.insert("path", displayURLString);
-        resultNode.insert("url", normalizeScriptURL(runningScript).toString());
-        resultNode.insert("local", runningScriptURL.isLocalFile());
+        resultNode.insert(QStringLiteral("path"), displayURLString);
+        resultNode.insert(QStringLiteral("url"), normalizeScriptURL(runningScript).toString());
+        resultNode.insert(QStringLiteral("local"), runningScriptURL.isLocalFile());
         result.append(resultNode);
     }
     return result;
@@ -314,7 +314,7 @@ void ScriptEngines::loadScripts() {
     int size = settings.beginReadArray(SETTINGS_KEY);
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
-        QString string = settings.value("script").toString();
+        QString string = settings.value(QStringLiteral("script")).toString();
         if (!string.isEmpty()) {
             loadScript(string);
             foundDeprecatedSetting = true;
@@ -324,9 +324,9 @@ void ScriptEngines::loadScripts() {
     if (foundDeprecatedSetting) {
         // Remove old settings found and return
         settings.beginWriteArray(SETTINGS_KEY);
-        settings.remove("");
+        settings.remove(QString());
         settings.endArray();
-        settings.remove(SETTINGS_KEY + "/size");
+        settings.remove(SETTINGS_KEY + QStringLiteral("/size"));
         return;
     }
     // END BACKWARD COMPATIBILITY CODE

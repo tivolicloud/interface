@@ -106,7 +106,7 @@ void GraphicsEngine::shutdown() {
 
 void GraphicsEngine::render_runRenderFrame(RenderArgs* renderArgs) {
     PROFILE_RANGE(render, __FUNCTION__);
-    PerformanceTimer perfTimer("render");
+    PerformanceTimer perfTimer(QStringLiteral("render"));
 
 
     if (Menu::getInstance()->isOptionChecked(MenuOption::StopRendering)) return;
@@ -176,11 +176,11 @@ void GraphicsEngine::render_performFrame() {
 
     auto lastPaintBegin = usecTimestampNow();
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xff0000ff, (uint64_t)_renderFrameCount);
-    PerformanceTimer perfTimer("paintGL");
+    PerformanceTimer perfTimer(QStringLiteral("paintGL"));
 
     DisplayPluginPointer displayPlugin;
     {
-        PROFILE_RANGE(render, "/getActiveDisplayPlugin");
+        PROFILE_RANGE(render, QStringLiteral("/getActiveDisplayPlugin"));
         displayPlugin = qApp->getActiveDisplayPlugin();
         if (!displayPlugin) {
             // We're shutting down
@@ -189,7 +189,7 @@ void GraphicsEngine::render_performFrame() {
     }
 
     {
-        PROFILE_RANGE(render, "/pluginBeginFrameRender");
+        PROFILE_RANGE(render, QStringLiteral("/pluginBeginFrameRender"));
         // If a display plugin loses it's underlying support, it
         // needs to be able to signal us to not use it
         if (!displayPlugin->beginFrameRender(_renderFrameCount)) {
@@ -229,7 +229,7 @@ void GraphicsEngine::render_performFrame() {
     }
 
     {
-        PROFILE_RANGE(render, "/gpuContextReset");
+        PROFILE_RANGE(render, QStringLiteral("/gpuContextReset"));
         getGPUContext()->beginFrame(_appRenderArgs._view, HMDSensorPose);
         // Reset the gpu::Context Stages
         // Back to the default framebuffer;
@@ -247,7 +247,7 @@ void GraphicsEngine::render_performFrame() {
     gpu::FramebufferPointer finalFramebuffer;
     QSize finalFramebufferSize;
     {
-        PROFILE_RANGE(render, "/getOutputFramebuffer");
+        PROFILE_RANGE(render, QStringLiteral("/getOutputFramebuffer"));
         // Primary rendering pass
         auto framebufferCache = DependencyManager::get<FramebufferCache>();
         finalFramebufferSize = framebufferCache->getFrameBufferSize();
@@ -267,8 +267,8 @@ void GraphicsEngine::render_performFrame() {
         });
     } else {
         {
-            PROFILE_RANGE(render, "/renderOverlay");
-            PerformanceTimer perfTimer("renderOverlay");
+            PROFILE_RANGE(render, QStringLiteral("/renderOverlay"));
+            PerformanceTimer perfTimer(QStringLiteral("renderOverlay"));
             // NOTE: There is no batch associated with this renderArgs
             // the ApplicationOverlay class assumes it's viewport is setup to be the device size
             renderArgs._viewport = glm::ivec4(0, 0, qApp->getDeviceSize());
@@ -276,12 +276,12 @@ void GraphicsEngine::render_performFrame() {
         }
 
         {
-            PROFILE_RANGE(render, "/updateCompositor");
+            PROFILE_RANGE(render, QStringLiteral("/updateCompositor"));
             qApp->getApplicationCompositor().setFrameInfo(_renderFrameCount, eyeToWorld, sensorToWorld);
         }
 
         {
-            PROFILE_RANGE(render, "/runRenderFrame");
+            PROFILE_RANGE(render, QStringLiteral("/runRenderFrame"));
             renderArgs._hudOperator = displayPlugin->getHUDOperator();
             renderArgs._hudTexture = qApp->getApplicationOverlay().getOverlayTexture();
             renderArgs._takingSnapshot = qApp->takeSnapshotOperators(snapshotOperators);
@@ -302,8 +302,8 @@ void GraphicsEngine::render_performFrame() {
     frame->snapshotOperators = snapshotOperators;
     // deliver final scene rendering commands to the display plugin
     {
-        PROFILE_RANGE(render, "/pluginOutput");
-        PerformanceTimer perfTimer("pluginOutput");
+        PROFILE_RANGE(render, QStringLiteral("/pluginOutput"));
+        PerformanceTimer perfTimer(QStringLiteral("pluginOutput"));
         _renderLoopCounter.increment();
         displayPlugin->submitFrame(frame);
     }

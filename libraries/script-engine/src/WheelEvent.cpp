@@ -83,17 +83,17 @@ WheelEvent::WheelEvent(const QWheelEvent& event) {
  */
 QScriptValue WheelEvent::toScriptValue(QScriptEngine* engine, const WheelEvent& event) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("x", event.x);
-    obj.setProperty("y", event.y);
-    obj.setProperty("delta", event.delta);
-    obj.setProperty("orientation", event.orientation);
-    obj.setProperty("isLeftButton", event.isLeftButton);
-    obj.setProperty("isRightButton", event.isRightButton);
-    obj.setProperty("isMiddleButton", event.isMiddleButton);
-    obj.setProperty("isShifted", event.isShifted);
-    obj.setProperty("isMeta", event.isMeta);
-    obj.setProperty("isControl", event.isControl);
-    obj.setProperty("isAlt", event.isAlt);
+    obj.setProperty(QStringLiteral("x"), event.x);
+    obj.setProperty(QStringLiteral("y"), event.y);
+    obj.setProperty(QStringLiteral("delta"), event.delta);
+    obj.setProperty(QStringLiteral("orientation"), event.orientation);
+    obj.setProperty(QStringLiteral("isLeftButton"), event.isLeftButton);
+    obj.setProperty(QStringLiteral("isRightButton"), event.isRightButton);
+    obj.setProperty(QStringLiteral("isMiddleButton"), event.isMiddleButton);
+    obj.setProperty(QStringLiteral("isShifted"), event.isShifted);
+    obj.setProperty(QStringLiteral("isMeta"), event.isMeta);
+    obj.setProperty(QStringLiteral("isControl"), event.isControl);
+    obj.setProperty(QStringLiteral("isAlt"), event.isAlt);
     return obj;
 }
 

@@ -256,7 +256,7 @@ bool LimitedNodeList::packetVersionMatch(const udt::Packet& packet) {
 
             if (!hasBeenOutput) {
                 versionDebugSuppressMap.insert(senderSockAddr, headerType);
-                senderString = QString("%1:%2").arg(senderSockAddr.getAddress().toString()).arg(senderSockAddr.getPort());
+                senderString = QStringLiteral("%1:%2").arg(senderSockAddr.getAddress().toString()).arg(senderSockAddr.getPort());
             }
         } else {
             SharedNodePointer sourceNode = nodeWithLocalID(NLPacket::sourceIDInHeader(packet));

@@ -164,7 +164,7 @@ bool RenderableModelEntityItem::needsUpdateModelBounds() const {
 }
 
 void RenderableModelEntityItem::updateModelBounds() {
-    DETAILED_PROFILE_RANGE(simulation_physics, "updateModelBounds");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("updateModelBounds"));
 
     if (!_dimensionsInitialized || !hasModel()) {
         return;
@@ -340,7 +340,7 @@ bool RenderableModelEntityItem::isReadyToComputeShape() const {
                 // we have both URLs AND both geometries AND they are both fully loaded.
                 if (_needsInitialSimulation) {
                     // the _model's offset will be wrong until _needsInitialSimulation is false
-                    DETAILED_PERFORMANCE_TIMER("_model->simulate");
+                    DETAILED_PERFORMANCE_TIMER(QStringLiteral("_model->simulate"));
                     const_cast<RenderableModelEntityItem*>(this)->doInitialModelSimulation();
                 }
                 return true;
@@ -873,7 +873,7 @@ void RenderableModelEntityItem::setJointTranslationsSet(const QVector<bool>& tra
 }
 
 void RenderableModelEntityItem::locationChanged(bool tellPhysics, bool tellChildren) {
-    DETAILED_PERFORMANCE_TIMER("locationChanged");
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("locationChanged"));
     EntityItem::locationChanged(tellPhysics, tellChildren);
     auto model = getModel();
     if (model && model->isLoaded()) {
@@ -1377,7 +1377,7 @@ void ModelEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
     }
 
     {
-        DETAILED_PROFILE_RANGE(simulation_physics, "Fixup");
+        DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("Fixup"));
         if (model->needsFixupInScene()) {
             model->removeFromScene(scene, transaction);
             render::Item::Status::Getters statusGetters;
@@ -1432,7 +1432,7 @@ void ModelEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& sce
     // The code to deal with the change of properties is now in ModelEntityItem.cpp
     // That is where _currentFrame and _lastAnimated were updated.
     if (_animating) {
-        DETAILED_PROFILE_RANGE(simulation_physics, "Animate");
+        DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("Animate"));
 
         auto animationURL = entity->getAnimationURL();
         bool animationChanged = _animationURL != animationURL;
@@ -1490,8 +1490,8 @@ void ModelEntityRenderer::setCullWithParent(bool value) {
 
 // NOTE: this only renders the "meta" portion of the Model, namely it renders debugging items
 void ModelEntityRenderer::doRender(RenderArgs* args) {
-    DETAILED_PROFILE_RANGE(render_detail, "MetaModelRender");
-    DETAILED_PERFORMANCE_TIMER("RMEIrender");
+    DETAILED_PROFILE_RANGE(render_detail, QStringLiteral("MetaModelRender"));
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("RMEIrender"));
 
     // If the model doesn't have visual geometry, render our bounding box as a magenta wireframe
     static glm::vec4 magentaColor(0.913f, 0.117f, 0.388f, 1.0f);

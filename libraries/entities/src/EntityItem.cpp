@@ -206,7 +206,7 @@ OctreeElement::AppendState EntityItem::appendEntityData(
         requestedProperties = entityTreeElementExtraEncodeData->entities.value(getEntityItemID());
     }
 
-    QString privateUserData = "";
+    QString privateUserData = QString();
     if (destinationNodeCanGetAndSetPrivateUserData) {
         privateUserData = getPrivateUserData();
     }
@@ -1125,7 +1125,7 @@ void EntityItem::setCollisionSoundURL(const QString& value) {
 void EntityItem::simulate(const quint64& now) {
 
 
-    DETAILED_PROFILE_RANGE(simulation_physics, "Simulate");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("Simulate"));
     if (getLastSimulated() == 0) {
         setLastSimulated(now);
     }
@@ -1180,7 +1180,7 @@ void EntityItem::simulate(const quint64& now) {
 }
 
 bool EntityItem::stepKinematicMotion(float timeElapsed) {
-    DETAILED_PROFILE_RANGE(simulation_physics, "StepKinematicMotion");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("StepKinematicMotion"));
     // get all the data
     Transform transform;
     glm::vec3 linearVelocity;
@@ -2189,7 +2189,7 @@ QString EntityItem::actionsToDebugString() {
         const QUuid id = i.key();
         EntityDynamicPointer action = _objectActions[id];
         EntityDynamicType actionType = action->getType();
-        result += QString("") + actionType + ":" + action->getID().toString() + " ";
+        result += QString() + actionType + QStringLiteral(":") + action->getID().toString() + QStringLiteral(" ");
         i++;
     }
     return result;
@@ -2566,7 +2566,7 @@ QVariantMap EntityItem::getActionArguments(const QUuid& actionID) const {
         if (_objectActions.contains(actionID)) {
             EntityDynamicPointer action = _objectActions[actionID];
             result = action->getArguments();
-            result["type"] = EntityDynamicInterface::dynamicTypeToString(action->getType());
+            result[QStringLiteral("type")] = EntityDynamicInterface::dynamicTypeToString(action->getType());
         }
     });
 
@@ -2684,8 +2684,8 @@ bool EntityItem::matchesJSONFilters(const QJsonObject& jsonFilters) const {
     // currently the only property filter we handle in EntityItem is '+' for serverScripts
     // which means that we only handle a filtered query asking for entities where the serverScripts property is non-default
 
-    static const QString SERVER_SCRIPTS_PROPERTY = "serverScripts";
-    static const QString ENTITY_TYPE_PROPERTY = "type";
+    static const QString SERVER_SCRIPTS_PROPERTY = QStringLiteral("serverScripts");
+    static const QString ENTITY_TYPE_PROPERTY = QStringLiteral("type");
 
     foreach(const auto& property, jsonFilters.keys()) {
         if (property == SERVER_SCRIPTS_PROPERTY && jsonFilters[property] == EntityQueryFilterSymbol::NonDefault) {
@@ -2942,7 +2942,6 @@ void EntityItem::setIsVisibleInSecondaryCamera(bool value) {
 }
 
 EntityPriority EntityItem::getEntityPriority() const {
-    if (isLocalEntity()) return EntityPriority::PRIORITIZED;
     return resultWithReadLock<EntityPriority>([&] { return _entityPriority; });
 }
 
@@ -3456,23 +3455,23 @@ void EntityItem::addGrab(GrabPointer grab) {
         if (isFarGrab) {
             // add a far-grab action
             dynamicType = DYNAMIC_TYPE_FAR_GRAB;
-            arguments["otherID"] = grab->getOwnerID();
-            arguments["otherJointIndex"] = jointIndex;
-            arguments["targetPosition"] = vec3ToQMap(grab->getPositionalOffset());
-            arguments["targetRotation"] = quatToQMap(grab->getRotationalOffset());
-            arguments["linearTimeScale"] = 0.05;
-            arguments["angularTimeScale"] = 0.05;
+            arguments[QStringLiteral("otherID")] = grab->getOwnerID();
+            arguments[QStringLiteral("otherJointIndex")] = jointIndex;
+            arguments[QStringLiteral("targetPosition")] = vec3ToQMap(grab->getPositionalOffset());
+            arguments[QStringLiteral("targetRotation")] = quatToQMap(grab->getRotationalOffset());
+            arguments[QStringLiteral("linearTimeScale")] = 0.05;
+            arguments[QStringLiteral("angularTimeScale")] = 0.05;
         } else {
             // add a near-grab action
             dynamicType = DYNAMIC_TYPE_HOLD;
-            arguments["holderID"] = grab->getOwnerID();
-            arguments["hand"] = grab->getHand();
-            arguments["timeScale"] = 0.05;
-            arguments["relativePosition"] = vec3ToQMap(grab->getPositionalOffset());
-            arguments["relativeRotation"] = quatToQMap(grab->getRotationalOffset());
-            arguments["kinematic"] = _grabProperties.getGrabKinematic();
-            arguments["kinematicSetVelocity"] = true;
-            arguments["ignoreIK"] = _grabProperties.getGrabFollowsController();
+            arguments[QStringLiteral("holderID")] = grab->getOwnerID();
+            arguments[QStringLiteral("hand")] = grab->getHand();
+            arguments[QStringLiteral("timeScale")] = 0.05;
+            arguments[QStringLiteral("relativePosition")] = vec3ToQMap(grab->getPositionalOffset());
+            arguments[QStringLiteral("relativeRotation")] = quatToQMap(grab->getRotationalOffset());
+            arguments[QStringLiteral("kinematic")] = _grabProperties.getGrabKinematic();
+            arguments[QStringLiteral("kinematicSetVelocity")] = true;
+            arguments[QStringLiteral("ignoreIK")] = _grabProperties.getGrabFollowsController();
         }
         EntityDynamicPointer action = actionFactory->factory(dynamicType, actionID, getThisPointer(), arguments);
         grab->setActionID(actionID);

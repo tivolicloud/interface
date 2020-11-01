@@ -93,16 +93,16 @@ void SphereRegion::extractSphereRegion(std::vector<std::pair<glm::vec3, glm::vec
 
 MultiSphereShape::ExtractionMode MultiSphereShape::getExtractionModeByJointName(const QString& name) {
     ExtractionMode mode = ExtractionMode::Automatic;
-    bool isSim = name.indexOf("SIM") == 0;
-    bool isFlow = name.indexOf("FLOW") == 0;
-    bool isEye = name.indexOf("EYE") > -1;
-    bool isToe = name.indexOf("TOE") > -1;
-    bool isShoulder = name.indexOf("SHOULDER") > -1;
-    bool isNeck = name.indexOf("NECK") > -1;
-    bool isRightHand = name == "RIGHTHAND";
-    bool isLeftHand = name == "LEFTHAND";
-    bool isRightFinger = name.indexOf("RIGHTHAND") == 0 && !isRightHand;
-    bool isLeftFinger = name.indexOf("LEFTHAND") == 0 && !isLeftHand;
+    bool isSim = name.indexOf(QStringLiteral("SIM")) == 0;
+    bool isFlow = name.indexOf(QStringLiteral("FLOW")) == 0;
+    bool isEye = name.indexOf(QStringLiteral("EYE")) > -1;
+    bool isToe = name.indexOf(QStringLiteral("TOE")) > -1;
+    bool isShoulder = name.indexOf(QStringLiteral("SHOULDER")) > -1;
+    bool isNeck = name.indexOf(QStringLiteral("NECK")) > -1;
+    bool isRightHand = name == QStringLiteral("RIGHTHAND");
+    bool isLeftHand = name == QStringLiteral("LEFTHAND");
+    bool isRightFinger = name.indexOf(QStringLiteral("RIGHTHAND")) == 0 && !isRightHand;
+    bool isLeftFinger = name.indexOf(QStringLiteral("LEFTHAND")) == 0 && !isLeftHand;
     
     //bool isFinger = 
     if (isNeck || isLeftFinger || isRightFinger) {

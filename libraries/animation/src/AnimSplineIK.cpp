@@ -221,28 +221,28 @@ const AnimPoseVec& AnimSplineIK::evaluate(const AnimVariantMap& animVars, const 
 
         glm::mat4 geomTargetMat = createMatFromQuatAndPos(tipTarget.getRotation(), tipTarget.getTranslation());
         glm::mat4 avatarTargetMat = rigToAvatarMat * context.getGeometryToRigMatrix() * geomTargetMat;
-        QString name = QString("ikTargetSplineTip");
+        QString name = QStringLiteral("ikTargetSplineTip");
         DebugDraw::getInstance().addMyAvatarMarker(name, glmExtractRotation(avatarTargetMat), extractTranslation(avatarTargetMat), WHITE);
 
         glm::mat4 geomTargetMat2 = createMatFromQuatAndPos(midTarget.getRotation(), midTarget.getTranslation());
         glm::mat4 avatarTargetMat2 = rigToAvatarMat * context.getGeometryToRigMatrix() * geomTargetMat2;
-        QString name2 = QString("ikTargetSplineMid");
+        QString name2 = QStringLiteral("ikTargetSplineMid");
         DebugDraw::getInstance().addMyAvatarMarker(name2, glmExtractRotation(avatarTargetMat2), extractTranslation(avatarTargetMat2), WHITE);
 
         glm::mat4 geomTargetMat3 = createMatFromQuatAndPos(baseTargetAbsolutePose.rot(), baseTargetAbsolutePose.trans());
         glm::mat4 avatarTargetMat3 = rigToAvatarMat * context.getGeometryToRigMatrix() * geomTargetMat3;
-        QString name3 = QString("ikTargetSplineBase");
+        QString name3 = QStringLiteral("ikTargetSplineBase");
         DebugDraw::getInstance().addMyAvatarMarker(name3, glmExtractRotation(avatarTargetMat3), extractTranslation(avatarTargetMat3), WHITE);
 
 
     } else if (context.getEnableDebugDrawIKTargets() != _previousEnableDebugIKTargets) {
 
         // remove markers if they were added last frame.
-        QString name = QString("ikTargetSplineTip");
+        QString name = QStringLiteral("ikTargetSplineTip");
         DebugDraw::getInstance().removeMyAvatarMarker(name);
-        QString name2 = QString("ikTargetSplineMid");
+        QString name2 = QStringLiteral("ikTargetSplineMid");
         DebugDraw::getInstance().removeMyAvatarMarker(name2);
-        QString name3 = QString("ikTargetSplineBase");
+        QString name3 = QStringLiteral("ikTargetSplineBase");
         DebugDraw::getInstance().removeMyAvatarMarker(name3);
     }
     _previousEnableDebugIKTargets = context.getEnableDebugDrawIKTargets();

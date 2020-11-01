@@ -83,21 +83,21 @@
  * @typedef {string} Camera.Mode
  */
 CameraMode stringToMode(const QString& mode) {
-    if (mode == "third person") {
+    if (mode == QStringLiteral("third person")) {
         return CAMERA_MODE_THIRD_PERSON;
-    } else if (mode == "first person") {
+    } else if (mode == QStringLiteral("first person")) {
         return CAMERA_MODE_FIRST_PERSON;
-    } else if (mode == "first person look at") {
+    } else if (mode == QStringLiteral("first person look at")) {
         return CAMERA_MODE_FIRST_PERSON_LOOK_AT;
-    } else if (mode == "mirror") {
+    } else if (mode == QStringLiteral("mirror")) {
         return CAMERA_MODE_MIRROR;
-    } else if (mode == "independent") {
+    } else if (mode == QStringLiteral("independent")) {
         return CAMERA_MODE_INDEPENDENT;
-    } else if (mode == "entity") {
+    } else if (mode == QStringLiteral("entity")) {
         return CAMERA_MODE_ENTITY;
-    } else if (mode == "look at") {
+    } else if (mode == QStringLiteral("look at")) {
         return CAMERA_MODE_LOOK_AT;
-    } else if (mode == "selfie") {
+    } else if (mode == QStringLiteral("selfie")) {
         return CAMERA_MODE_SELFIE;
     }
     return CAMERA_MODE_NULL;
@@ -105,23 +105,23 @@ CameraMode stringToMode(const QString& mode) {
 
 QString modeToString(CameraMode mode) {
     if (mode == CAMERA_MODE_THIRD_PERSON) {
-        return "third person";
+        return QStringLiteral("third person");
     } else if (mode == CAMERA_MODE_FIRST_PERSON) {
-        return "first person";
+        return QStringLiteral("first person");
     } else if (mode == CAMERA_MODE_FIRST_PERSON_LOOK_AT) {
-        return "first person look at";
+        return QStringLiteral("first person look at");
     } else if (mode == CAMERA_MODE_MIRROR) {
-        return "mirror";
+        return QStringLiteral("mirror");
     } else if (mode == CAMERA_MODE_INDEPENDENT) {
-        return "independent";
+        return QStringLiteral("independent");
     } else if (mode == CAMERA_MODE_ENTITY) {
-        return "entity";
+        return QStringLiteral("entity");
     } else if (mode == CAMERA_MODE_LOOK_AT) {
-        return "look at";
+        return QStringLiteral("look at");
     } else if (mode == CAMERA_MODE_SELFIE) {
-        return "selfie";
+        return QStringLiteral("selfie");
     }
-    return "unknown";
+    return QStringLiteral("unknown");
 }
 
 Camera::Camera() : 
@@ -261,12 +261,12 @@ QVariantMap Camera::getViewFrustum() {
     loadViewFrustum(frustum);
 
     QVariantMap result;
-    result["position"].setValue(frustum.getPosition());
-    result["orientation"].setValue(frustum.getOrientation());
-    result["projection"].setValue(frustum.getProjection());
-    result["centerRadius"].setValue(frustum.getCenterRadius());
-    result["fieldOfView"].setValue(frustum.getFieldOfView());
-    result["aspectRatio"].setValue(frustum.getAspectRatio());
+    result[QStringLiteral("position")].setValue(frustum.getPosition());
+    result[QStringLiteral("orientation")].setValue(frustum.getOrientation());
+    result[QStringLiteral("projection")].setValue(frustum.getProjection());
+    result[QStringLiteral("centerRadius")].setValue(frustum.getCenterRadius());
+    result[QStringLiteral("fieldOfView")].setValue(frustum.getFieldOfView());
+    result[QStringLiteral("aspectRatio")].setValue(frustum.getAspectRatio());
 
     return result;
 }

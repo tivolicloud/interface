@@ -60,9 +60,9 @@ void AssetResourceRequest::doSend() {
     if (urlIsAssetHash(_url)) {
         // We've detected that this is a hash - simply use AssetClient to request that asset
         #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
-        auto parts = _url.path().split(".", QString::SkipEmptyParts);
+        auto parts = _url.path().split(QStringLiteral("."), QString::SkipEmptyParts);
         #else
-        auto parts = _url.path().split(".", Qt::SkipEmptyParts);
+        auto parts = _url.path().split(QStringLiteral("."), Qt::SkipEmptyParts);
         #endif
         auto hash = parts.length() > 0 ? parts[0] : "";
 

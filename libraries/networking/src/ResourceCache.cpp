@@ -738,12 +738,12 @@ void Resource::reinsert() {
 
 void Resource::makeRequest() {
     if (_request) {
-        PROFILE_ASYNC_END(resource, "Resource:" + getType(), QString::number(_requestID));
+        PROFILE_ASYNC_END(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID));
         _request->disconnect();
         _request->deleteLater();
     }
 
-    PROFILE_ASYNC_BEGIN(resource, "Resource:" + getType(), QString::number(_requestID), { { "url", _url.toString() }, { "activeURL", _activeUrl.toString() } });
+    PROFILE_ASYNC_BEGIN(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID), { { QStringLiteral("url"), _url.toString() }, { "activeURL", _activeUrl.toString() } });
 
     _request = DependencyManager::get<ResourceManager>()->createResourceRequest(
         this, _activeUrl, true, -1, "Resource::makeRequest");
@@ -751,7 +751,7 @@ void Resource::makeRequest() {
     if (!_request) {
         ResourceCache::requestCompleted(_self);
         finishedLoading(false);
-        PROFILE_ASYNC_END(resource, "Resource:" + getType(), QString::number(_requestID));
+        PROFILE_ASYNC_END(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID));
         return;
     }
 
@@ -780,17 +780,17 @@ void Resource::handleReplyFinished() {
         // This can happen in the edge case that a request is timed out, but a `finished` signal is emitted before it is deleted.
         qWarning(networking) << "Received signal Resource::handleReplyFinished from ResourceRequest that is not the current"
             << " request: " << sender() << ", " << _request;
-        PROFILE_ASYNC_END(resource, "Resource:" + getType(), QString::number(_requestID), {
-            { "from_cache", false },
-            { "size_mb", _bytesTotal / 1000000.0 }
+        PROFILE_ASYNC_END(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID), {
+            { QStringLiteral("from_cache"), false },
+            { QStringLiteral("size_mb"), _bytesTotal / 1000000.0 }
             });
         ResourceCache::requestCompleted(_self);
         return;
     }
 
-    PROFILE_ASYNC_END(resource, "Resource:" + getType(), QString::number(_requestID), {
-        { "from_cache", _request->loadedFromCache() },
-        { "size_mb", _bytesTotal / 1000000.0 }
+    PROFILE_ASYNC_END(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID), {
+        { QStringLiteral( "from_cache"), _request->loadedFromCache() },
+        { QStringLiteral("size_mb"), _bytesTotal / 1000000.0 }
     });
 
     setSize(_bytesTotal);

@@ -428,7 +428,7 @@ public:
     Resource(const QUrl& url);
     virtual ~Resource();
 
-    virtual QString getType() const { return "Resource"; }
+    virtual QString getType() const { return QStringLiteral("Resource"); }
 
     /// Returns the key last used to identify this resource in the unused map.
     int getLRUKey() const { return _lruKey; }

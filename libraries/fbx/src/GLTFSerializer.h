@@ -495,21 +495,21 @@ namespace GLTFVertexAttribute {
         WEIGHTS_0,
     };
     inline Value fromString(const QString& key) {
-        if (key == "POSITION") {
+        if (key == QStringLiteral("POSITION")) {
             return POSITION;
-        } else if (key == "NORMAL") {
+        } else if (key == QStringLiteral("NORMAL")) {
             return NORMAL;
-        } else if (key == "TANGENT") {
+        } else if (key == QStringLiteral("TANGENT")) {
             return TANGENT;
-        } else if (key == "TEXCOORD_0") {
+        } else if (key == QStringLiteral("TEXCOORD_0")) {
             return TEXCOORD_0;
-        } else if (key == "TEXCOORD_1") {
+        } else if (key == QStringLiteral("TEXCOORD_1")) {
             return TEXCOORD_1;
-        } else if (key == "COLOR_0") {
+        } else if (key == QStringLiteral("COLOR_0")) {
             return COLOR_0;
-        } else if (key == "JOINTS_0") {
+        } else if (key == QStringLiteral("JOINTS_0")) {
             return JOINTS_0;
-        } else if (key == "WEIGHTS_0") {
+        } else if (key == QStringLiteral("WEIGHTS_0")) {
             return WEIGHTS_0;
         }
         return UNKNOWN;

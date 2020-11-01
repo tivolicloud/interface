@@ -187,7 +187,7 @@ void LinearDepthPass::run(const render::RenderContextPointer& renderContext, con
     float clearLinearDepth = args->getViewFrustum().getFarClip() * 2.0f;
 
     gpu::doInBatch("LinearDepthPass::run", args->_context, [=](gpu::Batch& batch) {
-        PROFILE_RANGE_BATCH(batch, "LinearDepthPass");
+        PROFILE_RANGE_BATCH(batch, QStringLiteral("LinearDepthPass"));
         _gpuTimer->begin(batch);
 
         batch.enableStereo(false);
@@ -496,28 +496,28 @@ void SurfaceGeometryPass::run(const render::RenderContextPointer& renderContext,
         batch.setUniformBuffer(ru::Buffer::DeferredFrameTransform, nullptr);
 
         // Diffusion pass
-        batch.setUniformBuffer(ru::Buffer::BlurParams, _diffusePass.getParameters()->_parametersBuffer);
+       //  batch.setUniformBuffer(ru::Buffer::BlurParams, _diffusePass.getParameters()->_parametersBuffer);
 
-        batch.setResourceTexture(ru::Texture::BlurDepth, linearDepthTexture);
+        // batch.setResourceTexture(ru::Texture::BlurDepth, linearDepthTexture);
 
-        batch.setFramebuffer(blurringFramebuffer);     
-        batch.setPipeline(diffuseVPipeline);
-        batch.setResourceTexture(ru::Texture::BlurSource, curvatureTexture);
-        batch.draw(gpu::TRIANGLE_STRIP, 4);
+        // batch.setFramebuffer(blurringFramebuffer);     
+        // batch.setPipeline(diffuseVPipeline);
+        // batch.setResourceTexture(ru::Texture::BlurSource, curvatureTexture);
+        // batch.draw(gpu::TRIANGLE_STRIP, 4);
 
-        batch.setFramebuffer(curvatureFramebuffer);
-        batch.setPipeline(diffuseHPipeline);
-        batch.setResourceTexture(ru::Texture::BlurSource, blurringTexture);
-        batch.draw(gpu::TRIANGLE_STRIP, 4);
+        // batch.setFramebuffer(curvatureFramebuffer);
+        // batch.setPipeline(diffuseHPipeline);
+        // batch.setResourceTexture(ru::Texture::BlurSource, blurringTexture);
+        // batch.draw(gpu::TRIANGLE_STRIP, 4);
 
-        batch.setFramebuffer(blurringFramebuffer);     
-        batch.setPipeline(diffuseVPipeline);
-        batch.setResourceTexture(ru::Texture::BlurSource, curvatureTexture);
-        batch.draw(gpu::TRIANGLE_STRIP, 4);
+        // batch.setFramebuffer(blurringFramebuffer);     
+        // batch.setPipeline(diffuseVPipeline);
+        // batch.setResourceTexture(ru::Texture::BlurSource, curvatureTexture);
+        // batch.draw(gpu::TRIANGLE_STRIP, 4);
 
         batch.setFramebuffer(lowCurvatureFramebuffer);
         batch.setPipeline(diffuseHPipeline);
-        batch.setResourceTexture(ru::Texture::BlurSource, blurringTexture);
+        // batch.setResourceTexture(ru::Texture::BlurSource, blurringTexture);
         batch.draw(gpu::TRIANGLE_STRIP, 4);
 
         batch.setResourceTexture(ru::Texture::BlurSource, nullptr);

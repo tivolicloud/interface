@@ -159,23 +159,23 @@ void PickManager::update() {
     bool shouldPickHUD = _shouldPickHUDOperator();
     // Each type will update at least one pick, regardless of the expiry
     // {
-    //     PROFILE_RANGE_EX(picks, "StylusPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Stylus]);
-    //     PerformanceTimer perfTimer("StylusPicks");
+    //     PROFILE_RANGE_EX(picks, QStringLiteral("StylusPicks"), 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Stylus]);
+    //     PerformanceTimer perfTimer(QStringLiteral("StylusPicks"));
     //     _updatedPickCounts[PickQuery::Stylus] = _stylusPickCacheOptimizer.update(cachedPicks[PickQuery::Stylus], _nextPickToUpdate[PickQuery::Stylus], expiry, false);
     // }
     {
-        PROFILE_RANGE_EX(picks, "RayPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Ray]);
-        PerformanceTimer perfTimer("RayPicks");
+        PROFILE_RANGE_EX(picks, QStringLiteral("RayPicks"), 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Ray]);
+        PerformanceTimer perfTimer(QStringLiteral("RayPicks"));
         _updatedPickCounts[PickQuery::Ray] = _rayPickCacheOptimizer.update(cachedPicks[PickQuery::Ray], _nextPickToUpdate[PickQuery::Ray], expiry, shouldPickHUD);
     }
     {
-        PROFILE_RANGE_EX(picks, "ParabolaPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Parabola]);
-        PerformanceTimer perfTimer("ParabolaPicks");
+        PROFILE_RANGE_EX(picks, QStringLiteral("ParabolaPicks"), 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Parabola]);
+        PerformanceTimer perfTimer(QStringLiteral("ParabolaPicks"));
         _updatedPickCounts[PickQuery::Parabola] = _parabolaPickCacheOptimizer.update(cachedPicks[PickQuery::Parabola], _nextPickToUpdate[PickQuery::Parabola], expiry, shouldPickHUD);
     }
     {
-        PROFILE_RANGE_EX(picks, "CollisionPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Collision]);
-        PerformanceTimer perfTimer("CollisionPicks");
+        PROFILE_RANGE_EX(picks, QStringLiteral("CollisionPicks"), 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Collision]);
+        PerformanceTimer perfTimer(QStringLiteral("CollisionPicks"));
         _updatedPickCounts[PickQuery::Collision] = _collisionPickCacheOptimizer.update(cachedPicks[PickQuery::Collision], _nextPickToUpdate[PickQuery::Collision], expiry, false);
     }
 }

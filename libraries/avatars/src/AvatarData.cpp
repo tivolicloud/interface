@@ -1553,7 +1553,7 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
  * @typedef {string} AvatarDataRate
  */
 float AvatarData::getDataRate(const QString& rateName) const {
-    if (rateName == "") {
+    if (rateName.isEmpty()) {
         return _parseBufferRate.rate() / BYTES_PER_KILOBIT;
     } else if (rateName == "globalPosition") {
         return _globalPositionRate.rate() / BYTES_PER_KILOBIT;
@@ -1644,7 +1644,7 @@ float AvatarData::getDataRate(const QString& rateName) const {
  * @typedef {string} AvatarUpdateRate
  */
 float AvatarData::getUpdateRate(const QString& rateName) const {
-    if (rateName == "") {
+    if (rateName.isEmpty()) {
         return _parseBufferUpdateRate.rate();
     } else if (rateName == "globalPosition") {
         return _globalPositionUpdateRate.rate();
@@ -2136,7 +2136,7 @@ QByteArray AvatarData::packSkeletonData() const {
         memcpy(destinationBuffer, &header, sizeof(header));
         destinationBuffer += sizeof(AvatarSkeletonTrait::Header);
 
-        QString stringTable = "";
+        QString stringTable = QString();
         for (size_t i = 0; i < _avatarSkeletonData.size(); i++) {
             AvatarSkeletonTrait::JointData jdata;
             jdata.boneType = _avatarSkeletonData[i].boneType;
@@ -2332,10 +2332,10 @@ void AvatarData::setDisplayName(const QString& displayName) {
     if (accountManager && accountManager->getAccountInfo().getUsername().isEmpty() == false) {
         _displayName = QString(accountManager->getAccountInfo().getUsername());
     } else {
-        _displayName = "";
+        _displayName = QString();
     }
 
-    _sessionDisplayName = "";
+    _sessionDisplayName = QString();
 
     qCDebug(avatars) << "Changing display name for avatar to" << displayName;
     markIdentityDataChanged();
@@ -2771,7 +2771,7 @@ void AvatarData::fromJson(const QJsonObject& json, bool useFrameSkeleton) {
         }
     }
 
-    QString newDisplayName = "";
+    QString newDisplayName = QString();
     if (json.contains(JSON_AVATAR_DISPLAY_NAME)) {
         newDisplayName = json[JSON_AVATAR_DISPLAY_NAME].toString();
     }
@@ -2835,8 +2835,8 @@ void AvatarData::fromJson(const QJsonObject& json, bool useFrameSkeleton) {
         for (auto attachmentJson : attachmentsJson) {
             if (attachmentJson.isObject()) {
                 QVariantMap entityData = attachmentJson.toObject().toVariantMap();
-                QUuid id = entityData.value("id").toUuid();
-                QByteArray data = QByteArray::fromBase64(entityData.value("properties").toByteArray());
+                QUuid id = entityData.value(QStringLiteral("id")).toUuid();
+                QByteArray data = QByteArray::fromBase64(entityData.value(QStringLiteral("properties")).toByteArray());
                 updateAvatarEntity(id, data);
             }
         }
@@ -2958,46 +2958,46 @@ glm::vec3 AvatarData::getAbsoluteJointTranslationInObjectFrame(int index) const 
  */
 QVariant AttachmentData::toVariant() const {
     QVariantMap result;
-    result["modelUrl"] = modelURL;
-    result["jointName"] = jointName;
-    result["translation"] = vec3ToQMap(translation);
-    result["rotation"] = vec3ToQMap(glm::degrees(safeEulerAngles(rotation)));
-    result["scale"] = scale;
-    result["soft"] = isSoft;
+    result[QStringLiteral("modelUrl")] = modelURL;
+    result[QStringLiteral("jointName")] = jointName;
+    result[QStringLiteral("translation")] = vec3ToQMap(translation);
+    result[QStringLiteral("rotation")] = vec3ToQMap(glm::degrees(safeEulerAngles(rotation)));
+    result[QStringLiteral("scale")] = scale;
+    result[QStringLiteral("soft")] = isSoft;
     return result;
 }
 
 glm::vec3 variantToVec3(const QVariant& var) {
     auto map = var.toMap();
     glm::vec3 result;
-    result.x = map["x"].toFloat();
-    result.y = map["y"].toFloat();
-    result.z = map["z"].toFloat();
+    result.x = map[QStringLiteral("x")].toFloat();
+    result.y = map[QStringLiteral("y")].toFloat();
+    result.z = map[QStringLiteral("z")].toFloat();
     return result;
 }
 
 bool AttachmentData::fromVariant(const QVariant& variant) {
     bool isValid = false;
     auto map = variant.toMap();
-    if (map.contains("modelUrl")) {
-        auto urlString = map["modelUrl"].toString();
+    if (map.contains(QStringLiteral("modelUrl"))) {
+        auto urlString = map[QStringLiteral("modelUrl")].toString();
         modelURL = urlString;
         isValid = true;
     }
-    if (map.contains("jointName")) {
-        jointName = map["jointName"].toString();
+    if (map.contains(QStringLiteral("jointName"))) {
+        jointName = map[QStringLiteral("jointName")].toString();
     }
-    if (map.contains("translation")) {
-        translation = variantToVec3(map["translation"]);
+    if (map.contains(QStringLiteral("translation"))) {
+        translation = variantToVec3(map[QStringLiteral("translation")]);
     }
-    if (map.contains("rotation")) {
-        rotation = glm::quat(glm::radians(variantToVec3(map["rotation"])));
+    if (map.contains(QStringLiteral("rotation"))) {
+        rotation = glm::quat(glm::radians(variantToVec3(map[QStringLiteral("rotation")])));
     }
-    if (map.contains("scale")) {
-        scale = map["scale"].toFloat();
+    if (map.contains(QStringLiteral("scale"))) {
+        scale = map[QStringLiteral("scale")].toFloat();
     }
-    if (map.contains("soft")) {
-        isSoft = map["soft"].toBool();
+    if (map.contains(QStringLiteral("soft"))) {
+        isSoft = map[QStringLiteral("soft")].toBool();
     }
     return isValid;
 }
@@ -3137,38 +3137,38 @@ glm::mat4 AvatarData::getControllerRightHandMatrix() const {
  */
 QScriptValue RayToAvatarIntersectionResultToScriptValue(QScriptEngine* engine, const RayToAvatarIntersectionResult& value) {
     QScriptValue obj = engine->newObject();
-    obj.setProperty("intersects", value.intersects);
+    obj.setProperty(QStringLiteral("intersects"), value.intersects);
     QScriptValue avatarIDValue = quuidToScriptValue(engine, value.avatarID);
-    obj.setProperty("avatarID", avatarIDValue);
-    obj.setProperty("distance", value.distance);
-    obj.setProperty("face", boxFaceToString(value.face));
+    obj.setProperty(QStringLiteral("avatarID"), avatarIDValue);
+    obj.setProperty(QStringLiteral("distance"), value.distance);
+    obj.setProperty(QStringLiteral("face"), boxFaceToString(value.face));
     QScriptValue intersection = vec3ToScriptValue(engine, value.intersection);
 
-    obj.setProperty("intersection", intersection);
+    obj.setProperty(QStringLiteral("intersection"), intersection);
     QScriptValue surfaceNormal = vec3ToScriptValue(engine, value.surfaceNormal);
-    obj.setProperty("surfaceNormal", surfaceNormal);
-    obj.setProperty("jointIndex", value.jointIndex);
-    obj.setProperty("extraInfo", engine->toScriptValue(value.extraInfo));
+    obj.setProperty(QStringLiteral("surfaceNormal"), surfaceNormal);
+    obj.setProperty(QStringLiteral("jointIndex"), value.jointIndex);
+    obj.setProperty(QStringLiteral("extraInfo"), engine->toScriptValue(value.extraInfo));
     return obj;
 }
 
 void RayToAvatarIntersectionResultFromScriptValue(const QScriptValue& object, RayToAvatarIntersectionResult& value) {
-    value.intersects = object.property("intersects").toVariant().toBool();
-    QScriptValue avatarIDValue = object.property("avatarID");
+    value.intersects = object.property(QStringLiteral("intersects")).toVariant().toBool();
+    QScriptValue avatarIDValue = object.property(QStringLiteral("avatarID"));
     quuidFromScriptValue(avatarIDValue, value.avatarID);
-    value.distance = object.property("distance").toVariant().toFloat();
-    value.face = boxFaceFromString(object.property("face").toVariant().toString());
+    value.distance = object.property(QStringLiteral("distance")).toVariant().toFloat();
+    value.face = boxFaceFromString(object.property(QStringLiteral("face")).toVariant().toString());
 
-    QScriptValue intersection = object.property("intersection");
+    QScriptValue intersection = object.property(QStringLiteral("intersection"));
     if (intersection.isValid()) {
         vec3FromScriptValue(intersection, value.intersection);
     }
-    QScriptValue surfaceNormal = object.property("surfaceNormal");
+    QScriptValue surfaceNormal = object.property(QStringLiteral("surfaceNormal"));
     if (surfaceNormal.isValid()) {
         vec3FromScriptValue(surfaceNormal, value.surfaceNormal);
     }
-    value.jointIndex = object.property("jointIndex").toInt32();
-    value.extraInfo = object.property("extraInfo").toVariant().toMap();
+    value.jointIndex = object.property(QStringLiteral("jointIndex")).toInt32();
+    value.extraInfo = object.property(QStringLiteral("extraInfo")).toVariant().toMap();
 }
 
 // these coefficients can be changed via JS for experimental tuning
@@ -3287,7 +3287,7 @@ void AvatarData::clearAvatarGrabData(const QUuid& grabID) {
 }
 
 glm::vec3 AvatarData::getHeadJointFrontVector() const {
-    int headJointIndex = getJointIndex("Head");
+    int headJointIndex = getJointIndex(QStringLiteral("Head"));
     glm::quat headJointRotation = Quaternions::Y_180 * getAbsoluteJointRotationInObjectFrame(headJointIndex);//    getAbsoluteJointRotationInRigFrame(headJointIndex, headJointRotation);
     headJointRotation = getWorldOrientation() * headJointRotation;
     float headYaw = safeEulerAngles(headJointRotation).y;

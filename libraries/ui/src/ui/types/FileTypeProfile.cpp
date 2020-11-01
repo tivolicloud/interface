@@ -54,7 +54,7 @@ void FileTypeProfile::RequestInterceptor::interceptRequest(QWebEngineUrlRequestI
 }
 
 void FileTypeProfile::registerWithContext(QQmlContext* context) {
-    context->setContextProperty("FileTypeProfile", new FileTypeProfile(context));
+    context->setContextProperty(QStringLiteral("FileTypeProfile"), new FileTypeProfile(context));
 }
 
 void FileTypeProfile::clearCache() {

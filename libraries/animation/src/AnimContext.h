@@ -80,9 +80,9 @@ public:
 
     void addStateMachineInfo(const QString& stateMachineName, const QString& currentState, const QString& previousState, bool duringInterp, float alpha) const {
         if (duringInterp) {
-            _stateMachineMap[stateMachineName] = QString("%1: %2 -> %3 (%4)").arg(stateMachineName).arg(previousState).arg(currentState).arg(QString::number(alpha, 'f', 2));
+            _stateMachineMap[stateMachineName] = QStringLiteral("%1: %2 -> %3 (%4)").arg(stateMachineName).arg(previousState).arg(currentState).arg(QString::number(alpha, 'f', 2));
         } else {
-            _stateMachineMap[stateMachineName] = QString("%1: %2").arg(stateMachineName).arg(currentState);
+            _stateMachineMap[stateMachineName] = QStringLiteral("%1: %2").arg(stateMachineName).arg(currentState);
         }
     }
 

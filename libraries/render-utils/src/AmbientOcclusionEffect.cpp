@@ -663,7 +663,7 @@ void AmbientOcclusionEffect::run(const render::RenderContextPointer& renderConte
     }
 
     gpu::doInBatch("AmbientOcclusionEffect::run", args->_context, [=](gpu::Batch& batch) {
-		PROFILE_RANGE_BATCH(batch, "SSAO");
+		PROFILE_RANGE_BATCH(batch, QStringLiteral("SSAO"));
 		batch.enableStereo(false);
 
         _gpuTimer->begin(batch);
@@ -772,7 +772,7 @@ void AmbientOcclusionEffect::run(const render::RenderContextPointer& renderConte
 #endif
 
         {
-            PROFILE_RANGE_BATCH(batch, "Bilateral Blur");
+            PROFILE_RANGE_BATCH(batch, QStringLiteral("Bilateral Blur"));
             // Blur 1st pass
             batch.pushProfileRange("Horiz.");
             {

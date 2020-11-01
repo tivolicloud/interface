@@ -501,7 +501,7 @@ void Agent::executeScript() {
         _scriptEngine->registerGlobalObject("SoundCache", DependencyManager::get<SoundCacheScriptingInterface>().data());
 
         QScriptValue webSocketServerConstructorValue = _scriptEngine->newFunction(WebSocketServerClass::constructor);
-        _scriptEngine->globalObject().setProperty("WebSocketServer", webSocketServerConstructorValue);
+        _scriptEngine->globalObject().setProperty(QStringLiteral("WebSocketServer"), webSocketServerConstructorValue);
 
         auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
 

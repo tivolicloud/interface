@@ -163,13 +163,13 @@ void OffscreenUi::removeModalDialog(QObject* modal) {
 
 void OffscreenUi::onRootContextCreated(QQmlContext* qmlContext) {
     OffscreenQmlSurface::onRootContextCreated(qmlContext);
-    qmlContext->setContextProperty("OffscreenUi", this);
-    qmlContext->setContextProperty("offscreenFlags", offscreenFlags = new OffscreenFlags());
-    qmlContext->setContextProperty("fileDialogHelper", new FileDialogHelper());
+    qmlContext->setContextProperty(QStringLiteral("OffscreenUi"), this);
+    qmlContext->setContextProperty(QStringLiteral("offscreenFlags"), offscreenFlags = new OffscreenFlags());
+    qmlContext->setContextProperty(QStringLiteral("fileDialogHelper"), new FileDialogHelper());
 #ifdef DEBUG
-    qmlContext->setContextProperty("DebugQML", QVariant(true));
+    qmlContext->setContextProperty(QStringLiteral("DebugQML"), QVariant(true));
 #else 
-    qmlContext->setContextProperty("DebugQML", QVariant(false));
+    qmlContext->setContextProperty(QStringLiteral("DebugQML"), QVariant(false));
 #endif
 
 }
@@ -271,11 +271,11 @@ private slots:
 
 QQuickItem* OffscreenUi::createMessageBox(Icon icon, const QString& title, const QString& text, QMessageBox::StandardButtons buttons, QMessageBox::StandardButton defaultButton) {
     QVariantMap map;
-    map.insert("title", title);
-    map.insert("text", text);
-    map.insert("icon", icon);
-    map.insert("buttons", buttons.operator int());
-    map.insert("defaultButton", defaultButton);
+    map.insert(QStringLiteral("title"), title);
+    map.insert(QStringLiteral("text"), text);
+    map.insert(QStringLiteral("icon"), icon);
+    map.insert(QStringLiteral("buttons"), buttons.operator int());
+    map.insert(QStringLiteral("defaultButton"), defaultButton);
     QVariant result;
     bool invokeResult;
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
@@ -565,10 +565,10 @@ QQuickItem* OffscreenUi::createInputDialog(const Icon icon, const QString& title
     const QVariant& current) {
 
     QVariantMap map;
-    map.insert("title", title);
-    map.insert("icon", icon);
-    map.insert("label", label);
-    map.insert("current", current);
+    map.insert(QStringLiteral("title"), title);
+    map.insert(QStringLiteral("icon"), icon);
+    map.insert(QStringLiteral("label"), label);
+    map.insert(QStringLiteral("current"), current);
     QVariant result;
 
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
@@ -596,8 +596,8 @@ QQuickItem* OffscreenUi::createInputDialog(const Icon icon, const QString& title
 
 QQuickItem* OffscreenUi::createCustomInputDialog(const Icon icon, const QString& title, const QVariantMap& config) {
     QVariantMap map = config;
-    map.insert("title", title);
-    map.insert("icon", icon);
+    map.insert(QStringLiteral("title"), title);
+    map.insert(QStringLiteral("icon"), icon);
     QVariant result;
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
     TabletProxy* tablet = dynamic_cast<TabletProxy*>(tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system"));
@@ -691,7 +691,7 @@ void OffscreenUi::createDesktop(const QUrl& url) {
     load(url, [=](QQmlContext* context, QObject* newObject) {
         Q_UNUSED(context)
         _desktop = static_cast<QQuickItem*>(newObject);
-        getSurfaceContext()->setContextProperty("desktop", _desktop);
+        getSurfaceContext()->setContextProperty(QStringLiteral("desktop"), _desktop);
 
         _vrMenu = new VrMenu(this);
         for (const auto& menuInitializer : _queuedMenuInitializers) {
@@ -821,10 +821,10 @@ QString OffscreenUi::fileOpenDialog(const QString& caption, const QString& dir, 
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
     return fileDialog(map);
 }
 
@@ -843,10 +843,10 @@ ModalDialogListener* OffscreenUi::fileOpenDialogAsync(const QString& caption, co
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
     return fileDialogAsync(map);
 }
 
@@ -865,11 +865,11 @@ QString OffscreenUi::fileSaveDialog(const QString& caption, const QString& dir, 
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
-    map.insert("saveDialog", true);
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
+    map.insert(QStringLiteral("saveDialog"), true);
 
     return fileDialog(map);
 }
@@ -889,11 +889,11 @@ ModalDialogListener* OffscreenUi::fileSaveDialogAsync(const QString& caption, co
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
-    map.insert("saveDialog", true);
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
+    map.insert(QStringLiteral("saveDialog"), true);
 
     return fileDialogAsync(map);
 }
@@ -912,11 +912,11 @@ QString OffscreenUi::existingDirectoryDialog(const QString& caption, const QStri
     }
 
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
-    map.insert("selectDirectory", true);
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
+    map.insert(QStringLiteral("selectDirectory"), true);
     return fileDialog(map);
 }
 
@@ -934,11 +934,11 @@ ModalDialogListener* OffscreenUi::existingDirectoryDialogAsync(const QString& ca
     }
 
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", QUrl::fromLocalFile(dir));
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
-    map.insert("selectDirectory", true);
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), QUrl::fromLocalFile(dir));
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
+    map.insert(QStringLiteral("selectDirectory"), true);
     return fileDialogAsync(map);
 }
 
@@ -1077,10 +1077,10 @@ QString OffscreenUi::assetOpenDialog(const QString& caption, const QString& dir,
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", dir);
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), dir);
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
     return assetDialog(map);
 }
 
@@ -1100,10 +1100,10 @@ ModalDialogListener* OffscreenUi::assetOpenDialogAsync(const QString& caption, c
 
     // FIXME support returning the selected filter... somehow?
     QVariantMap map;
-    map.insert("caption", caption);
-    map.insert("dir", dir);
-    map.insert("filter", filter);
-    map.insert("options", static_cast<int>(options));
+    map.insert(QStringLiteral("caption"), caption);
+    map.insert(QStringLiteral("dir"), dir);
+    map.insert(QStringLiteral("filter"), filter);
+    map.insert(QStringLiteral("options"), static_cast<int>(options));
     return assetDialogAsync(map);
 }
 

@@ -81,13 +81,13 @@ public:
     static int64_t now();
     void traceEvent(const QLoggingCategory& category, 
         const QString& name, EventType type,
-        const QString& id = "", 
+        const QString& id = QString(), 
         const QVariantMap& args = QVariantMap(), const QVariantMap& extra = QVariantMap());
 
     void traceEvent(const QLoggingCategory& category, 
         const QString& name, EventType type,
         int64_t timestamp,
-        const QString& id = "", 
+        const QString& id = QString(), 
         const QVariantMap& args = QVariantMap(), const QVariantMap& extra = QVariantMap());
 
     void startTracing();
@@ -99,7 +99,7 @@ private:
     void traceEvent(const QLoggingCategory& category, 
         const QString& name, EventType type,
         qint64 timestamp, qint64 processID, qint64 threadID,
-        const QString& id = "",
+        const QString& id = QString(),
         const QVariantMap& args = QVariantMap(), const QVariantMap& extra = QVariantMap());
 
     bool _enabled { false };

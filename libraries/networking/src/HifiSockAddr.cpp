@@ -118,7 +118,7 @@ void HifiSockAddr::handleLookupResult(const QHostInfo& hostInfo) {
 }
 
 QString HifiSockAddr::toString() const {
-    return _address.toString() + ":" + QString::number(_port);
+    return _address.toString() + QStringLiteral(":") + QString::number(_port);
 }
 
 bool HifiSockAddr::hasPrivateAddress() const {

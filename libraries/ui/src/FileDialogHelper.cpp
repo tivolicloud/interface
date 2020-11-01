@@ -67,7 +67,7 @@ QUrl FileDialogHelper::saveHelper(const QString& saveText, const QUrl& currentFo
     // Check if we need to append an extension, but only if the current resolved path isn't a directory
     if (!fileInfo.isDir()) {
         QString fileName = fileInfo.fileName();
-        if (!fileName.contains(".") && selectionFilters.size() == 1) {
+        if (!fileName.contains(QStringLiteral(".")) && selectionFilters.size() == 1) {
             const QRegularExpression extensionRe{ ".*(\\.[a-zA-Z0-9]+)$" };
             QString filter = selectionFilters[0];
             auto match = extensionRe.match(filter);

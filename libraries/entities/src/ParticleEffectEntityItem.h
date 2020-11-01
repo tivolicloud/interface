@@ -76,7 +76,7 @@ namespace particle {
     static const float DEFAULT_SPIN_SPREAD = 0.0f;
     static const float MINIMUM_PARTICLE_SPIN = -2.0f * SCRIPT_MAXIMUM_PI;
     static const float MAXIMUM_PARTICLE_SPIN = 2.0f * SCRIPT_MAXIMUM_PI;
-    static const QString DEFAULT_TEXTURES = "";
+    static const QString DEFAULT_TEXTURES = QString();
     static const bool DEFAULT_EMITTER_SHOULD_TRAIL = false;
     static const bool DEFAULT_ROTATE_WITH_ENTITY = false;
     static const ShapeType DEFAULT_SHAPE_TYPE = ShapeType::SHAPE_TYPE_ELLIPSOID;

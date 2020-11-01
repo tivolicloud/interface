@@ -25,7 +25,7 @@ static const float TABLET_MAX_TOUCH_DISTANCE = 0.005f;
 static const float HOVER_HYSTERESIS = 0.01f;
 static const float TOUCH_HYSTERESIS = 0.001f;
 
-static const QString DEFAULT_STYLUS_MODEL_URL = PathUtils::resourcesUrl() + "/meshes/tablet-stylus-fat.fbx";
+static const QString DEFAULT_STYLUS_MODEL_URL = PathUtils::resourcesUrl() + QStringLiteral("/meshes/tablet-stylus-fat.fbx");
 
 StylusPointer::StylusPointer(const QVariant& props, const QUuid& stylus, bool hover, bool enabled,
                              const glm::vec3& modelPositionOffset, const glm::quat& modelRotationOffset, const glm::vec3& modelDimensions) :
@@ -53,23 +53,23 @@ QUuid StylusPointer::buildStylus(const QVariantMap& properties) {
 
     QString modelUrl = DEFAULT_STYLUS_MODEL_URL;
 
-    if (properties["model"].isValid()) {
-        QVariantMap modelData = properties["model"].toMap();
+    if (properties[QStringLiteral("model")].isValid()) {
+        QVariantMap modelData = properties[QStringLiteral("model")].toMap();
 
-        if (modelData["url"].isValid()) {
-            modelUrl = modelData["url"].toString();
+        if (modelData[QStringLiteral("url")].isValid()) {
+            modelUrl = modelData[QStringLiteral("url")].toString();
         }
     }
     // TODO: make these configurable per pointer
-    propertiesMap["name"] = "stylus";
-    propertiesMap["url"] = modelUrl;
-    propertiesMap["loadPriority"] = 10.0f;
-    propertiesMap["solid"] = true;
-    propertiesMap["visible"] = false;
-    propertiesMap["ignorePickIntersection"] = true;
-    propertiesMap["drawInFront"] = false;
+    propertiesMap[QStringLiteral("name")] = "stylus";
+    propertiesMap[QStringLiteral("url")] = modelUrl;
+    propertiesMap[QStringLiteral("loadPriority")] = 10.0f;
+    propertiesMap[QStringLiteral("solid")] = true;
+    propertiesMap[QStringLiteral("visible")] = false;
+    propertiesMap[QStringLiteral("ignorePickIntersection")] = true;
+    propertiesMap[QStringLiteral("drawInFront")] = false;
 
-    return qApp->getOverlays().addOverlay("model", propertiesMap);
+    return qApp->getOverlays().addOverlay(QStringLiteral("model"), propertiesMap);
 }
 
 void StylusPointer::updateVisuals(const PickResultPointer& pickResult) {
@@ -135,7 +135,7 @@ bool StylusPointer::shouldTrigger(const PickResultPointer& pickResult) {
         float distance = stylusPickResult->distance;
 
         // If we're triggering on an object, recalculate the distance instead of using the pickResult
-        glm::vec3 origin = vec3FromVariant(stylusPickResult->pickVariant["position"]);
+        glm::vec3 origin = vec3FromVariant(stylusPickResult->pickVariant[QStringLiteral("position")]);
         glm::vec3 direction = _state.triggering ? -_state.surfaceNormal : -stylusPickResult->surfaceNormal;
         if ((_state.triggering || _state.wasTriggering) && stylusPickResult->objectID != _state.triggeredObject.objectID) {
             distance = glm::dot(findIntersection(_state.triggeredObject, origin, direction) - origin, direction);
@@ -195,7 +195,7 @@ PointerEvent StylusPointer::buildPointerEvent(const PickedObject& target, const 
         intersection = stylusPickResult->intersection;
         surfaceNormal = hover ? stylusPickResult->surfaceNormal : _state.surfaceNormal;
         const QVariantMap& stylusTip = stylusPickResult->pickVariant;
-        origin = vec3FromVariant(stylusTip["position"]);
+        origin = vec3FromVariant(stylusTip[QStringLiteral("position")]);
         direction = -surfaceNormal;
         pos2D = findPos2D(target, origin);
         pickedID = stylusPickResult->objectID;

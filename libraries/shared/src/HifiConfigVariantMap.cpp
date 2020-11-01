@@ -81,7 +81,7 @@ QVariantMap HifiConfigVariantMap::mergeCLParametersWithJSONConfig(const QStringL
         configFilePath = argumentList[configIndex + 1];
     } else {
         // no config file - try to read a file config.json at the system config path
-        configFilePath = QString("%1/%2/%3/config.json").arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation),
+        configFilePath = QStringLiteral("%1/%2/%3/config.json").arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation),
                                                              QCoreApplication::organizationName(),
                                                              QCoreApplication::applicationName());
     }

@@ -373,7 +373,7 @@ void ATPClientApp::download(AssetUtils::AssetHash hash) {
 
         if (request->getError() == AssetRequest::Error::NoError) {
             QString data = QString::fromUtf8(request->getData());
-            if (_localOutputFile == "" || _localOutputFile == "-") {
+            if (_localOutputFile.isEmpty() || _localOutputFile == QStringLiteral("-")) {
                 QTextStream cout(stdout);
                 cout << data;
             } else {

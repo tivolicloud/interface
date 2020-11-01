@@ -182,7 +182,7 @@ void GLBackend::renderPassTransfer(const Batch& batch) {
 
     _inRenderTransferPass = true;
     { // Sync all the buffers
-        PROFILE_RANGE(render_gpu_gl_detail, "syncGPUBuffer");
+        PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("syncGPUBuffer"));
 
         for (auto& cached : batch._buffers._items) {
             if (cached._data) {
@@ -192,7 +192,7 @@ void GLBackend::renderPassTransfer(const Batch& batch) {
     }
 
     { // Sync all the transform states
-        PROFILE_RANGE(render_gpu_gl_detail, "syncCPUTransform");
+        PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("syncCPUTransform"));
         _transform._cameras.clear();
         _transform._cameraOffsets.clear();
 
@@ -247,7 +247,7 @@ void GLBackend::renderPassTransfer(const Batch& batch) {
     }
 
     { // Sync the transform buffers
-        PROFILE_RANGE(render_gpu_gl_detail, "syncGPUTransform");
+        PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("syncGPUTransform"));
         transferTransformState(batch);
     }
 
@@ -278,7 +278,7 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_multiDrawIndirect:
             case Batch::COMMAND_multiDrawIndexedIndirect: {
 #ifdef GPU_BATCH_DETAILED_TRACING
-                PROFILE_RANGE(render_gpu_gl_detail, "drawcall");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("drawcall"));
 #endif 
                 // updates for draw calls
                 ++_currentDraw;
@@ -298,21 +298,21 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_setViewportTransform:
             case Batch::COMMAND_setDepthRangeTransform:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "transform");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("transform"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
             }
             case Batch::COMMAND_clearFramebuffer:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "clear");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("clear"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
             }
             case Batch::COMMAND_blit:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "blit");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("blit"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
@@ -321,7 +321,7 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_setInputBuffer:
             case Batch::COMMAND_setIndexBuffer:
             case Batch::COMMAND_setIndirectBuffer: {
-                PROFILE_RANGE(render_gpu_gl_detail, "input");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("input"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
@@ -329,14 +329,14 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_setStateBlendFactor:
             case Batch::COMMAND_setStateScissorRect:
             case Batch::COMMAND_setPipeline: {
-                PROFILE_RANGE(render_gpu_gl_detail, "pipeline");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("pipeline"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
             }
             case Batch::COMMAND_setUniformBuffer:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "ubo");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("ubo"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
@@ -345,7 +345,7 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_setResourceTexture:
             case Batch::COMMAND_setResourceTextureTable:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "resource");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("resource"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
@@ -355,14 +355,14 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_setFramebuffer:
             case Batch::COMMAND_setFramebufferSwapChain:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "framebuffer");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("framebuffer"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;
             }
             case Batch::COMMAND_generateTextureMips:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "genMipMaps");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("genMipMaps"));
 
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
@@ -372,7 +372,7 @@ void GLBackend::renderPassDraw(const Batch& batch) {
             case Batch::COMMAND_endQuery:
             case Batch::COMMAND_getQuery:
             {
-                PROFILE_RANGE(render_gpu_gl_detail, "query");
+                PROFILE_RANGE(render_gpu_gl_detail, QStringLiteral("query"));
                 CommandCall call = _commandCalls[(*command)];
                 (this->*(call))(batch, *offset);
                 break;

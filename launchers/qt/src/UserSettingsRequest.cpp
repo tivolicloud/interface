@@ -18,7 +18,7 @@ void UserSettingsRequest::send(QNetworkAccessManager& nam, const LoginToken& tok
     QNetworkRequest lockerRequest(lockerURL);
     lockerRequest.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
     lockerRequest.setHeader(QNetworkRequest::UserAgentHeader, getHTTPUserAgent());
-    lockerRequest.setRawHeader(ACCESS_TOKEN_AUTHORIZATION_HEADER, QString("Bearer %1").arg(token.accessToken).toUtf8());
+    lockerRequest.setRawHeader(ACCESS_TOKEN_AUTHORIZATION_HEADER, QStringLiteral("Bearer %1").arg(token.accessToken).toUtf8());
 
     QNetworkReply* lockerReply = nam.get(lockerRequest);
     connect(lockerReply, &QNetworkReply::finished, this, &UserSettingsRequest::receivedResponse);

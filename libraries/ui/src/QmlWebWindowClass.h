@@ -188,7 +188,7 @@ signals:
     void urlChanged();
 
 protected:
-    QString qmlSource() const override { return "QmlWebWindow.qml"; }
+    QString qmlSource() const override { return QStringLiteral("QmlWebWindow.qml"); }
 };
 
 #endif

@@ -21,7 +21,7 @@ NetworkMaterialResource::NetworkMaterialResource(const QUrl& url) : Resource(url
 void NetworkMaterialResource::downloadFinished(const QByteArray& data) {
     parsedMaterials.reset();
 
-    if (_url.toString().contains(".json")) {
+    if (_url.toString().contains(QStringLiteral(".json"))) {
         parsedMaterials = parseJSONMaterials(QJsonDocument::fromJson(data), _url);
     }
 
@@ -211,7 +211,7 @@ std::pair<std::string, std::shared_ptr<NetworkMaterial>> NetworkMaterialResource
     std::shared_ptr<NetworkMaterial> networkMaterial;
 
     std::string modelString = graphics::Material::HIFI_PBR;
-    auto modelJSONIter = materialJSON.find("model");
+    auto modelJSONIter = materialJSON.find(QStringLiteral("model"));
     if (modelJSONIter != materialJSON.end() && modelJSONIter.value().isString()) {
         modelString = modelJSONIter.value().toString().toStdString();
     }

@@ -911,14 +911,14 @@ void GLTFFile::populateMaterialNames() {
     }
 
     int ukcount = 0;
-    const QString unknown{ "Default_%1" };
+    const QString unknown{ QStringLiteral("Default_%1") };
     for (auto& material : materials) {
         QString generatedName = unknown.arg(ukcount++);
         while (usedNames.contains(generatedName)) {
             generatedName = unknown.arg(ukcount++);
         }
         material.name = generatedName;
-        material.defined.insert("name", true);
+        material.defined.insert(QStringLiteral("name"), true);
         usedNames.insert(generatedName);
     }
 }
@@ -993,7 +993,7 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
     int numNodes = _file.nodes.size();
     
     // Build joints
-    hfmModel.jointIndices["x"] = numNodes;
+    hfmModel.jointIndices[QStringLiteral("x")] = numNodes;
     auto parentIndices = gltf::findParentIndices(_file.nodes);
     const auto parentsEnd = parentIndices.end();
     for (int nodeIndex = 0; nodeIndex < numNodes; ++nodeIndex) {
@@ -1667,7 +1667,7 @@ std::tuple<bool, hifi::ByteArray> GLTFSerializer::requestData(hifi::URL& url) {
 }
 
 hifi::ByteArray GLTFSerializer::requestEmbeddedData(const QString& url) {
-    QString binaryUrl = url.split(",")[1];
+    QString binaryUrl = url.split(QStringLiteral(","))[1];
     return binaryUrl.isEmpty() ? hifi::ByteArray() : QByteArray::fromBase64(binaryUrl.toUtf8());
 }
 

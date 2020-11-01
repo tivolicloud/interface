@@ -350,17 +350,17 @@ void FadeConfig::save(const QString& configFilePath) const {
     else {
         const auto& event = events[editedCategory];
 
-        lProperties["edgeInnerColor"] = QJsonArray{ event.edgeInnerColor.r, event.edgeInnerColor.g, event.edgeInnerColor.b, event.edgeInnerColor.a };
-        lProperties["edgeOuterColor"] = QJsonArray{ event.edgeOuterColor.r, event.edgeOuterColor.g, event.edgeOuterColor.b, event.edgeOuterColor.a };
-        lProperties["noiseSize"] = QJsonArray{ event.noiseSize.x, event.noiseSize.y, event.noiseSize.z };
-        lProperties["noiseSpeed"] = QJsonArray{ event.noiseSpeed.x, event.noiseSpeed.y, event.noiseSpeed.z };
-        lProperties["baseSize"] = QJsonArray{ event.baseSize.x, event.baseSize.y, event.baseSize.z };
-        lProperties["noiseLevel"] = event.noiseLevel;
-        lProperties["baseLevel"] = event.baseLevel;
-        lProperties["duration"] = event.duration;
-        lProperties["edgeWidth"] = event.edgeWidth;
-        lProperties["timing"] = event.timing;
-        lProperties["isInverted"] = event.isInverted;
+        lProperties[QStringLiteral("edgeInnerColor")] = QJsonArray{ event.edgeInnerColor.r, event.edgeInnerColor.g, event.edgeInnerColor.b, event.edgeInnerColor.a };
+        lProperties[QStringLiteral("edgeOuterColor")] = QJsonArray{ event.edgeOuterColor.r, event.edgeOuterColor.g, event.edgeOuterColor.b, event.edgeOuterColor.a };
+        lProperties[QStringLiteral("noiseSize")] = QJsonArray{ event.noiseSize.x, event.noiseSize.y, event.noiseSize.z };
+        lProperties[QStringLiteral("noiseSpeed")] = QJsonArray{ event.noiseSpeed.x, event.noiseSpeed.y, event.noiseSpeed.z };
+        lProperties[QStringLiteral("baseSize")] = QJsonArray{ event.baseSize.x, event.baseSize.y, event.baseSize.z };
+        lProperties[QStringLiteral("noiseLevel")] = event.noiseLevel;
+        lProperties[QStringLiteral("baseLevel")] = event.baseLevel;
+        lProperties[QStringLiteral("duration")] = event.duration;
+        lProperties[QStringLiteral("edgeWidth")] = event.edgeWidth;
+        lProperties[QStringLiteral("timing")] = event.timing;
+        lProperties[QStringLiteral("isInverted")] = event.isInverted;
 
         file.write( QJsonDocument(lProperties).toJson() );
         file.close();

@@ -51,7 +51,7 @@ QWindow* MainWindow::findMainWindow() {
     auto windows = qApp->topLevelWindows();
     QWindow* result = nullptr;
     for (const auto& window : windows) {
-        if (window->objectName().contains("MainWindow")) {
+        if (window->objectName().contains(QStringLiteral("MainWindow"))) {
             result = window;
             break;
         }

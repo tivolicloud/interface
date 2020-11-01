@@ -205,7 +205,7 @@ void SixenseManager::InputDevice::update(float deltaTime, const controller::Inpu
         disconnectedInterval = 0.0f;
     }
 
-    PerformanceTimer perfTimer("sixense");
+    PerformanceTimer perfTimer(QStringLiteral("sixense"));
     // FIXME send this message once when we've positively identified hydra hardware
     //UserActivityLogger::getInstance().connectedDevice("spatial_controller", "hydra");
 

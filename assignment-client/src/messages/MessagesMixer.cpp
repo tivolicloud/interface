@@ -75,12 +75,12 @@ void MessagesMixer::sendStatsPacket() {
     DependencyManager::get<NodeList>()->eachNode([&](const SharedNodePointer& node) {
         QJsonObject clientStats;
         clientStats[USERNAME_UUID_REPLACEMENT_STATS_KEY] = uuidStringWithoutCurlyBraces(node->getUUID());
-        clientStats["outbound_kbps"] = node->getOutboundKbps();
-        clientStats["inbound_kbps"] = node->getInboundKbps();
+        clientStats[QStringLiteral("outbound_kbps")] = node->getOutboundKbps();
+        clientStats[QStringLiteral("inbound_kbps")] = node->getInboundKbps();
         messagesMixerObject[uuidStringWithoutCurlyBraces(node->getUUID())] = clientStats;
     });
 
-    statsObject["messages"] = messagesMixerObject;
+    statsObject[QStringLiteral("messages")] = messagesMixerObject;
     ThreadedAssignment::addPacketStatsAndSendStatsPacket(statsObject);
 }
 

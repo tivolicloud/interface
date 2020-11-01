@@ -180,15 +180,15 @@ void PathPointer::editRenderState(const std::string& state, const QVariant& star
         if (renderState != _renderStates.end()) {
             updateRenderState(renderState->second->getStartID(), startProps);
             updateRenderState(renderState->second->getEndID(), endProps);
-            QVariant startDim = startProps.toMap()["dimensions"];
+            QVariant startDim = startProps.toMap()[QStringLiteral("dimensions")];
             if (startDim.isValid()) {
                 renderState->second->setStartDim(vec3FromVariant(startDim));
             }
-            QVariant endDim = endProps.toMap()["dimensions"];
+            QVariant endDim = endProps.toMap()[QStringLiteral("dimensions")];
             if (endDim.isValid()) {
                 renderState->second->setEndDim(vec3FromVariant(endDim));
             }
-            QVariant rotation = endProps.toMap()["rotation"];
+            QVariant rotation = endProps.toMap()[QStringLiteral("rotation")];
             if (rotation.isValid()) {
                 renderState->second->setEndRot(quatFromVariant(rotation));
             }
@@ -202,7 +202,7 @@ void PathPointer::updateRenderState(const QUuid& id, const QVariant& props) {
     // FIXME: we have to keep using the Overlays interface here, because existing scripts use overlay properties to define pointers
     if (!id.isNull() && props.isValid()) {
         QVariantMap propMap = props.toMap();
-        propMap.remove("visible");
+        propMap.remove(QStringLiteral("visible"));
         qApp->getOverlays().editOverlay(id, propMap);
     }
 }

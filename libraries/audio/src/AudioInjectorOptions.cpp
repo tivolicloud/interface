@@ -35,15 +35,15 @@ AudioInjectorOptions::AudioInjectorOptions() :
 QScriptValue injectorOptionsToScriptValue(QScriptEngine* engine, const AudioInjectorOptions& injectorOptions) {
     QScriptValue obj = engine->newObject();
     if (injectorOptions.positionSet) {
-        obj.setProperty("position", vec3ToScriptValue(engine, injectorOptions.position));
+        obj.setProperty(QStringLiteral("position"), vec3ToScriptValue(engine, injectorOptions.position));
     }
-    obj.setProperty("volume", injectorOptions.volume);
-    obj.setProperty("loop", injectorOptions.loop);
-    obj.setProperty("orientation", quatToScriptValue(engine, injectorOptions.orientation));
-    obj.setProperty("ignorePenumbra", injectorOptions.ignorePenumbra);
-    obj.setProperty("localOnly", injectorOptions.localOnly);
-    obj.setProperty("secondOffset", injectorOptions.secondOffset);
-    obj.setProperty("pitch", injectorOptions.pitch);
+    obj.setProperty(QStringLiteral("volume"), injectorOptions.volume);
+    obj.setProperty(QStringLiteral("loop"), injectorOptions.loop);
+    obj.setProperty(QStringLiteral("orientation"), quatToScriptValue(engine, injectorOptions.orientation));
+    obj.setProperty(QStringLiteral("ignorePenumbra"), injectorOptions.ignorePenumbra);
+    obj.setProperty(QStringLiteral("localOnly"), injectorOptions.localOnly);
+    obj.setProperty(QStringLiteral("secondOffset"), injectorOptions.secondOffset);
+    obj.setProperty(QStringLiteral("pitch"), injectorOptions.pitch);
     return obj;
 }
 
@@ -82,17 +82,17 @@ void injectorOptionsFromScriptValue(const QScriptValue& object, AudioInjectorOpt
         it.next();
 
         if (it.name() == "position") {
-            vec3FromScriptValue(object.property("position"), injectorOptions.position);
+            vec3FromScriptValue(object.property(QStringLiteral("position")), injectorOptions.position);
             injectorOptions.positionSet = true;
-        } else if (it.name() == "orientation") {
-            quatFromScriptValue(object.property("orientation"), injectorOptions.orientation);
-        } else if (it.name() == "volume") {
+        } else if (it.name() == QStringLiteral("orientation")) {
+            quatFromScriptValue(object.property(QStringLiteral("orientation")), injectorOptions.orientation);
+        } else if (it.name() == QStringLiteral("volume")) {
             if (it.value().isNumber()) {
                 injectorOptions.volume = it.value().toNumber();
             } else {
                 qCWarning(audio) << "Audio injector options: volume is not a number";
             }
-        } else if (it.name() == "loop") {
+        } else if (it.name() == QStringLiteral("loop")) {
             if (it.value().isBool()) {
                 injectorOptions.loop = it.value().toBool();
             } else {

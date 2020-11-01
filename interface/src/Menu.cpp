@@ -79,7 +79,7 @@ Menu::Menu() {
     MenuWrapper* fileMenu = addMenu("File");
 
     // File > Login menu items
-    if (qApp->arguments().indexOf("--tokens") == -1) {
+    if (qApp->arguments().indexOf(QStringLiteral("--tokens")) == -1) {
         addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
 
         // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
@@ -262,8 +262,8 @@ Menu::Menu() {
     action = addActionToQMenuAndActionHash(settingsMenu, MenuOption::Preferences, Qt::CTRL | Qt::Key_G, nullptr, nullptr);
     connect(action, &QAction::triggered, [] {
         if (!qApp->getLoginDialogPoppedUp()) {
-            qApp->showDialog(QString("hifi/dialogs/GeneralPreferencesDialog.qml"),
-                QString("hifi/tablet/TabletGeneralPreferences.qml"), "GeneralPreferencesDialog");
+            qApp->showDialog(QStringLiteral("hifi/dialogs/GeneralPreferencesDialog.qml"),
+                QStringLiteral("hifi/tablet/TabletGeneralPreferences.qml"), "GeneralPreferencesDialog");
         }
     });
 

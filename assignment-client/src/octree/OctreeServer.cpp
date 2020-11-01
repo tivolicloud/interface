@@ -346,13 +346,13 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
         tm* gmtm = gmtime(&_started);
         if (gmtm) {
             strftime(buffer, MAX_TIME_LENGTH, "%m/%d/%Y %X", gmtm);
-            statsString += (QString(" [%1 UTM] ").arg(buffer));
+            statsString += (QStringLiteral(" [%1 UTM] ").arg(buffer));
         }
 
-        statsString += "\r\n";
+        statsString += QStringLiteral("\r\n");
 
-        statsString += "Uptime: " + getUptime();
-        statsString += "\r\n\r\n";
+        statsString += QStringLiteral("Uptime: ") + getUptime();
+        statsString += QStringLiteral("\r\n\r\n");
 
         // display octree file load time
         if (isInitialLoadComplete()) {
@@ -851,7 +851,7 @@ void OctreeServer::parsePayload() {
         QString config(_payload);
 
         // Now, parse the config
-        QStringList configList = config.split(" ");
+        QStringList configList = config.split(QStringLiteral(" "));
 
         int argCount = configList.size() + 1;
 
@@ -921,7 +921,7 @@ void OctreeServer::handleOctreeDataNackPacket(QSharedPointer<ReceivedMessage> me
 bool OctreeServer::readOptionBool(const QString& optionName, const QJsonObject& settingsSectionObject, bool& result) {
     result = false; // assume it doesn't exist
     bool optionAvailable = false;
-    QString argName = "--" + optionName;
+    QString argName = QStringLiteral("--") + optionName;
     bool argExists = cmdOptionExists(_argc, _argv, qPrintable(argName));
     if (argExists) {
         optionAvailable = true;
@@ -937,7 +937,7 @@ bool OctreeServer::readOptionBool(const QString& optionName, const QJsonObject& 
 
 bool OctreeServer::readOptionInt(const QString& optionName, const QJsonObject& settingsSectionObject, int& result) {
     bool optionAvailable = false;
-    QString argName = "--" + optionName;
+    QString argName = QStringLiteral("--") + optionName;
     const char* argValue = getCmdOption(_argc, _argv, qPrintable(argName));
     if (argValue) {
         optionAvailable = true;
@@ -955,7 +955,7 @@ bool OctreeServer::readOptionInt(const QString& optionName, const QJsonObject& s
 
 bool OctreeServer::readOptionInt64(const QString& optionName, const QJsonObject& settingsSectionObject, qint64& result) {
     bool optionAvailable = false;
-    QString argName = "--" + optionName;
+    QString argName = QStringLiteral("--") + optionName;
     const char* argValue = getCmdOption(_argc, _argv, qPrintable(argName));
     if (argValue) {
         optionAvailable = true;
@@ -973,7 +973,7 @@ bool OctreeServer::readOptionInt64(const QString& optionName, const QJsonObject&
 
 bool OctreeServer::readOptionString(const QString& optionName, const QJsonObject& settingsSectionObject, QString& result) {
     bool optionAvailable = false;
-    QString argName = "--" + optionName;
+    QString argName = QStringLiteral("--") + optionName;
     const char* argValue = getCmdOption(_argc, _argv, qPrintable(argName));
     if (argValue) {
         optionAvailable = true;
@@ -999,32 +999,32 @@ void OctreeServer::readConfiguration() {
     QJsonObject settingsSectionObject = settingsObject[settingsKey].toObject();
     _settings = settingsSectionObject; // keep this for later
 
-    if (!readOptionString(QString("statusHost"), settingsSectionObject, _statusHost) || _statusHost.isEmpty()) {
+    if (!readOptionString(QStringLiteral("statusHost"), settingsSectionObject, _statusHost) || _statusHost.isEmpty()) {
         _statusHost = getGuessedLocalAddress().toString();
     }
     qDebug("statusHost=%s", qPrintable(_statusHost));
 
-    if (readOptionInt(QString("statusPort"), settingsSectionObject, _statusPort)) {
+    if (readOptionInt(QStringLiteral("statusPort"), settingsSectionObject, _statusPort)) {
         initHTTPManager(_statusPort);
         qDebug() << "statusPort=" << _statusPort;
     } else {
         qDebug() << "statusPort= DISABLED";
     }
 
-    readOptionBool(QString("verboseDebug"), settingsSectionObject, _verboseDebug);
+    readOptionBool(QStringLiteral("verboseDebug"), settingsSectionObject, _verboseDebug);
     qDebug("verboseDebug=%s", debug::valueOf(_verboseDebug));
 
-    readOptionBool(QString("debugSending"), settingsSectionObject, _debugSending);
+    readOptionBool(QStringLiteral("debugSending"), settingsSectionObject, _debugSending);
     qDebug("debugSending=%s", debug::valueOf(_debugSending));
 
-    readOptionBool(QString("debugReceiving"), settingsSectionObject, _debugReceiving);
+    readOptionBool(QStringLiteral("debugReceiving"), settingsSectionObject, _debugReceiving);
     qDebug("debugReceiving=%s", debug::valueOf(_debugReceiving));
 
-    readOptionBool(QString("debugTimestampNow"), settingsSectionObject, _debugTimestampNow);
+    readOptionBool(QStringLiteral("debugTimestampNow"), settingsSectionObject, _debugTimestampNow);
     qDebug() << "debugTimestampNow=" << _debugTimestampNow;
 
     bool noPersist;
-    readOptionBool(QString("NoPersist"), settingsSectionObject, noPersist);
+    readOptionBool(QStringLiteral("NoPersist"), settingsSectionObject, noPersist);
     _wantPersist = !noPersist;
     qDebug() << "wantPersist=" << _wantPersist;
 
@@ -1051,7 +1051,7 @@ void OctreeServer::readConfiguration() {
 
         _persistInterval = OctreePersistThread::DEFAULT_PERSIST_INTERVAL;
         int result { -1 };
-        readOptionInt(QString("persistInterval"), settingsSectionObject, result);
+        readOptionInt(QStringLiteral("persistInterval"), settingsSectionObject, result);
         if (result != -1) {
             _persistInterval = std::chrono::milliseconds(result);
         }
@@ -1069,14 +1069,14 @@ void OctreeServer::readConfiguration() {
     // need to be in sync with any other network node. This forces clock
     // skew for the individual server node
     qint64 clockSkew;
-    if (readOptionInt64(QString("clockSkew"), settingsSectionObject, clockSkew)) {
+    if (readOptionInt64(QStringLiteral("clockSkew"), settingsSectionObject, clockSkew)) {
         usecTimestampNowForceClockSkew(clockSkew);
         qDebug() << "clockSkew=" << clockSkew;
     }
 
     // Check to see if the user passed in a command line option for setting packet send rate
     int packetsPerSecondPerClientMax = -1;
-    if (readOptionInt(QString("packetsPerSecondPerClientMax"), settingsSectionObject, packetsPerSecondPerClientMax)) {
+    if (readOptionInt(QStringLiteral("packetsPerSecondPerClientMax"), settingsSectionObject, packetsPerSecondPerClientMax)) {
         _packetsPerClientPerInterval = packetsPerSecondPerClientMax / INTERVALS_PER_SECOND;
         if (_packetsPerClientPerInterval < 1) {
             _packetsPerClientPerInterval = 1;
@@ -1409,76 +1409,76 @@ void OctreeServer::sendStatsPacket() {
     // Stats Array 1
     QJsonObject threadsStats;
     quint64 oneSecondAgo = usecTimestampNow() - USECS_PER_SECOND;
-    threadsStats["1. processing"] = (double)howManyThreadsDidProcess(oneSecondAgo);
-    threadsStats["2. packetDistributor"] = (double)howManyThreadsDidPacketDistributor(oneSecondAgo);
-    threadsStats["3. handlePacektSend"] = (double)howManyThreadsDidHandlePacketSend(oneSecondAgo);
-    threadsStats["4. writeDatagram"] = (double)howManyThreadsDidCallWriteDatagram(oneSecondAgo);
+    threadsStatsQStringLiteral("1. processing")] = (double)howManyThreadsDidProcess(oneSecondAgo);
+    threadsStatsQStringLiteral("2. packetDistributor")] = (double)howManyThreadsDidPacketDistributor(oneSecondAgo);
+    threadsStatsQStringLiteral("3. handlePacektSend")] = (double)howManyThreadsDidHandlePacketSend(oneSecondAgo);
+    threadsStatsQStringLiteral("4. writeDatagram")] = (double)howManyThreadsDidCallWriteDatagram(oneSecondAgo);
 
     QJsonObject statsArray1;
-    statsArray1["1. configuration"] = getConfiguration();
-    statsArray1["2. detailed_stats_url"] = getStatusLink();
-    statsArray1["3. uptime"] = getUptime();
-    statsArray1["4. persistFileLoadTime"] = getFileLoadTime();
-    statsArray1["5. clients"] = getCurrentClientCount();
-    statsArray1["6. threads"] = threadsStats;
+    statsArray1[QStringLiteral("1. configuration")] = getConfiguration();
+    statsArray1[QStringLiteral("2. detailed_stats_url")] = getStatusLink();
+    statsArray1[QStringLiteral("3. uptime")] = getUptime();
+    statsArray1[QStringLiteral("4. persistFileLoadTime")] = getFileLoadTime();
+    statsArray1[QStringLiteral("5. clients")] = getCurrentClientCount();
+    statsArray1[QStringLiteral("6. threads")] = threadsStats;
 
     // Octree Stats
     QJsonObject octreeStats;
-    octreeStats["1. elementCount"] = (double)OctreeElement::getNodeCount();
-    octreeStats["2. internalElementCount"] = (double)OctreeElement::getInternalNodeCount();
-    octreeStats["3. leafElementCount"] = (double)OctreeElement::getLeafNodeCount();
+    octreeStats[QStringLiteral("1. elementCount"))] = (double)OctreeElement::getNodeCount();
+    octreeStats[QStringLiteral("2. internalElementCount"))] = (double)OctreeElement::getInternalNodeCount();
+    octreeStats[QStringLiteral("3. leafElementCount"))] = (double)OctreeElement::getLeafNodeCount();
 
     // Stats Object 2
     QJsonObject dataObject1;
-    dataObject1["1. totalPackets"] = (double)OctreeSendThread::_totalPackets;
-    dataObject1["2. totalBytes"] = (double)OctreeSendThread::_totalBytes;
-    dataObject1["3. totalBytesWasted"] = (double)OctreeSendThread::_totalWastedBytes;
-    dataObject1["4. totalBytesOctalCodes"] = (double)OctreePacketData::getTotalBytesOfOctalCodes();
-    dataObject1["5. totalBytesBitMasks"] = (double)OctreePacketData::getTotalBytesOfBitMasks();
-    dataObject1["6. totalBytesBitMasks"] = (double)OctreePacketData::getTotalBytesOfColor();
+    dataObject1[QStringLiteral("1. totalPackets")] = (double)OctreeSendThread::_totalPackets;
+    dataObject1[QStringLiteral("2. totalBytes")] = (double)OctreeSendThread::_totalBytes;
+    dataObject1[QStringLiteral("3. totalBytesWasted")] = (double)OctreeSendThread::_totalWastedBytes;
+    dataObject1[QStringLiteral("4. totalBytesOctalCodes")] = (double)OctreePacketData::getTotalBytesOfOctalCodes();
+    dataObject1[QStringLiteral("5. totalBytesBitMasks")] = (double)OctreePacketData::getTotalBytesOfBitMasks();
+    dataObject1[QStringLiteral("6. totalBytesBitMasks")] = (double)OctreePacketData::getTotalBytesOfColor();
 
     QJsonObject timingArray1;
-    timingArray1["1. avgLoopTime"] = getAverageLoopTime();
-    timingArray1["2. avgInsideTime"] = getAverageInsideTime();
-    timingArray1["3. avgTreeTraverseTime"] = getAverageTreeTraverseTime();
-    timingArray1["4. avgEncodeTime"] = getAverageEncodeTime();
-    timingArray1["5. avgCompressAndWriteTime"] = getAverageCompressAndWriteTime();
-    timingArray1["6. avgSendTime"] = getAveragePacketSendingTime();
-    timingArray1["7. nodeWaitTime"] = getAverageNodeWaitTime();
+    timingArray1[QStringLiteral("1. avgLoopTime")] = getAverageLoopTime();
+    timingArray1[QStringLiteral("2. avgInsideTime")] = getAverageInsideTime();
+    timingArray1[QStringLiteral("3. avgTreeTraverseTime")] = getAverageTreeTraverseTime();
+    timingArray1[QStringLiteral("4. avgEncodeTime")] = getAverageEncodeTime();
+    timingArray1[QStringLiteral("5. avgCompressAndWriteTime")] = getAverageCompressAndWriteTime();
+    timingArray1[QStringLiteral("6. avgSendTime")] = getAveragePacketSendingTime();
+    timingArray1[QStringLiteral("7. nodeWaitTime")] = getAverageNodeWaitTime();
 
     QJsonObject statsObject2;
-    statsObject2["data"] = dataObject1;
-    statsObject2["timing"] = timingArray1;
+    statsObject2[QStringLiteral("data")] = dataObject1;
+    statsObject2[QStringLiteral("timing")] = timingArray1;
 
     QJsonObject dataArray2;
     QJsonObject timingArray2;
 
     // Stats Object 3
     if (_octreeInboundPacketProcessor) {
-        dataArray2["1. packetQueue"] = (double)_octreeInboundPacketProcessor->packetsToProcessCount();
-        dataArray2["2. totalPackets"] = (double)_octreeInboundPacketProcessor->getTotalPacketsProcessed();
-        dataArray2["3. totalElements"] = (double)_octreeInboundPacketProcessor->getTotalElementsProcessed();
+        dataArray2[QStringLiteral("1. packetQueue")] = (double)_octreeInboundPacketProcessor->packetsToProcessCount();
+        dataArray2[QStringLiteral("2. totalPackets")] = (double)_octreeInboundPacketProcessor->getTotalPacketsProcessed();
+        dataArray2[QStringLiteral("3. totalElements")] = (double)_octreeInboundPacketProcessor->getTotalElementsProcessed();
 
-        timingArray2["1. avgTransitTimePerPacket"] = (double)_octreeInboundPacketProcessor->getAverageTransitTimePerPacket();
-        timingArray2["2. avgProcessTimePerPacket"] = (double)_octreeInboundPacketProcessor->getAverageProcessTimePerPacket();
-        timingArray2["3. avgLockWaitTimePerPacket"] = (double)_octreeInboundPacketProcessor->getAverageLockWaitTimePerPacket();
-        timingArray2["4. avgProcessTimePerElement"] = (double)_octreeInboundPacketProcessor->getAverageProcessTimePerElement();
-        timingArray2["5. avgLockWaitTimePerElement"] = (double)_octreeInboundPacketProcessor->getAverageLockWaitTimePerElement();
+        timingArray2[QStringLiteral("1. avgTransitTimePerPacket")] = (double)_octreeInboundPacketProcessor->getAverageTransitTimePerPacket();
+        timingArray2[QStringLiteral("2. avgProcessTimePerPacket")] = (double)_octreeInboundPacketProcessor->getAverageProcessTimePerPacket();
+        timingArray2[QStringLiteral("3. avgLockWaitTimePerPacket")] = (double)_octreeInboundPacketProcessor->getAverageLockWaitTimePerPacket();
+        timingArray2[QStringLiteral("4. avgProcessTimePerElement")] = (double)_octreeInboundPacketProcessor->getAverageProcessTimePerElement();
+        timingArray2[QStringLiteral("5. avgLockWaitTimePerElement")] = (double)_octreeInboundPacketProcessor->getAverageLockWaitTimePerElement();
     }
 
     QJsonObject statsObject3;
-    statsObject3["data"] = dataArray2;
-    statsObject3["timing"] = timingArray2;
+    statsObject3[QStringLiteral("data")] = dataArray2;
+    statsObject3[QStringLiteral("timing")] = timingArray2;
 
     // Merge everything
     QJsonObject jsonArray;
-    jsonArray["1. misc"] = statsArray1;
-    jsonArray["2. octree"] = octreeStats;
-    jsonArray["3. outbound"] = statsObject2;
-    jsonArray["4. inbound"] = statsObject3;
+    jsonArray[QStringLiteral("1. misc")] = statsArray1;
+    jsonArray[QStringLiteral("2. octree")] = octreeStats;
+    jsonArray[QStringLiteral("3. outbound")] = statsObject2;
+    jsonArray[QStringLiteral("4. inbound")] = statsObject3;
 
     QJsonObject statsObject;
-    statsObject[QString(getMyServerName()) + "Server"] = jsonArray;
+    statsObject[QString(getMyServerName()) + QStringLiteral("Server")] = jsonArray;
     addPacketStatsAndSendStatsPacket(statsObject);
 }
 

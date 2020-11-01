@@ -162,7 +162,7 @@ void AutoUpdater::parseLatestVersionData() {
                                     }
 
                                     appendBuildData(version, downloadUrl, releaseTime, releaseNotes, pullRequestNumber);
-                                    releaseNotes = "";
+                                    releaseNotes = QString();
                                 } else {
                                     xml.skipCurrentElement();
                                 }

@@ -152,7 +152,7 @@ const AnimPoseVec& AnimRandomSwitch::evaluate(const AnimVariantMap& animVars, co
     context.addStateMachineInfo(_id, _currentState->getID(), _previousState->getID(), _duringInterp, _alpha);
     if (_duringInterp) {
         // hack: add previoius state to debug alpha map, with parens around it's name.
-        context.setDebugAlpha(QString("(%1)").arg(_previousState->getID()), 1.0f - _alpha, AnimNodeType::Clip);
+        context.setDebugAlpha(QStringLiteral("(%1)").arg(_previousState->getID()), 1.0f - _alpha, AnimNodeType::Clip);
     }
 
     return _poses;

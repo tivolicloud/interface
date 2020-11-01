@@ -176,7 +176,7 @@ void PhysicalEntitySimulation::processDeadEntities() {
     if (_deadEntitiesToRemoveFromTree.empty()) {
         return;
     }
-    PROFILE_RANGE(simulation_physics, "Deletes");
+    PROFILE_RANGE(simulation_physics, QStringLiteral("Deletes"));
     std::vector<EntityItemPointer> entitiesToDeleteImmediately;
     entitiesToDeleteImmediately.reserve(_deadEntitiesToRemoveFromTree.size());
     QUuid sessionID = Physics::getSessionUUID();
@@ -533,7 +533,7 @@ void PhysicalEntitySimulation::handleDeactivatedMotionStates(const VectorOfMotio
 }
 
 void PhysicalEntitySimulation::handleChangedMotionStates(const VectorOfMotionStates& motionStates) {
-    PROFILE_RANGE_EX(simulation_physics, "ChangedEntities", 0x00000000, (uint64_t)motionStates.size());
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("ChangedEntities"), 0x00000000, (uint64_t)motionStates.size());
     QMutexLocker lock(&_mutex);
 
     for (auto stateItr : motionStates) {
@@ -593,7 +593,7 @@ void PhysicalEntitySimulation::addOwnership(EntityMotionState* motionState) {
 void PhysicalEntitySimulation::sendOwnershipBids(uint32_t numSubsteps) {
     uint64_t now = usecTimestampNow();
     if (now > _nextBidExpiry) {
-        PROFILE_RANGE_EX(simulation_physics, "Bid", 0x00000000, (uint64_t)_bids.size());
+        PROFILE_RANGE_EX(simulation_physics, QStringLiteral("Bid"), 0x00000000, (uint64_t)_bids.size());
         _nextBidExpiry = std::numeric_limits<uint64_t>::max();
         uint32_t i = 0;
         while (i < _bids.size()) {
@@ -629,7 +629,7 @@ void PhysicalEntitySimulation::sendOwnedUpdates(uint32_t numSubsteps) {
     if (getEntityTree()->isServerlessMode()) {
         return;
     }
-    PROFILE_RANGE_EX(simulation_physics, "Update", 0x00000000, (uint64_t)_owned.size());
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("Update"), 0x00000000, (uint64_t)_owned.size());
     uint32_t i = 0;
     while (i < _owned.size()) {
         // if (_owned[i]->isStaticPriority()) continue;

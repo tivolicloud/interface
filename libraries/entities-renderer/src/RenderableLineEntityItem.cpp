@@ -43,7 +43,7 @@ void LineEntityRenderer::doRender(RenderArgs* args) {
         return;
     }
 
-    PerformanceTimer perfTimer("RenderableLineEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderableLineEntityItem::render"));
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;
     const auto& modelTransform = getModelTransform();

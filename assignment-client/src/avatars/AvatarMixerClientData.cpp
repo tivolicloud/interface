@@ -406,19 +406,19 @@ bool AvatarMixerClientData::otherAvatarInView(const AABox& otherAvatarBox) {
 }
 
 void AvatarMixerClientData::loadJSONStats(QJsonObject& jsonObject) const {
-    jsonObject["display_name"] = _avatar->getDisplayName();
-    jsonObject["num_avs_sent_last_frame"] = _numAvatarsSentLastFrame;
-    jsonObject["avg_other_av_starves_per_second"] = getAvgNumOtherAvatarStarvesPerSecond();
-    jsonObject["avg_other_av_skips_per_second"] = getAvgNumOtherAvatarSkipsPerSecond();
-    jsonObject["total_num_out_of_order_sends"] = _numOutOfOrderSends;
+    jsonObject[QStringLiteral("display_name")] = _avatar->getDisplayName();
+    jsonObject[QStringLiteral("num_avs_sent_last_frame")] = _numAvatarsSentLastFrame;
+    jsonObject[QStringLiteral("avg_other_av_starves_per_second")] = getAvgNumOtherAvatarStarvesPerSecond();
+    jsonObject[QStringLiteral("avg_other_av_skips_per_second")] = getAvgNumOtherAvatarSkipsPerSecond();
+    jsonObject[QStringLiteral("total_num_out_of_order_sends")] = _numOutOfOrderSends;
 
     jsonObject[OUTBOUND_AVATAR_DATA_STATS_KEY] = getOutboundAvatarDataKbps();
     jsonObject[OUTBOUND_AVATAR_TRAITS_STATS_KEY] = getOutboundAvatarTraitsKbps();
     jsonObject[INBOUND_AVATAR_DATA_STATS_KEY] = _avatar->getAverageBytesReceivedPerSecond() / (float)BYTES_PER_KILOBIT;
 
-    jsonObject["av_data_receive_rate"] = _avatar->getReceiveRate();
-    jsonObject["recent_other_av_in_view"] = _recentOtherAvatarsInView;
-    jsonObject["recent_other_av_out_of_view"] = _recentOtherAvatarsOutOfView;
+    jsonObject[QStringLiteral("av_data_receive_rate")] = _avatar->getReceiveRate();
+    jsonObject[QStringLiteral("recent_other_av_in_view")] = _recentOtherAvatarsInView;
+    jsonObject[QStringLiteral("recent_other_av_out_of_view")] = _recentOtherAvatarsOutOfView;
 }
 
 AvatarMixerClientData::TraitsCheckTimestamp AvatarMixerClientData::getLastOtherAvatarTraitsSendPoint(

@@ -754,8 +754,8 @@ QString formatSecondsElapsed(float seconds) {
 }
 
 bool similarStrings(const QString& stringA, const QString& stringB) {
-    QStringList aWords = stringA.split(" ");
-    QStringList bWords = stringB.split(" ");
+    QStringList aWords = stringA.split(QStringLiteral(" "));
+    QStringList bWords = stringB.split(QStringLiteral(" "));
     float aWordsInB = 0.0f;
     foreach(QString aWord, aWords) {
         if (bWords.contains(aWord)) {

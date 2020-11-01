@@ -109,7 +109,7 @@ private:
 void GeometryReader::run() {
     DependencyManager::get<StatTracker>()->decrementStat("PendingProcessing");
     CounterStat counter("Processing");
-    PROFILE_RANGE_EX(resource_parse_geometry, "GeometryReader::run", 0xFF00FF00, 0, { { "url", _url.toString() } });
+    PROFILE_RANGE_EX(resource_parse_geometry, QStringLiteral("GeometryReader::run"), 0xFF00FF00, 0, { { QStringLiteral("url"), _url.toString() } });
     auto originalPriority = QThread::currentThread()->priority();
     if (originalPriority == QThread::InheritPriority) {
         originalPriority = QThread::NormalPriority;
@@ -141,8 +141,8 @@ void GeometryReader::run() {
 
         HFMModel::Pointer hfmModel;
         QVariantHash serializerMapping = _mapping.second;
-        serializerMapping["combineParts"] = _combineParts;
-        serializerMapping["deduplicateIndices"] = true;
+        serializerMapping[QStringLiteral("combineParts")] = _combineParts;
+        serializerMapping[QStringLiteral("deduplicateIndices")] = true;
 
         if (_url.path().toLower().endsWith(".gz")) {
             QByteArray uncompressedData;
@@ -219,17 +219,17 @@ ModelResource::ModelResource(const ModelResource& other) :
 
 void ModelResource::downloadFinished(const QByteArray& data) {
     if (_effectiveBaseURL.fileName().toLower().endsWith(".fst")) {
-        PROFILE_ASYNC_BEGIN(resource_parse_geometry, "ModelResource::downloadFinished", _url.toString(), { { "url", _url.toString() } });
+        PROFILE_ASYNC_BEGIN(resource_parse_geometry, QStringLiteral("ModelResource::downloadFinished"), _url.toString(), { { QStringLiteral("url"), _url.toString() } });
 
         // store parsed contents of FST file
         _mapping = FSTReader::readMapping(data);
 
-        QString filename = _mapping.value("filename").toString();
+        QString filename = _mapping.value(QStringLiteral("filename")).toString();
 
         if (filename.isNull()) {
             finishedLoading(false);
         } else {
-            const QString baseURL = _mapping.value("baseURL").toString();
+            const QString baseURL = _mapping.value(QStringLiteral("baseURL")).toString();
             const QUrl base = _effectiveBaseURL.resolved(baseURL);
             QUrl url = base.resolved(filename);
 
@@ -304,7 +304,7 @@ void ModelResource::onGeometryMappingLoaded(bool success) {
         disconnect(_connection); // FIXME Should not have to do this
     }
 
-    PROFILE_ASYNC_END(resource_parse_geometry, "ModelResource::downloadFinished", _url.toString());
+    PROFILE_ASYNC_END(resource_parse_geometry, QStringLiteral("ModelResource::downloadFinished"), _url.toString());
     finishedLoading(success);
 }
 

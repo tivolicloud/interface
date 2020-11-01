@@ -942,15 +942,15 @@ void DomainGatekeeper::getIsGroupMemberJSONCallback(QNetworkReply* requestReply)
     // }
 
     QJsonObject jsonObject = QJsonDocument::fromJson(requestReply->readAll()).object();
-    if (jsonObject["status"].toString() == "success") {
-        QJsonObject data = jsonObject["data"].toObject();
-        QJsonObject groups = data["groups"].toObject();
-        QString username = data["username"].toString();
+    if (jsonObject[QStringLiteral("status")].toString() == QStringLiteral("success")) {
+        QJsonObject data = jsonObject[QStringLiteral("data")].toObject();
+        QJsonObject groups = data[QStringLiteral("groups")].toObject();
+        QString username = data[QStringLiteral("username")].toString();
         _server->_settingsManager.clearGroupMemberships(username);
         foreach (auto groupID, groups.keys()) {
             QJsonObject group = groups[groupID].toObject();
-            QJsonObject rank = group["rank"].toObject();
-            QUuid rankID = QUuid(rank["id"].toString());
+            QJsonObject rank = group[QStringLiteral("rank")].toObject();
+            QUuid rankID = QUuid(rank[QStringLiteral("id")].toString());
             _server->_settingsManager.recordGroupMembership(username, groupID, rankID);
         }
     } else {

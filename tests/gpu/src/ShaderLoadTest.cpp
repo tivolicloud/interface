@@ -145,7 +145,7 @@ void ShaderLoadTest::parseCacheFile() {
     Program program;
     for (auto shaderKey : keys) {
         auto cacheEntry = root[shaderKey].toObject();
-        auto source = cacheEntry["source"].toString();
+        auto source = cacheEntry[QStringLiteral("source")].toString();
         auto shaders = parseCachedShaderString(source);
         for (const auto& entry : shaders.second) {
             const auto& type = entry.first;

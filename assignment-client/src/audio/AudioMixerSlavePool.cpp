@@ -118,7 +118,7 @@ void AudioMixerSlavePool::queueStats(QJsonObject& stats) {
     unsigned i = 0;
     for (auto& slave : _slaves) {
         int queueSize = ::hifi::qt::getEventQueueSize(slave.get());
-        QString queueName = QString("audio_thread_event_queue_%1").arg(i);
+        QString queueName = QStringLiteral("audio_thread_event_queue_%1").arg(i);
         stats[queueName] = queueSize;
 
         i++;

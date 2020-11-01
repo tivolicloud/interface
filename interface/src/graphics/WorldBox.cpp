@@ -19,7 +19,7 @@ namespace render {
     template <> const Item::Bound payloadGetBound(const WorldBoxRenderData::Pointer& stuff) { return Item::Bound(); }
     template <> void payloadRender(const WorldBoxRenderData::Pointer& stuff, RenderArgs* args) {
         if (Menu::getInstance()->isOptionChecked(MenuOption::WorldAxes)) {
-            PerformanceTimer perfTimer("worldBox");
+            PerformanceTimer perfTimer(QStringLiteral("worldBox"));
 
             auto& batch = *args->_batch;
             DependencyManager::get<GeometryCache>()->bindSimpleProgram(batch, false, false, false, false, true, args->_renderMethod == Args::RenderMethod::FORWARD);

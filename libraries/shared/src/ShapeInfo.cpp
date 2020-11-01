@@ -104,7 +104,7 @@ void ShapeInfo::clear() {
 }
 
 void ShapeInfo::setParams(ShapeType type, const glm::vec3& halfExtents, QString url) {
-    _url = "";
+    _url = QString();
     _type = type;
     setHalfExtents(halfExtents);
     switch(type) {
@@ -138,14 +138,14 @@ void ShapeInfo::setParams(ShapeType type, const glm::vec3& halfExtents, QString 
 }
 
 void ShapeInfo::setBox(const glm::vec3& halfExtents) {
-    _url = "";
+    _url = QString();
     _type = SHAPE_TYPE_BOX;
     setHalfExtents(halfExtents);
     _hash64 = 0;
 }
 
 void ShapeInfo::setSphere(float radius) {
-    _url = "";
+    _url = QString();
     _type = SHAPE_TYPE_SPHERE;
     radius = glm::max(radius, MIN_HALF_EXTENT);
     _halfExtents = glm::vec3(radius);
@@ -153,7 +153,7 @@ void ShapeInfo::setSphere(float radius) {
 }
 
 void ShapeInfo::setMultiSphere(const std::vector<glm::vec3>& centers, const std::vector<float>& radiuses) {
-    _url = "";
+    _url = QString();
     _type = SHAPE_TYPE_MULTISPHERE;
     assert(centers.size() == radiuses.size());
     assert(centers.size() > 0);
@@ -170,7 +170,7 @@ void ShapeInfo::setPointCollection(const ShapeInfo::PointCollection& pointCollec
 }
 
 void ShapeInfo::setCapsuleY(float radius, float cylinderHalfHeight) {
-    _url = "";
+    _url = QString();
     _type = SHAPE_TYPE_CAPSULE_Y;
     radius = glm::max(radius, MIN_HALF_EXTENT);
     cylinderHalfHeight = glm::max(cylinderHalfHeight, 0.0f);

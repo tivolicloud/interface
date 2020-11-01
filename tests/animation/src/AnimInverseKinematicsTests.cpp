@@ -140,9 +140,9 @@ void AnimInverseKinematicsTests::testSingleChain() {
         varMap.set("poleVectorEnabledD", false);
 
         std::vector<float> flexCoefficients = {1.0f, 1.0f, 1.0f, 1.0f};
-        ikDoll.setTargetVars(QString("D"), QString("positionD"), QString("rotationD"), QString("targetTypeD"),
-                             QString("weightD"), 1.0f, flexCoefficients, QString("poleVectorEnabledD"),
-                             QString("poleReferenceVectorD"), QString("poleVectorD"));
+        ikDoll.setTargetVars(QStringLiteral("D"), QStringLiteral("positionD"), QStringLiteral("rotationD"), QStringLiteral("targetTypeD"),
+                             QStringLiteral("weightD"), 1.0f, flexCoefficients, QStringLiteral("poleVectorEnabledD"),
+                             QStringLiteral("poleReferenceVectorD"), QStringLiteral("poleVectorD"));
         AnimVariantMap triggers;
 
         // the IK solution should be:
@@ -233,9 +233,9 @@ void AnimInverseKinematicsTests::testSingleChain() {
         varMap.set("targetTypeD", (int)IKTarget::Type::RotationAndPosition);
         varMap.set("poleVectorEnabledD", false);
         std::vector<float> flexCoefficients = {1.0f, 1.0f, 1.0f, 1.0f};
-        ikDoll.setTargetVars(QString("D"), QString("positionD"), QString("rotationD"), QString("targetTypeD"),
-                             QString("weightD"), 1.0f, flexCoefficients, QString("poleVectorEnabledD"),
-                             QString("poleReferenceVectorD"), QString("poleVectorD"));
+        ikDoll.setTargetVars(QStringLiteral("D"), QStringLiteral("positionD"), QStringLiteral("rotationD"), QStringLiteral("targetTypeD"),
+                             QStringLiteral("weightD"), 1.0f, flexCoefficients, QStringLiteral("poleVectorEnabledD"),
+                             QStringLiteral("poleReferenceVectorD"), QStringLiteral("poleVectorD"));
         AnimVariantMap triggers;
 
         // the IK solution should be:

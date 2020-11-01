@@ -31,7 +31,7 @@ ThreadSafeDynamicsWorld::ThreadSafeDynamicsWorld(
 
 int ThreadSafeDynamicsWorld::stepSimulationWithSubstepCallback(btScalar timeStep, int maxSubSteps,
                                                                btScalar fixedTimeStep, SubStepCallback onSubStep) {
-    DETAILED_PROFILE_RANGE(simulation_physics, "stepWithCB");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("stepWithCB"));
     BT_PROFILE("stepSimulationWithSubstepCallback");
     int subSteps = 0;
     if (maxSubSteps) {
@@ -68,13 +68,13 @@ int ThreadSafeDynamicsWorld::stepSimulationWithSubstepCallback(btScalar timeStep
         saveKinematicState(fixedTimeStep*clampedSimulationSteps);
 
         {
-            DETAILED_PROFILE_RANGE(simulation_physics, "applyGravity");
+            DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("applyGravity"));
             BT_PROFILE("applyGravity");
             applyGravity();
         }
 
         for (int i=0;i<clampedSimulationSteps;i++) {
-            DETAILED_PROFILE_RANGE(simulation_physics, "substep");
+            DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("substep"));
             internalSingleStepSimulation(fixedTimeStep);
             onSubStep();
         }
@@ -118,7 +118,7 @@ void ThreadSafeDynamicsWorld::synchronizeMotionState(btRigidBody* body) {
 }
 
 void ThreadSafeDynamicsWorld::synchronizeMotionStates() {
-    PROFILE_RANGE(simulation_physics, "SyncMotionStates");
+    PROFILE_RANGE(simulation_physics, QStringLiteral("SyncMotionStates"));
     BT_PROFILE("syncMotionStates");
     _changedMotionStates.clear();
 
@@ -159,7 +159,7 @@ void ThreadSafeDynamicsWorld::synchronizeMotionStates() {
 }
 
 void ThreadSafeDynamicsWorld::saveKinematicState(btScalar timeStep) {
-    DETAILED_PROFILE_RANGE(simulation_physics, "saveKinematicState");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("saveKinematicState"));
     BT_PROFILE("saveKinematicState");
     for (int i=0;i<m_nonStaticRigidBodies.size();i++) {
         btRigidBody* body = m_nonStaticRigidBodies[i];

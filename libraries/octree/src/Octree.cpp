@@ -868,7 +868,7 @@ bool Octree::toJSONDocument(QJsonDocument* doc, const OctreeElementPointer& elem
     // include the "bitstream" version
     PacketType expectedType = expectedDataPacketType();
     PacketVersion expectedVersion = versionForPacketType(expectedType);
-    entityDescription["Version"] = (int) expectedVersion;
+    entityDescription[QStringLiteral("Version")] = (int) expectedVersion;
 
     // store the entity data
     bool entityDescriptionSuccess = writeToMap(entityDescription, top, true, true);
@@ -878,9 +878,9 @@ bool Octree::toJSONDocument(QJsonDocument* doc, const OctreeElementPointer& elem
     }
 
 
-    bool noEntities = entityDescription["Entities"].toList().empty();
+    bool noEntities = entityDescription[QStringLiteral("Entities")].toList().empty();
     QJsonDocument jsonDocTree = QJsonDocument::fromVariant(entityDescription);
-    QJsonValue entitiesJson = jsonDocTree["Entities"];
+    QJsonValue entitiesJson = jsonDocTree[QStringLiteral("Entities")];
     if (entitiesJson.isNull() || (entitiesJson.toArray().empty() && !noEntities)) {
         // Json version of entities too large.
         return false;
@@ -899,7 +899,7 @@ bool Octree::toJSONString(QString& jsonString, const OctreeElementPointer& eleme
         top = _rootElement;
     }
 
-    jsonString += QString("{\n  \"DataVersion\": %1,\n  \"Entities\": [").arg(_persistDataVersion);
+    jsonString += QStringLiteral("{\n  \"DataVersion\": %1,\n  \"Entities\": [").arg(_persistDataVersion);
 
     writeToJSON(jsonString, top);
 
@@ -907,7 +907,7 @@ bool Octree::toJSONString(QString& jsonString, const OctreeElementPointer& eleme
     PacketType expectedType = expectedDataPacketType();
     PacketVersion expectedVersion = versionForPacketType(expectedType);
 
-    jsonString += QString("\n    ],\n  \"Id\": \"%1\",\n  \"Version\": %2\n}\n").arg(_persistID.toString()).arg((int)expectedVersion);
+    jsonString += QStringLiteral("\n    ],\n  \"Id\": \"%1\",\n  \"Version\": %2\n}\n").arg(_persistID.toString()).arg((int)expectedVersion);
 
     return true;
 }

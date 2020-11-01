@@ -391,7 +391,7 @@ void Font::buildVertices(Font::DrawInfo& drawInfo, const QString& str, const glm
 void Font::drawString(gpu::Batch& batch, Font::DrawInfo& drawInfo, const QString& str, const glm::vec4& color,
                       const glm::vec3& effectColor, float effectThickness, TextEffect effect,
                       const glm::vec2& origin, const glm::vec2& bounds, float scale, bool unlit, bool forward) {
-    if (!_loaded || str == "") {
+    if (!_loaded || str.isEmpty()) {
         return;
     }
 

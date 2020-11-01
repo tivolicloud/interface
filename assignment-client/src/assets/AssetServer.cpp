@@ -90,7 +90,7 @@ QString bakedFilenameForAssetType(BakedAssetType type) {
         case BakedAssetType::Script:
             return BAKED_SCRIPT_SIMPLE_NAME;
         default:
-            return "";
+            return QString();
     }
 }
 
@@ -924,32 +924,32 @@ void AssetServer::sendStatsPacket() {
         float megabitsPerSecPerByte = MEGABITS_PER_BYTE / elapsed; // Bytes => Mb/s
 
         QJsonObject connectionStats;
-        connectionStats["1. Last Heard"] = date.toString();
-        connectionStats["2. Est. Max (P/s)"] = stats.estimatedBandwith;
-        connectionStats["3. RTT (ms)"] = stats.rtt;
-        connectionStats["4. CW (P)"] = stats.congestionWindowSize;
-        connectionStats["5. Period (us)"] = stats.packetSendPeriod;
-        connectionStats["6. Up (Mb/s)"] = stats.sentBytes * megabitsPerSecPerByte;
-        connectionStats["7. Down (Mb/s)"] = stats.receivedBytes * megabitsPerSecPerByte;
-        nodeStats["Connection Stats"] = connectionStats;
+        connectionStats[QStringLiteral("1. Last Heard")] = date.toString();
+        connectionStats[QStringLiteral("2. Est. Max (P/s)")] = stats.estimatedBandwith;
+        connectionStats[QStringLiteral("3. RTT (ms)")] = stats.rtt;
+        connectionStats[QStringLiteral("4. CW (P)")] = stats.congestionWindowSize;
+        connectionStats[QStringLiteral("5. Period (us)")] = stats.packetSendPeriod;
+        connectionStats[QStringLiteral("6. Up (Mb/s)")] = stats.sentBytes * megabitsPerSecPerByte;
+        connectionStats[QStringLiteral("7. Down (Mb/s)")] = stats.receivedBytes * megabitsPerSecPerByte;
+        nodeStats[QStringLiteral("Connection Stats")] = connectionStats;
 
         using Events = udt::ConnectionStats::Stats::Event;
         const auto& events = stats.events;
 
         QJsonObject upstreamStats;
-        upstreamStats["1. Sent (P/s)"] = stats.sendRate;
-        upstreamStats["2. Sent Packets"] = (int)stats.sentPackets;
-        upstreamStats["3. Recvd ACK"] = events[Events::ReceivedACK];
-        upstreamStats["4. Procd ACK"] = events[Events::ProcessedACK];
-        upstreamStats["5. Retransmitted"] = (int)stats.retransmittedPackets;
-        nodeStats["Upstream Stats"] = upstreamStats;
+        upstreamStats[QStringLiteral("1. Sent (P/s)")] = stats.sendRate;
+        upstreamStats[QStringLiteral("2. Sent Packets")] = (int)stats.sentPackets;
+        upstreamStats[QStringLiteral("3. Recvd ACK")] = events[Events::ReceivedACK];
+        upstreamStats[QStringLiteral("4. Procd ACK")] = events[Events::ProcessedACK];
+        upstreamStats[QStringLiteral("5. Retransmitted")] = (int)stats.retransmittedPackets;
+        nodeStats[QStringLiteral("Upstream Stats")] = upstreamStats;
 
         QJsonObject downstreamStats;
-        downstreamStats["1. Recvd (P/s)"] = stats.receiveRate;
-        downstreamStats["2. Recvd Packets"] = (int)stats.receivedPackets;
-        downstreamStats["3. Sent ACK"] = events[Events::SentACK];
-        downstreamStats["4. Duplicates"] = (int)stats.duplicatePackets;
-        nodeStats["Downstream Stats"] = downstreamStats;
+        downstreamStats[QStringLiteral("1. Recvd (P/s)")] = stats.receiveRate;
+        downstreamStats[QStringLiteral("2. Recvd Packets")] = (int)stats.receivedPackets;
+        downstreamStats[QStringLiteral("3. Sent ACK")] = events[Events::SentACK];
+        downstreamStats[QStringLiteral("4. Duplicates")] = (int)stats.duplicatePackets;
+        nodeStats[QStringLiteral("Downstream Stats")] = downstreamStats;
 
         QString uuid = uuidStringWithoutCurlyBraces(node->getUUID());
         nodeStats[USERNAME_UUID_REPLACEMENT_STATS_KEY] = uuid;

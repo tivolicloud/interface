@@ -96,11 +96,11 @@ void OctreeStatsProvider::updateOctreeStatsData() {
 
     const int FLOATING_POINT_PRECISION = 3;
 
-    m_localElementsMemory = QString("Elements RAM: %1MB").arg(OctreeElement::getTotalMemoryUsage() / 1000000.0f, 5, 'f', 4);
+    m_localElementsMemory = QStringLiteral("Elements RAM: %1MB").arg(OctreeElement::getTotalMemoryUsage() / 1000000.0f, 5, 'f', 4);
     emit localElementsMemoryChanged(m_localElementsMemory);
 
     // Local Elements
-    m_localElements = QString("Total: %1 / Internal: %2 / Leaves: %3").
+    m_localElements = QStringLiteral("Total: %1 / Internal: %2 / Leaves: %3").
             arg(OctreeElement::getNodeCount()).
             arg(OctreeElement::getInternalNodeCount()).
             arg(OctreeElement::getLeafNodeCount());
@@ -128,32 +128,32 @@ void OctreeStatsProvider::updateOctreeStatsData() {
 
             // Sending mode
             if (serverCount > 1) {
-                m_sendingMode += ",";
+                m_sendingMode += QStringLiteral(",");
             }
             if (stats.isMoving()) {
-                m_sendingMode += "M";
+                m_sendingMode += QStringLiteral("M");
                 movingServerCount++;
             } else {
-                m_sendingMode += "S";
+                m_sendingMode += QStringLiteral("S");
             }
             if (stats.isFullScene()) {
-                m_sendingMode += "F";
+                m_sendingMode += QStringLiteral("F");
             } else {
-                m_sendingMode += "p";
+                m_sendingMode += QStringLiteral("p");
             }
         }
     });
-    m_sendingMode += QString(" - %1 servers").arg(serverCount);
+    m_sendingMode += QStringLiteral(" - %1 servers").arg(serverCount);
     if (movingServerCount > 0) {
-        m_sendingMode += " <SCENE NOT STABLE> ";
+        m_sendingMode += QStringLiteral(" <SCENE NOT STABLE> ");
     } else {
-        m_sendingMode += " <SCENE STABLE> ";
+        m_sendingMode += QStringLiteral(" <SCENE STABLE> ");
     }
 
     emit sendingModeChanged(m_sendingMode);
     
     // Server Elements
-    m_serverElements = QString("Total: %1 / Internal: %2 / Leaves: %3").
+    m_serverElements = QStringLiteral("Total: %1 / Internal: %2 / Leaves: %3").
             arg(totalNodes).arg(totalInternal).arg(totalLeaves);
     emit serverElementsChanged(m_serverElements);
 
@@ -176,24 +176,24 @@ void OctreeStatsProvider::updateOctreeStatsData() {
     auto processedPPS = entitiesPacketProcessor.getProcessedPPS();
     auto treeProcessedPPS = entities->getAveragePacketsPerSecond();
 
-    m_processedPackets = QString("Queue Size: %1 Packets / Network IN: %2 PPS / Queue OUT: %3 PPS / Tree IN: %4 PPS")
+    m_processedPackets = QStringLiteral("Queue Size: %1 Packets / Network IN: %2 PPS / Queue OUT: %3 PPS / Tree IN: %4 PPS")
             .arg(incomingPacketsDepth)
             .arg(incomingPPS, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(processedPPS, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(treeProcessedPPS, 5, 'f', FLOATING_POINT_PRECISION);
     emit processedPacketsChanged(m_processedPackets);
 
-    m_processedPacketsElements = QString("%1 per packet / %2 per second")
+    m_processedPacketsElements = QStringLiteral("%1 per packet / %2 per second")
             .arg(averageElementsPerPacket, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(averageElementsPerSecond, 5, 'f', FLOATING_POINT_PRECISION);
     emit processedPacketsElementsChanged(m_processedPacketsElements);
 
-    m_processedPacketsEntities = QString("%1 per packet / %2 per second")
+    m_processedPacketsEntities = QStringLiteral("%1 per packet / %2 per second")
             .arg(averageEntitiesPerPacket, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(averageEntitiesPerSecond, 5, 'f', FLOATING_POINT_PRECISION);
     emit processedPacketsEntitiesChanged(m_processedPacketsEntities);
 
-    m_processedPacketsTiming = QString("Lock Wait: %1 (usecs) / Uncompress: %2 (usecs) / Process: %3 (usecs)")
+    m_processedPacketsTiming = QStringLiteral("Lock Wait: %1 (usecs) / Uncompress: %2 (usecs) / Process: %3 (usecs)")
             .arg(averageWaitLockPerPacket)
             .arg(averageUncompressPerPacket)
             .arg(averageReadBitstreamPerPacket);
@@ -204,7 +204,7 @@ void OctreeStatsProvider::updateOctreeStatsData() {
     auto outboundQueuedPPS = entitiesEditPacketSender->getLifetimePPSQueued();
     auto outboundSentPPS = entitiesEditPacketSender->getLifetimePPS();
 
-    m_outboundEditPackets = QString("Queue Size: %1 packets / Queued IN: %2 PPS / Sent OUT: %3 PPS")
+    m_outboundEditPackets = QStringLiteral("Queue Size: %1 packets / Queued IN: %2 PPS / Sent OUT: %3 PPS")
             .arg(outboundPacketsDepth)
             .arg(outboundQueuedPPS, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(outboundSentPPS, 5, 'f', FLOATING_POINT_PRECISION);
@@ -214,7 +214,7 @@ void OctreeStatsProvider::updateOctreeStatsData() {
     auto averageEditDelta = entitiesTree->getAverageEditDeltas();
     auto maxEditDelta = entitiesTree->getMaxEditDelta();
 
-    m_entityUpdateTime = QString("Average: %1 (usecs) / Max: %2 (usecs)")
+    m_entityUpdateTime = QStringLiteral("Average: %1 (usecs) / Max: %2 (usecs)")
             .arg(averageEditDelta)
             .arg(maxEditDelta);
     emit entityUpdateTimeChanged(m_entityUpdateTime);
@@ -227,7 +227,7 @@ void OctreeStatsProvider::updateOctreeStatsData() {
         updatesPerSecond = 0; // we don't really care about small updates per second so suppress those
     }
 
-    m_entityUpdates = QString("%1 updates per second / %2 total updates / Average Size: %3 bytes")
+    m_entityUpdates = QStringLiteral("%1 updates per second / %2 total updates / Average Size: %3 bytes")
             .arg(updatesPerSecond, 5, 'f', FLOATING_POINT_PRECISION)
             .arg(totalTrackedEdits)
             .arg(bytesPerEdit);
@@ -253,9 +253,9 @@ void OctreeStatsProvider::showOctreeServersOfType(NodeType_t serverType) {
         QString mostDetails;
 
         if (node->getActiveSocket()) {
-            lesserDetails += "active ";
+            lesserDetails += QStringLiteral("active ");
         } else {
-            lesserDetails += "inactive ";
+            lesserDetails += QStringLiteral("inactive ");
         }
 
         QUuid nodeUUID = node->getUUID();
@@ -275,7 +275,7 @@ void OctreeStatsProvider::showOctreeServersOfType(NodeType_t serverType) {
                     lastFullPPS = lastFullPackets / lastFullSendInSeconds;
                 }
 
-                mostDetails += QString("<br/><br/>Last Full Scene... Encode: %1 ms Send: %2 ms Packets: %3 Bytes: %4 Rate: %5 PPS")
+                mostDetails += QStringLiteral("<br/><br/>Last Full Scene... Encode: %1 ms Send: %2 ms Packets: %3 Bytes: %4 Rate: %5 PPS")
                         .arg(lastFullEncode)
                         .arg(lastFullSend)
                         .arg(lastFullPackets)
@@ -285,13 +285,13 @@ void OctreeStatsProvider::showOctreeServersOfType(NodeType_t serverType) {
                 for (int i = 0; i < OctreeSceneStats::ITEM_COUNT; i++) {
                     OctreeSceneStats::Item item = (OctreeSceneStats::Item)(i);
                     OctreeSceneStats::ItemInfo& itemInfo = stats.getItemInfo(item);
-                    mostDetails += QString("<br/> %1 %2")
+                    mostDetails += QStringLiteral("<br/> %1 %2")
                             .arg(itemInfo.caption).arg(stats.getItemValue(item));
                 }
 
-                moreDetails += "<br/>Node UUID: " +nodeUUID.toString() + " ";
+                moreDetails += QStringLiteral("<br/>Node UUID: ") +nodeUUID.toString() + " ";
 
-                moreDetails += QString("<br/>Elements: %1 total %2 internal %3 leaves ")
+                moreDetails += QStringLiteral("<br/>Elements: %1 total %2 internal %3 leaves ")
                         .arg(stats.getTotalElements())
                         .arg(stats.getTotalInternal())
                         .arg(stats.getTotalLeaves());
@@ -300,29 +300,29 @@ void OctreeStatsProvider::showOctreeServersOfType(NodeType_t serverType) {
                 qint64 clockSkewInUsecs = node->getClockSkewUsec();
                 qint64 clockSkewInMS = clockSkewInUsecs / (qint64)USECS_PER_MSEC;
 
-                moreDetails += QString("<br/>Incoming Packets: %1/ Lost: %2/ Recovered: %3")
+                moreDetails += QStringLiteral("<br/>Incoming Packets: %1/ Lost: %2/ Recovered: %3")
                         .arg(stats.getIncomingPackets())
                         .arg(seqStats.getLost())
                         .arg(seqStats.getRecovered());
 
-                moreDetails += QString("<br/> Out of Order: %1/ Early: %2/ Late: %3/ Unreasonable: %4")
+                moreDetails += QStringLiteral("<br/> Out of Order: %1/ Early: %2/ Late: %3/ Unreasonable: %4")
                         .arg(seqStats.getOutOfOrder())
                         .arg(seqStats.getEarly())
                         .arg(seqStats.getLate())
                         .arg(seqStats.getUnreasonable());
 
-                moreDetails += QString("<br/> Average Flight Time: %1 msecs")
+                moreDetails += QStringLiteral("<br/> Average Flight Time: %1 msecs")
                         .arg(stats.getIncomingFlightTimeAverage());
 
-                moreDetails += QString("<br/> Average Ping Time: %1 msecs")
+                moreDetails += QStringLiteral("<br/> Average Ping Time: %1 msecs")
                         .arg(node->getPingMs());
 
-                moreDetails += QString("<br/> Average Clock Skew: %1 msecs [%2]")
+                moreDetails += QStringLiteral("<br/> Average Clock Skew: %1 msecs [%2]")
                         .arg(clockSkewInMS)
                         .arg(formatUsecTime(clockSkewInUsecs));
 
 
-                moreDetails += QString("<br/>Incoming Bytes: %1 Wasted Bytes: %2")
+                moreDetails += QStringLiteral("<br/>Incoming Bytes: %1 Wasted Bytes: %2")
                         .arg(stats.getIncomingBytes())
                         .arg(stats.getIncomingWastedBytes());
             }

@@ -100,7 +100,7 @@ void OculusControllerManager::deactivate() {
 }
 
 void OculusControllerManager::pluginUpdate(float deltaTime, const controller::InputCalibrationData& inputCalibrationData) {
-    PerformanceTimer perfTimer("OculusControllerManager::TouchDevice::update");
+    PerformanceTimer perfTimer(QStringLiteral("OculusControllerManager::TouchDevice::update"));
 
     checkForConnectedDevices();
 

@@ -35,7 +35,7 @@ void LaserPointer::editRenderStatePath(const std::string& state, const QVariant&
     auto renderState = std::static_pointer_cast<RenderState>(_renderStates[state]);
     if (renderState) {
         updateRenderState(renderState->getPathID(), pathProps);
-        QVariant lineWidth = pathProps.toMap()["lineWidth"];
+        QVariant lineWidth = pathProps.toMap()[QStringLiteral("lineWidth")];
         if (lineWidth.isValid()) {
             renderState->setLineWidth(lineWidth.toFloat());
         }
@@ -57,12 +57,12 @@ QVariantMap LaserPointer::toVariantMap() const {
     for (auto iter = _renderStates.cbegin(); iter != _renderStates.cend(); iter++) {
         auto renderState = iter->second;
         QVariantMap qRenderState;
-        qRenderState["start"] = renderState->getStartID();
-        qRenderState["path"] = std::static_pointer_cast<RenderState>(renderState)->getPathID();
-        qRenderState["end"] = renderState->getEndID();
+        qRenderState[QStringLiteral("start")] = renderState->getStartID();
+        qRenderState[QStringLiteral("path")] = std::static_pointer_cast<RenderState>(renderState)->getPathID();
+        qRenderState[QStringLiteral("end")] = renderState->getEndID();
         qRenderStates[iter->first.c_str()] = qRenderState;
     }
-    qVariantMap["renderStates"] = qRenderStates;
+    qVariantMap[QStringLiteral("renderStates")] = qRenderStates;
 
     QVariantMap qDefaultRenderStates;
     for (auto iter = _defaultRenderStates.cbegin(); iter != _defaultRenderStates.cend(); iter++) {
@@ -70,20 +70,20 @@ QVariantMap LaserPointer::toVariantMap() const {
         auto defaultRenderState = iter->second.second;
         QVariantMap qDefaultRenderState;
 
-        qDefaultRenderState["distance"] = distance;
-        qDefaultRenderState["start"] = defaultRenderState->getStartID();
-        qDefaultRenderState["path"] = std::static_pointer_cast<RenderState>(defaultRenderState)->getPathID();
-        qDefaultRenderState["end"] = defaultRenderState->getEndID();
+        qDefaultRenderState[QStringLiteral("distance")] = distance;
+        qDefaultRenderState[QStringLiteral("start")] = defaultRenderState->getStartID();
+        qDefaultRenderState[QStringLiteral("path")] = std::static_pointer_cast<RenderState>(defaultRenderState)->getPathID();
+        qDefaultRenderState[QStringLiteral("end")] = defaultRenderState->getEndID();
         qDefaultRenderStates[iter->first.c_str()] = qDefaultRenderState;
     }
-    qVariantMap["defaultRenderStates"] = qDefaultRenderStates;
+    qVariantMap[QStringLiteral("defaultRenderStates")] = qDefaultRenderStates;
 
     return qVariantMap;
 }
 
 glm::vec3 LaserPointer::getPickOrigin(const PickResultPointer& pickResult) const {
     auto rayPickResult = std::static_pointer_cast<RayPickResult>(pickResult);
-    return (rayPickResult ? vec3FromVariant(rayPickResult->pickVariant["origin"]) : glm::vec3(0.0f));
+    return (rayPickResult ? vec3FromVariant(rayPickResult->pickVariant[QStringLiteral("origin")]) : glm::vec3(0.0f));
 }
 
 glm::vec3 LaserPointer::getPickEnd(const PickResultPointer& pickResult, float distance) const {
@@ -123,7 +123,7 @@ void LaserPointer::setVisualPickResultInternal(PickResultPointer pickResult, Int
         rayPickResult->intersection = intersection;
         rayPickResult->distance = distance;
         rayPickResult->surfaceNormal = surfaceNormal;
-        rayPickResult->pickVariant["direction"] = vec3toVariant(-surfaceNormal);
+        rayPickResult->pickVariant[QStringLiteral("direction")] = vec3toVariant(-surfaceNormal);
     }
 }
 
@@ -175,6 +175,7 @@ void LaserPointer::RenderState::update(const glm::vec3& origin, const glm::vec3&
         properties.setPosition(origin);
         properties.setLinePoints(points);
         properties.setVisible(true);
+        properties.setEntityPriority(EntityPriority::PRIORITIZED);
         properties.setIgnorePickIntersection(doesPathIgnorePicks());
         QVector<float> widths;
         float width = getLineWidth() * parentScale;
@@ -189,30 +190,31 @@ void LaserPointer::RenderState::update(const glm::vec3& origin, const glm::vec3&
 std::shared_ptr<StartEndRenderState> LaserPointer::buildRenderState(const QVariantMap& propMap) {
     // FIXME: we have to keep using the Overlays interface here, because existing scripts use overlay properties to define pointers
     QUuid startID;
-    if (propMap["start"].isValid()) {
-        QVariantMap startMap = propMap["start"].toMap();
-        if (startMap["type"].isValid()) {
-            startMap.remove("visible");
-            startID = qApp->getOverlays().addOverlay(startMap["type"].toString(), startMap);
+    if (propMap[QStringLiteral("start")].isValid()) {
+        QVariantMap startMap = propMap[QStringLiteral("start")].toMap();
+        if (startMap[QStringLiteral("type")].isValid()) {
+            startMap.remove(QStringLiteral("visible"));
+            startID = qApp->getOverlays().addOverlay(startMap[QStringLiteral("type")].toString(), startMap);
+            
         }
     }
 
     QUuid pathID;
-    if (propMap["path"].isValid()) {
-        QVariantMap pathMap = propMap["path"].toMap();
+    if (propMap[QStringLiteral("path")].isValid()) {
+        QVariantMap pathMap = propMap[QStringLiteral("path")].toMap();
         // laser paths must be line3ds
-        if (pathMap["type"].isValid() && pathMap["type"].toString() == "line3d") {
-            pathMap.remove("visible");
-            pathID = qApp->getOverlays().addOverlay(pathMap["type"].toString(), pathMap);
+        if (pathMap[QStringLiteral("type")].isValid() && pathMap[QStringLiteral("type")].toString() == QStringLiteral("line3d")) {
+            pathMap.remove(QStringLiteral("visible"));
+            pathID = qApp->getOverlays().addOverlay(pathMap[QStringLiteral("type")].toString(), pathMap);
         }
     }
 
     QUuid endID;
-    if (propMap["end"].isValid()) {
-        QVariantMap endMap = propMap["end"].toMap();
-        if (endMap["type"].isValid()) {
-            endMap.remove("visible");
-            endID = qApp->getOverlays().addOverlay(endMap["type"].toString(), endMap);
+    if (propMap[QStringLiteral("end")].isValid()) {
+        QVariantMap endMap = propMap[QStringLiteral("end")].toMap();
+        if (endMap[QStringLiteral("type")].isValid()) {
+            endMap.remove(QStringLiteral("visible"));
+            endID = qApp->getOverlays().addOverlay(endMap[QStringLiteral("type")].toString(), endMap);
         }
     }
 
@@ -227,8 +229,8 @@ PointerEvent LaserPointer::buildPointerEvent(const PickedObject& target, const P
         intersection = rayPickResult->intersection;
         surfaceNormal = rayPickResult->surfaceNormal;
         const QVariantMap& searchRay = rayPickResult->pickVariant;
-        direction = vec3FromVariant(searchRay["direction"]);
-        origin = vec3FromVariant(searchRay["origin"]);
+        direction = vec3FromVariant(searchRay[QStringLiteral("direction")]);
+        origin = vec3FromVariant(searchRay[QStringLiteral("origin")]);
         pickedID = rayPickResult->objectID;
     }
 

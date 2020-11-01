@@ -22,18 +22,18 @@ QVariantList quatToQList(const glm::quat& g) {
 
 QVariantMap vec3ToQMap(const glm::vec3& glmVector) {
     QVariantMap vectorAsVariantMap;
-    vectorAsVariantMap["x"] = glmVector.x;
-    vectorAsVariantMap["y"] = glmVector.y;
-    vectorAsVariantMap["z"] = glmVector.z;
+    vectorAsVariantMap[QStringLiteral("x")] = glmVector.x;
+    vectorAsVariantMap[QStringLiteral("y")] = glmVector.y;
+    vectorAsVariantMap[QStringLiteral("z")] = glmVector.z;
     return vectorAsVariantMap;
 }
 
 QVariantMap quatToQMap(const glm::quat& glmQuat) {
     QVariantMap quatAsVariantMap;
-    quatAsVariantMap["x"] = glmQuat.x;
-    quatAsVariantMap["y"] = glmQuat.y;
-    quatAsVariantMap["z"] = glmQuat.z;
-    quatAsVariantMap["w"] = glmQuat.w;
+    quatAsVariantMap[QStringLiteral("x")] = glmQuat.x;
+    quatAsVariantMap[QStringLiteral("y")] = glmQuat.y;
+    quatAsVariantMap[QStringLiteral("z")] = glmQuat.z;
+    quatAsVariantMap[QStringLiteral("w")] = glmQuat.w;
     return quatAsVariantMap;
 }
 
@@ -54,11 +54,11 @@ glm::quat qListToQuat(const QVariant& q) {
 
 glm::vec3 qMapToVec3(const QVariant& q) {
     QVariantMap qMap = q.toMap();
-    if (qMap.contains("x") && qMap.contains("y") && qMap.contains("z")) {
+    if (qMap.contains(QStringLiteral("x")) && qMap.contains(QStringLiteral("y")) && qMap.contains(QStringLiteral("z"))) {
         return glm::vec3(
-                qMap["x"].toFloat(),
-                qMap["y"].toFloat(),
-                qMap["z"].toFloat()
+                qMap[QStringLiteral("x")].toFloat(),
+                qMap[QStringLiteral("y")].toFloat(),
+                qMap[QStringLiteral("z")].toFloat()
             );
     } else {
         return glm::vec3();
@@ -67,12 +67,12 @@ glm::vec3 qMapToVec3(const QVariant& q) {
 
 glm::quat qMapToQuat(const QVariant& q) {
     QVariantMap qMap = q.toMap();
-    if (qMap.contains("w") && qMap.contains("x") && qMap.contains("y") && qMap.contains("z")) {
+    if (qMap.contains(QStringLiteral("w")) && qMap.contains(QStringLiteral("x")) && qMap.contains(QStringLiteral("y")) && qMap.contains(QStringLiteral("z"))) {
         return glm::quat(
-                qMap["w"].toFloat(),
-                qMap["x"].toFloat(),
-                qMap["y"].toFloat(),
-                qMap["z"].toFloat()
+                qMap[QStringLiteral("w")].toFloat(),
+                qMap[QStringLiteral("x")].toFloat(),
+                qMap[QStringLiteral("y")].toFloat(),
+                qMap[QStringLiteral("z")].toFloat()
             );
     } else {
         return glm::quat();
@@ -81,15 +81,15 @@ glm::quat qMapToQuat(const QVariant& q) {
 
 glm::mat4 qMapToMat4(const QVariant& q) {
     QVariantMap qMap = q.toMap();
-    if (qMap.contains("r0c0") && qMap.contains("r1c0") && qMap.contains("r2c0") && qMap.contains("r3c0")
-            && qMap.contains("r0c1") && qMap.contains("r1c1") && qMap.contains("r2c1") && qMap.contains("r3c1")
-            && qMap.contains("r0c2") && qMap.contains("r1c2") && qMap.contains("r2c2") && qMap.contains("r3c2")
-            && qMap.contains("r0c3") && qMap.contains("r1c3") && qMap.contains("r2c3") && qMap.contains("r3c3")) {
+    if (qMap.contains(QStringLiteral("r0c0")) && qMap.contains(QStringLiteral("r1c0")) && qMap.contains(QStringLiteral("r2c0")) && qMap.contains(QStringLiteral("r3c0"))
+            && qMap.contains(QStringLiteral("r0c1")) && qMap.contains(QStringLiteral("r1c1")) && qMap.contains(QStringLiteral("r2c1")) && qMap.contains(QStringLiteral("r3c1"))
+            && qMap.contains(QStringLiteral("r0c2")) && qMap.contains(QStringLiteral("r1c2")) && qMap.contains(QStringLiteral("r2c2")) && qMap.contains(QStringLiteral("r3c2"))
+            && qMap.contains(QStringLiteral("r0c3")) && qMap.contains(QStringLiteral("r1c3")) && qMap.contains(QStringLiteral("r2c3")) && qMap.contains(QStringLiteral("r3c3"))) {
         return glm::mat4(
-                qMap["r0c0"].toFloat(), qMap["r1c0"].toFloat(), qMap["r2c0"].toFloat(), qMap["r3c0"].toFloat(),
-                qMap["r0c1"].toFloat(), qMap["r1c1"].toFloat(), qMap["r2c1"].toFloat(), qMap["r3c1"].toFloat(),
-                qMap["r0c2"].toFloat(), qMap["r1c2"].toFloat(), qMap["r2c2"].toFloat(), qMap["r3c2"].toFloat(),
-                qMap["r0c3"].toFloat(), qMap["r1c3"].toFloat(), qMap["r2c3"].toFloat(), qMap["r3c3"].toFloat()
+                qMap[QStringLiteral("r0c0")].toFloat(), qMap[QStringLiteral("r1c0")].toFloat(), qMap[QStringLiteral("r2c0")].toFloat(), qMap[QStringLiteral("r3c0")].toFloat(),
+                qMap[QStringLiteral("r0c1")].toFloat(), qMap[QStringLiteral("r1c1")].toFloat(), qMap[QStringLiteral("r2c1")].toFloat(), qMap[QStringLiteral("r3c1")].toFloat(),
+                qMap[QStringLiteral("r0c2")].toFloat(), qMap[QStringLiteral("r1c2")].toFloat(), qMap[QStringLiteral("r2c2")].toFloat(), qMap[QStringLiteral("r3c2")].toFloat(),
+                qMap[QStringLiteral("r0c3")].toFloat(), qMap[QStringLiteral("r1c3")].toFloat(), qMap[QStringLiteral("r2c3")].toFloat(), qMap[QStringLiteral("r3c3")].toFloat()
             );
     } else {
         return glm::mat4();

@@ -102,19 +102,19 @@ void MaterialEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPo
             QString materialURL = entity->getMaterialURL();
             if (materialURL != _materialURL) {
                 _materialURL = materialURL;
-                if (_materialURL.contains("#")) {
-                    auto split = _materialURL.split("#");
+                if (_materialURL.contains(QStringLiteral("#"))) {
+                    auto split = _materialURL.split(QStringLiteral("#"));
                     newCurrentMaterialName = split.last().toStdString();
-                } else if (_materialURL.contains("?")) {
+                } else if (_materialURL.contains(QStringLiteral("?"))) {
                     qDebug() << "DEPRECATED: Use # instead of ? for material URLS:" << _materialURL;
-                    auto split = _materialURL.split("?");
+                    auto split = _materialURL.split(QStringLiteral("?"));
                     newCurrentMaterialName = split.last().toStdString();
                 }
                 urlChanged = true;
             }
         }
 
-        bool usingMaterialData = _materialURL.startsWith("materialData");
+        bool usingMaterialData = _materialURL.startsWith(QStringLiteral("materialData"));
         bool materialDataChanged = false;
         QUuid oldParentID = _parentID;
         QString oldParentMaterialName = _parentMaterialName;
@@ -269,7 +269,7 @@ ShapeKey MaterialEntityRenderer::getShapeKey() {
 }
 
 void MaterialEntityRenderer::doRender(RenderArgs* args) {
-    PerformanceTimer perfTimer("RenderableMaterialEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderableMaterialEntityItem::render"));
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;
 

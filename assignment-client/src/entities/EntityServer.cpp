@@ -309,29 +309,29 @@ void EntityServer::pruneDeletedEntities() {
 
 void EntityServer::readAdditionalConfiguration(const QJsonObject& settingsSectionObject) {
     bool wantEditLogging = false;
-    readOptionBool(QString("wantEditLogging"), settingsSectionObject, wantEditLogging);
+    readOptionBool(QStringLiteral("wantEditLogging"), settingsSectionObject, wantEditLogging);
     qDebug("wantEditLogging=%s", debug::valueOf(wantEditLogging));
 
     bool wantTerseEditLogging = false;
-    readOptionBool(QString("wantTerseEditLogging"), settingsSectionObject, wantTerseEditLogging);
+    readOptionBool(QStringLiteral("wantTerseEditLogging"), settingsSectionObject, wantTerseEditLogging);
     qDebug("wantTerseEditLogging=%s", debug::valueOf(wantTerseEditLogging));
 
     EntityTreePointer tree = std::static_pointer_cast<EntityTree>(_tree);
 
     int maxTmpEntityLifetime;
-    if (readOptionInt("maxTmpLifetime", settingsSectionObject, maxTmpEntityLifetime)) {
+    if (readOptionInt(QStringLiteral("maxTmpLifetime"), settingsSectionObject, maxTmpEntityLifetime)) {
         tree->setEntityMaxTmpLifetime(maxTmpEntityLifetime);
     } else {
         tree->setEntityMaxTmpLifetime(EntityTree::DEFAULT_MAX_TMP_ENTITY_LIFETIME);
     }
 
     int minTime;
-    if (readOptionInt("dynamicDomainVerificationTimeMin", settingsSectionObject, minTime)) {
+    if (readOptionInt(QStringLiteral("dynamicDomainVerificationTimeMin"), settingsSectionObject, minTime)) {
         _MINIMUM_DYNAMIC_DOMAIN_VERIFICATION_TIMER_MS = minTime * 1000;
     }
 
     int maxTime;
-    if (readOptionInt("dynamicDomainVerificationTimeMax", settingsSectionObject, maxTime)) {
+    if (readOptionInt(QStringLiteral("dynamicDomainVerificationTimeMax"), settingsSectionObject, maxTime)) {
         _MAXIMUM_DYNAMIC_DOMAIN_VERIFICATION_TIMER_MS = maxTime * 1000;
     }
 
@@ -341,16 +341,16 @@ void EntityServer::readAdditionalConfiguration(const QJsonObject& settingsSectio
     tree->setWantTerseEditLogging(wantTerseEditLogging);
 
     QString entityScriptSourceWhitelist;
-    if (readOptionString("entityScriptSourceWhitelist", settingsSectionObject, entityScriptSourceWhitelist)) {
+    if (readOptionString(QStringLiteral("entityScriptSourceWhitelist"), settingsSectionObject, entityScriptSourceWhitelist)) {
         tree->setEntityScriptSourceWhitelist(entityScriptSourceWhitelist);
     } else {
-        tree->setEntityScriptSourceWhitelist("");
+        tree->setEntityScriptSourceWhitelist(QString());
     }
     
     auto entityEditFilters = DependencyManager::get<EntityEditFilters>();
     
     QString filterURL;
-    if (readOptionString("entityEditFilter", settingsSectionObject, filterURL) && !filterURL.isEmpty()) {
+    if (readOptionString(QStringLiteral("entityEditFilter"), settingsSectionObject, filterURL) && !filterURL.isEmpty()) {
         // connect the filterAdded signal, and block edits until you hear back
         connect(entityEditFilters.data(), &EntityEditFilters::filterAdded, this, &EntityServer::entityFilterAdded);
         

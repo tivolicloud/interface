@@ -316,7 +316,7 @@ void PolyLineEntityRenderer::updateData() {
 void PolyLineEntityRenderer::doRender(RenderArgs* args) {
 
    // evaluateEntityZoneCullState(_entity);
-    PerformanceTimer perfTimer("RenderablePolyLineEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderablePolyLineEntityItem::render"));
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;
 

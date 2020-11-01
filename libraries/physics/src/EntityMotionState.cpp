@@ -293,7 +293,7 @@ const uint8_t MAX_NUM_INACTIVE_UPDATES = 20;
 
 bool EntityMotionState::remoteSimulationOutOfSync(uint32_t simulationStep) {
     // NOTE: this method is only ever called when the entity simulation is locally owned
-    DETAILED_PROFILE_RANGE(simulation_physics, "CheckOutOfSync");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("CheckOutOfSync"));
 
     // Since we own the simulation: make sure _bidPriority is not less than current owned priority
     // because: a _bidPriority of zero indicates that we should drop ownership in the send.
@@ -403,7 +403,7 @@ bool EntityMotionState::remoteSimulationOutOfSync(uint32_t simulationStep) {
 
 bool EntityMotionState::shouldSendUpdate(uint32_t simulationStep) {
     // NOTE: this method is only ever called when the entity simulation is locally owned
-    DETAILED_PROFILE_RANGE(simulation_physics, "ShouldSend");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("ShouldSend"));
     // NOTE: we expect _entity and _body to be valid in this context, since shouldSendUpdate() is only called
     // after doesNotNeedToSendUpdate() returns false and that call should return 'true' if _entity or _body are NULL.
 
@@ -470,7 +470,7 @@ void EntityMotionState::updateSendVelocities() {
 }
 
 void EntityMotionState::sendBid(OctreeEditPacketSender* packetSender, uint32_t step) {
-    DETAILED_PROFILE_RANGE(simulation_physics, "Bid");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("Bid"));
 
     updateSendVelocities();
 
@@ -510,7 +510,7 @@ void EntityMotionState::sendBid(OctreeEditPacketSender* packetSender, uint32_t s
 }
 
 void EntityMotionState::sendUpdate(OctreeEditPacketSender* packetSender, uint32_t step) {
-    DETAILED_PROFILE_RANGE(simulation_physics, "Send");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("Send"));
     assert(isLocallyOwned());
 
     updateSendVelocities();
@@ -675,7 +675,7 @@ void EntityMotionState::resetMeasuredBodyAcceleration() {
 }
 
 void EntityMotionState::measureBodyAcceleration() {
-    DETAILED_PROFILE_RANGE(simulation_physics, "MeasureAccel");
+    DETAILED_PROFILE_RANGE(simulation_physics, QStringLiteral("MeasureAccel"));
     // try to manually measure the true acceleration of the object
     uint32_t thisStep = ObjectMotionState::getWorldSimulationStep();
     uint32_t numSubsteps = thisStep - _lastMeasureStep;

@@ -480,23 +480,23 @@ bool Model::findRayIntersectionAgainstSubMeshes(const glm::vec3& origin, const g
             distance = bestDistance;
             face = bestFace;
             surfaceNormal = bestWorldTriangle.getNormal();
-            extraInfo["worldIntersectionPoint"] = vec3toVariant(bestWorldIntersectionPoint);
-            extraInfo["meshIntersectionPoint"] = vec3toVariant(bestMeshIntersectionPoint);
-            extraInfo["partIndex"] = bestPartIndex;
-            extraInfo["shapeID"] = bestShapeID;
+            extraInfo[QStringLiteral("worldIntersectionPoint")] = vec3toVariant(bestWorldIntersectionPoint);
+            extraInfo[QStringLiteral("meshIntersectionPoint")] = vec3toVariant(bestMeshIntersectionPoint);
+            extraInfo[QStringLiteral("partIndex")] = bestPartIndex;
+            extraInfo[QStringLiteral("shapeID")] = bestShapeID;
             if (pickAgainstTriangles) {
-                extraInfo["subMeshIndex"] = bestSubMeshIndex;
-                extraInfo["subMeshName"] = hfmModel.getModelNameOfMesh(bestSubMeshIndex);
-                extraInfo["subMeshTriangleWorld"] = QVariantMap{
-                    { "v0", vec3toVariant(bestWorldTriangle.v0) },
-                    { "v1", vec3toVariant(bestWorldTriangle.v1) },
-                    { "v2", vec3toVariant(bestWorldTriangle.v2) },
+                extraInfo[QStringLiteral("subMeshIndex")] = bestSubMeshIndex;
+                extraInfo[QStringLiteral("subMeshName")] = hfmModel.getModelNameOfMesh(bestSubMeshIndex);
+                extraInfo[QStringLiteral("subMeshTriangleWorld")] = QVariantMap{
+                    { QStringLiteral("v0"), vec3toVariant(bestWorldTriangle.v0) },
+                    { QStringLiteral("v1"), vec3toVariant(bestWorldTriangle.v1) },
+                    { QStringLiteral("v2"), vec3toVariant(bestWorldTriangle.v2) },
                 };
-                extraInfo["subMeshNormal"] = vec3toVariant(bestModelTriangle.getNormal());
-                extraInfo["subMeshTriangle"] = QVariantMap{
-                    { "v0", vec3toVariant(bestModelTriangle.v0) },
-                    { "v1", vec3toVariant(bestModelTriangle.v1) },
-                    { "v2", vec3toVariant(bestModelTriangle.v2) },
+                extraInfo[QStringLiteral("subMeshNormal")] = vec3toVariant(bestModelTriangle.getNormal());
+                extraInfo[QStringLiteral("subMeshTriangle")] = QVariantMap{
+                    { QStringLiteral("v0"), vec3toVariant(bestModelTriangle.v0) },
+                    { QStringLiteral("v1"), vec3toVariant(bestModelTriangle.v1) },
+                    { QStringLiteral("v2"), vec3toVariant(bestModelTriangle.v2) },
                 };
             }
         }
@@ -627,23 +627,23 @@ bool Model::findParabolaIntersectionAgainstSubMeshes(const glm::vec3& origin, co
             parabolicDistance = bestDistance;
             face = bestFace;
             surfaceNormal = bestWorldTriangle.getNormal();
-            extraInfo["worldIntersectionPoint"] = vec3toVariant(bestWorldIntersectionPoint);
-            extraInfo["meshIntersectionPoint"] = vec3toVariant(bestMeshIntersectionPoint);
-            extraInfo["partIndex"] = bestPartIndex;
-            extraInfo["shapeID"] = bestShapeID;
+            extraInfo[QStringLiteral("worldIntersectionPoint")] = vec3toVariant(bestWorldIntersectionPoint);
+            extraInfo[QStringLiteral("meshIntersectionPoint")] = vec3toVariant(bestMeshIntersectionPoint);
+            extraInfo[QStringLiteral("partIndex")] = bestPartIndex;
+            extraInfo[QStringLiteral("shapeID")] = bestShapeID;
             if (pickAgainstTriangles) {
-                extraInfo["subMeshIndex"] = bestSubMeshIndex;
-                extraInfo["subMeshName"] = hfmModel.getModelNameOfMesh(bestSubMeshIndex);
-                extraInfo["subMeshTriangleWorld"] = QVariantMap{
-                    { "v0", vec3toVariant(bestWorldTriangle.v0) },
-                    { "v1", vec3toVariant(bestWorldTriangle.v1) },
-                    { "v2", vec3toVariant(bestWorldTriangle.v2) },
+                extraInfo[QStringLiteral("subMeshIndex")] = bestSubMeshIndex;
+                extraInfo[QStringLiteral("subMeshName")] = hfmModel.getModelNameOfMesh(bestSubMeshIndex);
+                extraInfo[QStringLiteral("subMeshTriangleWorld")] = QVariantMap{
+                    { QStringLiteral("v0"), vec3toVariant(bestWorldTriangle.v0) },
+                    { QStringLiteral("v1"), vec3toVariant(bestWorldTriangle.v1) },
+                    { QStringLiteral("v2"), vec3toVariant(bestWorldTriangle.v2) },
                 };
-                extraInfo["subMeshNormal"] = vec3toVariant(bestModelTriangle.getNormal());
-                extraInfo["subMeshTriangle"] = QVariantMap{
-                    { "v0", vec3toVariant(bestModelTriangle.v0) },
-                    { "v1", vec3toVariant(bestModelTriangle.v1) },
-                    { "v2", vec3toVariant(bestModelTriangle.v2) },
+                extraInfo[QStringLiteral("subMeshNormal")] = vec3toVariant(bestModelTriangle.getNormal());
+                extraInfo[QStringLiteral("subMeshTriangle")] = QVariantMap{
+                    { QStringLiteral("v0"), vec3toVariant(bestModelTriangle.v0) },
+                    { QStringLiteral("v1"), vec3toVariant(bestModelTriangle.v1) },
+                    { QStringLiteral("v2"), vec3toVariant(bestModelTriangle.v2) },
                 };
             }
         }
@@ -1423,7 +1423,7 @@ void Model::updateRig(float deltaTime, glm::mat4 parentTransform) {
 
 // virtual
 void Model::updateClusterMatrices() {
-    DETAILED_PERFORMANCE_TIMER("Model::updateClusterMatrices");
+    DETAILED_PERFORMANCE_TIMER(QStringLiteral("Model::updateClusterMatrices"));
 
     if (!_needsUpdateClusterMatrices || !isLoaded()) {
         return;
@@ -1534,7 +1534,7 @@ bool Model::isRenderable() const {
 std::set<unsigned int> Model::getMeshIDsFromMaterialID(QString parentMaterialName) {
     std::set<unsigned int> toReturn;
 
-    const QString all("all");
+    const QString all(QStringLiteral("all"));
     if (parentMaterialName == all) {
         for (unsigned int i = 0; i < (unsigned int)_modelMeshRenderItemIDs.size(); i++) {
             toReturn.insert(i);
@@ -1546,7 +1546,7 @@ std::set<unsigned int> Model::getMeshIDsFromMaterialID(QString parentMaterialNam
             }
             // if target starts with "mat::", try to find all meshes with materials that match target as a string
             // otherwise, return target as a uint
-            const QString MATERIAL_NAME_PREFIX("mat::");
+            const QString MATERIAL_NAME_PREFIX(QStringLiteral("mat::"));
             if (target.startsWith(MATERIAL_NAME_PREFIX)) {
                 std::string targetStdString = target.replace(0, MATERIAL_NAME_PREFIX.size(), "").toStdString();
                 for (unsigned int i = 0; i < (unsigned int)_modelMeshMaterialNames.size(); i++) {
@@ -1559,16 +1559,16 @@ std::set<unsigned int> Model::getMeshIDsFromMaterialID(QString parentMaterialNam
             toReturn.insert(target.toUInt());
         };
 
-        if (parentMaterialName.length() > 2 && parentMaterialName.startsWith("[") && parentMaterialName.endsWith("]")) {
+        if (parentMaterialName.length() > 2 && parentMaterialName.startsWith(QStringLiteral("[")) && parentMaterialName.endsWith(QStringLiteral("]"))) {
             #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
-            QStringList list = parentMaterialName.split(",", QString::SkipEmptyParts);
+            QStringList list = parentMaterialName.split(QStringLiteral(","), QString::SkipEmptyParts);
             #else
-            QStringList list = parentMaterialName.split(",", Qt::SkipEmptyParts);
+            QStringList list = parentMaterialName.split(QStringLiteral(","), Qt::SkipEmptyParts);
             #endif
             for (int i = 0; i < list.length(); i++) {
                 auto& target = list[i];
                 if (i == 0) {
-                    target = target.replace(0, 1, "");
+                    target = target.replace(0, 1, QString());
                 }
                 if (i == list.length() - 1) {
                     target = target.replace(target.length() - 1, 1, "");
@@ -1625,8 +1625,8 @@ void Model::applyMaterialMapping() {
             {
                 QString url = networkMaterialResource->getURL().toString();
                 bool foundMaterialName = false;
-                if (url.contains("#")) {
-                    auto split = url.split("#");
+                if (url.contains(QStringLiteral("#"))) {
+                    auto split = url.split(QStringLiteral("#"));
                     std::string materialName = split.last().toStdString();
                     auto networkMaterialIter = networkMaterialResource->parsedMaterials.networkMaterials.find(materialName);
                     if (networkMaterialIter != networkMaterialResource->parsedMaterials.networkMaterials.end()) {

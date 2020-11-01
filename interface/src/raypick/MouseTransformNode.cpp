@@ -17,7 +17,7 @@ Transform MouseTransformNode::getTransform() {
     if (position.isValid()) {
         Transform transform;
         QVariantMap posMap = position.toMap();
-        PickRay pickRay = qApp->getCamera().computePickRay(posMap["x"].toFloat(), posMap["y"].toFloat());
+        PickRay pickRay = qApp->getCamera().computePickRay(posMap[QStringLiteral("x")].toFloat(), posMap[QStringLiteral("y")].toFloat());
         transform.setTranslation(pickRay.origin);
         transform.setRotation(rotationBetween(Vectors::UP, pickRay.direction));
         return transform;
@@ -28,6 +28,6 @@ Transform MouseTransformNode::getTransform() {
 
 QVariantMap MouseTransformNode::toVariantMap() const {
     QVariantMap map;
-    map["joint"] = "Mouse";
+    map[QStringLiteral("joint")] = "Mouse";
     return map;
 }

@@ -444,10 +444,10 @@ void EntityScriptServer::resetEntitiesScriptEngine() {
     auto newEngine = scriptEngineFactory(ScriptEngine::ENTITY_SERVER_SCRIPT, NO_SCRIPT, engineName);
 
     auto webSocketServerConstructorValue = newEngine->newFunction(WebSocketServerClass::constructor);
-    newEngine->globalObject().setProperty("WebSocketServer", webSocketServerConstructorValue);
+    newEngine->globalObject().setProperty(QStringLiteral("WebSocketServer"), webSocketServerConstructorValue);
 
-    newEngine->registerGlobalObject("SoundCache", DependencyManager::get<SoundCacheScriptingInterface>().data());
-    newEngine->registerGlobalObject("AvatarList", DependencyManager::get<AvatarHashMap>().data());
+    newEngine->registerGlobalObject(QStringLiteral("SoundCache"), DependencyManager::get<SoundCacheScriptingInterface>().data());
+    newEngine->registerGlobalObject(QStringLiteral("AvatarList"), DependencyManager::get<AvatarHashMap>().data());
 
     // connect this script engines printedMessage signal to the global ScriptEngines these various messages
     auto scriptEngines = DependencyManager::get<ScriptEngines>().data();
@@ -559,10 +559,10 @@ void EntityScriptServer::sendStatsPacket() {
     QJsonObject statsObject;
 
     QJsonObject octreeStats;
-    octreeStats["elementCount"] = (double)OctreeElement::getNodeCount();
-    octreeStats["internalElementCount"] = (double)OctreeElement::getInternalNodeCount();
-    octreeStats["leafElementCount"] = (double)OctreeElement::getLeafNodeCount();
-    statsObject["octree_stats"] = octreeStats;
+    octreeStats[QStringLiteral("elementCount")] = (double)OctreeElement::getNodeCount();
+    octreeStats[QStringLiteral("internalElementCount")] = (double)OctreeElement::getInternalNodeCount();
+    octreeStats[QStringLiteral("leafElementCount")] = (double)OctreeElement::getLeafNodeCount();
+    statsObject[QStringLiteral("octree_stats")] = octreeStats;
 
     QJsonObject scriptEngineStats;
     int numberRunningScripts = 0;
@@ -570,8 +570,8 @@ void EntityScriptServer::sendStatsPacket() {
     if (scriptEngine) {
         numberRunningScripts = scriptEngine->getNumRunningEntityScripts();
     }
-    scriptEngineStats["number_running_scripts"] = numberRunningScripts;
-    statsObject["script_engine_stats"] = scriptEngineStats;
+    scriptEngineStats[QStringLiteral("number_running_scripts")] = numberRunningScripts;
+    statsObject[QStringLiteral("script_engine_stats")] = scriptEngineStats;
     
 
     auto nodeList = DependencyManager::get<NodeList>();
@@ -579,11 +579,11 @@ void EntityScriptServer::sendStatsPacket() {
     nodeList->eachNode([&](const SharedNodePointer& node) {
         QJsonObject clientStats;
         const QString uuidString(uuidStringWithoutCurlyBraces(node->getUUID()));
-        clientStats["node_type"] = NodeType::getNodeTypeName(node->getType());
+        clientStats[QStringLiteral("node_type")] = NodeType::getNodeTypeName(node->getType());
         auto& nodeStats = node->getConnectionStats();
 
-        static const QString NODE_OUTBOUND_KBPS_STAT_KEY("outbound_kbit/s");
-        static const QString NODE_INBOUND_KBPS_STAT_KEY("inbound_kbit/s");
+        static const QString NODE_OUTBOUND_KBPS_STAT_KEY(QStringLiteral("outbound_kbit/s"));
+        static const QString NODE_INBOUND_KBPS_STAT_KEY("QStringLiteral(inbound_kbit/s"));
 
         // add the key to ask the domain-server for a username replacement, if it has it
         clientStats[USERNAME_UUID_REPLACEMENT_STATS_KEY] = uuidString;
@@ -593,13 +593,13 @@ void EntityScriptServer::sendStatsPacket() {
 
         using namespace std::chrono;
         const float statsPeriod = duration<float, seconds::period>(nodeStats.endTime - nodeStats.startTime).count();
-        clientStats["unreliable_packet/s"] = (nodeStats.sentUnreliablePackets + nodeStats.receivedUnreliablePackets) / statsPeriod;
-        clientStats["reliable_packet/s"] = (nodeStats.sentPackets + nodeStats.receivedPackets) / statsPeriod;
+        clientStats[QStringLiteral("unreliable_packet/s")] = (nodeStats.sentUnreliablePackets + nodeStats.receivedUnreliablePackets) / statsPeriod;
+        clientStats[QStringLiteral("reliable_packet/s")] = (nodeStats.sentPackets + nodeStats.receivedPackets) / statsPeriod;
 
         nodesObject[uuidString] = clientStats;
     });
 
-    statsObject["nodes"] = nodesObject;
+    statsObject[QStringLiteral("nodes")] = nodesObject;
     addPacketStatsAndSendStatsPacket(statsObject);
 }
 

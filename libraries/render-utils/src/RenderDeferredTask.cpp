@@ -398,7 +398,7 @@ void RenderDeferredTaskDebug::build(JobModel& task, const render::Varying& input
         // Status icon rendering job
         {
             // Grab a texture map representing the different status icons and assign that to the drawStatusJob
-            auto iconMapPath = PathUtils::resourcesPath() + "icons/statusIconAtlas.svg";
+            auto iconMapPath = PathUtils::resourcesPath() + QStringLiteral("icons/statusIconAtlas.svg");
             auto statusIconMap = DependencyManager::get<TextureCache>()->getImageTexture(iconMapPath, image::TextureUsage::STRICT_TEXTURE);
             const auto drawStatusInputs = DrawStatus::Input(opaques, jitter).asVarying();
             task.addJob<DrawStatus>("DrawStatus", drawStatusInputs, DrawStatus(statusIconMap));

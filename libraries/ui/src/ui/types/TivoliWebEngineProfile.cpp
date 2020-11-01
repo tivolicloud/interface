@@ -46,7 +46,7 @@ void TivoliWebEngineProfile::RequestInterceptor::interceptRequest(QWebEngineUrlR
 }
 
 void TivoliWebEngineProfile::registerWithContext(QQmlContext* context) {
-    context->setContextProperty("TivoliWebEngineProfile", new TivoliWebEngineProfile(context));
+    context->setContextProperty(QStringLiteral("TivoliWebEngineProfile"), new TivoliWebEngineProfile(context));
 }
 
 void TivoliWebEngineProfile::clearCache() {

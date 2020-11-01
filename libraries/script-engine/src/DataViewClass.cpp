@@ -29,7 +29,7 @@ DataViewClass::DataViewClass(ScriptEngine* scriptEngine) : ArrayBufferViewClass(
                                 QScriptEngine::SkipMethodsInEnumeration |
                                 QScriptEngine::ExcludeSuperClassMethods |
                                 QScriptEngine::ExcludeSuperClassProperties);
-    _proto.setPrototype(global.property("Object").property("prototype"));
+    _proto.setPrototype(global.property(QStringLiteral("Object")).property(QStringLiteral("prototype")));
     
     // Register constructor
     _ctor = engine()->newFunction(construct, _proto);

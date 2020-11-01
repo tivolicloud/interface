@@ -630,7 +630,7 @@ void Keyboard::handleTriggerEnd(const QUuid& id, const PointerEvent& event) {
     }
 
     auto selection = DependencyManager::get<SelectionScriptingInterface>();
-    selection->removeFromSelectedItemsList(KEY_PRESSED_HIGHLIGHT, "entity", id);
+    selection->removeFromSelectedItemsList(KEY_PRESSED_HIGHLIGHT, QStringLiteral("entity"), id);
 }
 
 void Keyboard::handleTriggerContinue(const QUuid& id, const PointerEvent& event) {
@@ -686,7 +686,7 @@ void Keyboard::handleHoverBegin(const QUuid& id, const PointerEvent& event) {
     }
 
     auto selection = DependencyManager::get<SelectionScriptingInterface>();
-    selection->addToSelectedItemsList(KEY_HOVER_HIGHLIGHT, "entity", id);
+    selection->addToSelectedItemsList(KEY_HOVER_HIGHLIGHT, QStringLiteral("entity"), id);
 }
 
 void Keyboard::handleHoverEnd(const QUuid& id, const PointerEvent& event) {
@@ -750,9 +750,9 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
             return;
         }
         QJsonObject jsonObject = jsonDoc.object();
-        QJsonArray layer = jsonObject["Layer1"].toArray();
-        QJsonObject anchorObject = jsonObject["anchor"].toObject();
-        bool useResourcePath = jsonObject["useResourcesPath"].toBool();
+        QJsonArray layer = jsonObject[QStringLiteral("Layer1")].toArray();
+        QJsonObject anchorObject = jsonObject[QStringLiteral("anchor")].toObject();
+        bool useResourcePath = jsonObject[QStringLiteral("useResourcesPath")].toBool();
         QString resourcePath = PathUtils::resourcesUrl();
 
 
@@ -763,17 +763,17 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
 
         auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
         {
-            glm::vec3 dimensions = vec3FromVariant(anchorObject["dimensions"].toVariant());
+            glm::vec3 dimensions = vec3FromVariant(anchorObject[QStringLiteral("dimensions")].toVariant());
 
             EntityItemProperties properties;
             properties.setType(EntityTypes::Box);
-            properties.setName("KeyboardAnchor");
+            properties.setName(QStringLiteral("KeyboardAnchor"));
             properties.setVisible(false);
             properties.getGrab().setGrabbable(true);
             properties.setIgnorePickIntersection(false);
             properties.setDimensions(dimensions);
-            properties.setPosition(vec3FromVariant(anchorObject["position"].toVariant()));
-            properties.setRotation(quatFromVariant(anchorObject["rotation"].toVariant()));
+            properties.setPosition(vec3FromVariant(anchorObject[QStringLiteral("position")].toVariant()));
+            properties.setRotation(quatFromVariant(anchorObject[QStringLiteral("rotation")].toVariant()));
 
             Anchor anchor;
             anchor.entityID = entityScriptingInterface->addEntityInternal(properties, entity::HostType::LOCAL);
@@ -782,10 +782,10 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
         }
 
         {
-            QJsonObject backPlateObject = jsonObject["backPlate"].toObject();
-            glm::vec3 position = vec3FromVariant(backPlateObject["position"].toVariant());
-            glm::vec3 dimensions = vec3FromVariant(backPlateObject["dimensions"].toVariant());
-            glm::quat rotation = quatFromVariant(backPlateObject["rotation"].toVariant());
+            QJsonObject backPlateObject = jsonObject[QStringLiteral("backPlate")].toObject();
+            glm::vec3 position = vec3FromVariant(backPlateObject[QStringLiteral("position")].toVariant());
+            glm::vec3 dimensions = vec3FromVariant(backPlateObject[QStringLiteral("dimensions")].toVariant());
+            glm::quat rotation = quatFromVariant(backPlateObject[QStringLiteral("rotation")].toVariant());
 
             EntityItemProperties properties;
             properties.setType(EntityTypes::Box);
@@ -808,7 +808,7 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
             _backPlate = backPlate;
         }
 
-        const QJsonArray& keyboardLayers = jsonObject["layers"].toArray();
+        const QJsonArray& keyboardLayers = jsonObject[QStringLiteral("layers")].toArray();
         int keyboardLayerCount = keyboardLayers.size();
         _keyboardLayers.reserve(keyboardLayerCount);
         for (int keyboardLayerIndex = 0; keyboardLayerIndex < keyboardLayerCount; keyboardLayerIndex++) {
@@ -818,8 +818,8 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
             foreach (const QJsonValue& keyboardKeyValue, keyboardLayer.toArray()) {
 
                 QVariantMap textureMap;
-                if (!keyboardKeyValue["texture"].isNull()) {
-                    textureMap = keyboardKeyValue["texture"].toObject().toVariantMap();
+                if (!keyboardKeyValue[QStringLiteral("texture")].isNull()) {
+                    textureMap = keyboardKeyValue[QStringLiteral("texture")].toObject().toVariantMap();
 
                     if (useResourcePath) {
                         for (auto iter = textureMap.begin(); iter != textureMap.end(); iter++) {
@@ -829,24 +829,24 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
                     }
                 }
 
-                QString modelUrl = keyboardKeyValue["modelURL"].toString();
+                QString modelUrl = keyboardKeyValue[QStringLiteral("modelURL")].toString();
                 QString url = (useResourcePath ? (resourcePath + modelUrl) : modelUrl);
 
                 EntityItemProperties properties;
                 properties.setType(EntityTypes::Model);
-                properties.setDimensions(vec3FromVariant(keyboardKeyValue["dimensions"].toVariant()));
-                properties.setPosition(vec3FromVariant(keyboardKeyValue["position"].toVariant()));
+                properties.setDimensions(vec3FromVariant(keyboardKeyValue[QStringLiteral("dimensions")].toVariant()));
+                properties.setPosition(vec3FromVariant(keyboardKeyValue[QStringLiteral("position")].toVariant()));
                 properties.setVisible(false);
                 properties.setEmissive(true);
                 properties.setParentID(_anchor.entityID);
                 properties.setModelURL(url);
                 properties.setTextures(QString(QJsonDocument::fromVariant(textureMap).toJson()));
                 properties.getGrab().setGrabbable(false);
-                properties.setLocalRotation(quatFromVariant(keyboardKeyValue["localOrientation"].toVariant()));
+                properties.setLocalRotation(quatFromVariant(keyboardKeyValue[QStringLiteral("localOrientation")].toVariant()));
                 QUuid id = entityScriptingInterface->addEntityInternal(properties, entity::HostType::LOCAL);
 
-                QString keyType = keyboardKeyValue["type"].toString();
-                QString keyString = keyboardKeyValue["key"].toString();
+                QString keyType = keyboardKeyValue[QStringLiteral("type")].toString();
+                QString keyString = keyboardKeyValue[QStringLiteral("key")].toString();
 
                 Key key;
                 if (!keyType.isNull()) {
@@ -854,7 +854,7 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
                     key.setKeyType(type);
 
                     if (type == Key::Type::LAYER || type == Key::Type::CAPS) {
-                        int switchToLayer = keyboardKeyValue["switchToLayer"].toInt();
+                        int switchToLayer = keyboardKeyValue[QStringLiteral("switchToLayer")].toInt();
                         key.setSwitchToLayerIndex(switchToLayer);
                     }
                 }
@@ -871,25 +871,25 @@ void Keyboard::loadKeyboardFile(const QString& keyboardFile) {
         }
 
         {
-            QJsonObject displayTextObject = jsonObject["textDisplay"].toObject();
-            glm::vec3 dimensions = vec3FromVariant(displayTextObject["dimensions"].toVariant());
-            glm::vec3 localPosition = vec3FromVariant(displayTextObject["localPosition"].toVariant());
-            float lineHeight = (float)displayTextObject["lineHeight"].toDouble();
+            QJsonObject displayTextObject = jsonObject[QStringLiteral("textDisplay")].toObject();
+            glm::vec3 dimensions = vec3FromVariant(displayTextObject[QStringLiteral("dimensions")].toVariant());
+            glm::vec3 localPosition = vec3FromVariant(displayTextObject[QStringLiteral("localPosition")].toVariant());
+            float lineHeight = (float)displayTextObject[QStringLiteral("lineHeight")].toDouble();
 
             EntityItemProperties properties;
             properties.setType(EntityTypes::Text);
             properties.setDimensions(dimensions);
             properties.setLocalPosition(localPosition);
-            properties.setLocalRotation(quatFromVariant(displayTextObject["localOrientation"].toVariant()));
-            properties.setLeftMargin((float)displayTextObject["leftMargin"].toDouble());
-            properties.setRightMargin((float)displayTextObject["rightMargin"].toDouble());
-            properties.setTopMargin((float)displayTextObject["topMargin"].toDouble());
-            properties.setBottomMargin((float)displayTextObject["bottomMargin"].toDouble());
-            properties.setLineHeight((float)displayTextObject["lineHeight"].toDouble());
+            properties.setLocalRotation(quatFromVariant(displayTextObject[QStringLiteral("localOrientation")].toVariant()));
+            properties.setLeftMargin((float)displayTextObject[QStringLiteral("leftMargin")].toDouble());
+            properties.setRightMargin((float)displayTextObject[QStringLiteral("rightMargin")].toDouble());
+            properties.setTopMargin((float)displayTextObject[QStringLiteral("topMargin")].toDouble());
+            properties.setBottomMargin((float)displayTextObject[QStringLiteral("bottomMargin")].toDouble());
+            properties.setLineHeight((float)displayTextObject[QStringLiteral("lineHeight")].toDouble());
             properties.setVisible(false);
             properties.setEmissive(true);
             properties.getGrab().setGrabbable(false);
-            properties.setText("");
+            properties.setText(QString());
             properties.setTextAlpha(1.0f);
             properties.setBackgroundAlpha(0.7f);
             properties.setParentID(_anchor.entityID);

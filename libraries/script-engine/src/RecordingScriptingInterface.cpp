@@ -270,7 +270,7 @@ bool RecordingScriptingInterface::saveRecordingToAsset(QScriptValue getClipAtpUr
     if (auto upload = DependencyManager::get<AssetClient>()->createUpload(recording::Clip::toBuffer(_lastClip))) {
         QObject::connect(upload, &AssetUpload::finished,
                          getClipAtpUrl.engine(), [=](AssetUpload* upload, const QString& hash) mutable {
-            QString clip_atp_url = "";
+            QString clip_atp_url = QString();
 
             if (upload->getError() == AssetUpload::NoError) {
 

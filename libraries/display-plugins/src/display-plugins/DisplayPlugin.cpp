@@ -16,7 +16,7 @@
 #include "Basic2DWindowOpenGLDisplayPlugin.h"
 
 const QString& DisplayPlugin::MENU_PATH() {
-    static const QString value = "Display";
+    static const QString value = QStringLiteral("Display");
     return value;
 }
 

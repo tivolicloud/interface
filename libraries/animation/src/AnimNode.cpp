@@ -77,8 +77,9 @@ void AnimNode::processOutputJoints(AnimVariantMap& triggersOut) const {
         int jointIndex = _skeleton->nameToJointIndex(jointName);
         if (jointIndex >= 0) {
             AnimPose pose = _skeleton->getAbsolutePose(jointIndex, getPosesInternal());
-            triggersOut.set(_id + jointName + "Rotation", pose.rot());
-            triggersOut.set(_id + jointName + "Position", pose.trans());
+            QString prefix = _id + jointName;
+            triggersOut.set(prefix + QStringLiteral("Rotation"), pose.rot());
+            triggersOut.set(prefix + QStringLiteral("Position"), pose.trans());
         }
     }
 }

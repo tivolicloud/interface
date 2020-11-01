@@ -354,46 +354,46 @@ void ModelEntityItem::setAnimationSettings(const QString& value) {
     QJsonDocument settingsAsJson = QJsonDocument::fromJson(value.toUtf8());
     QJsonObject settingsAsJsonObject = settingsAsJson.object();
     QVariantMap settingsMap = settingsAsJsonObject.toVariantMap();
-    if (settingsMap.contains("fps")) {
-        float fps = settingsMap["fps"].toFloat();
+    if (settingsMap.contains(QStringLiteral("fps"))) {
+        float fps = settingsMap[QStringLiteral("fps")].toFloat();
         animationProperties.setFPS(fps);
     }
 
     // old settings used frameIndex
-    if (settingsMap.contains("frameIndex")) {
-        float currentFrame = settingsMap["frameIndex"].toFloat();
+    if (settingsMap.contains(QStringLiteral("frameIndex"))) {
+        float currentFrame = settingsMap[QStringLiteral("frameIndex")].toFloat();
         animationProperties.setCurrentFrame(currentFrame);
     }
 
-    if (settingsMap.contains("running")) {
-        bool running = settingsMap["running"].toBool();
+    if (settingsMap.contains(QStringLiteral("running"))) {
+        bool running = settingsMap[QStringLiteral("running")].toBool();
         if (running != animationProperties.getRunning()) {
             animationProperties.setRunning(running);
         }
     }
 
-    if (settingsMap.contains("firstFrame")) {
-        float firstFrame = settingsMap["firstFrame"].toFloat();
+    if (settingsMap.contains(QStringLiteral("firstFrame"))) {
+        float firstFrame = settingsMap[QStringLiteral("firstFrame")].toFloat();
         animationProperties.setFirstFrame(firstFrame);
     }
 
-    if (settingsMap.contains("lastFrame")) {
-        float lastFrame = settingsMap["lastFrame"].toFloat();
+    if (settingsMap.contains(QStringLiteral("lastFrame"))) {
+        float lastFrame = settingsMap[QStringLiteral("lastFrame")].toFloat();
         animationProperties.setLastFrame(lastFrame);
     }
 
-    if (settingsMap.contains("loop")) {
-        bool loop = settingsMap["loop"].toBool();
+    if (settingsMap.contains(QStringLiteral("loop"))) {
+        bool loop = settingsMap[QStringLiteral("loop")].toBool();
         animationProperties.setLoop(loop);
     }
 
-    if (settingsMap.contains("hold")) {
-        bool hold = settingsMap["hold"].toBool();
+    if (settingsMap.contains(QStringLiteral("hold"))) {
+        bool hold = settingsMap[QStringLiteral("hold")].toBool();
         animationProperties.setHold(hold);
     }
 
-    if (settingsMap.contains("allowTranslation")) {
-        bool allowTranslation = settingsMap["allowTranslation"].toBool();
+    if (settingsMap.contains(QStringLiteral("allowTranslation"))) {
+        bool allowTranslation = settingsMap[QStringLiteral("allowTranslation")].toBool();
         animationProperties.setAllowTranslation(allowTranslation);
     }
 

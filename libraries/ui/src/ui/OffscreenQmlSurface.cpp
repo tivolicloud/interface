@@ -279,17 +279,17 @@ void OffscreenQmlSurface::initializeEngine(QQmlEngine* engine) {
             { "renderer", contextInfo.renderer.c_str() },
         };
     });
-    rootContext->setContextProperty("GL", QML_GL_INFO);
-    rootContext->setContextProperty("urlHandler", new UrlHandler(rootContext));
-    rootContext->setContextProperty("resourceDirectoryUrl", QUrl::fromLocalFile(PathUtils::resourcesPath()));
-    rootContext->setContextProperty("ApplicationInterface", qApp);
+    rootContext->setContextProperty(QStringLiteral("GL"), QML_GL_INFO);
+    rootContext->setContextProperty(QStringLiteral("urlHandler"), new UrlHandler(rootContext));
+    rootContext->setContextProperty(QStringLiteral("resourceDirectoryUrl"), QUrl::fromLocalFile(PathUtils::resourcesPath()));
+    rootContext->setContextProperty(QStringLiteral("ApplicationInterface"), qApp);
     auto javaScriptToInject = getEventBridgeJavascript();
     if (!javaScriptToInject.isEmpty()) {
-        rootContext->setContextProperty("eventBridgeJavaScriptToInject", QVariant(javaScriptToInject));
+        rootContext->setContextProperty(QStringLiteral("eventBridgeJavaScriptToInject"), QVariant(javaScriptToInject));
     }
-    rootContext->setContextProperty("Paths", DependencyManager::get<PathUtils>().data());
-    rootContext->setContextProperty("Tablet", DependencyManager::get<TabletScriptingInterface>().data());
-    rootContext->setContextProperty("Toolbars", DependencyManager::get<ToolbarScriptingInterface>().data());
+    rootContext->setContextProperty(QStringLiteral("Paths"), DependencyManager::get<PathUtils>().data());
+    rootContext->setContextProperty(QStringLiteral("Tablet"), DependencyManager::get<TabletScriptingInterface>().data());
+    rootContext->setContextProperty(QStringLiteral("Toolbars"), DependencyManager::get<ToolbarScriptingInterface>().data());
     TabletProxy* tablet =
         DependencyManager::get<TabletScriptingInterface>()->getTablet("com.highfidelity.interface.tablet.system");
     engine->setObjectOwnership(tablet, QQmlEngine::CppOwnership);
@@ -303,19 +303,19 @@ void OffscreenQmlSurface::addWhitelistContextHandler(const std::initializer_list
 void OffscreenQmlSurface::onRootContextCreated(QQmlContext* qmlContext) {
     OffscreenSurface::onRootContextCreated(qmlContext);
     qmlContext->setBaseUrl(PathUtils::qmlBaseUrl());
-    qmlContext->setContextProperty("eventBridge", this);
-    qmlContext->setContextProperty("webEntity", this);
-    qmlContext->setContextProperty("QmlSurface", this);
+    qmlContext->setContextProperty(QStringLiteral("eventBridge"), this);
+    qmlContext->setContextProperty(QStringLiteral("webEntity"), this);
+    qmlContext->setContextProperty(QStringLiteral("QmlSurface"), this);
     // FIXME Compatibility mechanism for existing HTML and JS that uses eventBridgeWrapper
     // Find a way to flag older scripts using this mechanism and wanr that this is deprecated
-    qmlContext->setContextProperty("eventBridgeWrapper", new EventBridgeWrapper(this, qmlContext));
+    qmlContext->setContextProperty(QStringLiteral("eventBridgeWrapper"), new EventBridgeWrapper(this, qmlContext));
 #if !defined(Q_OS_ANDROID)
     {
-        PROFILE_RANGE(startup, "FileTypeProfile");
+        PROFILE_RANGE(startup, QStringLiteral("FileTypeProfile"));
         FileTypeProfile::registerWithContext(qmlContext);
     }
     {
-        PROFILE_RANGE(startup, "TivoliWebEngineProfile");
+        PROFILE_RANGE(startup, QStringLiteral("TivoliWebEngineProfile"));
         TivoliWebEngineProfile::registerWithContext(qmlContext);
 
     }
@@ -345,17 +345,17 @@ QQmlContext* OffscreenQmlSurface::contextForUrl(const QUrl& qmlSource, QQuickIte
 }
 
 void OffscreenQmlSurface::onItemCreated(QQmlContext* qmlContext, QQuickItem* newItem) {
-    QObject* eventBridge = qmlContext->contextProperty("eventBridge").value<QObject*>();
+    QObject* eventBridge = qmlContext->contextProperty(QStringLiteral("eventBridge")).value<QObject*>();
     if (qmlContext != getSurfaceContext() && eventBridge && eventBridge != this) {
         // FIXME Compatibility mechanism for existing HTML and JS that uses eventBridgeWrapper
         // Find a way to flag older scripts using this mechanism and wanr that this is deprecated
-        qmlContext->setContextProperty("eventBridgeWrapper", new EventBridgeWrapper(eventBridge, qmlContext));
+        qmlContext->setContextProperty(QStringLiteral("eventBridgeWrapper"), new EventBridgeWrapper(eventBridge, qmlContext));
     }
 
 }
 
 void OffscreenQmlSurface::onRootCreated() {
-    getSurfaceContext()->setContextProperty("offscreenWindow", QVariant::fromValue(getWindow()));
+    getSurfaceContext()->setContextProperty(QStringLiteral("offscreenWindow"), QVariant::fromValue(getWindow()));
 
     // Connect with the audio client and listen for audio device changes
     connect(DependencyManager::get<AudioClient>().data(), &AudioClient::deviceChanged, this, [this](QAudio::Mode mode, const HifiAudioDeviceInfo& device) {
@@ -376,8 +376,8 @@ void OffscreenQmlSurface::onRootCreated() {
     _audioOutputUpdateTimer.setSingleShot(true);
 #endif
 
-    if (getRootItem()->objectName() == "tabletRoot") {
-        getSurfaceContext()->setContextProperty("tabletRoot", QVariant::fromValue(getRootItem()));
+    if (getRootItem()->objectName() == QStringLiteral("tabletRoot")) {
+        getSurfaceContext()->setContextProperty(QStringLiteral("tabletRoot"), QVariant::fromValue(getRootItem()));
         auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
         tabletScriptingInterface->setQmlTabletRoot("com.highfidelity.interface.tablet.system", this);
         QObject* tablet = tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system");

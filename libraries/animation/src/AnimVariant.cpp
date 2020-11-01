@@ -47,7 +47,7 @@ QScriptValue AnimVariantMap::animVariantMapToScriptValue(QScriptEngine* engine, 
                 break;
             default:
                 // Unknown type
-                assert(QString("AnimVariant::Type") == QString("valid"));
+                assert(QStringLiteral("AnimVariant::Type") == QStringLiteral("valid"));
         }
     };
     if (useNames) { // copy only the requested names
@@ -103,13 +103,13 @@ void AnimVariantMap::animVariantMapFromScriptValue(const QScriptValue& source) {
             }
         } else { // Try to get x,y,z and possibly w
             if (value.isObject()) {
-                QScriptValue x = value.property("x");
+                QScriptValue x = value.property(QStringLiteral("x"));
                 if (x.isNumber()) {
-                    QScriptValue y = value.property("y");
+                    QScriptValue y = value.property(QStringLiteral("y"));
                     if (y.isNumber()) {
-                        QScriptValue z = value.property("z");
+                        QScriptValue z = value.property(QStringLiteral("z"));
                         if (z.isNumber()) {
-                            QScriptValue w = value.property("w");
+                            QScriptValue w = value.property(QStringLiteral("w"));
                             if (w.isNumber()) {
                                 set(property.name(), glm::quat(w.toNumber(), x.toNumber(), y.toNumber(), z.toNumber()));
                             } else {
@@ -131,10 +131,10 @@ std::map<QString, QString> AnimVariantMap::toDebugMap() const {
     for (auto& pair : _map) {
         switch (pair.second.getType()) {
         case AnimVariant::Type::Bool:
-            result[pair.first] = QString("%1").arg(pair.second.getBool());
+            result[pair.first] = QStringLiteral("%1").arg(pair.second.getBool());
             break;
         case AnimVariant::Type::Int:
-            result[pair.first] = QString("%1").arg(pair.second.getInt());
+            result[pair.first] = QStringLiteral("%1").arg(pair.second.getInt());
             break;
         case AnimVariant::Type::Float:
             result[pair.first] = QString::number(pair.second.getFloat(), 'f', 3);
@@ -142,7 +142,7 @@ std::map<QString, QString> AnimVariantMap::toDebugMap() const {
         case AnimVariant::Type::Vec3: {
             // To prevent filling up debug stats, don't show vec3 values
             glm::vec3 value = pair.second.getVec3();
-            result[pair.first] = QString("(%1, %2, %3)").
+            result[pair.first] = QStringLiteral("(%1, %2, %3)").
                 arg(QString::number(value.x, 'f', 3)).
                 arg(QString::number(value.y, 'f', 3)).
                 arg(QString::number(value.z, 'f', 3));
@@ -151,7 +151,7 @@ std::map<QString, QString> AnimVariantMap::toDebugMap() const {
         case AnimVariant::Type::Quat: {
             // To prevent filling up the anim stats, don't show quat values
             glm::quat value = pair.second.getQuat();
-            result[pair.first] = QString("(%1, %2, %3, %4)").
+            result[pair.first] = QStringLiteral("(%1, %2, %3, %4)").
                 arg(QString::number(value.x, 'f', 3)).
                 arg(QString::number(value.y, 'f', 3)).
                 arg(QString::number(value.z, 'f', 3)).

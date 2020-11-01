@@ -52,13 +52,13 @@ public:
      */
     virtual QVariantMap toVariantMap() const override {
         QVariantMap toReturn;
-        toReturn["type"] = type;
-        toReturn["intersects"] = intersects;
-        toReturn["objectID"] = objectID;
-        toReturn["distance"] = distance;
-        toReturn["intersection"] = vec3toVariant(intersection);
-        toReturn["surfaceNormal"] = vec3toVariant(surfaceNormal);
-        toReturn["stylusTip"] = PickResult::toVariantMap();
+        toReturn[QStringLiteral("type")] = type;
+        toReturn[QStringLiteral("intersects")] = intersects;
+        toReturn[QStringLiteral("objectID")] = objectID;
+        toReturn[QStringLiteral("distance")] = distance;
+        toReturn[QStringLiteral("intersection")] = vec3toVariant(intersection);
+        toReturn[QStringLiteral("surfaceNormal")] = vec3toVariant(surfaceNormal);
+        toReturn[QStringLiteral("stylusTip")] = PickResult::toVariantMap();
         return toReturn;
     }
 

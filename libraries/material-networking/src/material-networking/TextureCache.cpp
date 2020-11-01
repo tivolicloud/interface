@@ -801,12 +801,12 @@ void NetworkTexture::ktxMipRequestFinished() {
     Q_ASSERT_X(_ktxMipRequest, __FUNCTION__, "Request should not be null while in ktxMipRequestFinished");
     Q_ASSERT(_ktxResourceState == REQUESTING_MIP);
 
-    PROFILE_ASYNC_END(resource, "Resource:" + getType(), QString::number(_requestID), {
-        { "from_cache", _ktxMipRequest->loadedFromCache() },
-        { "size_mb", _bytesTotal / 1000000.0 }
+    PROFILE_ASYNC_END(resource, QStringLiteral("Resource:") + getType(), QString::number(_requestID), {
+        { QStringLiteral("from_cache"), _ktxMipRequest->loadedFromCache() },
+        { QStringLiteral("size_mb"), _bytesTotal / 1000000.0 }
     });
 
-    PROFILE_RANGE_EX(resource_parse_image, __FUNCTION__, 0xffff0000, 0, { { "url", _url.toString() } });
+    PROFILE_RANGE_EX(resource_parse_image, __FUNCTION__, 0xffff0000, 0, { { QStringLiteral("url"), _url.toString() } });
 
 
     setSize(_bytesTotal);
@@ -836,7 +836,7 @@ void NetworkTexture::ktxMipRequestFinished() {
             auto texture = _textureSource->getGPUTexture();
             DependencyManager::get<StatTracker>()->incrementStat("PendingProcessing");
             QtConcurrent::run(QThreadPool::globalInstance(), [self, data, mipLevel, url, texture] {
-                PROFILE_RANGE_EX(resource_parse_image, "NetworkTexture - Processing Mip Data", 0xffff0000, 0, { { "url", url.toString() } });
+                PROFILE_RANGE_EX(resource_parse_image, QStringLiteral("NetworkTexture - Processing Mip Data"), 0xffff0000, 0, { { QStringLiteral("url"), url.toString() } });
                 DependencyManager::get<StatTracker>()->decrementStat("PendingProcessing");
                 CounterStat counter("Processing");
 
@@ -1178,12 +1178,12 @@ ImageReader::ImageReader(const QWeakPointer<Resource>& resource, const QUrl& url
     static auto start = usecTimestampNow() / USECS_PER_MSEC;
     auto now = usecTimestampNow() / USECS_PER_MSEC - start;
     QString urlStr = _url.toString();
-    auto dot = urlStr.lastIndexOf(".");
+    auto dot = urlStr.lastIndexOf(QStringLiteral("."));
     QString outFileName = QString(QCryptographicHash::hash(urlStr.toLocal8Bit(), QCryptographicHash::Md5).toHex()) + urlStr.right(urlStr.length() - dot);
-    QFile loadRecord("h:/textures/loads.txt");
+    QFile loadRecord(QStringLiteral("h:/textures/loads.txt"));
     loadRecord.open(QFile::Text | QFile::Append | QFile::ReadWrite);
-    loadRecord.write(QString("%1 %2\n").arg(now).arg(outFileName).toLocal8Bit());
-    outFileName = "h:/textures/" + outFileName;
+    loadRecord.write(QStringLiteral("%1 %2\n").arg(now).arg(outFileName).toLocal8Bit());
+    outFileName = QStringLiteral("h:/textures/") + outFileName;
     QFileInfo outInfo(outFileName);
     if (!outInfo.exists()) {
         QFile outFile(outFileName);
@@ -1203,9 +1203,9 @@ void ImageReader::listSupportedImageFormats() {
 }
 
 void ImageReader::run() {
-    PROFILE_RANGE_EX(resource_parse_image, __FUNCTION__, 0xffff0000, 0, { { "url", _url.toString() } });
+    PROFILE_RANGE_EX(resource_parse_image, __FUNCTION__, 0xffff0000, 0, { { QStringLiteral("url"), _url.toString() } });
     DependencyManager::get<StatTracker>()->decrementStat("PendingProcessing");
-    CounterStat counter("Processing");
+    CounterStat counter(QStringLiteral("Processing"));
 
     auto originalPriority = QThread::currentThread()->priority();
     if (originalPriority == QThread::InheritPriority) {

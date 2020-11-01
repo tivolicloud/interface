@@ -118,7 +118,7 @@ QString AndroidHelper::errorStringFromAPIObject(const QJsonValue& apiObject) {
     } else if (apiObject.isString()) {
         return apiObject.toString();
     } else {
-        return "is invalid";
+        return QStringLiteral("is invalid");
     }
 }
 
@@ -140,15 +140,15 @@ void AndroidHelper::signupFailed(QNetworkReply* reply) {
         QStringList errorStringList;
 
         if (dataObject.contains(EMAIL_DATA_KEY)) {
-            errorStringList.append(QString("Email %1.").arg(errorStringFromAPIObject(dataObject[EMAIL_DATA_KEY])));
+            errorStringList.append(QStringLiteral("Email %1.").arg(errorStringFromAPIObject(dataObject[EMAIL_DATA_KEY])));
         }
 
         if (dataObject.contains(USERNAME_DATA_KEY)) {
-            errorStringList.append(QString("Username %1.").arg(errorStringFromAPIObject(dataObject[USERNAME_DATA_KEY])));
+            errorStringList.append(QStringLiteral("Username %1.").arg(errorStringFromAPIObject(dataObject[USERNAME_DATA_KEY])));
         }
 
         if (dataObject.contains(PASSWORD_DATA_KEY)) {
-            errorStringList.append(QString("Password %1.").arg(errorStringFromAPIObject(dataObject[PASSWORD_DATA_KEY])));
+            errorStringList.append(QStringLiteral("Password %1.").arg(errorStringFromAPIObject(dataObject[PASSWORD_DATA_KEY])));
         }
 
         emit handleSignupFailed(errorStringList.join('\n'));

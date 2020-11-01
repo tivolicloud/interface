@@ -34,7 +34,7 @@ scriptable::ScriptableMesh::ScriptableMesh(const ScriptableMeshBase& other)
         name = mesh ? QString::fromStdString(mesh->displayName) : "";
     }
     auto parentModel = getParentModel();
-    setObjectName(QString("%1#%2").arg(parentModel ? parentModel->objectName() : "").arg(name));
+    setObjectName(QStringLiteral("%1#%2").arg(parentModel ? parentModel->objectName() : QString()).arg(name));
 }
 
 QVector<scriptable::ScriptableMeshPartPointer> scriptable::ScriptableMesh::getMeshParts() const {
@@ -142,12 +142,12 @@ QVariantMap scriptable::ScriptableMesh::getBufferFormats() const {
     for (const auto& a : buffer_helpers::ATTRIBUTES.toStdMap()) {
         auto bufferView = buffer_helpers::mesh::getBufferView(getMeshPointer(), a.second);
         result[a.first] = QVariantMap{
-            { "slot", a.second },
-            { "length", (glm::uint32)bufferView.getNumElements() },
-            { "byteLength", (glm::uint32)bufferView._size },
-            { "offset", (glm::uint32) bufferView._offset },
-            { "stride", (glm::uint32)bufferView._stride },
-            { "element", scriptable::toVariant(bufferView._element) },
+            { QStringLiteral("slot"), a.second },
+            { QStringLiteral("length"), (glm::uint32)bufferView.getNumElements() },
+            { QStringLiteral("byteLength"), (glm::uint32)bufferView._size },
+            { QStringLiteral("offset"), (glm::uint32) bufferView._offset },
+            { QStringLiteral("stride"), (glm::uint32)bufferView._stride },
+            { QStringLiteral("element"), scriptable::toVariant(bufferView._element) },
         };
     }
     return result;
@@ -272,8 +272,8 @@ glm::uint32 scriptable::ScriptableMesh::forEachVertex(QScriptValue _callback) {
     auto scopedHandler = jsBindCallback(_callback);
 
     // destructure so we can still invoke callback scoped, but with a custom signature (obj, i, jsMesh)
-    auto scope = scopedHandler.property("scope");
-    auto callback = scopedHandler.property("callback");
+    auto scope = scopedHandler.property(QStringLiteral("scope"));
+    auto callback = scopedHandler.property(QStringLiteral("callback"));
     auto js = engine() ? engine() : scopedHandler.engine(); // cache value to avoid resolving each iteration
     if (!js) {
         return 0;
@@ -310,8 +310,8 @@ glm::uint32 scriptable::ScriptableMesh::updateVertexAttributes(QScriptValue _cal
     auto scopedHandler = jsBindCallback(_callback);
 
     // destructure so we can still invoke callback scoped, but with a custom signature (obj, i, jsMesh)
-    auto scope = scopedHandler.property("scope");
-    auto callback = scopedHandler.property("callback");
+    auto scope = scopedHandler.property(QStringLiteral("scope"));
+    auto callback = scopedHandler.property(QStringLiteral("callback"));
     auto js = engine() ? engine() : scopedHandler.engine(); // cache value to avoid resolving each iteration
     if (!js) {
         return 0;

@@ -59,7 +59,7 @@ QVector<EntityItemID> qVectorEntityItemIDFromScriptValue(const QScriptValue& arr
         return QVector<EntityItemID>();
     }
     QVector<EntityItemID> newVector;
-    int length = array.property("length").toInteger();
+    int length = array.property(QStringLiteral("length")).toInteger();
     newVector.reserve(length);
     for (int i = 0; i < length; i++) {
         QString uuidAsString = array.property(i).toString();

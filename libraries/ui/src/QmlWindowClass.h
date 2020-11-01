@@ -380,7 +380,7 @@ protected:
     static QScriptValue internalConstructor(QScriptContext* context, QScriptEngine* engine, 
         std::function<QmlWindowClass*(QVariantMap)> function);
 
-    virtual QString qmlSource() const { return "QmlWindow.qml"; }
+    virtual QString qmlSource() const { return QStringLiteral("QmlWindow.qml"); }
 
     QPointer<QObject> _qmlWindow;
     QString _source;

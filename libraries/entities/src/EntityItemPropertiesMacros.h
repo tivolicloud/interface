@@ -295,10 +295,10 @@ inline qVectorBool qVectorBool_convertFromScriptValue(const QScriptValue& v, boo
 
 inline glm::quat quat_convertFromScriptValue(const QScriptValue& v, bool& isValid) {
     isValid = false; /// assume it can't be converted
-    QScriptValue x = v.property("x");
-    QScriptValue y = v.property("y");
-    QScriptValue z = v.property("z");
-    QScriptValue w = v.property("w");
+    QScriptValue x = v.property(QStringLiteral("x"));
+    QScriptValue y = v.property(QStringLiteral("y"));
+    QScriptValue z = v.property(QStringLiteral("z"));
+    QScriptValue w = v.property(QStringLiteral("w"));
     if (x.isValid() && y.isValid() && z.isValid() && w.isValid()) {
         glm::quat newValue;
         newValue.x = x.toVariant().toFloat();

@@ -183,7 +183,7 @@ public slots:
      * @returns {number} Simulation rate in Hz, or <code>0.0</code> if avatar data aren't available.
      * @deprecated This function is deprecated and will be removed.
      */
-    float getSimulationRate(const QString& rateName = QString("")) const;
+    float getSimulationRate(const QString& rateName = QString()) const;
 
 
     /**jsdoc

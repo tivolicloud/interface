@@ -117,7 +117,7 @@ void Instance::enumerateNics() {
 
 #if defined(HAVE_VULKAN)
 static std::string vkVersionToString(uint32_t version) {
-    return QString("%1.%2.%3").arg(VK_VERSION_MAJOR(version)).arg(VK_VERSION_MINOR(version)).arg(VK_VERSION_PATCH(version)).toStdString();
+    return QStringLiteral("%1.%2.%3").arg(VK_VERSION_MAJOR(version)).arg(VK_VERSION_MINOR(version)).arg(VK_VERSION_PATCH(version)).toStdString();
 }
 #endif
 

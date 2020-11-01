@@ -188,7 +188,7 @@ int main(int argc, const char* argv[]) {
         tracer->startTracing();
     }
    
-    PROFILE_SYNC_BEGIN(startup, "main startup", "");
+    PROFILE_SYNC_BEGIN(startup, QStringLiteral("main startup"), QString());
 
 #ifdef Q_OS_LINUX
     QApplication::setAttribute(Qt::AA_DontUseNativeMenuBar);
@@ -385,10 +385,10 @@ int main(int argc, const char* argv[]) {
 #endif
         int argcExtended = (int)argvExtended.size();
 
-        PROFILE_SYNC_END(startup, "main startup", "");
-        PROFILE_SYNC_BEGIN(startup, "app full ctor", "");
+        PROFILE_SYNC_END(startup, QStringLiteral("main startup"), "");
+        PROFILE_SYNC_BEGIN(startup, QStringLiteral("app full ctor"), "");
         Application app(argcExtended, const_cast<char**>(argvExtended.data()), startupTime, runningMarkerExisted);
-        PROFILE_SYNC_END(startup, "app full ctor", "");
+        PROFILE_SYNC_END(startup, QStringLiteral("app full ctor"), "");
 
 #if defined(Q_OS_LINUX)
         app.setWindowIcon(QIcon(PathUtils::resourcesPath() + "images/tivoli-logo.svg"));
@@ -451,7 +451,7 @@ int main(int argc, const char* argv[]) {
         }
 
         QTranslator translator;
-        translator.load("i18n/interface_en");
+        translator.load(QStringLiteral("i18n/interface_en"));
         app.installTranslator(&translator);
         qCDebug(interfaceapp, "Created QT Application.");
         exitCode = app.exec();

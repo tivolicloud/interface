@@ -107,7 +107,7 @@ QString Snapshot::saveSnapshot(QImage image, const QString& filename, const QStr
         return snapshotPath;
     }
 
-    return "";
+    return QString();
 }
 
 static const float CUBEMAP_SIDE_PIXEL_DIMENSION = 2048.0f;

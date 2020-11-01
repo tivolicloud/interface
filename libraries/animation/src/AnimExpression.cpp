@@ -651,10 +651,10 @@ void AnimExpression::dumpOpCodes() const {
     QString tmp;
     for (auto& op : _opCodes) {
         switch (op.type) {
-        case OpCode::Identifier: tmp += QString(" %1").arg(op.strVal); break;
-        case OpCode::Bool: tmp += QString(" %1").arg(op.intVal ? "true" : "false"); break;
-        case OpCode::Int: tmp += QString(" %1").arg(op.intVal); break;
-        case OpCode::Float: tmp += QString(" %1").arg(op.floatVal); break;
+        case OpCode::Identifier: tmp += QStringLiteral(" %1").arg(op.strVal); break;
+        case OpCode::Bool: tmp += QStringLiteral(" %1").arg(op.intVal ? "true" : "false"); break;
+        case OpCode::Int: tmp += QStringLiteral(" %1").arg(op.intVal); break;
+        case OpCode::Float: tmp += QStringLiteral(" %1").arg(op.floatVal); break;
         case OpCode::And: tmp += " &&"; break;
         case OpCode::Or: tmp += " ||"; break;
         case OpCode::GreaterThan: tmp += " >"; break;

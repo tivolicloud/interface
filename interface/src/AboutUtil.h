@@ -51,7 +51,7 @@ public:
     QString getBuildDate() const;
     QString getBuildVersion() const;
     QString getQtVersion() const;
-    QString getPlatform() { return "Tivoli Cloud VR"; };
+    QString getPlatform() { return QStringLiteral("Tivoli Cloud VR"); };
 
 private:
     AboutUtil(QObject* parent = nullptr);

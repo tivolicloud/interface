@@ -57,8 +57,8 @@ using SetOfEntities = QSet<EntityItemPointer>;
 #define DONT_ALLOW_INSTANTIATION virtual void pureVirtualFunctionPlaceHolder() = 0;
 #define ALLOW_INSTANTIATION virtual void pureVirtualFunctionPlaceHolder() override { };
 
-#define debugTime(T, N) qPrintable(QString("%1 [ %2 ago]").arg(T, 16, 10).arg(formatUsecTime(N - T), 15))
-#define debugTimeOnly(T) qPrintable(QString("%1").arg(T, 16, 10))
+#define debugTime(T, N) qPrintable(QStringLiteral("%1 [ %2 ago]").arg(T, 16, 10).arg(formatUsecTime(N - T), 15))
+#define debugTimeOnly(T) qPrintable(QStringLiteral("%1").arg(T, 16, 10))
 #define debugTreeVector(V) V << "[" << V << " in meters ]"
 
 const uint64_t MAX_OUTGOING_SIMULATION_UPDATE_PERIOD = 9 * USECS_PER_SECOND;
@@ -522,10 +522,10 @@ public:
     void setScriptHasFinishedPreload(bool value);
     bool isScriptPreloadFinished();
     virtual bool isWearable() const;
-    bool isDomainEntity() const { return _hostType == entity::HostType::DOMAIN; } // CPM look
-    bool isAvatarEntity() const { return _hostType == entity::HostType::AVATAR; }  // CPM look
+    bool isDomainEntity() const { return _hostType == entity::HostType::DOMAIN; }
+    bool isAvatarEntity() const { return _hostType == entity::HostType::AVATAR; }
     bool isMyAvatarEntity() const;  
-    bool isLocalEntity() const { return _hostType == entity::HostType::LOCAL; }  // CPM look
+    bool isLocalEntity() const { return _hostType == entity::HostType::LOCAL; }
 
     entity::HostType getEntityHostType() const { return _hostType; }
     //entity::HostType getEntityHostType() const { return resultWithReadLock<entity::HostType>([&] { return _hostType; }); }

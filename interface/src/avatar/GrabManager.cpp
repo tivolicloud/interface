@@ -16,12 +16,12 @@ void GrabManager::simulateGrabs() {
     QSharedPointer<AvatarManager> avatarManager = DependencyManager::get<AvatarManager>();
 
     // Update grabbed objects
-    auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
-    auto entityTree = entityTreeRenderer->getTree();
-    auto sessionID = DependencyManager::get<NodeList>()->getSessionUUID();
+    const auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
+    const auto entityTree = entityTreeRenderer->getTree();
+    const auto sessionID = DependencyManager::get<NodeList>()->getSessionUUID();
     EntityEditPacketSender* packetSender = entityTreeRenderer ? entityTreeRenderer->getPacketSender() : nullptr;
     entityTree->withReadLock([&] {
-        PROFILE_RANGE(simulation, "Grabs");
+        PROFILE_RANGE(simulation, QStringLiteral("Grabs"));
 
         std::map<QUuid, GrabLocationAccumulator> grabAccumulators;
         avatarManager->accumulateGrabPositions(grabAccumulators);

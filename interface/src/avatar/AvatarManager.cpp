@@ -133,16 +133,16 @@ void AvatarManager::setSpace(workload::SpacePointer& space ) {
 void AvatarManager::handleTransitAnimations(AvatarTransit::Status status) {
     switch (status) {
         case AvatarTransit::Status::STARTED:
-            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole("preTransitAnim");
+            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole(QStringLiteral("preTransitAnim"));
             break;
         case AvatarTransit::Status::START_TRANSIT:
-            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole("transitAnim");
+            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole(QStringLiteral("transitAnim"));
             break;
         case AvatarTransit::Status::END_TRANSIT:
-            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole("postTransitAnim");
+            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole(QStringLiteral("postTransitAnim"));
             break;
         case AvatarTransit::Status::ENDED:
-            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole("idleAnim");
+            _myAvatar->getSkeletonModel()->getRig().triggerNetworkRole(QStringLiteral("idleAnim"));
             break;
         case AvatarTransit::Status::PRE_TRANSIT:
             break;
@@ -174,7 +174,7 @@ void AvatarManager::updateMyAvatar(float deltaTime) {
 
     if (dt > MIN_TIME_BETWEEN_MY_AVATAR_DATA_SENDS && !_myAvatarDataPacketsPaused) {
         // send head/hand data to the avatar mixer and voxel server
-        PerformanceTimer perfTimer("send"); 
+        PerformanceTimer perfTimer(QStringLiteral("send")); 
         _myAvatar->sendAvatarDataPacket();
         _lastSendAvatarDataTime = now;
         _myAvatarSendRate.increment();
@@ -225,7 +225,7 @@ void AvatarManager::updateOtherAvatars(float deltaTime) {
         }
     }
 
-    PerformanceTimer perfTimer("otherAvatars");
+    PerformanceTimer perfTimer(QStringLiteral("otherAvatars"));
 
     class SortableAvatar: public PrioritySortUtil::Sortable {
     public:
@@ -755,7 +755,7 @@ RayToAvatarIntersectionResult AvatarManager::findRayIntersectionVector(const Pic
                                                                        bool pickAgainstMesh) {
     RayToAvatarIntersectionResult result;
     if (QThread::currentThread() != thread()) {
-        BLOCKING_INVOKE_METHOD(const_cast<AvatarManager*>(this), "findRayIntersectionVector",
+        BLOCKING_INVOKE_METHOD(const_cast<AvatarManager*>(this),"findRayIntersectionVector",
                                   Q_RETURN_ARG(RayToAvatarIntersectionResult, result),
                                   Q_ARG(const PickRay&, ray),
                                   Q_ARG(const QVector<EntityItemID>&, avatarsToInclude),
@@ -972,11 +972,11 @@ ParabolaToAvatarIntersectionResult AvatarManager::findParabolaIntersectionVector
 
 // HACK
 float AvatarManager::getAvatarSortCoefficient(const QString& name) {
-    if (name == "size") {
+    if (name == QStringLiteral("size")) {
         return AvatarData::_avatarSortCoefficientSize;
-    } else if (name == "center") {
+    } else if (name == QStringLiteral("center")) {
         return AvatarData::_avatarSortCoefficientCenter;
-    } else if (name == "age") {
+    } else if (name == QStringLiteral("age")) {
         return AvatarData::_avatarSortCoefficientAge;
     }
     return 0.0f;
@@ -987,13 +987,13 @@ void AvatarManager::setAvatarSortCoefficient(const QString& name, const QScriptV
     bool somethingChanged = false;
     if (value.isNumber()) {
         float numericalValue = (float)value.toNumber();
-        if (name == "size") {
+        if (name == QStringLiteral("size")) {
             AvatarData::_avatarSortCoefficientSize = numericalValue;
             somethingChanged = true;
-        } else if (name == "center") {
+        } else if (name == QStringLiteral("center")) {
             AvatarData::_avatarSortCoefficientCenter = numericalValue;
             somethingChanged = true;
-        } else if (name == "age") {
+        } else if (name == QStringLiteral("age")) {
             AvatarData::_avatarSortCoefficientAge = numericalValue;
             somethingChanged = true;
         }
@@ -1038,35 +1038,35 @@ QVariantMap AvatarManager::getPalData(const QStringList& specificAvatarIdentifie
             auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
 
             if (currentSessionUUID == myAvatar->getSessionUUID().toString()) {
-                currentSessionUUID = "";
+                currentSessionUUID = QString();
             }
 
-            thisAvatarPalData.insert("sessionUUID", currentSessionUUID);
-            thisAvatarPalData.insert("sessionDisplayName", avatar->getSessionDisplayName());
-            thisAvatarPalData.insert("audioLoudness", avatar->getAudioLoudness());
-            thisAvatarPalData.insert("isReplicated", avatar->getIsReplicated());
+            thisAvatarPalData.insert(QStringLiteral("sessionUUID"), currentSessionUUID);
+            thisAvatarPalData.insert(QStringLiteral("sessionDisplayName"), avatar->getSessionDisplayName());
+            thisAvatarPalData.insert(QStringLiteral("audioLoudness"), avatar->getAudioLoudness());
+            thisAvatarPalData.insert(QStringLiteral("isReplicated"), avatar->getIsReplicated());
 
             glm::vec3 position = avatar->getWorldPosition();
             QJsonObject jsonPosition;
-            jsonPosition.insert("x", position.x);
-            jsonPosition.insert("y", position.y);
-            jsonPosition.insert("z", position.z);
-            thisAvatarPalData.insert("position", jsonPosition);
+            jsonPosition.insert(QStringLiteral("x"), position.x);
+            jsonPosition.insert(QStringLiteral("y"), position.y);
+            jsonPosition.insert(QStringLiteral("z"), position.z);
+            thisAvatarPalData.insert(QStringLiteral("position"), jsonPosition);
 
             float palOrbOffset = 0.2f;
-            int headIndex = avatar->getJointIndex("Head");
+            int headIndex = avatar->getJointIndex(QStringLiteral("Head"));
             if (headIndex > 0) {
                 glm::vec3 jointTranslation = avatar->getAbsoluteJointTranslationInObjectFrame(headIndex);
                 palOrbOffset = jointTranslation.y / 2;
             }
-            thisAvatarPalData.insert("palOrbOffset", palOrbOffset);
+            thisAvatarPalData.insert(QStringLiteral("palOrbOffset"), palOrbOffset);
 
             palData.append(thisAvatarPalData);
         }
         ++itr;
     }
     QJsonObject doc;
-    doc.insert("data", palData);
+    doc.insert(QStringLiteral("data"), palData);
     return doc.toVariantMap();
 }
 

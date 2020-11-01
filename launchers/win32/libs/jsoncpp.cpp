@@ -3085,10 +3085,10 @@ bool Value::getString(char const** begin, char const** end) const {
 String Value::asString() const {
   switch (type()) {
   case nullValue:
-    return "";
+    return QString();
   case stringValue: {
     if (value_.string_ == nullptr)
-      return "";
+      return QString();
     unsigned this_len;
     char const* this_str;
     decodePrefixedString(this->isAllocated(), this->value_.string_, &this_len,

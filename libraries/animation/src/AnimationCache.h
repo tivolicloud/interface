@@ -54,7 +54,7 @@ public:
     Animation(const Animation& other) : Resource(other), _hfmModel(other._hfmModel) {}
     Animation(const QUrl& url) : Resource(url) {}
 
-    QString getType() const override { return "Animation"; }
+    QString getType() const override { return QStringLiteral("Animation"); }
 
     const HFMModel& getHFMModel() const { return *_hfmModel; }
 

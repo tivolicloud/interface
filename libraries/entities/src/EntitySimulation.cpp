@@ -30,7 +30,7 @@ void EntitySimulation::setEntityTree(EntityTreePointer tree) {
 }
 
 void EntitySimulation::updateEntities() {
-    PerformanceTimer perfTimer("EntitySimulation::updateEntities");
+    PerformanceTimer perfTimer(QStringLiteral("EntitySimulation::updateEntities"));
     QMutexLocker lock(&_mutex);
     uint64_t now = usecTimestampNow();
 
@@ -69,7 +69,7 @@ void EntitySimulation::prepareEntityForDelete(EntityItemPointer entity) {
 // protected
 void EntitySimulation::expireMortalEntities(uint64_t now) {
     if (now > _nextExpiry) {
-        PROFILE_RANGE_EX(simulation_physics, "ExpireMortals", 0xffff00ff, (uint64_t)_mortalEntities.size());
+        PROFILE_RANGE_EX(simulation_physics, QStringLiteral("ExpireMortals"), 0xffff00ff, (uint64_t)_mortalEntities.size());
         // only search for expired entities if we expect to find one
         _nextExpiry = std::numeric_limits<uint64_t>::max();
         QMutexLocker lock(&_mutex);
@@ -97,7 +97,7 @@ void EntitySimulation::expireMortalEntities(uint64_t now) {
 
 // protected
 void EntitySimulation::callUpdateOnEntitiesThatNeedIt(uint64_t now) {
-    PerformanceTimer perfTimer("updatingEntities");
+    PerformanceTimer perfTimer(QStringLiteral("updatingEntities"));
     QMutexLocker lock(&_mutex);
     SetOfEntities::iterator itemItr = _entitiesToUpdate.begin();
     while (itemItr != _entitiesToUpdate.end()) {
@@ -115,7 +115,7 @@ void EntitySimulation::callUpdateOnEntitiesThatNeedIt(uint64_t now) {
 
 // protected
 void EntitySimulation::sortEntitiesThatMoved() {
-    PROFILE_RANGE_EX(simulation_physics, "SortTree", 0xffff00ff, (uint64_t)_entitiesToSort.size());
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("SortTree"), 0xffff00ff, (uint64_t)_entitiesToSort.size());
     // NOTE: this is only for entities that have been moved by THIS EntitySimulation.
     // External changes to entity position/shape are expected to be sorted outside of the EntitySimulation.
     MovingEntitiesOperator moveOperator;
@@ -137,7 +137,7 @@ void EntitySimulation::sortEntitiesThatMoved() {
         }
     }
     if (moveOperator.hasMovingEntities()) {
-        PerformanceTimer perfTimer("recurseTreeWithOperator");
+        PerformanceTimer perfTimer(QStringLiteral("recurseTreeWithOperator-ES"));
         _entityTree->recurseTreeWithOperator(&moveOperator);
     }
 
@@ -179,7 +179,7 @@ void EntitySimulation::changeEntity(EntityItemPointer entity) {
 
 void EntitySimulation::processChangedEntities() {
     QMutexLocker lock(&_mutex);
-    PROFILE_RANGE_EX(simulation_physics, "processChangedEntities", 0xffff00ff, (uint64_t)_changedEntities.size());
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("processChangedEntities"), 0xffff00ff, (uint64_t)_changedEntities.size());
     for (auto& entity : _changedEntities) {
         if (entity->isSimulated()) {
             processChangedEntity(entity);
@@ -227,7 +227,7 @@ void EntitySimulation::clearEntities() {
 }
 
 void EntitySimulation::moveSimpleKinematics(uint64_t now) {
-    PROFILE_RANGE_EX(simulation_physics, "MoveSimples", 0xffff00ff, (uint64_t)_simpleKinematicEntities.size());
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("MoveSimples"), 0xffff00ff, (uint64_t)_simpleKinematicEntities.size());
     SetOfEntities::iterator itemItr = _simpleKinematicEntities.begin();
     while (itemItr != _simpleKinematicEntities.end()) {
         EntityItemPointer entity = *itemItr;

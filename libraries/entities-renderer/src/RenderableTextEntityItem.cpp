@@ -138,7 +138,7 @@ void TextEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPointe
 void TextEntityRenderer::doRender(RenderArgs* args) {
 
     // const bool hasChanged = evaluateEntityZoneCullState(_entity);
-    PerformanceTimer perfTimer("RenderableTextEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderableTextEntityItem::render"));
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;
 
@@ -293,7 +293,7 @@ ShapeKey entities::TextPayload::getShapeKey() const {
 }
 
 void entities::TextPayload::render(RenderArgs* args) {
-    PerformanceTimer perfTimer("TextPayload::render");
+    PerformanceTimer perfTimer(QStringLiteral("TextPayload::render"));
     Q_ASSERT(args->_batch);
     gpu::Batch& batch = *args->_batch;
 

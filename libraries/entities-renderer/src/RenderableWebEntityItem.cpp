@@ -272,7 +272,7 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 
     // const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
-    PerformanceTimer perfTimer("WebEntityRenderer::render");
+    PerformanceTimer perfTimer(QStringLiteral("WebEntityRenderer::render"));
     withWriteLock([&] {
         _lastRenderTime = usecTimestampNow();
     });

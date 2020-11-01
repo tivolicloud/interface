@@ -514,9 +514,9 @@ void OscPlugin::saveSettings() const {
     QString idString = getID();
     settings.beginGroup(idString);
     {
-        settings.setValue(QString("enabled"), _enabled);
-        settings.setValue(QString("extraDebug"), _debug);
-        settings.setValue(QString("serverPort"), _serverPort);
+        settings.setValue(QStringLiteral("enabled"), _enabled);
+        settings.setValue(QStringLiteral("extraDebug"), _debug);
+        settings.setValue(QStringLiteral("serverPort"), _serverPort);
     }
     settings.endGroup();
 }
@@ -526,9 +526,9 @@ void OscPlugin::loadSettings() {
     QString idString = getID();
     settings.beginGroup(idString);
     {
-        _enabled = settings.value("enabled", QVariant(DEFAULT_ENABLED)).toBool();
-        _debug = settings.value("extraDebug", QVariant(DEFAULT_ENABLED)).toBool();
-        _serverPort = settings.value("serverPort", QVariant(DEFAULT_OSC_SERVER_PORT)).toInt();
+        _enabled = settings.value(QStringLiteral("enabled"), QVariant(DEFAULT_ENABLED)).toBool();
+        _debug = settings.value(QStringLiteral("extraDebug"), QVariant(DEFAULT_ENABLED)).toBool();
+        _serverPort = settings.value(QStringLiteral("serverPort"), QVariant(DEFAULT_OSC_SERVER_PORT)).toInt();
     }
     settings.endGroup();
 }

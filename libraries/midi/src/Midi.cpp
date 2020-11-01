@@ -323,15 +323,15 @@ void Midi::MidiCleanup() {
  */
 void Midi::midiReceived(int device, int raw, int channel, int status, int type, int note, int velocity, int bend, int program) {
     QVariantMap eventData;
-    eventData["device"] = device;
-    eventData["raw"] = raw;
-    eventData["channel"] = channel;
-    eventData["status"] = status;
-    eventData["type"] = type;
-    eventData["note"] = note;
-    eventData["velocity"] = velocity;
-    eventData["bend"] = bend;
-    eventData["program"] = program;
+    eventData[QStringLiteral("device")] = device;
+    eventData[QStringLiteral("raw")] = raw;
+    eventData[QStringLiteral("channel")] = channel;
+    eventData[QStringLiteral("status")] = status;
+    eventData[QStringLiteral("type")] = type;
+    eventData[QStringLiteral("note")] = note;
+    eventData[QStringLiteral("velocity")] = velocity;
+    eventData[QStringLiteral("bend")] = bend;
+    eventData[QStringLiteral("program")] = program;
     emit midiNote(eventData);// Legacy
     emit midiMessage(eventData);
 }

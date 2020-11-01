@@ -783,16 +783,16 @@ void AvatarMixer::sendStatsPacket() {
 
     QJsonObject statsObject;
 
-    statsObject["broadcast_loop_rate"] = _loopRate.rate();
-    statsObject["threads"] = _slavePool.numThreads();
-    statsObject["trailing_mix_ratio"] = _trailingMixRatio;
-    statsObject["throttling_ratio"] = _throttlingRatio;
+    statsObject[QStringLiteral("broadcast_loop_rate")] = _loopRate.rate();
+    statsObject[QStringLiteral("threads")] = _slavePool.numThreads();
+    statsObject[QStringLiteral("trailing_mix_ratio")] = _trailingMixRatio;
+    statsObject[QStringLiteral("throttling_ratio")] = _throttlingRatio;
 
 #ifdef DEBUG_EVENT_QUEUE
     QJsonObject qtStats;
 
     _slavePool.queueStats(qtStats);
-    statsObject["avatar_thread_event_queue"] = qtStats;
+    statsObject[QStringLiteral("avatar_thread_event_queue")] = qtStats;
 #endif
 
     // this things all occur on the frequency of the tight loop
@@ -801,47 +801,47 @@ void AvatarMixer::sendStatsPacket() {
     #define TIGHT_LOOP_STAT(x) (x > tenTimesPerFrame) ? x / tightLoopFrames : ((float)x / (float)tightLoopFrames);
     #define TIGHT_LOOP_STAT_UINT64(x) (x > (quint64)tenTimesPerFrame) ? x / tightLoopFrames : ((float)x / (float)tightLoopFrames);
 
-    statsObject["average_listeners_last_second"] = TIGHT_LOOP_STAT(_sumListeners);
+    statsObject[QStringLiteral("average_listeners_last_second")] = TIGHT_LOOP_STAT(_sumListeners);
 
     QJsonObject singleCoreTasks;
-    singleCoreTasks["processEvents"] = TIGHT_LOOP_STAT_UINT64(_processEventsElapsedTime);
-    singleCoreTasks["queueIncomingPacket"] = TIGHT_LOOP_STAT_UINT64(_queueIncomingPacketElapsedTime);
+    singleCoreTasks[QStringLiteral("processEvents")] = TIGHT_LOOP_STAT_UINT64(_processEventsElapsedTime);
+    singleCoreTasks[QStringLiteral("queueIncomingPacket")] = TIGHT_LOOP_STAT_UINT64(_queueIncomingPacketElapsedTime);
 
     QJsonObject incomingPacketStats;
-    incomingPacketStats["handleAvatarIdentityPacket"] = TIGHT_LOOP_STAT_UINT64(_handleAvatarIdentityPacketElapsedTime);
-    incomingPacketStats["handleKillAvatarPacket"] = TIGHT_LOOP_STAT_UINT64(_handleKillAvatarPacketElapsedTime);
-    incomingPacketStats["handleNodeIgnoreRequestPacket"] = TIGHT_LOOP_STAT_UINT64(_handleNodeIgnoreRequestPacketElapsedTime);
-    incomingPacketStats["handleRadiusIgnoreRequestPacket"] = TIGHT_LOOP_STAT_UINT64(_handleRadiusIgnoreRequestPacketElapsedTime);
-    incomingPacketStats["handleRequestsDomainListDataPacket"] = TIGHT_LOOP_STAT_UINT64(_handleRequestsDomainListDataPacketElapsedTime);
-    incomingPacketStats["handleAvatarQueryPacket"] = TIGHT_LOOP_STAT_UINT64(_handleViewFrustumPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleAvatarIdentityPacket")] = TIGHT_LOOP_STAT_UINT64(_handleAvatarIdentityPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleKillAvatarPacket")] = TIGHT_LOOP_STAT_UINT64(_handleKillAvatarPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleNodeIgnoreRequestPacket")] = TIGHT_LOOP_STAT_UINT64(_handleNodeIgnoreRequestPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleRadiusIgnoreRequestPacket")] = TIGHT_LOOP_STAT_UINT64(_handleRadiusIgnoreRequestPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleRequestsDomainListDataPacket")] = TIGHT_LOOP_STAT_UINT64(_handleRequestsDomainListDataPacketElapsedTime);
+    incomingPacketStats[QStringLiteral("handleAvatarQueryPacket")] = TIGHT_LOOP_STAT_UINT64(_handleViewFrustumPacketElapsedTime);
 
-    singleCoreTasks["incoming_packets"] = incomingPacketStats;
-    singleCoreTasks["sendStats"] = (float)_sendStatsElapsedTime;
+    singleCoreTasks[QStringLiteral("incoming_packets")] = incomingPacketStats;
+    singleCoreTasks[QStringLiteral("sendStats")] = (float)_sendStatsElapsedTime;
 
-    statsObject["singleCoreTasks"] = singleCoreTasks;
+    statsObject[QStringLiteral("singleCoreTasks")] = singleCoreTasks;
 
     QJsonObject parallelTasks;
 
     QJsonObject processQueuedAvatarDataPacketsStats;
-    processQueuedAvatarDataPacketsStats["1_total"] = TIGHT_LOOP_STAT_UINT64(_processQueuedAvatarDataPacketsElapsedTime);
-    processQueuedAvatarDataPacketsStats["2_lockWait"] = TIGHT_LOOP_STAT_UINT64(_processQueuedAvatarDataPacketsLockWaitElapsedTime);
-    parallelTasks["processQueuedAvatarDataPackets"] = processQueuedAvatarDataPacketsStats;
+    processQueuedAvatarDataPacketsStats[QStringLiteral("1_total")] = TIGHT_LOOP_STAT_UINT64(_processQueuedAvatarDataPacketsElapsedTime);
+    processQueuedAvatarDataPacketsStats[QStringLiteral("2_lockWait")] = TIGHT_LOOP_STAT_UINT64(_processQueuedAvatarDataPacketsLockWaitElapsedTime);
+    parallelTasks[QStringLiteral("processQueuedAvatarDataPackets")] = processQueuedAvatarDataPacketsStats;
 
     QJsonObject broadcastAvatarDataStats;
 
-    broadcastAvatarDataStats["1_total"] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataElapsedTime);
-    broadcastAvatarDataStats["2_innner"] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataInner);
-    broadcastAvatarDataStats["3_lockWait"] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataLockWait);
-    broadcastAvatarDataStats["4_NodeTransform"] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataNodeTransform);
-    broadcastAvatarDataStats["5_Functor"] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataNodeFunctor);
+    broadcastAvatarDataStats[QStringLiteral("1_total")] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataElapsedTime);
+    broadcastAvatarDataStats[QStringLiteral("2_innner")] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataInner);
+    broadcastAvatarDataStats[QStringLiteral("3_lockWait")] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataLockWait);
+    broadcastAvatarDataStats[QStringLiteral("4_NodeTransform")] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataNodeTransform);
+    broadcastAvatarDataStats[QStringLiteral("5_Functor")] = TIGHT_LOOP_STAT_UINT64(_broadcastAvatarDataNodeFunctor);
 
-    parallelTasks["broadcastAvatarData"] = broadcastAvatarDataStats;
+    parallelTasks[QStringLiteral("broadcastAvatarData")] = broadcastAvatarDataStats;
 
     QJsonObject displayNameManagementStats;
-    displayNameManagementStats["1_total"] = TIGHT_LOOP_STAT_UINT64(_displayNameManagementElapsedTime);
-    parallelTasks["displayNameManagement"] = displayNameManagementStats;
+    displayNameManagementStats[QStringLiteral("1_total")] = TIGHT_LOOP_STAT_UINT64(_displayNameManagementElapsedTime);
+    parallelTasks[QStringLiteral("displayNameManagement")] = displayNameManagementStats;
 
-    statsObject["parallelTasks"] = parallelTasks;
+    statsObject[QStringLiteral("parallelTasks")] = parallelTasks;
 
 
     AvatarMixerSlaveStats aggregateStats;
@@ -855,30 +855,30 @@ void AvatarMixer::sendStatsPacket() {
 
     QJsonObject slavesAggregatObject;
 
-    slavesAggregatObject["received_1_nodesProcessed"] = TIGHT_LOOP_STAT(aggregateStats.nodesProcessed);
+    slavesAggregatObject[QStringLiteral("received_1_nodesProcessed")] = TIGHT_LOOP_STAT(aggregateStats.nodesProcessed);
 
-    slavesAggregatObject["sent_1_nodesBroadcastedTo"] = TIGHT_LOOP_STAT(aggregateStats.nodesBroadcastedTo);
+    slavesAggregatObject[QStringLiteral("sent_1_nodesBroadcastedTo")] = TIGHT_LOOP_STAT(aggregateStats.nodesBroadcastedTo);
 
     float averageNodes = ((float)aggregateStats.nodesBroadcastedTo / (float)tightLoopFrames);
 
     float averageOthersIncluded = averageNodes ? aggregateStats.numOthersIncluded / averageNodes : 0.0f;
-    slavesAggregatObject["sent_2_averageOthersIncluded"] = TIGHT_LOOP_STAT(averageOthersIncluded);
+    slavesAggregatObject[QStringLiteral("sent_2_averageOthersIncluded")] = TIGHT_LOOP_STAT(averageOthersIncluded);
 
     float averageOverBudgetAvatars = averageNodes ? aggregateStats.overBudgetAvatars / averageNodes : 0.0f;
-    slavesAggregatObject["sent_3_averageOverBudgetAvatars"] = TIGHT_LOOP_STAT(averageOverBudgetAvatars);
-    slavesAggregatObject["sent_4_averageDataBytes"] = TIGHT_LOOP_STAT(aggregateStats.numDataBytesSent);
-    slavesAggregatObject["sent_5_averageTraitsBytes"] = TIGHT_LOOP_STAT(aggregateStats.numTraitsBytesSent);
-    slavesAggregatObject["sent_6_averageIdentityBytes"] = TIGHT_LOOP_STAT(aggregateStats.numIdentityBytesSent);
-    slavesAggregatObject["sent_7_averageHeroAvatars"] = TIGHT_LOOP_STAT(aggregateStats.numHeroesIncluded);
+    slavesAggregatObject[QStringLiteral("sent_3_averageOverBudgetAvatars")] = TIGHT_LOOP_STAT(averageOverBudgetAvatars);
+    slavesAggregatObject[QStringLiteral("sent_4_averageDataBytes")] = TIGHT_LOOP_STAT(aggregateStats.numDataBytesSent);
+    slavesAggregatObject[QStringLiteral("sent_5_averageTraitsBytes")] = TIGHT_LOOP_STAT(aggregateStats.numTraitsBytesSent);
+    slavesAggregatObject[QStringLiteral("sent_6_averageIdentityBytes")] = TIGHT_LOOP_STAT(aggregateStats.numIdentityBytesSent);
+    slavesAggregatObject[QStringLiteral("sent_7_averageHeroAvatars")] = TIGHT_LOOP_STAT(aggregateStats.numHeroesIncluded);
 
-    slavesAggregatObject["timing_1_processIncomingPackets"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.processIncomingPacketsElapsedTime);
-    slavesAggregatObject["timing_2_ignoreCalculation"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.ignoreCalculationElapsedTime);
-    slavesAggregatObject["timing_3_toByteArray"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.toByteArrayElapsedTime);
-    slavesAggregatObject["timing_4_avatarDataPacking"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.avatarDataPackingElapsedTime);
-    slavesAggregatObject["timing_5_packetSending"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.packetSendingElapsedTime);
-    slavesAggregatObject["timing_6_jobElapsedTime"] = TIGHT_LOOP_STAT_UINT64(aggregateStats.jobElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_1_processIncomingPackets")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.processIncomingPacketsElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_2_ignoreCalculation")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.ignoreCalculationElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_3_toByteArray")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.toByteArrayElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_4_avatarDataPacking")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.avatarDataPackingElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_5_packetSending")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.packetSendingElapsedTime);
+    slavesAggregatObject[QStringLiteral("timing_6_jobElapsedTime")] = TIGHT_LOOP_STAT_UINT64(aggregateStats.jobElapsedTime);
 
-    statsObject["slaves_aggregate (per frame)"] = slavesAggregatObject;
+    statsObject[QStringLiteral("slaves_aggregate (per frame)")] = slavesAggregatObject;
 
     _handleViewFrustumPacketElapsedTime = 0;
     _handleAvatarIdentityPacketElapsedTime = 0;
@@ -897,8 +897,8 @@ void AvatarMixer::sendStatsPacket() {
     nodeList->eachNode([&](const SharedNodePointer& node) {
         QJsonObject avatarStats;
 
-        const QString NODE_OUTBOUND_KBPS_STAT_KEY = "outbound_kbps";
-        const QString NODE_INBOUND_KBPS_STAT_KEY = "inbound_kbps";
+        const QString NODE_OUTBOUND_KBPS_STAT_KEY = QStringLiteral("outbound_kbps");
+        const QString NODE_INBOUND_KBPS_STAT_KEY = QStringLiteral("inbound_kbps");
 
         // add the key to ask the domain-server for a username replacement, if it has it
         avatarStats[USERNAME_UUID_REPLACEMENT_STATS_KEY] = uuidStringWithoutCurlyBraces(node->getUUID());
@@ -914,21 +914,21 @@ void AvatarMixer::sendStatsPacket() {
                 clientData->loadJSONStats(avatarStats);
 
                 // add the diff between the full outbound bandwidth and the measured bandwidth for AvatarData send only
-                avatarStats["delta_full_vs_avatar_data_kbps"] =
+                avatarStats[QStringLiteral("delta_full_vs_avatar_data_kbps")] =
                     (double)outboundAvatarDataKbps - avatarStats[OUTBOUND_AVATAR_DATA_STATS_KEY].toDouble();
             }
 
             if (node->getType() != NodeType::Agent) {  // Nodes that aren't avatars
                 const QString displayName
                     { node->getType() == NodeType::EntityScriptServer ? "ENTITY SCRIPT SERVER" : "ENTITY SERVER" };
-                avatarStats["display_name"] = displayName;
+                avatarStats[QStringLiteral("display_name")] = displayName;
             }
         }
 
         avatarsObject[uuidStringWithoutCurlyBraces(node->getUUID())] = avatarStats;
     });
 
-    statsObject["z_avatars"] = avatarsObject;
+    statsObject[QStringLiteral("z_avatars")] = avatarsObject;
 
     ThreadedAssignment::addPacketStatsAndSendStatsPacket(statsObject);
 
@@ -1109,14 +1109,14 @@ void AvatarMixer::setupEntityQuery() {
 
     // ES query: {"avatarPriority": true, "type": "Zone"}
     QJsonObject priorityZoneQuery;
-    priorityZoneQuery["avatarPriority"] = true;
-    priorityZoneQuery["type"] = "Zone";
+    priorityZoneQuery[QStringLiteral("avatarPriority")] = true;
+    priorityZoneQuery[QStringLiteral("type")] = "Zone";
 
     QJsonObject queryFlags;
-    queryFlags["includeAncestors"] = true;
-    queryFlags["includeDescendants"] = true;
-    priorityZoneQuery["flags"] = queryFlags;
-    priorityZoneQuery["name"] = true; // Handy for debugging.
+    queryFlags[QStringLiteral("includeAncestors")] = true;
+    queryFlags[QStringLiteral("includeDescendants")] = true;
+    priorityZoneQuery[QStringLiteral("flags")] = queryFlags;
+    priorityZoneQuery[QStringLiteral("name")] = true; // Handy for debugging.
 
     _entityViewer.getOctreeQuery().setJSONParameters(priorityZoneQuery);
     _slaveSharedData.entityTree = entityTree;

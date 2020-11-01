@@ -92,9 +92,9 @@ public:
 
     QString getStopReason() {
         switch (stopReason) {
-            case UNKNOWN: return QString("UNKNOWN"); break;
-            case DIDNT_FIT: return QString("DIDNT_FIT"); break;
-            case FINISHED: return QString("FINISHED"); break;
+            case UNKNOWN: return QStringLiteral("UNKNOWN"); break;
+            case DIDNT_FIT: return QStringLiteral("DIDNT_FIT"); break;
+            case FINISHED: return QStringLiteral("FINISHED"); break;
         }
     }
 

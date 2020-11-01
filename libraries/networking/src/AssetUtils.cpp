@@ -53,7 +53,7 @@ QUrl getATPUrl(const QString& input) {
     );
     QString baseName = QFileInfo(url.path()).baseName();
     if (isValidPath(path) || isValidHash(baseName)) {
-        return QUrl(QString("%1:%2").arg(URL_SCHEME_ATP).arg(path));
+        return QUrl(QStringLiteral("%1:%2").arg(URL_SCHEME_ATP).arg(path));
     }
     return QUrl();
 }

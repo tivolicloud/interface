@@ -63,7 +63,7 @@
 extern QThread* RENDER_THREAD;
 
 static const QString DATA_SET = "https://hifi-content.s3.amazonaws.com/austin/textures.zip";
-static QDir DATA_DIR = QDir(QString("h:/textures"));
+static QDir DATA_DIR = QDir(QStringLiteral("h:/textures"));
 static QTemporaryDir* DOWNLOAD_DIR = nullptr;
 
 class FileDownloader : public QObject {
@@ -523,7 +523,7 @@ private:
     }
 
     void updateText() {
-        setTitle(QString("FPS %1").arg(_fps));
+        setTitle(QStringLiteral("FPS %1").arg(_fps));
     }
 
     void update() {

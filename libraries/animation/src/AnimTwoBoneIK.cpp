@@ -105,8 +105,8 @@ const AnimPoseVec& AnimTwoBoneIK::evaluate(const AnimVariantMap& animVars, const
     AnimPose midPose = ikChain.getAbsolutePoseFromJointIndex(_midJointIndex);
     AnimPose tipPose = ikChain.getAbsolutePoseFromJointIndex(_tipJointIndex);
 
-    QString endEffectorRotationVar = animVars.lookup(_endEffectorRotationVarVar, QString(""));
-    QString endEffectorPositionVar = animVars.lookup(_endEffectorPositionVarVar, QString(""));
+    QString endEffectorRotationVar = animVars.lookup(_endEffectorRotationVarVar, QString());
+    QString endEffectorPositionVar = animVars.lookup(_endEffectorPositionVarVar, QString());
 
     // if either of the endEffectorVars have changed
     if ((!_prevEndEffectorRotationVar.isEmpty() && (_prevEndEffectorRotationVar != endEffectorRotationVar)) ||
@@ -241,11 +241,11 @@ const AnimPoseVec& AnimTwoBoneIK::evaluate(const AnimVariantMap& animVars, const
         glm::mat4 geomTargetMat = createMatFromQuatAndPos(targetPose.rot(), targetPose.trans());
         glm::mat4 avatarTargetMat = rigToAvatarMat * context.getGeometryToRigMatrix() * geomTargetMat;
 
-        QString name = QString("%1_target").arg(_id);
+        QString name = QStringLiteral("%1_target").arg(_id);
         DebugDraw::getInstance().addMyAvatarMarker(name, glmExtractRotation(avatarTargetMat),
                                                    extractTranslation(avatarTargetMat), _enabled ? GREEN : RED);
     } else if (_lastEnableDebugDrawIKTargets) {
-        QString name = QString("%1_target").arg(_id);
+        QString name = QStringLiteral("%1_target").arg(_id);
         DebugDraw::getInstance().removeMyAvatarMarker(name);
     }
     _lastEnableDebugDrawIKTargets = context.getEnableDebugDrawIKTargets();

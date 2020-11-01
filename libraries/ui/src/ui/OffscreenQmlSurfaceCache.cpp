@@ -39,7 +39,7 @@ void OffscreenQmlSurfaceCache::reserve(const QString& rootSource, int count) {
 }
 
 void OffscreenQmlSurfaceCache::release(const QString& rootSource, const QSharedPointer<OffscreenQmlSurface>& surface) {
-    PROFILE_RANGE(app, "buildSurface");
+    PROFILE_RANGE(app, QStringLiteral("buildSurface"));
     surface->pause();
     _cache[rootSource].push_back(surface);
 }

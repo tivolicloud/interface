@@ -634,7 +634,7 @@ QString GeometryCache::stringFromShape(GeometryCache::Shape geoShape)
         qCWarning(renderutils) << "GeometryCache::stringFromShape - Invalid shape " << geoShape << " specified.";
 
         //--EARLY EXIT--
-        return "INVALID_GEOCACHE_SHAPE";
+        return QStringLiteral("INVALID_GEOCACHE_SHAPE");
     }
 
     return GEOCACHE_SHAPE_STRINGS[geoShape];
@@ -2433,7 +2433,7 @@ graphics::MeshPointer GeometryCache::meshFromShape(Shape geometryShape, glm::vec
     mesh->setPartBuffer(gpu::BufferView(partBuffer, gpu::Element::PART_DRAWCALL));
 
     mesh->modelName = GeometryCache::stringFromShape(geometryShape).toStdString();
-    mesh->displayName = QString("GeometryCache/shape::%1").arg(GeometryCache::stringFromShape(geometryShape)).toStdString();
+    mesh->displayName = QStringLiteral("GeometryCache/shape::%1").arg(GeometryCache::stringFromShape(geometryShape)).toStdString();
 
     return mesh;
 }

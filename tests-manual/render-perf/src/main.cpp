@@ -184,7 +184,7 @@ static QString toHumanSize(size_t size, size_t maxUnit = std::numeric_limits<siz
         ++suffixIndex;
     }
 
-    return QString("%1 %2").arg(size).arg(SUFFIXES[suffixIndex]);
+    return QStringLiteral("%1 %2").arg(size).arg(SUFFIXES[suffixIndex]);
 }
 
 extern QThread* RENDER_THREAD;
@@ -680,7 +680,7 @@ private:
     };
 
     void updateText() {
-        QString title = QString("FPS %1 Culling %2 TextureMemory GPU %3 CPU %4 Max GPU %5")
+        QString title = QStringLiteral("FPS %1 Culling %2 TextureMemory GPU %3 CPU %4 Max GPU %5")
                             .arg(_fps)
                             .arg(_cullingEnabled)
                             .arg(toHumanSize(gpu::Context::getTextureGPUMemSize(), 2))
@@ -809,7 +809,7 @@ private:
         getEntities()->update(false);
 
         {
-            PerformanceTimer perfTimer("SceneProcessTransaction");
+            PerformanceTimer perfTimer(QStringLiteral("SceneProcessTransaction"));
             _main3DScene->processTransactionQueue();
         }
     }
@@ -819,18 +819,18 @@ private:
         gpuContext->beginFrame();
         gpu::doInBatch("QTestWindow::render", gpuContext, [&](gpu::Batch& batch) { batch.resetStages(); });
         PROFILE_RANGE(render, __FUNCTION__);
-        PerformanceTimer perfTimer("draw");
+        PerformanceTimer perfTimer(QStringLiteral("draw"));
         // The pending changes collecting the changes here
         render::Transaction transaction;
         {
-            PerformanceTimer perfTimer("SceneProcessTransaction");
+            PerformanceTimer perfTimer(QStringLiteral("SceneProcessTransaction"));
             _main3DScene->enqueueTransaction(transaction);
             _main3DScene->processTransactionQueue();
         }
 
         // For now every frame pass the renderContext
         {
-            PerformanceTimer perfTimer("EngineRun");
+            PerformanceTimer perfTimer(QStringLiteral("EngineRun"));
             _renderEngine->getRenderContext()->args = renderArgs;
             // Before the deferred pass, let's try to use the render engine
             _renderEngine->run();

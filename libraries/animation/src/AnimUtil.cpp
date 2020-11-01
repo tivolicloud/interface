@@ -119,12 +119,12 @@ float accumulateTime(float startFrame, float endFrame, float timeScale, float cu
             if (framesRemaining >= framesTillEnd) {
                 if (loopFlag) {
                     // anim loop
-                    triggersOut.setTrigger(id + "OnLoop");
+                    triggersOut.setTrigger(id + QStringLiteral("OnLoop"));
                     framesRemaining -= framesTillEnd;
                     frame = clampedStartFrame;
                 } else {
                     // anim end
-                    triggersOut.setTrigger(id + "OnDone");
+                    triggersOut.setTrigger(id + QStringLiteral("OnDone"));
                     frame = endFrame;
                     framesRemaining = 0.0f;
                 }

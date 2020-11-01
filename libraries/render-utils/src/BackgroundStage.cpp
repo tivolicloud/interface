@@ -76,7 +76,7 @@ void DrawBackgroundStage::run(const render::RenderContextPointer& renderContext,
     const auto& hazeFrame = inputs.get2();
 
     if (skybox && !skybox->empty()) {
-        PerformanceTimer perfTimer("skybox");
+        PerformanceTimer perfTimer(QStringLiteral("skybox"));
         auto args = renderContext->args;
 
         gpu::doInBatch("DrawBackgroundStage::run", args->_context, [&](gpu::Batch& batch) {

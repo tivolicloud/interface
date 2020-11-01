@@ -130,126 +130,126 @@ QScriptValue PointerEvent::toScriptValue(QScriptEngine* engine, const PointerEve
 
     switch (event._type) {
     case Press:
-        obj.setProperty("type", "Press");
+        obj.setProperty(QStringLiteral("type"), QStringLiteral("Press"));
         break;
     case DoublePress:
-        obj.setProperty("type", "DoublePress");
+        obj.setProperty(QStringLiteral("type"), QStringLiteral("DoublePress"));
         break;
     case Release:
-        obj.setProperty("type", "Release");
+        obj.setProperty(QStringLiteral("type"), QStringLiteral("Release"));
         break;
     default:
     case Move:
-        obj.setProperty("type", "Move");
+        obj.setProperty(QStringLiteral("type"), QStringLiteral("Move"));
         break;
     };
 
-    obj.setProperty("id", event._id);
+    obj.setProperty(QStringLiteral("id"), event._id);
 
     QScriptValue pos2D = engine->newObject();
-    pos2D.setProperty("x", event._pos2D.x);
-    pos2D.setProperty("y", event._pos2D.y);
-    obj.setProperty("pos2D", pos2D);
+    pos2D.setProperty(QStringLiteral("x"), event._pos2D.x);
+    pos2D.setProperty(QStringLiteral("y"), event._pos2D.y);
+    obj.setProperty(QStringLiteral("pos2D"), pos2D);
 
     QScriptValue pos3D = engine->newObject();
-    pos3D.setProperty("x", event._pos3D.x);
-    pos3D.setProperty("y", event._pos3D.y);
-    pos3D.setProperty("z", event._pos3D.z);
-    obj.setProperty("pos3D", pos3D);
+    pos3D.setProperty(QStringLiteral("x"), event._pos3D.x);
+    pos3D.setProperty(QStringLiteral("y"), event._pos3D.y);
+    pos3D.setProperty(QStringLiteral("z"), event._pos3D.z);
+    obj.setProperty(QStringLiteral("pos3D"), pos3D);
 
     QScriptValue normal = engine->newObject();
-    normal.setProperty("x", event._normal.x);
-    normal.setProperty("y", event._normal.y);
-    normal.setProperty("z", event._normal.z);
-    obj.setProperty("normal", normal);
+    normal.setProperty(QStringLiteral("x"), event._normal.x);
+    normal.setProperty(QStringLiteral("y"), event._normal.y);
+    normal.setProperty(QStringLiteral("z"), event._normal.z);
+    obj.setProperty(QStringLiteral("normal"), normal);
 
     QScriptValue direction = engine->newObject();
-    direction.setProperty("x", event._direction.x);
-    direction.setProperty("y", event._direction.y);
-    direction.setProperty("z", event._direction.z);
-    obj.setProperty("direction", direction);
+    direction.setProperty(QStringLiteral("x"), event._direction.x);
+    direction.setProperty(QStringLiteral("y"), event._direction.y);
+    direction.setProperty(QStringLiteral("z"), event._direction.z);
+    obj.setProperty(QStringLiteral("direction"), direction);
 
     bool isPrimaryButton = false;
     bool isSecondaryButton = false;
     bool isTertiaryButton = false;
     switch (event._button) {
     case NoButtons:
-        obj.setProperty("button", "None");
+        obj.setProperty(QStringLiteral("button"), QStringLiteral("None"));
         break;
     case PrimaryButton:
-        obj.setProperty("button", "Primary");
+        obj.setProperty(QStringLiteral("button"), QStringLiteral("Primary"));
         isPrimaryButton = true;
         break;
     case SecondaryButton:
-        obj.setProperty("button", "Secondary");
+        obj.setProperty(QStringLiteral("button"), QStringLiteral("Secondary"));
         isSecondaryButton = true;
         break;
     case TertiaryButton:
-        obj.setProperty("button", "Tertiary");
+        obj.setProperty(QStringLiteral("button"), QStringLiteral("Tertiary"));
         isTertiaryButton = true;
         break;
     }
 
     if (isPrimaryButton) {
-        obj.setProperty("isPrimaryButton", isPrimaryButton);
-        obj.setProperty("isLeftButton", isPrimaryButton);
+        obj.setProperty(QStringLiteral("isPrimaryButton"), isPrimaryButton);
+        obj.setProperty(QStringLiteral("isLeftButton"), isPrimaryButton);
     }
     if (isSecondaryButton) {
-        obj.setProperty("isSecondaryButton", isSecondaryButton);
-        obj.setProperty("isRightButton", isSecondaryButton);
+        obj.setProperty(QStringLiteral("isSecondaryButton"), isSecondaryButton);
+        obj.setProperty(QStringLiteral("isRightButton"), isSecondaryButton);
     }
     if (isTertiaryButton) {
-        obj.setProperty("isTertiaryButton", isTertiaryButton);
-        obj.setProperty("isMiddleButton", isTertiaryButton);
+        obj.setProperty(QStringLiteral("isTertiaryButton"), isTertiaryButton);
+        obj.setProperty(QStringLiteral("isMiddleButton"), isTertiaryButton);
     }
 
-    obj.setProperty("isPrimaryHeld", areFlagsSet(event._buttons, PrimaryButton));
-    obj.setProperty("isSecondaryHeld", areFlagsSet(event._buttons, SecondaryButton));
-    obj.setProperty("isTertiaryHeld", areFlagsSet(event._buttons, TertiaryButton));
+    obj.setProperty(QStringLiteral("isPrimaryHeld"), areFlagsSet(event._buttons, PrimaryButton));
+    obj.setProperty(QStringLiteral("isSecondaryHeld"), areFlagsSet(event._buttons, SecondaryButton));
+    obj.setProperty(QStringLiteral("isTertiaryHeld"), areFlagsSet(event._buttons, TertiaryButton));
 
-    obj.setProperty("keyboardModifiers", QScriptValue(event.getKeyboardModifiers()));
+    obj.setProperty(QStringLiteral("keyboardModifiers"), QScriptValue(event.getKeyboardModifiers()));
 
     return obj;
 }
 
 void PointerEvent::fromScriptValue(const QScriptValue& object, PointerEvent& event) {
     if (object.isObject()) {
-        QScriptValue type = object.property("type");
-        QString typeStr = type.isString() ? type.toString() : "Move";
-        if (typeStr == "Press") {
+        QScriptValue type = object.property(QStringLiteral("type"));
+        QString typeStr = type.isString() ? type.toString() : QStringLiteral("Move");
+        if (typeStr == QStringLiteral("Press")) {
             event._type = Press;
-        } else if (typeStr == "DoublePress") {
+        } else if (typeStr == QStringLiteral("DoublePress")) {
             event._type = DoublePress;
-        } else if (typeStr == "Release") {
+        } else if (typeStr == QStringLiteral("Release")) {
             event._type = Release;
         } else {
             event._type = Move;
         }
 
-        QScriptValue id = object.property("id");
+        QScriptValue id = object.property(QStringLiteral("id"));
         event._id = id.isNumber() ? (uint32_t)id.toNumber() : 0;
 
-        vec2FromScriptValue(object.property("pos2D"), event._pos2D);
-        vec3FromScriptValue(object.property("pos3D"), event._pos3D);
-        vec3FromScriptValue(object.property("normal"), event._normal);
-        vec3FromScriptValue(object.property("direction"), event._direction);
+        vec2FromScriptValue(object.property(QStringLiteral("pos2D")), event._pos2D);
+        vec3FromScriptValue(object.property(QStringLiteral("pos3D")), event._pos3D);
+        vec3FromScriptValue(object.property(QStringLiteral("normal")), event._normal);
+        vec3FromScriptValue(object.property(QStringLiteral("direction")), event._direction);
 
-        QScriptValue button = object.property("button");
-        QString buttonStr = type.isString() ? button.toString() : "NoButtons";
+        QScriptValue button = object.property(QStringLiteral("button"));
+        QString buttonStr = type.isString() ? button.toString() : QStringLiteral("NoButtons");
 
-        if (buttonStr == "Primary") {
+        if (buttonStr == QStringLiteral("Primary")) {
             event._button = PrimaryButton;
-        } else if (buttonStr == "Secondary") {
+        } else if (buttonStr == QStringLiteral("Secondary")) {
             event._button = SecondaryButton;
-        } else if (buttonStr == "Tertiary") {
+        } else if (buttonStr == QStringLiteral("Tertiary")) {
             event._button = TertiaryButton;
         } else {
             event._button = NoButtons;
         }
 
-        bool primary = object.property("isPrimaryHeld").toBool();
-        bool secondary = object.property("isSecondaryHeld").toBool();
-        bool tertiary = object.property("isTertiaryHeld").toBool();
+        bool primary = object.property(QStringLiteral("isPrimaryHeld")).toBool();
+        bool secondary = object.property(QStringLiteral("isSecondaryHeld")).toBool();
+        bool tertiary = object.property(QStringLiteral("isTertiaryHeld")).toBool();
         event._buttons = 0;
         if (primary) {
             event._buttons |= PrimaryButton;
@@ -261,7 +261,7 @@ void PointerEvent::fromScriptValue(const QScriptValue& object, PointerEvent& eve
             event._buttons |= TertiaryButton;
         }
 
-        event._keyboardModifiers = (Qt::KeyboardModifiers)(object.property("keyboardModifiers").toUInt32());
+        event._keyboardModifiers = (Qt::KeyboardModifiers)(object.property(QStringLiteral("keyboardModifiers")).toUInt32());
     }
 }
 

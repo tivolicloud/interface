@@ -271,7 +271,7 @@ public:
 class PickRay : public MathPick {
 public:
     PickRay() : origin(NAN), direction(NAN)  { }
-    PickRay(const QVariantMap& pickVariant) : origin(vec3FromVariant(pickVariant["origin"])), direction(vec3FromVariant(pickVariant["direction"])) {}
+    PickRay(const QVariantMap& pickVariant) : origin(vec3FromVariant(pickVariant[QStringLiteral("origin")])), direction(vec3FromVariant(pickVariant[QStringLiteral("direction")])) {}
     PickRay(const glm::vec3& origin, const glm::vec3 direction) : origin(origin), direction(direction) {}
     glm::vec3 origin;
     glm::vec3 direction;
@@ -284,8 +284,8 @@ public:
     }
     QVariantMap toVariantMap() const override {
         QVariantMap pickRay;
-        pickRay["origin"] = vec3toVariant(origin);
-        pickRay["direction"] = vec3toVariant(direction);
+        pickRay[QStringLiteral("origin")] = vec3toVariant(origin);
+        pickRay[QStringLiteral("direction")] = vec3toVariant(direction);
         return pickRay;
     }
 };
@@ -310,8 +310,8 @@ public:
     StylusTip(const bilateral::Side& side, const glm::vec3& tipOffset = Vectors::ZERO ,const glm::vec3& position = Vectors::ZERO,
               const glm::quat& orientation = Quaternions::IDENTITY, const glm::vec3& velocity = Vectors::ZERO) :
         side(side), tipOffset(tipOffset), position(position), orientation(orientation), velocity(velocity) {}
-    StylusTip(const QVariantMap& pickVariant) : side(bilateral::Side(pickVariant["side"].toInt())), tipOffset(vec3FromVariant(pickVariant["tipOffset"])),
-        position(vec3FromVariant(pickVariant["position"])), orientation(quatFromVariant(pickVariant["orientation"])), velocity(vec3FromVariant(pickVariant["velocity"])) {}
+    StylusTip(const QVariantMap& pickVariant) : side(bilateral::Side(pickVariant[QStringLiteral("side")].toInt())), tipOffset(vec3FromVariant(pickVariant[QStringLiteral("tipOffset")])),
+        position(vec3FromVariant(pickVariant[QStringLiteral("position")])), orientation(quatFromVariant(pickVariant[QStringLiteral("orientation")])), velocity(vec3FromVariant(pickVariant[QStringLiteral("velocity")])) {}
 
     bilateral::Side side { bilateral::Side::Invalid };
     glm::vec3 tipOffset;
@@ -327,11 +327,11 @@ public:
 
     QVariantMap toVariantMap() const override {
         QVariantMap stylusTip;
-        stylusTip["side"] = (int)side;
-        stylusTip["tipOffset"] = vec3toVariant(tipOffset);
-        stylusTip["position"] = vec3toVariant(position);
-        stylusTip["orientation"] = quatToVariant(orientation);
-        stylusTip["velocity"] = vec3toVariant(velocity);
+        stylusTip[QStringLiteral("side")] = (int)side;
+        stylusTip[QStringLiteral("tipOffset")] = vec3toVariant(tipOffset);
+        stylusTip[QStringLiteral("position")] = vec3toVariant(position);
+        stylusTip[QStringLiteral("orientation")] = quatToVariant(orientation);
+        stylusTip[QStringLiteral("velocity")] = vec3toVariant(velocity);
         return stylusTip;
     }
 };
@@ -351,7 +351,7 @@ public:
 class PickParabola : public MathPick {
 public:
     PickParabola() : origin(NAN), velocity(NAN), acceleration(NAN) { }
-    PickParabola(const QVariantMap& pickVariant) : origin(vec3FromVariant(pickVariant["origin"])), velocity(vec3FromVariant(pickVariant["velocity"])), acceleration(vec3FromVariant(pickVariant["acceleration"])) {}
+    PickParabola(const QVariantMap& pickVariant) : origin(vec3FromVariant(pickVariant[QStringLiteral("origin")])), velocity(vec3FromVariant(pickVariant[QStringLiteral("velocity")])), acceleration(vec3FromVariant(pickVariant[QStringLiteral("acceleration")])) {}
     PickParabola(const glm::vec3& origin, const glm::vec3 velocity, const glm::vec3 acceleration) : origin(origin), velocity(velocity), acceleration(acceleration) {}
     glm::vec3 origin;
     glm::vec3 velocity;
@@ -365,9 +365,9 @@ public:
     }
     QVariantMap toVariantMap() const override {
         QVariantMap pickParabola;
-        pickParabola["origin"] = vec3toVariant(origin);
-        pickParabola["velocity"] = vec3toVariant(velocity);
-        pickParabola["acceleration"] = vec3toVariant(acceleration);
+        pickParabola[QStringLiteral("origin")] = vec3toVariant(origin);
+        pickParabola[QStringLiteral("velocity")] = vec3toVariant(velocity);
+        pickParabola[QStringLiteral("acceleration")] = vec3toVariant(acceleration);
         return pickParabola;
     }
 };
@@ -389,40 +389,40 @@ public:
 
     CollisionRegion(const QVariantMap& pickVariant) {
         // "loaded" is not deserialized here because there is no way to know if the shape is actually loaded
-        if (pickVariant["shape"].isValid()) {
-            auto shape = pickVariant["shape"].toMap();
+        if (pickVariant[QStringLiteral("shape")].isValid()) {
+            auto shape = pickVariant[QStringLiteral("shape")].toMap();
             if (!shape.empty()) {
                 ShapeType shapeType = SHAPE_TYPE_NONE;
-                if (shape["shapeType"].isValid()) {
-                    shapeType = ShapeInfo::getShapeTypeForName(shape["shapeType"].toString());
+                if (shape[QStringLiteral("shapeType")].isValid()) {
+                    shapeType = ShapeInfo::getShapeTypeForName(shape[QStringLiteral("shapeType")].toString());
                 }
-                if (shapeType >= SHAPE_TYPE_COMPOUND && shapeType <= SHAPE_TYPE_STATIC_MESH && shape["modelURL"].isValid()) {
-                    QString newURL = shape["modelURL"].toString();
+                if (shapeType >= SHAPE_TYPE_COMPOUND && shapeType <= SHAPE_TYPE_STATIC_MESH && shape[QStringLiteral("modelURL")].isValid()) {
+                    QString newURL = shape[QStringLiteral("modelURL")].toString();
                     modelURL.setUrl(newURL);
                 } else {
-                    modelURL.setUrl("");
+                    modelURL.setUrl(QString());
                 }
 
-                if (shape["dimensions"].isValid()) {
-                    transform.setScale(vec3FromVariant(shape["dimensions"]));
+                if (shape[QStringLiteral("dimensions")].isValid()) {
+                    transform.setScale(vec3FromVariant(shape[QStringLiteral("dimensions")]));
                 }
 
                 shapeInfo->setParams(shapeType, transform.getScale() / 2.0f, modelURL.toString());
             }
         }
 
-        if (pickVariant["threshold"].isValid()) {
-            threshold = glm::max(0.0f, pickVariant["threshold"].toFloat());
+        if (pickVariant[QStringLiteral("threshold")].isValid()) {
+            threshold = glm::max(0.0f, pickVariant[QStringLiteral("threshold")].toFloat());
         }
 
-        if (pickVariant["position"].isValid()) {
-            transform.setTranslation(vec3FromVariant(pickVariant["position"]));
+        if (pickVariant[QStringLiteral("position")].isValid()) {
+            transform.setTranslation(vec3FromVariant(pickVariant[QStringLiteral("position")]));
         }
-        if (pickVariant["orientation"].isValid()) {
-            transform.setRotation(quatFromVariant(pickVariant["orientation"]));
+        if (pickVariant[QStringLiteral("orientation")].isValid()) {
+            transform.setRotation(quatFromVariant(pickVariant[QStringLiteral("orientation")]));
         }
-        if (pickVariant["collisionGroup"].isValid()) {
-            collisionGroup = pickVariant["collisionGroup"].toUInt();
+        if (pickVariant[QStringLiteral("collisionGroup")].isValid()) {
+            collisionGroup = pickVariant[QStringLiteral("collisionGroup")].toUInt();
         }
     }
 
@@ -454,18 +454,18 @@ public:
         QVariantMap collisionRegion;
 
         QVariantMap shape;
-        shape["shapeType"] = ShapeInfo::getNameForShapeType(shapeInfo->getType());
-        shape["modelURL"] = modelURL.toString();
-        shape["dimensions"] = vec3toVariant(transform.getScale());
+        shape[QStringLiteral("shapeType")] = ShapeInfo::getNameForShapeType(shapeInfo->getType());
+        shape[QStringLiteral("modelURL")] = modelURL.toString();
+        shape[QStringLiteral("dimensions")] = vec3toVariant(transform.getScale());
 
-        collisionRegion["shape"] = shape;
-        collisionRegion["loaded"] = loaded;
+        collisionRegion[QStringLiteral("shape")] = shape;
+        collisionRegion[QStringLiteral("loaded")] = loaded;
 
-        collisionRegion["threshold"] = threshold;
-        collisionRegion["collisionGroup"] = collisionGroup;
+        collisionRegion[QStringLiteral("threshold")] = threshold;
+        collisionRegion[QStringLiteral("collisionGroup")] = collisionGroup;
 
-        collisionRegion["position"] = vec3toVariant(transform.getTranslation());
-        collisionRegion["orientation"] = quatToVariant(transform.getRotation());
+        collisionRegion[QStringLiteral("position")] = vec3toVariant(transform.getTranslation());
+        collisionRegion[QStringLiteral("orientation")] = quatToVariant(transform.getRotation());
 
         return collisionRegion;
     }

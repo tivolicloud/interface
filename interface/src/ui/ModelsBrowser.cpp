@@ -101,7 +101,7 @@ ModelsBrowser::ModelsBrowser(FSTReader::ModelType modelsType, QWidget* parent) :
 }
 
 void ModelsBrowser::applyFilter(const QString &filter) {
-    QStringList filters = filter.split(" ");
+    QStringList filters = filter.split(QStringLiteral(" "));
     
     _handler->lockModel();
     QStandardItemModel* model = _handler->getModel();

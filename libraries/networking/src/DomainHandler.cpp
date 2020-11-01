@@ -319,7 +319,7 @@ QString DomainHandler::getViewPointFromNamedPath(QString namedPath) {
     if (namedPath == DEFAULT_NAMED_PATH) {
         return DOMAIN_SPAWNING_POINT;
     }
-    return "";
+    return QString();
 }
 
 void DomainHandler::completedHostnameLookup(const QHostInfo& hostInfo) {

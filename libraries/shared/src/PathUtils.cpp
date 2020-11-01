@@ -181,7 +181,7 @@ QString PathUtils::generateTemporaryDir() {
             return tempDir.absolutePath();
         }
     }
-    return "";
+    return QString();
 }
 
 bool PathUtils::deleteMyTemporaryDir(QString dirName) {
@@ -267,7 +267,7 @@ QString findMostRecentFileExtension(const QString& originalFileName, QVector<QSt
 }
 
 QUrl PathUtils::defaultScriptsLocation(const QString& newDefaultPath) {
-    static QString overriddenDefaultScriptsLocation = "";
+    static QString overriddenDefaultScriptsLocation = QString();
     QString path;
 
     // set overriddenDefaultScriptLocation if it was passed in

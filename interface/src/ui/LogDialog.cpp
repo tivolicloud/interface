@@ -299,7 +299,7 @@ void LogDialog::handleFilterDropdownChanged(int selection) {
     if (selection != 0) {
         _filterSelection = "[" + _filterDropdown->currentText() + "]";
     } else {
-        _filterSelection = "";
+        _filterSelection = QString();
     }
     printLogFile();
 }

@@ -112,7 +112,7 @@ void ShapePlumber::addPipeline(const Filter& filter, const gpu::ShaderPointer& p
     }
 
     {
-        PROFILE_RANGE(app, "Pipeline::create");
+        PROFILE_RANGE(app, QStringLiteral("Pipeline::create"));
         auto gpuPipeline = gpu::Pipeline::create(program, state);
         auto shapePipeline = std::make_shared<Pipeline>(gpuPipeline, locations, batchSetter, itemSetter);
         addPipelineHelper(filter, key, 0, shapePipeline);
@@ -124,7 +124,7 @@ const ShapePipelinePointer ShapePlumber::pickPipeline(RenderArgs* args, const Ke
     assert(args);
     assert(args->_batch);
 
-    PerformanceTimer perfTimer("ShapePlumber::pickPipeline");
+    PerformanceTimer perfTimer(QStringLiteral("ShapePlumber::pickPipeline"));
 
     auto pipelineIterator = _pipelineMap.find(key);
     if (pipelineIterator == _pipelineMap.end()) {

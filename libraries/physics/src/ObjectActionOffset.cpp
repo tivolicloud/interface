@@ -157,9 +157,9 @@ bool ObjectActionOffset::updateArguments(QVariantMap arguments) {
 QVariantMap ObjectActionOffset::getArguments() {
     QVariantMap arguments = ObjectDynamic::getArguments();
     withReadLock([&] {
-        arguments["pointToOffsetFrom"] = vec3ToQMap(_pointToOffsetFrom);
-        arguments["linearTimeScale"] = _linearTimeScale;
-        arguments["linearDistance"] = _linearDistance;
+        arguments[QStringLiteral("pointToOffsetFrom")] = vec3ToQMap(_pointToOffsetFrom);
+        arguments[QStringLiteral("linearTimeScale")] = _linearTimeScale;
+        arguments[QStringLiteral("linearDistance")] = _linearDistance;
     });
     return arguments;
 }

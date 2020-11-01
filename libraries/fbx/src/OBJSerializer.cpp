@@ -689,7 +689,7 @@ HFMModel::Pointer OBJSerializer::read(const hifi::ByteArray& data, const hifi::V
         hfmModel.joints[0].name = "OBJ";
         hfmModel.joints[0].isSkeletonJoint = true;
 
-        hfmModel.jointIndices["x"] = 1;
+        hfmModel.jointIndices[QStringLiteral("x")] = 1;
 
         QMap<QString, int> materialMeshIdMap;
         std::vector<HFMMeshPart> hfmMeshParts;
@@ -726,7 +726,7 @@ HFMModel::Pointer OBJSerializer::read(const hifi::ByteArray& data, const hifi::V
                         if (specifiesUV) {
                             material.userSpecifiesUV = true; // Note might not be true in a later usage.
                         }
-                        if (specifiesUV || (groupMaterialName.compare("none", Qt::CaseInsensitive) != 0)) {
+                        if (specifiesUV || (groupMaterialName.compare(QStringLiteral("none"), Qt::CaseInsensitive) != 0)) {
                             // Blender has a convention that a material named "None" isn't really used (or defined).
                             material.used = true;
                             needsMaterialLibrary = groupMaterialName != SMART_DEFAULT_MATERIAL_NAME;

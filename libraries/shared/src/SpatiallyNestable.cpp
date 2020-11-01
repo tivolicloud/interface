@@ -1413,11 +1413,11 @@ SpatiallyNestablePointer SpatiallyNestable::findByID(QUuid id, bool& success) {
 QString SpatiallyNestable::nestableTypeToString(NestableType nestableType) {
     switch(nestableType) {
         case NestableType::Entity:
-            return "entity";
+            return QStringLiteral("entity");
         case NestableType::Avatar:
-            return "avatar";
+            return QStringLiteral("avatar");
         default:
-            return "unknown";
+            return QStringLiteral("unknown");
     }
 }
 

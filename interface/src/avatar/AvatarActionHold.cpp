@@ -98,7 +98,7 @@ void AvatarActionHold::prepareForPhysicsSimulation() {
 
         glm::vec3 palmPosition;
         glm::quat palmRotation;
-        if (_hand == "right") {
+        if (_hand == QStringLiteral("right")) {
             palmPosition = holdingAvatar->getUncachedRightPalmPosition();
             palmRotation = holdingAvatar->getUncachedRightPalmRotation();
         } else {
@@ -140,7 +140,7 @@ bool AvatarActionHold::getTarget(float deltaTimeStep, glm::quat& rotation, glm::
     }
 
     withReadLock([&]{
-        bool isRightHand = (_hand == "right");
+        bool isRightHand = (_hand == QStringLiteral("right"));
 
         glm::vec3 palmPosition;
         glm::quat palmRotation;
@@ -373,7 +373,7 @@ bool AvatarActionHold::updateArguments(QVariantMap arguments) {
 
         ok = true;
         hand = EntityDynamicInterface::extractStringArgument("hold", arguments, "hand", ok, false);
-        if (!ok || !(hand == "left" || hand == "right")) {
+        if (!ok || !(hand == QStringLiteral("left") || hand == QStringLiteral("right"))) {
             hand = _hand;
         }
 
@@ -469,14 +469,14 @@ bool AvatarActionHold::updateArguments(QVariantMap arguments) {
 QVariantMap AvatarActionHold::getArguments() {
     QVariantMap arguments = ObjectDynamic::getArguments();
     withReadLock([&]{
-        arguments["holderID"] = _holderID;
-        arguments["relativePosition"] = vec3ToQMap(_relativePosition);
-        arguments["relativeRotation"] = quatToQMap(_relativeRotation);
-        arguments["timeScale"] = _linearTimeScale;
-        arguments["hand"] = _hand;
-        arguments["kinematic"] = _kinematic;
-        arguments["kinematicSetVelocity"] = _kinematicSetVelocity;
-        arguments["ignoreIK"] = _ignoreIK;
+        arguments[QStringLiteral("holderID")] = _holderID;
+        arguments[QStringLiteral("relativePosition")] = vec3ToQMap(_relativePosition);
+        arguments[QStringLiteral("relativeRotation")] = quatToQMap(_relativeRotation);
+        arguments[QStringLiteral("timeScale")] = _linearTimeScale;
+        arguments[QStringLiteral("hand")] = _hand;
+        arguments[QStringLiteral("kinematic")] = _kinematic;
+        arguments[QStringLiteral("kinematicSetVelocity")] = _kinematicSetVelocity;
+        arguments[QStringLiteral("ignoreIK")] = _ignoreIK;
     });
     return arguments;
 }

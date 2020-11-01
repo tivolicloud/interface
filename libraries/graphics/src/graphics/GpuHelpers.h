@@ -34,7 +34,7 @@ namespace gpu {
     inline const QString toString(gpu::Semantic v) { return SEMANTICS.value(v); }
     inline const QString toString(gpu::Stream::InputSlot v) { return SLOTS.value(v); }
     inline const QString toString(gpu::Element v) {
-        return QString("[Element semantic=%1 type=%1 dimension=%2]")
+        return QStringLiteral("[Element semantic=%1 type=%1 dimension=%2]")
             .arg(toString(v.getSemantic()))
             .arg(toString(v.getType()))
             .arg(toString(v.getDimension()));

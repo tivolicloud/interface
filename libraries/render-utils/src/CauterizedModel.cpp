@@ -78,7 +78,7 @@ void CauterizedModel::createRenderItemSet() {
 }
 
 void CauterizedModel::updateClusterMatrices() {
-    PerformanceTimer perfTimer("CauterizedModel::updateClusterMatrices");
+    PerformanceTimer perfTimer(QStringLiteral("CauterizedModel::updateClusterMatrices"));
 
     if (!_needsUpdateClusterMatrices || !isLoaded()) {
         return;

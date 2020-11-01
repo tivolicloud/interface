@@ -106,8 +106,8 @@ static std::vector<AnimPoseVec> copyAndRetargetFromNetworkAnim(AnimationPointer 
 
     // find the size scale factor for translation in the animation.
     float boneLengthScale = 1.0f;
-    const int avatarHipsIndex = avatarSkeleton->nameToJointIndex("Hips");
-    const int animHipsIndex = animSkeleton.nameToJointIndex("Hips");
+    const int avatarHipsIndex = avatarSkeleton->nameToJointIndex(QStringLiteral("Hips"));
+    const int animHipsIndex = animSkeleton.nameToJointIndex(QStringLiteral("Hips"));
     if (avatarHipsIndex != -1 && animHipsIndex != -1) {
         const int avatarHipsParentIndex = avatarSkeleton->getParentIndex(avatarHipsIndex);
         const int animHipsParentIndex = animSkeleton.getParentIndex(animHipsIndex);

@@ -59,23 +59,23 @@ Stats::Stats(QQuickItem* parent) :  QQuickItem(parent) {
 
 bool Stats::includeTimingRecord(const QString& name) {
     if (Menu::getInstance()->isOptionChecked(MenuOption::DisplayDebugTimingDetails)) {
-        if (name.startsWith("/idle/update/")) {
-            if (name.startsWith("/idle/update/simulation/")) {
+        if (name.startsWith(QStringLiteral("/idle/update/"))) {
+            if (name.startsWith(QStringLiteral("/idle/update/simulation/"))) {
                 return Menu::getInstance()->isOptionChecked(MenuOption::ExpandSimulationTiming);
-            } else if (name.startsWith("/idle/update/myAvatar/")) {
-                if (name.startsWith("/idle/update/myAvatar/simulate/")) {
+            } else if (name.startsWith(QStringLiteral("/idle/update/myAvatar/"))) {
+                if (name.startsWith(QStringLiteral("/idle/update/myAvatar/simulate/"))) {
                     return Menu::getInstance()->isOptionChecked(MenuOption::ExpandMyAvatarSimulateTiming);
                 }
                 return Menu::getInstance()->isOptionChecked(MenuOption::ExpandMyAvatarTiming);
-            } else if (name.startsWith("/idle/update/otherAvatars/")) {
+            } else if (name.startsWith(QStringLiteral("/idle/update/otherAvatars/"))) {
                 return Menu::getInstance()->isOptionChecked(MenuOption::ExpandOtherAvatarTiming);
             }
             return Menu::getInstance()->isOptionChecked(MenuOption::ExpandUpdateTiming);
-        } else if (name.startsWith("/idle/updateGL/paintGL/")) {
+        } else if (name.startsWith(QStringLiteral("/idle/updateGL/paintGL/"))) {
             return Menu::getInstance()->isOptionChecked(MenuOption::ExpandPaintGLTiming);
-        } else if (name.startsWith("/paintGL/")) {
+        } else if (name.startsWith(QStringLiteral("/paintGL/"))) {
             return Menu::getInstance()->isOptionChecked(MenuOption::ExpandPaintGLTiming);
-        } else if (name.startsWith("physics/")) {
+        } else if (name.startsWith(QStringLiteral("physics/"))) {
             return Menu::getInstance()->isOptionChecked(MenuOption::ExpandPhysicsTiming);
         }
         return true;
@@ -144,10 +144,10 @@ void Stats::updateStats(bool force) {
     if (qApp->getActiveDisplayPlugin()) {
         auto displayPlugin = qApp->getActiveDisplayPlugin();
         auto stats = displayPlugin->getHardwareStats();
-        STAT_UPDATE(appdropped, stats["app_dropped_frame_count"].toInt());
-        STAT_UPDATE(longrenders, stats["long_render_count"].toInt());
-        STAT_UPDATE(longsubmits, stats["long_submit_count"].toInt());
-        STAT_UPDATE(longframes, stats["long_frame_count"].toInt());
+        STAT_UPDATE(appdropped, stats[QStringLiteral("app_dropped_frame_count")].toInt());
+        STAT_UPDATE(longrenders, stats[QStringLiteral("long_render_count")].toInt());
+        STAT_UPDATE(longsubmits, stats[QStringLiteral("long_submit_count")].toInt());
+        STAT_UPDATE(longframes, stats[QStringLiteral("long_frame_count")].toInt());
         STAT_UPDATE_FLOAT(presentrate, displayPlugin->presentRate(), 0.1f);
         STAT_UPDATE_FLOAT(presentnewrate, displayPlugin->newFramePresentRate(), 0.1f);
         STAT_UPDATE_FLOAT(presentdroprate, displayPlugin->droppedFrameRate(), 0.1f);
@@ -508,7 +508,7 @@ void Stats::updateStats(bool force) {
             static const QChar noBreakingSpace = QChar::Nbsp;
             QString functionName = j.value();
             const PerformanceTimerRecord& record = allRecords.value(functionName);
-            perfLines += QString("%1: %2 [%3]\n").
+            perfLines += QStringLiteral("%1: %2 [%3]\n").
                 arg(QString(qPrintable(functionName)), -80, noBreakingSpace).
                 arg((float)record.getMovingAverage() / (float)USECS_PER_MSEC, 8, 'f', 3, noBreakingSpace).
                 arg((int)record.getCount(), 6, 10, noBreakingSpace);
@@ -541,22 +541,22 @@ void Stats::updateStats(bool force) {
         auto itr = allRecords.find("/idle/update");
         if (itr != allRecords.end()) {
             float dt = (float)itr.value().getMovingAverage() / (float)USECS_PER_MSEC;
-            _gameUpdateStats = QString("/idle/update = %1 ms").arg(dt);
+            _gameUpdateStats = QStringLiteral("/idle/update = %1 ms").arg(dt);
 
             QVector<QString> categories = {
-                "devices",
-                "MyAvatar",
-                "otherAvatars",
-                "pickManager",
-                "pointerManager",
-                "simulation"
+                QStringLiteral("devices"),
+                QStringLiteral("MyAvatar"),
+                QStringLiteral("otherAvatars"),
+                QStringLiteral("pickManager"),
+                QStringLiteral("pointerManager"),
+                QStringLiteral("simulation")
             };
             for (int32_t j = 0; j < categories.size(); ++j) {
-                QString recordKey = "/idle/update/" + categories[j];
+                QString recordKey = QStringLiteral("/idle/update/") + categories[j];
                 auto& record = allRecords[recordKey];
                 if (record.getCount()) {
                     float dt = (float) record.getMovingAverage() / (float)USECS_PER_MSEC;
-                    QString message = QString("\n    %1 = %2").arg(categories[j]).arg(dt);
+                    QString message = QStringLiteral("\n    %1 = %2").arg(categories[j]).arg(dt);
                     idleUpdateStats.push(SortableStat(message, dt));
                 }
             }

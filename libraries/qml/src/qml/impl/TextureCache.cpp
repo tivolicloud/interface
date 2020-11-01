@@ -68,12 +68,12 @@ void TextureCache::releaseTexture(const Value& textureAndFence) {
 
 void TextureCache::report() {
     if (randFloat() < 0.01f) {
-        PROFILE_COUNTER(render_qml_gl, "offscreenTextures",
+        PROFILE_COUNTER(render_qml_gl, QStringLiteral("offscreenTextures"),
                         {
-                            { "total", QVariant::fromValue(_allTextureCount.load()) },
-                            { "active", QVariant::fromValue(_activeTextureCount.load()) },
+                            { QStringLiteral("total"), QVariant::fromValue(_allTextureCount.load()) },
+                            { QStringLiteral("active"), QVariant::fromValue(_activeTextureCount.load()) },
                         });
-        PROFILE_COUNTER(render_qml_gl, "offscreenTextureMemory", { { "value", QVariant::fromValue(_totalTextureUsage) } });
+        PROFILE_COUNTER(render_qml_gl, QStringLiteral("offscreenTextureMemory"), { { QStringLiteral("value"), QVariant::fromValue(_totalTextureUsage) } });
     }
 }
 

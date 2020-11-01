@@ -278,7 +278,7 @@ void WebEntityItem::setSourceUrl(const QString& value) {
 }
 
 QString WebEntityItem::getSourceUrl() const { 
-    QString empty = "";
+    QString empty = QString();
     if (this == NULL) return empty;
     return resultWithReadLock<QString>([&] {
         if (!_sourceUrl.isNull()) return _sourceUrl;

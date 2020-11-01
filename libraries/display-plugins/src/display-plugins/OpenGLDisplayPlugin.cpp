@@ -120,7 +120,7 @@ public:
         CHECK_GL_ERROR();
         while (!_shutdown) {
             if (_pendingOtherThreadOperation) {
-                PROFILE_RANGE(render, "MainThreadOp")
+                PROFILE_RANGE(render, QStringLiteral("MainThreadOp"))
                 {
                     Lock lock(_mutex);
                     _context->doneCurrent();
@@ -193,7 +193,7 @@ public:
 #endif
             // Execute the frame and present it to the display device.
             {
-                PROFILE_RANGE(render, "PluginPresent")
+                PROFILE_RANGE(render, QStringLiteral("PluginPresent"))
                 gl::globalLock();
                 currentPlugin->present(_refreshRateController);
                 gl::globalRelease(false);
@@ -656,12 +656,12 @@ void OpenGLDisplayPlugin::compositeLayers() {
     updateCompositeFramebuffer();
 
     {
-        PROFILE_RANGE_EX(render_detail, "compositeScene", 0xff0077ff, (uint64_t)presentCount())
+        PROFILE_RANGE_EX(render_detail, QStringLiteral("compositeScene"), 0xff0077ff, (uint64_t)presentCount())
         compositeScene();
     }
 
     {
-        PROFILE_RANGE_EX(render_detail, "compositeExtra", 0xff0077ff, (uint64_t)presentCount())
+        PROFILE_RANGE_EX(render_detail, QStringLiteral("compositeExtra"), 0xff0077ff, (uint64_t)presentCount())
         compositeExtra();
     }
 
@@ -670,7 +670,7 @@ void OpenGLDisplayPlugin::compositeLayers() {
         auto compositorHelper = DependencyManager::get<CompositorHelper>();
         // Draw the pointer last so it's on top of everything
         if (compositorHelper->getReticleVisible()) {
-            PROFILE_RANGE_EX(render_detail, "compositePointer", 0xff0077ff, (uint64_t)presentCount())
+            PROFILE_RANGE_EX(render_detail, QStringLiteral("compositePointer"), 0xff0077ff, (uint64_t)presentCount())
             compositePointer();
         }
     }
@@ -693,7 +693,7 @@ void OpenGLDisplayPlugin::present(const std::shared_ptr<RefreshRateController>& 
     uint64_t startPresent = usecTimestampNow();
     refreshRateController->clockStartTime();
     {
-        PROFILE_RANGE_EX(render, "updateFrameData", 0xff00ff00, frameId)
+        PROFILE_RANGE_EX(render, QStringLiteral("updateFrameData"), 0xff00ff00, frameId)
         updateFrameData();
     }
     incrementPresentCount();
@@ -711,18 +711,18 @@ void OpenGLDisplayPlugin::present(const std::shared_ptr<RefreshRateController>& 
                 _lastFrame = _currentFrame.get();
             });
             // Execute the frame rendering commands
-            PROFILE_RANGE_EX(render, "execute", 0xff00ff00, frameId)
+            PROFILE_RANGE_EX(render, QStringLiteral("execute"), 0xff00ff00, frameId)
             _gpuContext->executeFrame(_currentFrame);
         }
 
         // Write all layers to a local framebuffer
         {
-            PROFILE_RANGE_EX(render, "composite", 0xff00ffff, frameId)
+            PROFILE_RANGE_EX(render, QStringLiteral("composite"), 0xff00ffff, frameId)
             compositeLayers();
         }
 
         { // If we have any snapshots this frame, handle them
-            PROFILE_RANGE_EX(render, "snapshotOperators", 0xffff00ff, frameId)
+            PROFILE_RANGE_EX(render, QStringLiteral("snapshotOperators"), 0xffff00ff, frameId)
             while (!_currentFrame->snapshotOperators.empty()) {
                 auto& snapshotOperator = _currentFrame->snapshotOperators.front();
                 if (std::get<2>(snapshotOperator)) {
@@ -737,7 +737,7 @@ void OpenGLDisplayPlugin::present(const std::shared_ptr<RefreshRateController>& 
         // Take the composite framebuffer and send it to the output device
         refreshRateController->clockEndTime();
         {
-            PROFILE_RANGE_EX(render, "internalPresent", 0xff00ffff, frameId)
+            PROFILE_RANGE_EX(render, QStringLiteral("internalPresent"), 0xff00ffff, frameId)
             internalPresent();
         }
 

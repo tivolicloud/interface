@@ -94,13 +94,13 @@ void render::cullItems(const RenderContextPointer& renderContext, const CullFunc
 
         bool inView;
         {
-            PerformanceTimer perfTimer("boxIntersectsFrustum");
+            PerformanceTimer perfTimer(QStringLiteral("boxIntersectsFrustum"));
             inView = frustum.boxIntersectsFrustum(item.bound);
         }
         if (inView) {
             bool bigEnoughToRender;
             {
-                PerformanceTimer perfTimer("shouldRender");
+                PerformanceTimer perfTimer(QStringLiteral("shouldRender"));
                 bigEnoughToRender = cullFunctor(args, item.bound); // cpm investigate cullfunctor
             }
             if (bigEnoughToRender) {
@@ -230,7 +230,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
         if (_skipCulling || _overrideSkipCulling) {
             // inside & fit items: filter only, culling is disabled
             {
-                PerformanceTimer perfTimer("insideFitItems");
+                PerformanceTimer perfTimer(QStringLiteral("insideFitItems"));
                 for (auto id : inSelection.insideItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -245,7 +245,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // inside & subcell items: filter only, culling is disabled
             {
-                PerformanceTimer perfTimer("insideSmallItems");
+                PerformanceTimer perfTimer(QStringLiteral("insideSmallItems"));
                 for (auto id : inSelection.insideSubcellItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -260,7 +260,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // partial & fit items: filter only, culling is disabled
             {
-                PerformanceTimer perfTimer("partialFitItems");
+                PerformanceTimer perfTimer(QStringLiteral("partialFitItems"));
                 for (auto id : inSelection.partialItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -275,7 +275,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // partial & subcell items: filter only, culling is disabled
             {
-                PerformanceTimer perfTimer("partialSmallItems");
+                PerformanceTimer perfTimer(QStringLiteral("partialSmallItems"));
                 for (auto id : inSelection.partialSubcellItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -292,7 +292,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
             // CPM investigate
             // inside & fit items: easy, just filter
             {
-                PerformanceTimer perfTimer("insideFitItems");
+                PerformanceTimer perfTimer(QStringLiteral("insideFitItems"));
                 for (auto id : inSelection.insideItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -307,7 +307,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // inside & subcell items: filter & distance cull
             {
-                PerformanceTimer perfTimer("insideSmallItems");
+                PerformanceTimer perfTimer(QStringLiteral("insideSmallItems"));
                 for (auto id : inSelection.insideSubcellItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -324,7 +324,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // partial & fit items: filter & frustum cull
             {
-                PerformanceTimer perfTimer("partialFitItems");
+                PerformanceTimer perfTimer(QStringLiteral("partialFitItems"));
                 for (auto id : inSelection.partialItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {
@@ -341,7 +341,7 @@ void CullSpatialSelection::run(const RenderContextPointer& renderContext,
 
             // partial & subcell items:: filter & frutum cull & solidangle cull
             {
-                PerformanceTimer perfTimer("partialSmallItems");
+                PerformanceTimer perfTimer(QStringLiteral("partialSmallItems"));
                 for (auto id : inSelection.partialSubcellItems) {
                     auto& item = scene->getItem(id);
                     if (filter.test(item.getKey())) {

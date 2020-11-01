@@ -39,11 +39,11 @@ public:
         };
 
         JointVar(const QString& jointNameIn, Type rotationType, Type translationType, const QString& rotationVarIn, const QString& translationVarIn);
-        QString jointName = "";
+        QString jointName = QString();
         Type rotationType = Type::Absolute;
         Type translationType = Type::Absolute;
-        QString rotationVar = "";
-        QString translationVar = "";
+        QString rotationVar = QString();
+        QString translationVar = QString();
 
         int jointIndex = -1;
         bool hasPerformedJointLookup = false;

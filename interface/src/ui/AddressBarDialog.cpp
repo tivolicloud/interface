@@ -58,7 +58,7 @@ void AddressBarDialog::loadHome() {
     qDebug() << "Called LoadHome";
     auto locationBookmarks = DependencyManager::get<LocationBookmarks>();
     QString homeLocation = locationBookmarks->addressForBookmark(LocationBookmarks::HOME_BOOKMARK);
-    if (homeLocation == "") {
+    if (homeLocation.isEmpty()) {
         homeLocation = DEFAULT_HOME_ADDRESS;
     }
     DependencyManager::get<AddressManager>()->handleLookupString(homeLocation);

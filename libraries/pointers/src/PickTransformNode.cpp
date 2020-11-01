@@ -27,6 +27,6 @@ Transform PickTransformNode::getTransform() {
 
 QVariantMap PickTransformNode::toVariantMap() const {
     QVariantMap map;
-    map["parentID"] = _uid;
+    map[QStringLiteral("parentID")] = _uid;
     return map;
 }

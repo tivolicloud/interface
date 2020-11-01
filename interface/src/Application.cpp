@@ -610,8 +610,8 @@ class ApplicationMeshProvider : public scriptable::ModelProviderFactory  {
 public:
     virtual scriptable::ModelProviderPointer lookupModelProvider(const QUuid& uuid) override {
         bool success;
-        if (auto nestable = DependencyManager::get<SpatialParentFinder>()->find(uuid, success).lock()) {
-            auto type = nestable->getNestableType();
+        if (const auto nestable = DependencyManager::get<SpatialParentFinder>()->find(uuid, success).lock()) {
+            const auto type = nestable->getNestableType();
 #ifdef SCRIPTABLE_MESH_DEBUG
             qCDebug(interfaceapp) << "ApplicationMeshProvider::lookupModelProvider" << uuid << SpatiallyNestable::nestableTypeToString(type);
 #endif
@@ -628,10 +628,10 @@ public:
 private:
     scriptable::ModelProviderPointer getEntityModelProvider(EntityItemID entityID) {
         scriptable::ModelProviderPointer provider;
-        auto entityTreeRenderer = qApp->getEntities();
-        auto entityTree = entityTreeRenderer->getTree();
-        if (auto entity = entityTree->findEntityByID(entityID)) {
-            if (auto renderer = entityTreeRenderer->renderableForEntityId(entityID)) {
+        const auto entityTreeRenderer = qApp->getEntities();
+        const auto entityTree = entityTreeRenderer->getTree();
+        if (const auto entity = entityTree->findEntityByID(entityID)) {
+            if (const auto renderer = entityTreeRenderer->renderableForEntityId(entityID)) {
                 provider = std::dynamic_pointer_cast<scriptable::ModelProvider>(renderer);
                 provider->modelProviderType = NestableType::Entity;
             } else {
@@ -643,8 +643,8 @@ private:
 
     scriptable::ModelProviderPointer getAvatarModelProvider(QUuid sessionUUID) {
         scriptable::ModelProviderPointer provider;
-        auto avatarManager = DependencyManager::get<AvatarManager>();
-        if (auto avatar = avatarManager->getAvatarBySessionID(sessionUUID)) {
+        const auto avatarManager = DependencyManager::get<AvatarManager>();
+        if (const auto avatar = avatarManager->getAvatarBySessionID(sessionUUID)) {
             provider = std::dynamic_pointer_cast<scriptable::ModelProvider>(avatar);
             provider->modelProviderType = NestableType::Avatar;
         }
@@ -961,7 +961,7 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     if (!setBookmarkValue.isEmpty()) {
         // Bookmarks are expected to be in a name=url form.
         // An `=` character in the name or url is unsupported.
-        auto parts = setBookmarkValue.split("=");
+        auto parts = setBookmarkValue.split(QStringLiteral("="));
         if (parts.length() != 2) {
             qWarning() << "Malformed setBookmark argument: " << setBookmarkValue;
         } else {
@@ -1641,7 +1641,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         while (!installerFile.atEnd()) {
             auto line = installerFile.readLine();
             if (!line.isEmpty()) {
-                auto index = line.indexOf("=");
+                auto index = line.indexOf(QStringLiteral("="));
                 if (index >= 0) {
                     installerKeyValues[line.mid(0, index).trimmed()] = line.mid(index + 1).trimmed();
                 }
@@ -1704,29 +1704,29 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         };
         auto macVersion = QSysInfo::macVersion();
         if (macVersion != QSysInfo::MV_None) {
-            properties["os_osx_version"] = QSysInfo::macVersion();
+            properties[QStringLiteral("os_osx_version")] = QSysInfo::macVersion();
         }
         auto windowsVersion = QSysInfo::windowsVersion();
         if (windowsVersion != QSysInfo::WV_None) {
-            properties["os_win_version"] = QSysInfo::windowsVersion();
+            properties[QStringLiteral("os_win_version")] = QSysInfo::windowsVersion();
         }
 
         ProcessorInfo procInfo;
         if (getProcessorInfo(procInfo)) {
-            properties["processor_core_count"] = procInfo.numProcessorCores;
-            properties["logical_processor_count"] = procInfo.numLogicalProcessors;
-            properties["processor_l1_cache_count"] = procInfo.numProcessorCachesL1;
-            properties["processor_l2_cache_count"] = procInfo.numProcessorCachesL2;
-            properties["processor_l3_cache_count"] = procInfo.numProcessorCachesL3;
+            properties[QStringLiteral("processor_core_count")] = procInfo.numProcessorCores;
+            properties[QStringLiteral("logical_processor_count")] = procInfo.numLogicalProcessors;
+            properties[QStringLiteral("processor_l1_cache_count")] = procInfo.numProcessorCachesL1;
+            properties[QStringLiteral("processor_l2_cache_count")] = procInfo.numProcessorCachesL2;
+            properties[QStringLiteral("processor_l3_cache_count")] = procInfo.numProcessorCachesL3;
         }
 
-        properties["first_run"] = _firstRun.get();
+        properties[QStringLiteral("first_run")] = _firstRun.get();
 
         // add the user's machine ID to the launch event
         QString machineFingerPrint = uuidStringWithoutCurlyBraces(FingerprintUtils::getMachineFingerprint());
-        properties["machine_fingerprint"] = machineFingerPrint;
+        properties[QStringLiteral("machine_fingerprint")] = machineFingerPrint;
 
-        userActivityLogger.logAction("launch", properties);
+        userActivityLogger.logAction(QStringLiteral("launch"), properties);
     }
 
     _entityEditSender.setMyAvatar(myAvatar.get());
@@ -1958,7 +1958,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         userInputMapper->registerDevice(_touchscreenVirtualPadDevice->getInputDevice());
     }
 
-    QString scriptsSwitch = QString("--").append(SCRIPTS_SWITCH);
+    QString scriptsSwitch = QStringLiteral("--").append(SCRIPTS_SWITCH);
     _defaultScriptsLocation.setPath(
         getCmdOption(argc, constArgv, scriptsSwitch.toStdString().c_str())
     );
@@ -2189,133 +2189,132 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         QJsonObject properties = {};
         MemoryInfo memInfo;
         if (getMemoryInfo(memInfo)) {
-            properties["system_memory_total"] = static_cast<qint64>(memInfo.totalMemoryBytes);
-            properties["system_memory_used"] = static_cast<qint64>(memInfo.usedMemoryBytes);
-            properties["process_memory_used"] = static_cast<qint64>(memInfo.processUsedMemoryBytes);
+            properties[QStringLiteral("system_memory_total")] = static_cast<qint64>(memInfo.totalMemoryBytes);
+            properties[QStringLiteral("system_memory_used")] = static_cast<qint64>(memInfo.usedMemoryBytes);
+            properties[QStringLiteral("process_memory_used")] = static_cast<qint64>(memInfo.processUsedMemoryBytes);
         }
 
         // content location and build info - useful for filtering stats
         auto addressManager = DependencyManager::get<AddressManager>();
         auto currentDomain = addressManager->currentShareableAddress(true).toString(); // domain only
         auto currentPath = addressManager->currentPath(true); // with orientation
-        properties["current_domain"] = currentDomain;
-        properties["current_path"] = currentPath;
-        properties["build_version"] = BuildInfo::VERSION;
+        properties[QStringLiteral("current_domain")] = currentDomain;
+        properties[QStringLiteral("current_path")] = currentPath;
+        properties[QStringLiteral("build_version")] = BuildInfo::VERSION;
 
         auto displayPlugin = qApp->getActiveDisplayPlugin();
 
-        properties["render_rate"] = getRenderLoopRate();
-        properties["target_render_rate"] = getTargetRenderFrameRate();
-        properties["present_rate"] = displayPlugin->presentRate();
-        properties["new_frame_present_rate"] = displayPlugin->newFramePresentRate();
-        properties["dropped_frame_rate"] = displayPlugin->droppedFrameRate();
-        properties["stutter_rate"] = displayPlugin->stutterRate();
-        properties["game_rate"] = getGameLoopRate();
-        properties["has_async_reprojection"] = displayPlugin->hasAsyncReprojection();
-        properties["hardware_stats"] = displayPlugin->getHardwareStats();
+        properties[QStringLiteral("render_rate")] = getRenderLoopRate();
+        properties[QStringLiteral("target_render_rate")] = getTargetRenderFrameRate();
+        properties[QStringLiteral("present_rate")] = displayPlugin->presentRate();
+        properties[QStringLiteral("new_frame_present_rate")] = displayPlugin->newFramePresentRate();
+        properties[QStringLiteral("dropped_frame_rate")] = displayPlugin->droppedFrameRate();
+        properties[QStringLiteral("stutter_rate")] = displayPlugin->stutterRate();
+        properties[QStringLiteral("game_rate")] = getGameLoopRate();
+        properties[QStringLiteral("has_async_reprojection")] = displayPlugin->hasAsyncReprojection();
+        properties[QStringLiteral("hardware_stats")] = displayPlugin->getHardwareStats();
 
         // deadlock watchdog related stats
-        properties["deadlock_watchdog_maxElapsed"] = (int)DeadlockWatchdogThread::_maxElapsed;
-        properties["deadlock_watchdog_maxElapsedAverage"] = (int)DeadlockWatchdogThread::_maxElapsedAverage;
+        properties[QStringLiteral("deadlock_watchdog_maxElapsed")] = (int)DeadlockWatchdogThread::_maxElapsed;
+        properties[QStringLiteral("deadlock_watchdog_maxElapsedAverage")] = (int)DeadlockWatchdogThread::_maxElapsedAverage;
 
         auto nodeList = DependencyManager::get<NodeList>();
-        properties["packet_rate_in"] = nodeList->getInboundPPS();
-        properties["packet_rate_out"] = nodeList->getOutboundPPS();
-        properties["kbps_in"] = nodeList->getInboundKbps();
-        properties["kbps_out"] = nodeList->getOutboundKbps();
+        properties[QStringLiteral("packet_rate_in")] = nodeList->getInboundPPS();
+        properties[QStringLiteral("packet_rate_out")] = nodeList->getOutboundPPS();
+        properties[QStringLiteral("kbps_in")] = nodeList->getInboundKbps();
+        properties[QStringLiteral("kbps_out")] = nodeList->getOutboundKbps();
 
         SharedNodePointer entityServerNode = nodeList->soloNodeOfType(NodeType::EntityServer);
         SharedNodePointer audioMixerNode = nodeList->soloNodeOfType(NodeType::AudioMixer);
         SharedNodePointer avatarMixerNode = nodeList->soloNodeOfType(NodeType::AvatarMixer);
         SharedNodePointer assetServerNode = nodeList->soloNodeOfType(NodeType::AssetServer);
         SharedNodePointer messagesMixerNode = nodeList->soloNodeOfType(NodeType::MessagesMixer);
-        properties["entity_ping"] = entityServerNode ? entityServerNode->getPingMs() : -1;
-        properties["audio_ping"] = audioMixerNode ? audioMixerNode->getPingMs() : -1;
-        properties["avatar_ping"] = avatarMixerNode ? avatarMixerNode->getPingMs() : -1;
-        properties["asset_ping"] = assetServerNode ? assetServerNode->getPingMs() : -1;
-        properties["messages_ping"] = messagesMixerNode ? messagesMixerNode->getPingMs() : -1;
-        properties["atp_in_kbps"] = assetServerNode ? assetServerNode->getInboundKbps() : 0.0f;
+        properties[QStringLiteral("entity_ping")] = entityServerNode ? entityServerNode->getPingMs() : -1;
+        properties[QStringLiteral("audio_ping")] = audioMixerNode ? audioMixerNode->getPingMs() : -1;
+        properties[QStringLiteral("avatar_ping")] = avatarMixerNode ? avatarMixerNode->getPingMs() : -1;
+        properties[QStringLiteral("asset_ping")] = assetServerNode ? assetServerNode->getPingMs() : -1;
+        properties[QStringLiteral("messages_ping")] = messagesMixerNode ? messagesMixerNode->getPingMs() : -1;
+        properties[QStringLiteral("atp_in_kbps")] = assetServerNode ? assetServerNode->getInboundKbps() : 0.0f;
 
         auto loadingRequests = ResourceCache::getLoadingRequests();
 
         QJsonArray loadingRequestsStats;
         for (const auto& request : loadingRequests) {
             QJsonObject requestStats;
-            requestStats["filename"] = request->getURL().fileName();
-            requestStats["received"] = request->getBytesReceived();
-            requestStats["total"] = request->getBytesTotal();
-            requestStats["attempts"] = (int)request->getDownloadAttempts();
+            requestStats[QStringLiteral("filename")] = request->getURL().fileName();
+            requestStats[QStringLiteral("received")] = request->getBytesReceived();
+            requestStats[QStringLiteral("total")] = request->getBytesTotal();
+            requestStats[QStringLiteral("attempts")] = (int)request->getDownloadAttempts();
             loadingRequestsStats.append(requestStats);
         }
 
-        properties["active_downloads"] = loadingRequests.size();
-        properties["pending_downloads"] = (int)ResourceCache::getPendingRequestCount();
-        properties["active_downloads_details"] = loadingRequestsStats;
+        properties[QStringLiteral("active_downloads")] = loadingRequests.size();
+        properties[QStringLiteral("pending_downloads")] = (int)ResourceCache::getPendingRequestCount();
+        properties[QStringLiteral("active_downloads_details")] = loadingRequestsStats;
 
         auto statTracker = DependencyManager::get<StatTracker>();
 
-        properties["processing_resources"] = statTracker->getStat("Processing").toInt();
-        properties["pending_processing_resources"] = statTracker->getStat("PendingProcessing").toInt();
+        properties[QStringLiteral("processing_resources")] = statTracker->getStat(QStringLiteral("Processing")).toInt();
+        properties[QStringLiteral("pending_processing_resources")] = statTracker->getStat(QStringLiteral("PendingProcessing")).toInt();
 
         QJsonObject startedRequests;
-        startedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_STARTED).toInt();
-        startedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_STARTED).toInt();
-        startedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_STARTED).toInt();
-        startedRequests["total"] = startedRequests["atp"].toInt() + startedRequests["http"].toInt()
-            + startedRequests["file"].toInt();
-        properties["started_requests"] = startedRequests;
+        startedRequests[QStringLiteral("atp")] = statTracker->getStat(STAT_ATP_REQUEST_STARTED).toInt();
+        startedRequests[QStringLiteral("http")] = statTracker->getStat(STAT_HTTP_REQUEST_STARTED).toInt();
+        startedRequests[QStringLiteral("file")] = statTracker->getStat(STAT_FILE_REQUEST_STARTED).toInt();
+        startedRequests[QStringLiteral("total")] = startedRequests[QStringLiteral("atp")].toInt() + startedRequests[QStringLiteral("http")].toInt()
+            + startedRequests[QStringLiteral("file")].toInt();
+        properties[QStringLiteral("started_requests")] = startedRequests;
 
         QJsonObject successfulRequests;
-        successfulRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_SUCCESS).toInt();
-        successfulRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_SUCCESS).toInt();
-        successfulRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_SUCCESS).toInt();
-        successfulRequests["total"] = successfulRequests["atp"].toInt() + successfulRequests["http"].toInt()
-            + successfulRequests["file"].toInt();
-        properties["successful_requests"] = successfulRequests;
+        successfulRequests[QStringLiteral("atp")] = statTracker->getStat(STAT_ATP_REQUEST_SUCCESS).toInt();
+        successfulRequests[QStringLiteral("http")] = statTracker->getStat(STAT_HTTP_REQUEST_SUCCESS).toInt();
+        successfulRequests[QStringLiteral("file")] = statTracker->getStat(STAT_FILE_REQUEST_SUCCESS).toInt();
+        successfulRequests[QStringLiteral("total")] = successfulRequests[QStringLiteral("atp")].toInt() + successfulRequests[QStringLiteral("http")].toInt()
+            + successfulRequests[QStringLiteral("file")].toInt();
+        properties[QStringLiteral("successful_requests")] = successfulRequests;
 
         QJsonObject failedRequests;
-        failedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_FAILED).toInt();
-        failedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_FAILED).toInt();
-        failedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_FAILED).toInt();
-        failedRequests["total"] = failedRequests["atp"].toInt() + failedRequests["http"].toInt()
-            + failedRequests["file"].toInt();
-        properties["failed_requests"] = failedRequests;
+        failedRequests[QStringLiteral("atp")] = statTracker->getStat(STAT_ATP_REQUEST_FAILED).toInt();
+        failedRequests[QStringLiteral("http")] = statTracker->getStat(STAT_HTTP_REQUEST_FAILED).toInt();
+        failedRequests[QStringLiteral("file")] = statTracker->getStat(STAT_FILE_REQUEST_FAILED).toInt();
+        failedRequests[QStringLiteral("total")] = failedRequests[QStringLiteral("atp")].toInt() + failedRequests[QStringLiteral("http")].toInt();
+        properties[QStringLiteral("failed_requests")] = failedRequests;
 
         QJsonObject cacheRequests;
-        cacheRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_CACHE).toInt();
-        cacheRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_CACHE).toInt();
-        cacheRequests["total"] = cacheRequests["atp"].toInt() + cacheRequests["http"].toInt();
-        properties["cache_requests"] = cacheRequests;
+        cacheRequests[QStringLiteral("atp")] = statTracker->getStat(STAT_ATP_REQUEST_CACHE).toInt();
+        cacheRequests[QStringLiteral("http")] = statTracker->getStat(STAT_HTTP_REQUEST_CACHE).toInt();
+        cacheRequests[QStringLiteral("total")] = cacheRequests[QStringLiteral("atp")].toInt() + cacheRequests[QStringLiteral("http")].toInt();
+        properties[QStringLiteral("cache_requests")] = cacheRequests;
 
         QJsonObject atpMappingRequests;
-        atpMappingRequests["started"] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_STARTED).toInt();
-        atpMappingRequests["failed"] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_FAILED).toInt();
-        atpMappingRequests["successful"] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_SUCCESS).toInt();
-        properties["atp_mapping_requests"] = atpMappingRequests;
+        atpMappingRequests[QStringLiteral("started")] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_STARTED).toInt();
+        atpMappingRequests[QStringLiteral("failed")] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_FAILED).toInt();
+        atpMappingRequests[QStringLiteral("successful")] = statTracker->getStat(STAT_ATP_MAPPING_REQUEST_SUCCESS).toInt();
+        properties[QStringLiteral("atp_mapping_requests")] = atpMappingRequests;
 
-        properties["throttled"] = _displayPlugin ? _displayPlugin->isThrottled() : false;
+        properties[QStringLiteral("throttled")] = _displayPlugin ? _displayPlugin->isThrottled() : false;
 
         QJsonObject bytesDownloaded;
         auto atpBytes = statTracker->getStat(STAT_ATP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto httpBytes = statTracker->getStat(STAT_HTTP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto fileBytes = statTracker->getStat(STAT_FILE_RESOURCE_TOTAL_BYTES).toLongLong();
-        bytesDownloaded["atp"] = atpBytes;
-        bytesDownloaded["http"] = httpBytes;
-        bytesDownloaded["file"] = fileBytes;
-        bytesDownloaded["total"] = atpBytes + httpBytes + fileBytes;
-        properties["bytes_downloaded"] = bytesDownloaded;
+        bytesDownloaded[QStringLiteral("atp")] = atpBytes;
+        bytesDownloaded[QStringLiteral("http")] = httpBytes;
+        bytesDownloaded[QStringLiteral("file")] = fileBytes;
+        bytesDownloaded[QStringLiteral("total")] = atpBytes + httpBytes + fileBytes;
+        properties[QStringLiteral("bytes_downloaded")] = bytesDownloaded;
 
         auto myAvatar = getMyAvatar();
         glm::vec3 avatarPosition = myAvatar->getWorldPosition();
-        properties["avatar_has_moved"] = lastAvatarPosition != avatarPosition;
+        properties[QStringLiteral("avatar_has_moved")] = lastAvatarPosition != avatarPosition;
         lastAvatarPosition = avatarPosition;
 
         auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
         auto entityActivityTracking = entityScriptingInterface->getActivityTracking();
         entityScriptingInterface->resetActivityTracking();
-        properties["added_entity_cnt"] = entityActivityTracking.addedEntityCount;
-        properties["deleted_entity_cnt"] = entityActivityTracking.deletedEntityCount;
-        properties["edited_entity_cnt"] = entityActivityTracking.editedEntityCount;
+        properties[QStringLiteral("added_entity_cnt")] = entityActivityTracking.addedEntityCount;
+        properties[QStringLiteral("deleted_entity_cnt")] = entityActivityTracking.deletedEntityCount;
+        properties[QStringLiteral("edited_entity_cnt")] = entityActivityTracking.editedEntityCount;
 
         NodeToOctreeSceneStats* octreeServerSceneStats = getOcteeSceneStats();
         unsigned long totalServerOctreeElements = 0;
@@ -2323,40 +2322,40 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
             totalServerOctreeElements += i->second.getTotalElements();
         }
 
-        properties["local_octree_elements"] = (qint64) OctreeElement::getInternalNodeCount();
-        properties["server_octree_elements"] = (qint64) totalServerOctreeElements;
+        properties[QStringLiteral("local_octree_elements")] = (qint64) OctreeElement::getInternalNodeCount();
+        properties[QStringLiteral("server_octree_elements")] = (qint64) totalServerOctreeElements;
 
-        properties["active_display_plugin"] = getActiveDisplayPlugin()->getName();
-        properties["using_hmd"] = isHMDMode();
+        properties[QStringLiteral("active_display_plugin")] = getActiveDisplayPlugin()->getName();
+        properties[QStringLiteral("using_hmd")] = isHMDMode();
 
         auto contextInfo = gl::ContextInfo::get();
-        properties["gl_info"] = QJsonObject{
+        properties[QStringLiteral("gl_info")] = QJsonObject{
             { "version", contextInfo.version.c_str() },
             { "sl_version", contextInfo.shadingLanguageVersion.c_str() },
             { "vendor", contextInfo.vendor.c_str() },
             { "renderer", contextInfo.renderer.c_str() },
         };
-        properties["gpu_used_memory"] = (int)BYTES_TO_MB(gpu::Context::getUsedGPUMemSize());
-        properties["gpu_free_memory"] = (int)BYTES_TO_MB(gpu::Context::getFreeGPUMemSize());
-        properties["gpu_frame_time"] = (float)(qApp->getGPUContext()->getFrameTimerGPUAverage());
-        properties["batch_frame_time"] = (float)(qApp->getGPUContext()->getFrameTimerBatchAverage());
-        properties["ideal_thread_count"] = QThread::idealThreadCount();
+        properties[QStringLiteral("gpu_used_memory")] = (int)BYTES_TO_MB(gpu::Context::getUsedGPUMemSize());
+        properties[QStringLiteral("gpu_free_memory")] = (int)BYTES_TO_MB(gpu::Context::getFreeGPUMemSize());
+        properties[QStringLiteral("gpu_frame_time")] = (float)(qApp->getGPUContext()->getFrameTimerGPUAverage());
+        properties[QStringLiteral("batch_frame_time")] = (float)(qApp->getGPUContext()->getFrameTimerBatchAverage());
+        properties[QStringLiteral("ideal_thread_count")] = QThread::idealThreadCount();
 
         auto hmdHeadPose = getHMDSensorPose();
-        properties["hmd_head_pose_changed"] = isHMDMode() && (hmdHeadPose != lastHMDHeadPose);
+        properties[QStringLiteral("hmd_head_pose_changed")] = isHMDMode() && (hmdHeadPose != lastHMDHeadPose);
         lastHMDHeadPose = hmdHeadPose;
 
         auto leftHandPose = myAvatar->getLeftHandPose();
         auto rightHandPose = myAvatar->getRightHandPose();
         // controller::Pose considers two poses to be different if either are invalid. In our case, we actually
         // want to consider the pose to be unchanged if it was invalid and still is invalid, so we check that first.
-        properties["hand_pose_changed"] =
+        properties[QStringLiteral("hand_pose_changed")] =
             ((leftHandPose.valid || lastLeftHandPose.valid) && (leftHandPose != lastLeftHandPose))
             || ((rightHandPose.valid || lastRightHandPose.valid) && (rightHandPose != lastRightHandPose));
         lastLeftHandPose = leftHandPose;
         lastRightHandPose = rightHandPose;
 
-        UserActivityLogger::getInstance().logAction("stats", properties);
+        UserActivityLogger::getInstance().logAction(QStringLiteral("stats"), properties);
     });
     sendStatsTimer->start();
 
@@ -3216,7 +3215,7 @@ void Application::showLoginScreen() {
         dialogsManager->showLoginDialog();
         emit loginDialogFocusEnabled();
         QJsonObject loginData = {};
-        loginData["action"] = "login dialog popped up";
+        loginData[QStringLiteral("action")] = "login dialog popped up";
         UserActivityLogger::getInstance().logAction("encourageLoginDialog", loginData);
         _window->setWindowTitle("Tivoli Cloud VR");
     } else {
@@ -3650,7 +3649,7 @@ void Application::setupQmlSurface(QQmlContext* surfaceContext, bool setAdditiona
 
 void Application::updateCamera(RenderArgs& renderArgs, float deltaTime) {
     PROFILE_RANGE(render, __FUNCTION__);
-    PerformanceTimer perfTimer("updateCamera");
+    PerformanceTimer perfTimer(QStringLiteral("updateCamera"));
 
     glm::vec3 boomOffset;
     auto myAvatar = getMyAvatar();
@@ -3994,7 +3993,7 @@ void Application::handleSandboxStatus(QNetworkReply* reply) {
         }
        _firstRun.set(false);
     } else {
-        QString goingTo = "";
+        QString goingTo = QString();
         if (addressLookupString.isEmpty()) {
             if (Menu::getInstance()->isOptionChecked(MenuOption::HomeLocation)) {
                 auto locationBookmarks = DependencyManager::get<LocationBookmarks>();
@@ -4209,7 +4208,7 @@ bool Application::handleFileOpenEvent(QFileOpenEvent* fileEvent) {
 
 bool Application::notify(QObject * object, QEvent * event) {
     if (thread() == QThread::currentThread()) {
-        PROFILE_RANGE_IF_LONGER(app, "notify", 2)
+        PROFILE_RANGE_IF_LONGER(app, QStringLiteral("notify"), 2)
         return QApplication::notify(object, event);
     }
 
@@ -5162,7 +5161,7 @@ void setupCpuMonitorThread() {
 #endif
 
 void Application::idle() {
-    PerformanceTimer perfTimer("idle");
+    PerformanceTimer perfTimer(QStringLiteral("idle"));
 
 #if !defined(DISABLE_QML)
     auto offscreenUi = getOffscreenUI();
@@ -5182,7 +5181,7 @@ void Application::idle() {
     std::call_once(once, [&] {
         if (trace_app().isDebugEnabled()) {
             QThread* cpuMonitorThread = new QThread(qApp);
-            cpuMonitorThread->setObjectName("cpuMonitorThread");
+            cpuMonitorThread->setObjectName(QStringLiteral("cpuMonitorThread"));
             QObject::connect(cpuMonitorThread, &QThread::started, [this] { setupCpuMonitorThread(); });
             QObject::connect(qApp, &QCoreApplication::aboutToQuit, cpuMonitorThread, &QThread::quit);
             cpuMonitorThread->start();
@@ -5203,15 +5202,15 @@ void Application::idle() {
 #endif
 
     if (displayPlugin) {
-        PROFILE_COUNTER_IF_CHANGED(app, "present", float, displayPlugin->presentRate());
+        PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("present"), float, displayPlugin->presentRate());
     }
-    PROFILE_COUNTER_IF_CHANGED(app, "renderLoopRate", float, getRenderLoopRate());
-    PROFILE_COUNTER_IF_CHANGED(app, "currentDownloads", uint32_t, ResourceCache::getLoadingRequests().length());
-    PROFILE_COUNTER_IF_CHANGED(app, "pendingDownloads", uint32_t, ResourceCache::getPendingRequestCount());
-    PROFILE_COUNTER_IF_CHANGED(app, "currentProcessing", int, DependencyManager::get<StatTracker>()->getStat("Processing").toInt());
-    PROFILE_COUNTER_IF_CHANGED(app, "pendingProcessing", int, DependencyManager::get<StatTracker>()->getStat("PendingProcessing").toInt());
+    PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("renderLoopRate"), float, getRenderLoopRate());
+    PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("currentDownloads"), uint32_t, ResourceCache::getLoadingRequests().length());
+    PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("pendingDownloads"), uint32_t, ResourceCache::getPendingRequestCount());
+    PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("currentProcessing"), int, DependencyManager::get<StatTracker>()->getStat("Processing").toInt());
+    PROFILE_COUNTER_IF_CHANGED(app, QStringLiteral("pendingProcessing"), int, DependencyManager::get<StatTracker>()->getStat("PendingProcessing").toInt());
     auto renderConfig = _graphicsEngine.getRenderEngine()->getConfiguration();
-    PROFILE_COUNTER_IF_CHANGED(render, "gpuTime", float, (float)_graphicsEngine.getGPUContext()->getFrameTimerGPUAverage());
+    PROFILE_COUNTER_IF_CHANGED(render, QStringLiteral("gpuTime"), float, (float)_graphicsEngine.getGPUContext()->getFrameTimerGPUAverage());
 
     PROFILE_RANGE(app, __FUNCTION__);
 
@@ -5268,7 +5267,7 @@ void Application::idle() {
         _gameWorkload._engine->run();
     }
     {
-        PerformanceTimer perfTimer("update");
+        PerformanceTimer perfTimer(QStringLiteral("update"));
         PerformanceWarning warn(showWarnings, "Application::idle()... update()");
         static const float BIGGEST_DELTA_TIME_SECS = 0.25f;
         update(glm::clamp(secondsSinceLastUpdate, 0.0f, BIGGEST_DELTA_TIME_SECS));
@@ -5302,7 +5301,7 @@ void Application::idle() {
     }
 
     {
-        PerformanceTimer perfTimer("pluginIdle");
+        PerformanceTimer perfTimer(QStringLiteral("pluginIdle"));
         PerformanceWarning warn(showWarnings, "Application::idle()... pluginIdle()");
         getActiveDisplayPlugin()->idle();
         auto inputPlugins = PluginManager::getInstance()->getInputPlugins();
@@ -5313,7 +5312,7 @@ void Application::idle() {
         }
     }
     {
-        PerformanceTimer perfTimer("rest");
+        PerformanceTimer perfTimer(QStringLiteral("rest"));
         PerformanceWarning warn(showWarnings, "Application::idle()... rest of it");
         _idleLoopStdev.addValue(secondsSinceLastUpdate);
 
@@ -5730,7 +5729,7 @@ void Application::resumeAfterLoginDialogActionTaken() {
         scriptEngines->reloadLocalFiles();
 
         // if the --scripts command-line argument was used.
-        if (_defaultScriptsLocation.exists() && (arguments().indexOf(QString("--").append(SCRIPTS_SWITCH))) != -1) {
+        if (_defaultScriptsLocation.exists() && (arguments().indexOf(QStringLiteral("--").append(SCRIPTS_SWITCH))) != -1) {
             scriptEngines->loadDefaultScripts();
             scriptEngines->defaultScriptsLocationOverridden(true);
         } else {
@@ -5797,7 +5796,7 @@ void Application::unloadAvatarScripts() {
 }
 
 void Application::updateLOD(float deltaTime) const {
-    PerformanceTimer perfTimer("LOD");
+    PerformanceTimer perfTimer(QStringLiteral("LOD"));
     // adjust it unless we were asked to disable this feature, or if we're currently in throttleRendering mode
     if (!isThrottleRendering()) {
         float presentTime = getActiveDisplayPlugin()->getAveragePresentTime();
@@ -5822,7 +5821,7 @@ void Application::pushPostUpdateLambda(void* key, const std::function<void()>& f
 // The principal result is to call updateLookAtTargetAvatar() and then setLookAtPosition().
 // Note that it is called BEFORE we update position or joints based on sensors, etc.
 void Application::updateMyAvatarLookAtPosition(float deltaTime) {
-    PerformanceTimer perfTimer("lookAt");
+    PerformanceTimer perfTimer(QStringLiteral("lookAt"));
     bool showWarnings = Menu::getInstance()->isOptionChecked(MenuOption::PipelineWarnings);
     PerformanceWarning warn(showWarnings, "Application::updateMyAvatarLookAtPosition()");
 
@@ -5831,7 +5830,7 @@ void Application::updateMyAvatarLookAtPosition(float deltaTime) {
 }
 
 void Application::updateThreads(float deltaTime) {
-    PerformanceTimer perfTimer("updateThreads");
+    PerformanceTimer perfTimer(QStringLiteral("updateThreads"));
     bool showWarnings = Menu::getInstance()->isOptionChecked(MenuOption::PipelineWarnings);
     PerformanceWarning warn(showWarnings, "Application::updateThreads()");
 
@@ -5957,9 +5956,9 @@ void Application::requeryOctree() {
     _octreeQuery.incrementConnectionID();
     QJsonObject queryJSONParameters;
     QJsonObject queryFlags;
-    queryFlags["includeDescendants"] = true;
-    queryFlags["includeAncestors"] = true;
-    queryJSONParameters["flags"] = queryFlags;
+    queryFlags[QStringLiteral("includeDescendants")] = true;
+    queryFlags[QStringLiteral("includeAncestors")] = true;
+    queryJSONParameters[QStringLiteral("flags")] = queryFlags;
     queryOctree(
         NodeType::EntityServer,
         PacketType::EntityQuery,
@@ -5993,9 +5992,9 @@ void Application::reloadResourceCaches() {
 
     QJsonObject queryJSONParameters;
     QJsonObject queryFlags;
-    queryFlags["includeDescendants"] = true;
-    queryFlags["includeAncestors"] = true;
-    queryJSONParameters["flags"] = queryFlags;
+    queryFlags[QStringLiteral("includeDescendants")] = true;
+    queryFlags[QStringLiteral("includeAncestors")] = true;
+    queryJSONParameters[QStringLiteral("flags")] = queryFlags;
     queryOctree(
         NodeType::EntityServer,
         PacketType::EntityQuery,
@@ -6125,7 +6124,7 @@ void Application::setKeyboardFocusEntity(const QUuid& id) {
 }
 
 void Application::updateDialogs(float deltaTime) const {
-    PerformanceTimer perfTimer("updateDialogs");
+    PerformanceTimer perfTimer(QStringLiteral("updateDialogs"));
     bool showWarnings = Menu::getInstance()->isOptionChecked(MenuOption::PipelineWarnings);
     PerformanceWarning warn(showWarnings, "Application::updateDialogs()");
     auto dialogsManager = DependencyManager::get<DialogsManager>();
@@ -6142,9 +6141,9 @@ void Application::updateSecondaryCameraViewFrustum() {
     // camera should be.
 
     // Code based on SecondaryCameraJob
-    auto renderConfig = _graphicsEngine.getRenderEngine()->getConfiguration();
+    const auto renderConfig = _graphicsEngine.getRenderEngine()->getConfiguration();
     assert(renderConfig);
-    auto camera = dynamic_cast<SecondaryCameraJobConfig*>(renderConfig->getConfig("SecondaryCamera"));
+    const auto camera = dynamic_cast<SecondaryCameraJobConfig*>(renderConfig->getConfig(QStringLiteral("SecondaryCamera")));
 
     if (!camera || !camera->isEnabled()) {
         return;
@@ -6152,7 +6151,7 @@ void Application::updateSecondaryCameraViewFrustum() {
 
     ViewFrustum secondaryViewFrustum;
     if (camera->portalProjection && !camera->attachedEntityId.isNull() && !camera->portalEntranceEntityId.isNull()) {
-        auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
+        const  auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
         EntityItemPointer portalEntrance = qApp->getEntities()->getTree()->findEntityByID(camera->portalEntranceEntityId);
         EntityItemPointer portalExit = qApp->getEntities()->getTree()->findEntityByID(camera->attachedEntityId);
 
@@ -6174,9 +6173,11 @@ void Application::updateSecondaryCameraViewFrustum() {
 
         glm::vec3 mainCameraPositionWorld = getCamera().getPosition();
         glm::vec3 mainCameraPositionPortalEntrance = vec3(portalEntranceFromWorld * vec4(mainCameraPositionWorld, 1.0f));
+        
         mainCameraPositionPortalEntrance = vec3(-mainCameraPositionPortalEntrance.x, mainCameraPositionPortalEntrance.y,
             -mainCameraPositionPortalEntrance.z);
-        glm::vec3 portalExitCameraPositionWorld = vec3(worldFromPortalExit * vec4(mainCameraPositionPortalEntrance, 1.0f));
+        
+        const glm::vec3 portalExitCameraPositionWorld = vec3(worldFromPortalExit * vec4(mainCameraPositionPortalEntrance, 1.0f));
 
         secondaryViewFrustum.setPosition(portalExitCameraPositionWorld);
         secondaryViewFrustum.setOrientation(portalExitPropertiesRotation);
@@ -6184,31 +6185,31 @@ void Application::updateSecondaryCameraViewFrustum() {
         float nearClip = mainCameraPositionPortalEntrance.z + portalExitPropertiesDimensions.z * 2.0f;
         // `mainCameraPositionPortalEntrance` should technically be `mainCameraPositionPortalExit`,
         // but the values are the same.
-        glm::vec3 upperRight = halfPortalExitPropertiesDimensions - mainCameraPositionPortalEntrance;
-        glm::vec3 bottomLeft = -halfPortalExitPropertiesDimensions - mainCameraPositionPortalEntrance;
-        glm::mat4 frustum = glm::frustum(bottomLeft.x, upperRight.x, bottomLeft.y, upperRight.y, nearClip, camera->farClipPlaneDistance);
+        const glm::vec3 upperRight = halfPortalExitPropertiesDimensions - mainCameraPositionPortalEntrance;
+        const glm::vec3 bottomLeft = -halfPortalExitPropertiesDimensions - mainCameraPositionPortalEntrance;
+        const glm::mat4 frustum = glm::frustum(bottomLeft.x, upperRight.x, bottomLeft.y, upperRight.y, nearClip, camera->farClipPlaneDistance);
         secondaryViewFrustum.setProjection(frustum);
     } else if (camera->mirrorProjection && !camera->attachedEntityId.isNull()) {
-        auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
-        auto entityProperties = entityScriptingInterface->getEntityProperties(camera->attachedEntityId);
-        glm::vec3 mirrorPropertiesPosition = entityProperties.getPosition();
-        glm::quat mirrorPropertiesRotation = entityProperties.getRotation();
-        glm::vec3 mirrorPropertiesDimensions = entityProperties.getDimensions();
-        glm::vec3 halfMirrorPropertiesDimensions = 0.5f * mirrorPropertiesDimensions;
+        const auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
+        const auto entityProperties = entityScriptingInterface->getEntityProperties(camera->attachedEntityId);
+        const glm::vec3 mirrorPropertiesPosition = entityProperties.getPosition();
+        const glm::quat mirrorPropertiesRotation = entityProperties.getRotation();
+        const glm::vec3 mirrorPropertiesDimensions = entityProperties.getDimensions();
+        const glm::vec3 halfMirrorPropertiesDimensions = 0.5f * mirrorPropertiesDimensions;
 
         // setup mirror from world as inverse of world from mirror transformation using inverted x and z for mirrored image
         // TODO: we are assuming here that UP is world y-axis
-        glm::mat4 worldFromMirrorRotation = glm::mat4_cast(mirrorPropertiesRotation) * glm::scale(vec3(-1.0f, 1.0f, -1.0f));
-        glm::mat4 worldFromMirrorTranslation = glm::translate(mirrorPropertiesPosition);
-        glm::mat4 worldFromMirror = worldFromMirrorTranslation * worldFromMirrorRotation;
-        glm::mat4 mirrorFromWorld = glm::inverse(worldFromMirror);
+        const glm::mat4 worldFromMirrorRotation = glm::mat4_cast(mirrorPropertiesRotation) * glm::scale(vec3(-1.0f, 1.0f, -1.0f));
+        const glm::mat4 worldFromMirrorTranslation = glm::translate(mirrorPropertiesPosition);
+        const glm::mat4 worldFromMirror = worldFromMirrorTranslation * worldFromMirrorRotation;
+        const glm::mat4 mirrorFromWorld = glm::inverse(worldFromMirror);
 
         // get mirror camera position by reflecting main camera position's z coordinate in mirror space
-        glm::vec3 mainCameraPositionWorld = getCamera().getPosition();
-        glm::vec3 mainCameraPositionMirror = vec3(mirrorFromWorld * vec4(mainCameraPositionWorld, 1.0f));
-        glm::vec3 mirrorCameraPositionMirror = vec3(mainCameraPositionMirror.x, mainCameraPositionMirror.y,
+        const glm::vec3 mainCameraPositionWorld = getCamera().getPosition();
+        const glm::vec3 mainCameraPositionMirror = vec3(mirrorFromWorld * vec4(mainCameraPositionWorld, 1.0f));
+        const glm::vec3 mirrorCameraPositionMirror = vec3(mainCameraPositionMirror.x, mainCameraPositionMirror.y,
                                                     -mainCameraPositionMirror.z);
-        glm::vec3 mirrorCameraPositionWorld = vec3(worldFromMirror * vec4(mirrorCameraPositionMirror, 1.0f));
+        const glm::vec3 mirrorCameraPositionWorld = vec3(worldFromMirror * vec4(mirrorCameraPositionMirror, 1.0f));
 
         // set frustum position to be mirrored camera and set orientation to mirror's adjusted rotation
         glm::quat mirrorCameraOrientation = glm::quat_cast(worldFromMirrorRotation);
@@ -6217,14 +6218,14 @@ void Application::updateSecondaryCameraViewFrustum() {
 
         // build frustum using mirror space translation of mirrored camera
         float nearClip = mirrorCameraPositionMirror.z + mirrorPropertiesDimensions.z * 2.0f;
-        glm::vec3 upperRight = halfMirrorPropertiesDimensions - mirrorCameraPositionMirror;
-        glm::vec3 bottomLeft = -halfMirrorPropertiesDimensions - mirrorCameraPositionMirror;
-        glm::mat4 frustum = glm::frustum(bottomLeft.x, upperRight.x, bottomLeft.y, upperRight.y, nearClip, camera->farClipPlaneDistance);
+        const glm::vec3 upperRight = halfMirrorPropertiesDimensions - mirrorCameraPositionMirror;
+        const glm::vec3 bottomLeft = -halfMirrorPropertiesDimensions - mirrorCameraPositionMirror;
+        const glm::mat4 frustum = glm::frustum(bottomLeft.x, upperRight.x, bottomLeft.y, upperRight.y, nearClip, camera->farClipPlaneDistance);
         secondaryViewFrustum.setProjection(frustum);
     } else {
         if (!camera->attachedEntityId.isNull()) {
-            auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
-            auto entityProperties = entityScriptingInterface->getEntityProperties(camera->attachedEntityId);
+            const auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
+            const auto entityProperties = entityScriptingInterface->getEntityProperties(camera->attachedEntityId);
             secondaryViewFrustum.setPosition(entityProperties.getPosition());
             secondaryViewFrustum.setOrientation(entityProperties.getRotation());
         } else {
@@ -6232,7 +6233,7 @@ void Application::updateSecondaryCameraViewFrustum() {
             secondaryViewFrustum.setOrientation(camera->orientation);
         }
 
-        float aspectRatio = (float)camera->textureWidth / (float)camera->textureHeight;
+        const float aspectRatio = (float)camera->textureWidth / (float)camera->textureHeight;
         secondaryViewFrustum.setProjection(camera->vFoV,
                                             aspectRatio,
                                             camera->nearClipPlaneDistance,
@@ -6262,7 +6263,7 @@ void Application::tryToEnablePhysics() {
             _physicsEnabled = true;
             setIsInterstitialMode(false);
             myAvatar->updateMotionBehaviorFromMenu();
-            qDebug() << "Physics enabled";
+            // qDebug() << "Physics enabled";
             DependencyManager::get<EntityTreeRenderer>()->setSceneIsReady(true);
             requeryOctree(); // hit it with a quick refresh to make sure everything is drawn
         }
@@ -6278,7 +6279,7 @@ void Application::update(float deltaTime) {
 
     if (!_physicsEnabled) {
         if (!domainLoadingInProgress) {
-            PROFILE_ASYNC_BEGIN(app, "Scene Loading", "");
+            PROFILE_ASYNC_BEGIN(app,QStringLiteral("Scene Loading"), "");
             domainLoadingInProgress = true;
             qDebug() << "SCENE LOADING";
         }
@@ -6302,22 +6303,22 @@ void Application::update(float deltaTime) {
         }
     } else if (domainLoadingInProgress) {
         domainLoadingInProgress = false;
-        PROFILE_ASYNC_END(app, "Scene Loading", "");
+        PROFILE_ASYNC_END(app, QStringLiteral("Scene Loading"), "");
     }
 
     auto myAvatar = getMyAvatar();
     {
-        PerformanceTimer perfTimer("devices");
-        auto userInputMapper = DependencyManager::get<UserInputMapper>();
+        PerformanceTimer perfTimer(QStringLiteral("devices"));
+        const auto userInputMapper = DependencyManager::get<UserInputMapper>();
 
         controller::HmdAvatarAlignmentType hmdAvatarAlignmentType;
-        if (myAvatar->getHmdAvatarAlignmentType() == "eyes") {
+        if (myAvatar->getHmdAvatarAlignmentType() == QStringLiteral("eyes")) {
             hmdAvatarAlignmentType = controller::HmdAvatarAlignmentType::Eyes;
         } else {
             hmdAvatarAlignmentType = controller::HmdAvatarAlignmentType::Head;
         }
 
-        controller::InputCalibrationData calibrationData = {
+        const controller::InputCalibrationData calibrationData = {
             myAvatar->getSensorToWorldMatrix(),
             createMatFromQuatAndPos(myAvatar->getWorldOrientation(), myAvatar->getWorldPosition()),
             myAvatar->getHMDSensorMatrix(),
@@ -6435,9 +6436,9 @@ void Application::update(float deltaTime) {
         };
 
         // copy controller poses from userInputMapper to myAvatar.
-        glm::mat4 myAvatarMatrix = createMatFromQuatAndPos(myAvatar->getWorldOrientation(), myAvatar->getWorldPosition());
-        glm::mat4 worldToSensorMatrix = glm::inverse(myAvatar->getSensorToWorldMatrix());
-        glm::mat4 avatarToSensorMatrix = worldToSensorMatrix * myAvatarMatrix;
+        const  glm::mat4 myAvatarMatrix = createMatFromQuatAndPos(myAvatar->getWorldOrientation(), myAvatar->getWorldPosition());
+        const glm::mat4 worldToSensorMatrix = glm::inverse(myAvatar->getSensorToWorldMatrix());
+        const glm::mat4 avatarToSensorMatrix = worldToSensorMatrix * myAvatarMatrix;
         for (auto& action : avatarControllerActions) {
             controller::Pose pose = userInputMapper->getPoseState(action);
             myAvatar->setControllerPoseInSensorFrame(action, pose.transform(avatarToSensorMatrix));
@@ -6460,12 +6461,12 @@ void Application::update(float deltaTime) {
             };
 
             int i = 0;
-            glm::vec4 BLUE(0.0f, 0.0f, 1.0f, 1.0f);
+            const glm::vec4 BLUE(0.0f, 0.0f, 1.0f, 1.0f);
             for (auto& action : trackedObjectActions) {
                 controller::Pose pose = userInputMapper->getPoseState(action);
                 if (pose.valid) {
-                    glm::vec3 pos = transformPoint(myAvatarMatrix, pose.translation);
-                    glm::quat rot = glmExtractRotation(myAvatarMatrix) * pose.rotation;
+                    const glm::vec3 pos = transformPoint(myAvatarMatrix, pose.translation);
+                    const glm::quat rot = glmExtractRotation(myAvatarMatrix) * pose.rotation;
                     DebugDraw::getInstance().addMarker(trackedObjectStringLiterals[i], rot, pos, BLUE);
                 } else {
                     DebugDraw::getInstance().removeMarker(trackedObjectStringLiterals[i]);
@@ -6483,27 +6484,27 @@ void Application::update(float deltaTime) {
     updateThreads(deltaTime); // If running non-threaded, then give the threads some time to process...
     updateDialogs(deltaTime); // update various stats dialogs if present
 
-    auto grabManager = DependencyManager::get<GrabManager>();
+    const auto grabManager = DependencyManager::get<GrabManager>();
     grabManager->simulateGrabs();
 
     // TODO: break these out into distinct perfTimers when they prove interesting
     {
-        PROFILE_RANGE(app, "PickManager");
-        PerformanceTimer perfTimer("pickManager");
+        PROFILE_RANGE(app, QStringLiteral("PickManager"));
+        PerformanceTimer perfTimer(QStringLiteral("pickManager"));
         DependencyManager::get<PickManager>()->update();
     }
 
     {
-        PROFILE_RANGE(app, "PointerManager");
-        PerformanceTimer perfTimer("pointerManager");
+        PROFILE_RANGE(app, QStringLiteral("PointerManager"));
+        PerformanceTimer perfTimer(QStringLiteral("pointerManager"));
         DependencyManager::get<PointerManager>()->update();
     }
 
     QSharedPointer<AvatarManager> avatarManager = DependencyManager::get<AvatarManager>();
 
     {
-        PROFILE_RANGE(simulation_physics, "Simulation");
-        PerformanceTimer perfTimer("simulation");
+        PROFILE_RANGE(simulation_physics, QStringLiteral("Simulation"));
+        PerformanceTimer perfTimer(QStringLiteral("simulation"));
 
         getEntities()->preUpdate();
         _entitySimulation->removeDeadEntities();
@@ -6511,10 +6512,10 @@ void Application::update(float deltaTime) {
         auto t0 = std::chrono::high_resolution_clock::now();
         auto t1 = t0;
         {
-            PROFILE_RANGE(simulation_physics, "PrePhysics");
-            PerformanceTimer perfTimer("prePhysics)");
+            PROFILE_RANGE(simulation_physics, QStringLiteral("PrePhysics"));
+            PerformanceTimer perfTimer(QStringLiteral("prePhysics"));
             {
-                PROFILE_RANGE(simulation_physics, "Entities");
+                PROFILE_RANGE(simulation_physics, QStringLiteral("Entities"));
                 PhysicsEngine::Transaction transaction;
                 _entitySimulation->buildPhysicsTransaction(transaction);
                 _physicsEngine->processTransaction(transaction);
@@ -6524,7 +6525,7 @@ void Application::update(float deltaTime) {
             t1 = std::chrono::high_resolution_clock::now();
 
             {
-                PROFILE_RANGE(simulation_physics, "Avatars");
+                PROFILE_RANGE(simulation_physics, QStringLiteral("Avatars"));
                 PhysicsEngine::Transaction transaction;
                 avatarManager->buildPhysicsTransaction(transaction);
                 _physicsEngine->processTransaction(transaction);
@@ -6537,7 +6538,7 @@ void Application::update(float deltaTime) {
 
         if (_physicsEnabled) {
             {
-                PROFILE_RANGE(simulation_physics, "PrepareActions");
+                PROFILE_RANGE(simulation_physics, QStringLiteral("PrepareActions"));
                 _entitySimulation->applyDynamicChanges();
                 _physicsEngine->forEachDynamic([&](EntityDynamicPointer dynamic) {
                     dynamic->prepareForPhysicsSimulation();
@@ -6545,8 +6546,8 @@ void Application::update(float deltaTime) {
             }
             auto t2 = std::chrono::high_resolution_clock::now();
             {
-                PROFILE_RANGE(simulation_physics, "StepPhysics");
-                PerformanceTimer perfTimer("stepPhysics");
+                PROFILE_RANGE(simulation_physics, QStringLiteral("StepPhysics"));
+                PerformanceTimer perfTimer(QStringLiteral("stepPhysics"));
                 getEntities()->getTree()->withWriteLock([&] {
                     _physicsEngine->stepSimulation();
                 });
@@ -6555,15 +6556,15 @@ void Application::update(float deltaTime) {
             {
                 if (_physicsEngine->hasOutgoingChanges()) {
                     {
-                        PROFILE_RANGE(simulation_physics, "PostPhysics");
-                        PerformanceTimer perfTimer("postPhysics");
+                        PROFILE_RANGE(simulation_physics, QStringLiteral("PostPhysics"));
+                        PerformanceTimer perfTimer(QStringLiteral("postPhysics"));
                         // grab the collision events BEFORE handleChangedMotionStates() because at this point
                         // we have a better idea of which objects we own or should own.
                         auto& collisionEvents = _physicsEngine->getCollisionEvents();
 
                         getEntities()->getTree()->withWriteLock([&] {
-                            PROFILE_RANGE(simulation_physics, "HandleChanges");
-                            PerformanceTimer perfTimer("handleChanges");
+                            PROFILE_RANGE(simulation_physics, QStringLiteral("HandleChanges"));
+                            PerformanceTimer perfTimer(QStringLiteral("handleChanges"));
 
                             const VectorOfMotionStates& outgoingChanges = _physicsEngine->getChangedMotionStates();
                             _entitySimulation->handleChangedMotionStates(outgoingChanges);
@@ -6575,7 +6576,7 @@ void Application::update(float deltaTime) {
 
                         // handleCollisionEvents() AFTER handleChangedMotionStates()
                         {
-                            PROFILE_RANGE(simulation_physics, "CollisionEvents");
+                            PROFILE_RANGE(simulation_physics, QStringLiteral("CollisionEvents"));
                             avatarManager->handleCollisionEvents(collisionEvents);
                             // Collision events (and their scripts) must not be handled when we're locked, above. (That would risk
                             // deadlock.)
@@ -6583,7 +6584,7 @@ void Application::update(float deltaTime) {
                         }
 
                         {
-                            PROFILE_RANGE(simulation_physics, "MyAvatar");
+                            PROFILE_RANGE(simulation_physics, QStringLiteral("MyAvatar"));
                             myAvatar->getCharacterController()->postSimulation();
                             myAvatar->harvestResultsFromPhysicsSimulation(deltaTime);
                         }
@@ -6627,20 +6628,20 @@ void Application::update(float deltaTime) {
     // AvatarManager update
     {
         {
-            PROFILE_RANGE(simulation, "OtherAvatars");
-            PerformanceTimer perfTimer("otherAvatars");
+            PROFILE_RANGE(simulation, QStringLiteral("OtherAvatars"));
+            PerformanceTimer perfTimer(QStringLiteral("otherAvatars"));
             avatarManager->updateOtherAvatars(deltaTime);
         }
 
         {
-            PROFILE_RANGE(simulation, "MyAvatar");
-            PerformanceTimer perfTimer("MyAvatar");
+            PROFILE_RANGE(simulation, QStringLiteral("MyAvatar"));
+            PerformanceTimer perfTimer(QStringLiteral("MyAvatar"));
             qApp->updateMyAvatarLookAtPosition(deltaTime);
             avatarManager->updateMyAvatar(deltaTime);
         }
     }
 
-    bool showWarnings = Menu::getInstance()->isOptionChecked(MenuOption::PipelineWarnings);
+    const bool showWarnings = Menu::getInstance()->isOptionChecked(MenuOption::PipelineWarnings);
     PerformanceWarning warn(showWarnings, "Application::update()");
 
     updateLOD(deltaTime);
@@ -6651,8 +6652,8 @@ void Application::update(float deltaTime) {
     }
 
     {
-        PROFILE_RANGE_EX(app, "Overlays", 0xffff0000, (uint64_t)getActiveDisplayPlugin()->presentCount());
-        PerformanceTimer perfTimer("overlays");
+        PROFILE_RANGE_EX(app, QStringLiteral("Overlays"), 0xffff0000, (uint64_t)getActiveDisplayPlugin()->presentCount());
+        PerformanceTimer perfTimer(QStringLiteral("overlays"));
         _overlays.update(deltaTime);
     }
 
@@ -6674,12 +6675,12 @@ void Application::update(float deltaTime) {
         updateSecondaryCameraViewFrustum();
     }
 
-    quint64 now = usecTimestampNow();
+    const quint64 now = usecTimestampNow();
 
     // Update my voxel servers with my current voxel query...
     {
-        PROFILE_RANGE_EX(app, "QueryOctree", 0xffff0000, (uint64_t)getActiveDisplayPlugin()->presentCount());
-        PerformanceTimer perfTimer("queryOctree");
+        PROFILE_RANGE_EX(app, QStringLiteral("QueryOctree"), 0xffff0000, (uint64_t)getActiveDisplayPlugin()->presentCount());
+        PerformanceTimer perfTimer(QStringLiteral("queryOctree"));
         QMutexLocker viewLocker(&_viewMutex);
 
         bool viewIsDifferentEnough = false;
@@ -6697,10 +6698,9 @@ void Application::update(float deltaTime) {
 
         // if it's been a while since our last query or the view has significantly changed then send a query, otherwise suppress it
         static const std::chrono::seconds MIN_PERIOD_BETWEEN_QUERIES { 2 };
-        auto now = SteadyClock::now();
+        const auto now = SteadyClock::now();
 
-        bool enoughTimePassed = now > _queryExpiry;
-        if (enoughTimePassed) requeryOctree();
+        if (now > _queryExpiry) requeryOctree();
 
         if (viewIsDifferentEnough) {            
             if (DependencyManager::get<SceneScriptingInterface>()
@@ -6708,10 +6708,10 @@ void Application::update(float deltaTime) {
             ) {
                 QJsonObject queryJSONParameters;
                 QJsonObject queryFlags;
-                queryFlags["includeDescendants"] = true;
-                queryFlags["includeAncestors"] = true;
-                queryFlags["serverScripts"] = true; 
-                queryJSONParameters["flags"] = queryFlags;
+                queryFlags[QStringLiteral("includeDescendants")] = true;
+                queryFlags[QStringLiteral("includeAncestors")] = true;
+                queryFlags[QStringLiteral("serverScripts")] = true; 
+                queryJSONParameters[QStringLiteral("flags")] = queryFlags;
                 queryOctree(
                     NodeType::EntityServer,
                     PacketType::EntityQuery,
@@ -6727,7 +6727,7 @@ void Application::update(float deltaTime) {
 
     // sent nack packets containing missing sequence numbers of received packets from nodes
     {
-        quint64 sinceLastNack = now - _lastNackTime;
+        const quint64 sinceLastNack = now - _lastNackTime;
         const quint64 TOO_LONG_SINCE_LAST_NACK = 1 * USECS_PER_SECOND;
         if (sinceLastNack > TOO_LONG_SINCE_LAST_NACK) {
             _lastNackTime = now;
@@ -6737,7 +6737,7 @@ void Application::update(float deltaTime) {
 
     // send packet containing downstream audio stats to the AudioMixer
     {
-        quint64 sinceLastNack = now - _lastSendDownstreamAudioStats;
+        const quint64 sinceLastNack = now - _lastSendDownstreamAudioStats;
         if (sinceLastNack > TOO_LONG_SINCE_LAST_SEND_DOWNSTREAM_AUDIO_STATS && !isInterstitialMode()) {
             _lastSendDownstreamAudioStats = now;
 
@@ -6746,13 +6746,13 @@ void Application::update(float deltaTime) {
     }
 
     {
-        PerformanceTimer perfTimer("avatarManager/postUpdate");
+        PerformanceTimer perfTimer(QStringLiteral("avatarManager/postUpdate"));
         avatarManager->postUpdate(deltaTime, getMain3DScene());
     }
 
     {
-        PROFILE_RANGE_EX(app, "PostUpdateLambdas", 0xffff0000, (uint64_t)0);
-        PerformanceTimer perfTimer("postUpdateLambdas");
+        PROFILE_RANGE_EX(app, QStringLiteral("PostUpdateLambdas"), 0xffff0000, (uint64_t)0);
+        PerformanceTimer perfTimer(QStringLiteral("postUpdateLambdas"));
         std::unique_lock<std::mutex> guard(_postUpdateLambdasLock);
         for (auto& iter : _postUpdateLambdas) {
             iter.second();
@@ -6764,13 +6764,13 @@ void Application::update(float deltaTime) {
     updateRenderArgs(deltaTime);
 
     {
-        PerformanceTimer perfTimer("AnimDebugDraw");
+        PerformanceTimer perfTimer(QStringLiteral("AnimDebugDraw"));
         AnimDebugDraw::getInstance().update();
     }
 
 
     { // Game loop is done, mark the end of the frame for the scene transactions and the render loop to take over
-        PerformanceTimer perfTimer("enqueueFrame");
+        PerformanceTimer perfTimer(QStringLiteral("enqueueFrame"));
         getMain3DScene()->enqueueFrame();
     }
 
@@ -6781,35 +6781,35 @@ void Application::update(float deltaTime) {
 
     // decide if the sensorToWorldMatrix is changing in a way that warrents squeezing the edges of the view down
     if (getActiveDisplayPlugin()->isHmd()) {
-        PerformanceTimer perfTimer("squeezeVision");
+        PerformanceTimer perfTimer(QStringLiteral("squeezeVision"));
         _visionSqueeze.updateVisionSqueeze(myAvatar->getSensorToWorldMatrix(), deltaTime);
     }
 }
 
 void Application::updateRenderArgs(float deltaTime) {
     _graphicsEngine.editRenderArgs([this, deltaTime](AppRenderArgs& appRenderArgs) {
-        PerformanceTimer perfTimer("editRenderArgs");
+        PerformanceTimer perfTimer(QStringLiteral("editRenderArgs"));
         appRenderArgs._headPose = getHMDSensorPose();
 
-        auto myAvatar = getMyAvatar();
+        const auto myAvatar = getMyAvatar();
 
         // update the avatar with a fresh HMD pose
         {
-            PROFILE_RANGE(render, "/updateAvatar");
+            PROFILE_RANGE(render, QStringLiteral("/updateAvatar"));
             myAvatar->updateFromHMDSensorMatrix(appRenderArgs._headPose);
         }
 
-        auto lodManager = DependencyManager::get<LODManager>();
+        const auto lodManager = DependencyManager::get<LODManager>();
 
-        float sensorToWorldScale = getMyAvatar()->getSensorToWorldScale();
+        const float sensorToWorldScale = getMyAvatar()->getSensorToWorldScale();
         appRenderArgs._sensorToWorldScale = sensorToWorldScale;
         appRenderArgs._sensorToWorld = getMyAvatar()->getSensorToWorldMatrix();
         {
-            PROFILE_RANGE(render, "/buildFrustrumAndArgs");
+            PROFILE_RANGE(render, QStringLiteral("/buildFrustrumAndArgs"));
             {
                 QMutexLocker viewLocker(&_viewMutex);
                 // adjust near clip plane to account for sensor scaling.
-                auto adjustedProjection = glm::perspective(glm::radians(_fieldOfView.get()),
+                const auto adjustedProjection = glm::perspective(glm::radians(_fieldOfView.get()),
                     getActiveDisplayPlugin()->getRecommendedAspectRatio(),
                     DEFAULT_NEAR_CLIP * sensorToWorldScale,
                     DEFAULT_FAR_CLIP);
@@ -6827,10 +6827,10 @@ void Application::updateRenderArgs(float deltaTime) {
             }
         }
         {
-            PROFILE_RANGE(render, "/resizeGL");
+            PROFILE_RANGE(render, QStringLiteral("/resizeGL"));
             bool showWarnings = false;
             bool suppressShortTimings = false;
-            auto menu = Menu::getInstance();
+            const auto menu = Menu::getInstance();
             if (menu) {
                 suppressShortTimings = menu->isOptionChecked(MenuOption::SuppressShortTimings);
                 showWarnings = menu->isOptionChecked(MenuOption::PipelineWarnings);
@@ -6845,7 +6845,7 @@ void Application::updateRenderArgs(float deltaTime) {
         appRenderArgs._isStereo = false;
 
         {
-            auto hmdInterface = DependencyManager::get<HMDScriptingInterface>();
+            const auto hmdInterface = DependencyManager::get<HMDScriptingInterface>();
             float ipdScale = hmdInterface->getIPDScale();
 
             // scale IPD by sensorToWorldScale, to make the world seem larger or smaller accordingly.
@@ -6877,11 +6877,11 @@ void Application::updateRenderArgs(float deltaTime) {
                     // applied to the avatar, so we need to get the difference between the head
                     // pose applied to the avatar and the per eye pose, and use THAT as
                     // the per-eye stereo matrix adjustment.
-                    mat4 eyeToHead = getActiveDisplayPlugin()->getEyeToHeadTransform(eye);
+                    const mat4 eyeToHead = getActiveDisplayPlugin()->getEyeToHeadTransform(eye);
                     // Grab the translation
-                    vec3 eyeOffset = glm::vec3(eyeToHead[3]);
+                    const vec3 eyeOffset = glm::vec3(eyeToHead[3]);
                     // Apply IPD scaling
-                    mat4 eyeOffsetTransform = glm::translate(mat4(), eyeOffset * -1.0f * ipdScale);
+                    const mat4 eyeOffsetTransform = glm::translate(mat4(), eyeOffset * -1.0f * ipdScale);
                     eyeOffsets[eye] = eyeOffsetTransform;
                     eyeProjections[eye] = getActiveDisplayPlugin()->getEyeProjection(eye, baseProjection);
                 });
@@ -6940,7 +6940,7 @@ void Application::queryAvatars() {
 int Application::sendNackPackets() {
 
     // iterates through all nodes in NodeList
-    auto nodeList = DependencyManager::get<NodeList>();
+    const auto nodeList = DependencyManager::get<NodeList>();
 
     int packetsSent = 0;
 
@@ -7025,11 +7025,11 @@ void Application::queryOctree(
                 farView.set(_viewFrustum);
 
                 QJsonObject queryFlags;
-                queryFlags["includeDescendants"] = true; // forces entire tree
-                queryFlags["includeAncestors"] = true; // forces entire tree
-                queryFlags["serverScripts"] = true;
+                queryFlags[QStringLiteral("includeDescendants")] = true; // forces entire tree
+                queryFlags[QStringLiteral("includeAncestors")] = true; // forces entire tree
+                queryFlags[QStringLiteral("serverScripts")] = true;
 
-                queryJSONParameters["flags"] = queryFlags;
+                queryJSONParameters[QStringLiteral("flags")] = queryFlags;
                // _octreeQuery->static_cast<EntityNodeData*>(node->getLinkedData()); //setShouldForceFullScene(true);
                 _octreeQuery.clearConicalViews();                     // TIVOLI go frustumless
                 _octreeQuery.setJSONParameters(queryJSONParameters);  // TIVOLI force ancestors and descendents
@@ -7075,7 +7075,7 @@ void Application::queryOctree(
 bool Application::isEditMode() const { // cpm
     auto settings = SettingsScriptingInterface::getInstance();
     // how much time does getting a settings value actually take?
-    bool editState = settings->getValue("io.highfidelity.isEditing").toBool();
+    bool editState = settings->getValue(QStringLiteral("io.highfidelity.isEditing")).toBool();
     // qDebug() << "EDITING MODE IS " << editState;
     return editState;
 }
@@ -7213,9 +7213,9 @@ void Application::updateWindowTitle() const {
             const QString worldRestriction = addressManager->getDomainRestriction();
 
             currentWorldName = (
-                (worldRestriction == "acl" ? "🔒 " : "") +
+                (worldRestriction == QStringLiteral("acl") ? "🔒 " : QString()) +
                 worldName + 
-                (!worldAuthor.isEmpty() ? " (" + worldAuthor + ")": "")
+                (!worldAuthor.isEmpty() ? " (" + worldAuthor + ")": QString())
             );
         }
     }
@@ -7223,15 +7223,15 @@ void Application::updateWindowTitle() const {
     // Not connected, Not logged in - Maki @ Cutelab (Maki) - Tivoli Cloud VR 0.7.2
 
     QStringList statusList = { connectionStatus, loginStatus };
-    statusList.removeAll(QString(""));
-    const QString status = statusList.join(", ").trimmed();
+    statusList.removeAll(QString());
+    const QString status = statusList.join(QStringLiteral(", ")).trimmed();
 
     const QString title = (
-        (status.isEmpty() ? "" : status + " - ") +
+        (status.isEmpty() ? QString() : status + QStringLiteral(" - ")) +
         username +
-        (username.isEmpty() || currentWorldName.isEmpty() ? "" : " @ ")  +
-        currentWorldName + " - " +
-        "Tivoli Cloud VR " + buildVersion
+        (username.isEmpty() || currentWorldName.isEmpty() ? QString() : QStringLiteral(" @ "))  +
+        currentWorldName + QStringLiteral(" - ") +
+        QStringLiteral("Tivoli Cloud VR ") + buildVersion
     );
 
 #ifndef WIN32
@@ -7253,7 +7253,7 @@ void Application::clearDomainOctreeDetails(bool clearAll) {
         return;
     }
 
-    qCDebug(interfaceapp) << "Clearing domain octree details...";
+    // qCDebug(interfaceapp) << "Clearing domain octree details...";
 
     resetPhysicsReadyInformation();
     setIsInterstitialMode(true);
@@ -7485,7 +7485,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
 
     // setup the packet sender of the script engine's scripting interfaces so
     // we can use the same ones from the application.
-    auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
+    const auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
     entityScriptingInterface->setPacketSender(&_entityEditSender);
     entityScriptingInterface->setEntityTree(getEntities()->getTree());
 
@@ -7624,14 +7624,14 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
     if (auto steamClient = PluginManager::getInstance()->getSteamClientPlugin()) {
         scriptEngine->registerGlobalObject("Steam", new SteamScriptingInterface(scriptEngine.data(), steamClient.get()));
     }
-    auto scriptingInterface = DependencyManager::get<controller::ScriptingInterface>();
+    const auto scriptingInterface = DependencyManager::get<controller::ScriptingInterface>();
     scriptEngine->registerGlobalObject("Controller", scriptingInterface.data());
     UserInputMapper::registerControllerTypes(scriptEngine.data());
 
-    auto recordingInterface = DependencyManager::get<RecordingScriptingInterface>();
+    const auto recordingInterface = DependencyManager::get<RecordingScriptingInterface>();
     scriptEngine->registerGlobalObject("Recording", recordingInterface.data());
 
-    auto entityScriptServerLog = DependencyManager::get<EntityScriptServerLogClient>();
+    const auto entityScriptServerLog = DependencyManager::get<EntityScriptServerLogClient>();
     scriptEngine->registerGlobalObject("EntityScriptServerLog", entityScriptServerLog.data());
     scriptEngine->registerGlobalObject("AvatarInputs", AvatarInputs::getInstance());
     scriptEngine->registerGlobalObject("Selection", DependencyManager::get<SelectionScriptingInterface>().data());
@@ -7643,11 +7643,11 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
 
     registerInteractiveWindowMetaType(scriptEngine.data());
 
-    auto pickScriptingInterface = DependencyManager::get<PickScriptingInterface>();
+    const auto pickScriptingInterface = DependencyManager::get<PickScriptingInterface>();
     pickScriptingInterface->registerMetaTypes(scriptEngine.data());
 
     // connect this script engines printedMessage signal to the global ScriptEngines these various messages
-    auto scriptEngines = DependencyManager::get<ScriptEngines>().data();
+    const auto scriptEngines = DependencyManager::get<ScriptEngines>().data();
     connect(scriptEngine.data(), &ScriptEngine::printedMessage, scriptEngines, &ScriptEngines::onPrintedMessage);
     connect(scriptEngine.data(), &ScriptEngine::errorMessage, scriptEngines, &ScriptEngines::onErrorMessage);
     connect(scriptEngine.data(), &ScriptEngine::warningMessage, scriptEngines, &ScriptEngines::onWarningMessage);
@@ -7657,13 +7657,13 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
 }
 
 bool Application::canAcceptURL(const QString& urlString) const {
-    QUrl url(urlString);
+    const QUrl url(urlString);
     if (url.query().contains(WEB_VIEW_TAG)) {
         return false;
     } else if (urlString.startsWith(URL_SCHEME_HIFI)) {
         return true;
     }
-    QString lowerPath = url.path().toLower();
+    const QString lowerPath = url.path().toLower();
     for (auto& pair : _acceptedExtensions) {
         if (lowerPath.endsWith(pair.first, Qt::CaseInsensitive)) {
             return true;
@@ -7673,7 +7673,7 @@ bool Application::canAcceptURL(const QString& urlString) const {
 }
 
 bool Application::acceptURL(const QString& urlString, bool defaultUpload) {
-    QUrl url(urlString);
+    const QUrl url(urlString);
 
     if (url.scheme() == URL_SCHEME_HIFI) {
         // this is a hifi URL - have the AddressManager handle it
@@ -7682,7 +7682,7 @@ bool Application::acceptURL(const QString& urlString, bool defaultUpload) {
         return true;
     }
 
-    QString lowerPath = url.path().toLower();
+    const QString lowerPath = url.path().toLower();
     for (auto& pair : _acceptedExtensions) {
         if (lowerPath.endsWith(pair.first, Qt::CaseInsensitive)) {
             AcceptURLMethod method = pair.second;
@@ -7714,8 +7714,8 @@ bool Application::askToSetAvatarUrl(const QString& url) {
 
     FSTReader::ModelType modelType = FSTReader::predictModelType(fstMapping);
 
-    QString modelName = fstMapping["name"].toString();
-    QString modelLicense = fstMapping["license"].toString();
+    QString modelName = fstMapping[QStringLiteral("name")].toString();
+    QString modelLicense = fstMapping[QStringLiteral("license")].toString();
 
     bool agreeToLicense = true; // assume true
     //create set avatar callback
@@ -8143,10 +8143,10 @@ void Application::addAssetToWorldWithNewMapping(QString filePath, QString mappin
            // addAssetToWorldError(filenameFromPath(filePath), errorInfo);
         } else if (copy < MAX_COPY_COUNT - 1) {
             if (copy > 0) {
-                mapping = mapping.remove(mapping.lastIndexOf("-"), QString::number(copy).length() + 1);
+                mapping = mapping.remove(mapping.lastIndexOf(QStringLiteral("-")), QString::number(copy).length() + 1);
             }
             copy++;
-            mapping = mapping.insert(mapping.lastIndexOf("."), "-" + QString::number(copy));
+            mapping = mapping.insert(mapping.lastIndexOf(QStringLiteral(".")), "-" + QString::number(copy));
             addAssetToWorldWithNewMapping(filePath, mapping, copy, isZip, isBlocks);
         } else {
             QString errorInfo = "Too many copies of asset name: "
@@ -9294,7 +9294,7 @@ void Application::createAvatarInputsBar() {
     properties.setName("AvatarInputsBarEntity");
     properties.setSourceUrl(AVATAR_INPUTS_BAR_QML.toString());
     properties.setParentID(getMyAvatar()->getSelfID());
-    properties.setParentJointIndex(getMyAvatar()->getJointIndex("_CAMERA_MATRIX"));
+    properties.setParentJointIndex(getMyAvatar()->getJointIndex(QStringLiteral("_CAMERA_MATRIX")));
     properties.setPosition(LOCAL_POSITION);
     properties.setLocalRotation(Quaternions::IDENTITY);
     //properties.setDimensions(LOGIN_DIMENSIONS);

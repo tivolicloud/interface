@@ -16,7 +16,7 @@ public:
     NetworkShader(const QUrl& url);
     NetworkShader(const NetworkShader& other) : Resource(other), _source(other._source) {}
 
-    QString getType() const override { return "NetworkShader"; }
+    QString getType() const override { return QStringLiteral("NetworkShader"); }
 
     virtual void downloadFinished(const QByteArray& data) override;
 

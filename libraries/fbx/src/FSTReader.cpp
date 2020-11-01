@@ -185,8 +185,8 @@ FSTReader::ModelType FSTReader::predictModelType(const QVariantHash& mapping) {
 
     QVariantHash joints;
 
-    if (mapping.contains("joint") && mapping["joint"].type() == QVariant::Hash) {
-        joints = mapping["joint"].toHash();
+    if (mapping.contains(QStringLiteral("joint")) && mapping[QStringLiteral("joint")].type() == QVariant::Hash) {
+        joints = mapping[QStringLiteral("joint")].toHash();
     }
 
     // if the mapping includes the type hint... then we trust the mapping

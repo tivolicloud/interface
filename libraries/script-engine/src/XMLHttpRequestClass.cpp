@@ -55,7 +55,7 @@ QString XMLHttpRequestClass::getStatusText() const {
     if (_reply) {
         return _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
     }
-    return "";
+    return QString();
 }
 
 void XMLHttpRequestClass::abort() {
@@ -100,7 +100,7 @@ QScriptValue XMLHttpRequestClass::getAllResponseHeaders() const {
         }
         return QString(headers.data());
     }
-    return QScriptValue("");
+    return QScriptValue(QString());
 }
 
 QScriptValue XMLHttpRequestClass::getResponseHeader(const QString& name) const {

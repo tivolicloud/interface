@@ -31,7 +31,7 @@ OctreeStatsDialog::OctreeStatsDialog(QWidget* parent, NodeToOctreeSceneStats* mo
         _labels[i] = nullptr;
     }
 
-    setWindowTitle("Octree Server Statistics");
+    setWindowTitle(QStringLiteral("Octree Server Statistics"));
 
     // Create layouter
     _form = new QFormLayout();
@@ -74,9 +74,9 @@ void OctreeStatsDialog::RemoveStatItem(int item) {
 }
 
 void OctreeStatsDialog::moreless(const QString& link) {
-    if (link == "more") {
+    if (link == QStringLiteral("more")) {
         _extraServerDetails = MORE;
-    } else if (link == "most") {
+    } else if (link == QStringLiteral("most")) {
         _extraServerDetails = MOST;
     } else {
         _extraServerDetails = LESS;
@@ -105,7 +105,7 @@ int OctreeStatsDialog::AddStatItem(const char* caption, unsigned colorRGBA) {
     rgb = ((rgb & colorpart1) >> 1) + ((rgb & colorpart2) >> 3);
     palette.setColor(QPalette::WindowText, QColor::fromRgb(rgb));
     label->setPalette(palette);
-    _form->addRow(QString(" %1:").arg(caption), label);
+    _form->addRow(QStringLiteral(" %1:").arg(caption), label);
     label->setFixedWidth(STATS_LABEL_WIDTH);
     
     return _statCount;

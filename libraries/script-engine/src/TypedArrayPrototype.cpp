@@ -29,7 +29,7 @@ void TypedArrayPrototype::set(QScriptValue array, qint32 offset) {
         if (offset < 0) {
             engine()->evaluate("throw \"ArgumentError: negative offset\"");
         }
-        quint32 length = array.property("length").toInt32();
+        quint32 length = array.property(QStringLiteral("length")).toInt32();
         if (offset + (qint32)length > thisObject().data().property(typedArray->_lengthName).toInt32()) {
             engine()->evaluate("throw \"ArgumentError: array does not fit\"");
             return;

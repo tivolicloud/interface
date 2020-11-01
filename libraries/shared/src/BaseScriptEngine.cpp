@@ -43,17 +43,17 @@ QScriptValue BaseScriptEngine::makeError(const QScriptValue& _other, const QStri
     auto other = _other;
     if (other.isString()) {
         other = newObject();
-        other.setProperty("message", _other.toString());
+        other.setProperty(QStringLiteral("message"), _other.toString());
     }
     auto proto = globalObject().property(type);
     if (!proto.isFunction()) {
-        proto = globalObject().property(other.prototype().property("constructor").property("name").toString());
+        proto = globalObject().property(other.prototype().property(QStringLiteral("constructor")).property(QStringLiteral("name")).toString());
     }
     if (!proto.isFunction()) {
 #ifdef DEBUG_JS_EXCEPTIONS
         qCDebug(shared) << "BaseScriptEngine::makeError -- couldn't find constructor for" << type << " -- using Error instead";
 #endif
-        proto = globalObject().property("Error");
+        proto = globalObject().property(QStringLiteral("Error"));
     }
     if (other.engine() != this) {
         // JS Objects are parented to a specific script engine instance
@@ -61,7 +61,7 @@ QScriptValue BaseScriptEngine::makeError(const QScriptValue& _other, const QStri
         other = toScriptValue(other.toVariant());
     }
     // ~ var err = new Error(other.message)
-    auto err = proto.construct(QScriptValueList({other.property("message")}));
+    auto err = proto.construct(QScriptValueList({other.property(QStringLiteral("message"))}));
 
     // transfer over any existing properties
     QScriptValueIterator it(other);
@@ -79,19 +79,19 @@ QScriptValue BaseScriptEngine::lintScript(const QString& sourceCode, const QStri
     }
     const auto syntaxCheck = checkSyntax(sourceCode);
     if (syntaxCheck.state() != QScriptSyntaxCheckResult::Valid) {
-        auto err = globalObject().property("SyntaxError")
+        auto err = globalObject().property(QStringLiteral("SyntaxError"))
             .construct(QScriptValueList({syntaxCheck.errorMessage()}));
-        err.setProperty("fileName", fileName);
-        err.setProperty("lineNumber", syntaxCheck.errorLineNumber());
-        err.setProperty("expressionBeginOffset", syntaxCheck.errorColumnNumber());
-        err.setProperty("stack", currentContext()->backtrace().join(SCRIPT_BACKTRACE_SEP));
+        err.setProperty(QStringLiteral("fileName"), fileName);
+        err.setProperty(QStringLiteral("lineNumber"), syntaxCheck.errorLineNumber());
+        err.setProperty(QStringLiteral("expressionBeginOffset"), syntaxCheck.errorColumnNumber());
+        err.setProperty(QStringLiteral("stack"), currentContext()->backtrace().join(SCRIPT_BACKTRACE_SEP));
         {
             const auto error = syntaxCheck.errorMessage();
             const auto line = QString::number(syntaxCheck.errorLineNumber());
             const auto column = QString::number(syntaxCheck.errorColumnNumber());
             // for compatibility with legacy reporting
-            const auto message = QString("[SyntaxError] %1 in %2:%3(%4)").arg(error, fileName, line, column);
-            err.setProperty("formatted", message);
+            const auto message = QStringLiteral("[SyntaxError] %1 in %2:%3(%4)").arg(error, fileName, line, column);
+            err.setProperty(QStringLiteral("formatted"), message);
         }
         return err;
     }
@@ -113,21 +113,21 @@ QScriptValue BaseScriptEngine::cloneUncaughtException(const QString& extraDetail
     // not sure why Qt does't offer uncaughtExceptionFileName -- but the line number
     // on its own is often useless/wrong if arbitrarily married to a filename.
     // when the error object already has this info, it seems to be the most reliable
-    auto fileName = exception.property("fileName").toString();
-    auto lineNumber = exception.property("lineNumber").toInt32();
+    auto fileName = exception.property(QStringLiteral("fileName")).toString();
+    auto lineNumber = exception.property(QStringLiteral("lineNumber")).toInt32();
 
     // the backtrace, on the other hand, seems most reliable taken from uncaughtExceptionBacktrace
     auto backtrace = uncaughtExceptionBacktrace();
     if (backtrace.isEmpty()) {
         // fallback to the error object
-        backtrace = exception.property("stack").toString().split(SCRIPT_BACKTRACE_SEP);
+        backtrace = exception.property(QStringLiteral("stack")).toString().split(SCRIPT_BACKTRACE_SEP);
     }
     // the ad hoc "detail" property can be used now to embed additional clues
-    auto detail = exception.property("detail").toString();
+    auto detail = exception.property(QStringLiteral("detail")).toString();
     if (detail.isEmpty()) {
         detail = extraDetail;
     } else if (!extraDetail.isEmpty()) {
-        detail += "(" + extraDetail + ")";
+        detail += QStringLiteral("(") + extraDetail + QStringLiteral(")");
     }
     if (lineNumber <= 0) {
         lineNumber = uncaughtExceptionLineNumber();
@@ -147,15 +147,15 @@ QScriptValue BaseScriptEngine::cloneUncaughtException(const QString& extraDetail
             }
         }
     }
-    err.setProperty("fileName", fileName);
-    err.setProperty("lineNumber", lineNumber );
-    err.setProperty("detail", detail);
-    err.setProperty("stack", backtrace.join(SCRIPT_BACKTRACE_SEP));
+    err.setProperty(QStringLiteral("fileName"), fileName);
+    err.setProperty(QStringLiteral("lineNumber"), lineNumber );
+    err.setProperty(QStringLiteral("detail"), detail);
+    err.setProperty(QStringLiteral("stack"), backtrace.join(SCRIPT_BACKTRACE_SEP));
 
 #ifdef DEBUG_JS_EXCEPTIONS
-    err.setProperty("_fileName", exception.property("fileName").toString());
-    err.setProperty("_stack", uncaughtExceptionBacktrace().join(SCRIPT_BACKTRACE_SEP));
-    err.setProperty("_lineNumber", uncaughtExceptionLineNumber());
+    err.setProperty(QStringLiteral("_fileName"), exception.property(QStringLiteral("fileName")).toString());
+    err.setProperty(QStringLiteral("_stack"), uncaughtExceptionBacktrace().join(SCRIPT_BACKTRACE_SEP));
+    err.setProperty(QStringLiteral("_lineNumber"), uncaughtExceptionLineNumber());
 #endif
     return err;
 }
@@ -171,23 +171,23 @@ QString BaseScriptEngine::formatException(const QScriptValue& exception, bool in
         return result;
     }
     const auto message = exception.toString();
-    const auto fileName = exception.property("fileName").toString();
-    const auto lineNumber = exception.property("lineNumber").toString();
-    const auto stacktrace =  exception.property("stack").toString();
+    const auto fileName = exception.property(QStringLiteral("fileName")).toString();
+    const auto lineNumber = exception.property(QStringLiteral("lineNumber")).toString();
+    const auto stacktrace =  exception.property(QStringLiteral("stack")).toString();
 
     if (includeExtendedDetails) {
         // Display additional exception / troubleshooting hints that can be added via the custom Error .detail property
         // Example difference:
         //   [UncaughtExceptions] Error: Can't find variable: foobar in atp:/myentity.js\n...
         //   [UncaughtException (construct {1eb5d3fa-23b1-411c-af83-163af7220e3f})] Error: Can't find variable: foobar in atp:/myentity.js\n...
-        if (exception.property("detail").isValid()) {
-            note += " " + exception.property("detail").toString();
+        if (exception.property(QStringLiteral("detail")).isValid()) {
+            note += QStringLiteral(" ") + exception.property(QStringLiteral("detail")).toString();
         }
     }
 
     result = QString(SCRIPT_EXCEPTION_FORMAT).arg(note, message, fileName, lineNumber);
     if (!stacktrace.isEmpty()) {
-        result += QString("\n[Backtrace]%1%2").arg(SCRIPT_BACKTRACE_SEP).arg(stacktrace);
+        result += QStringLiteral("\n[Backtrace]%1%2").arg(SCRIPT_BACKTRACE_SEP).arg(stacktrace);
     }
     return result;
 }
@@ -221,7 +221,7 @@ bool BaseScriptEngine::maybeEmitUncaughtException(const QString& debugHint) {
 }
 
 QScriptValue BaseScriptEngine::evaluateInClosure(const QScriptValue& closure, const QScriptProgram& program) {
-    PROFILE_RANGE(script, "evaluateInClosure");
+    PROFILE_RANGE(script, QStringLiteral("evaluateInClosure"));
     if (!IS_THREADSAFE_INVOCATION(thread(), __FUNCTION__)) {
         return unboundNullValue();
     }
@@ -230,7 +230,7 @@ QScriptValue BaseScriptEngine::evaluateInClosure(const QScriptValue& closure, co
 
     QScriptValue result;
     QScriptValue oldGlobal;
-    auto global = closure.property("global");
+    auto global = closure.property(QStringLiteral("global"));
     if (global.isObject()) {
 #ifdef DEBUG_JS
         qCDebug(shared) << " setting global = closure.global" << shortName;
@@ -241,7 +241,7 @@ QScriptValue BaseScriptEngine::evaluateInClosure(const QScriptValue& closure, co
 
     auto context = pushContext();
 
-    auto thiz = closure.property("this");
+    auto thiz = closure.property(QStringLiteral("this"));
     if (thiz.isObject()) {
 #ifdef DEBUG_JS
         qCDebug(shared) << " setting this = closure.this" << shortName;
@@ -259,7 +259,7 @@ QScriptValue BaseScriptEngine::evaluateInClosure(const QScriptValue& closure, co
             auto err = cloneUncaughtException(__FUNCTION__);
 #ifdef DEBUG_JS_EXCEPTIONS
             qCWarning(shared) << __FUNCTION__ << "---------- hasCaught:" << err.toString() << result.toString();
-            err.setProperty("_result", result);
+            err.setProperty(QStringLiteral("_result"), result);
 #endif
             result = err;
         }
@@ -283,13 +283,13 @@ QScriptValue BaseScriptEngine::evaluateInClosure(const QScriptValue& closure, co
 QScriptValue BaseScriptEngine::newLambdaFunction(std::function<QScriptValue(QScriptContext *, QScriptEngine*)> operation, const QScriptValue& data, const QScriptEngine::ValueOwnership& ownership) {
     auto lambda = new Lambda(this, operation, data);
     auto object = newQObject(lambda, ownership);
-    auto call = object.property("call");
+    auto call = object.property(QStringLiteral("call"));
     call.setPrototype(object); // context->callee().prototype() === Lambda QObject
     call.setData(data);        // context->callee().data() will === data param
     return call;
 }
 QString Lambda::toString() const {
-    return QString("[Lambda%1]").arg(data.isValid() ? " " + data.toString() : data.toString());
+    return QString(QStringLiteral("[Lambda%1]")).arg(data.isValid() ? QStringLiteral(" ") + data.toString() : data.toString());
 }
 
 Lambda::~Lambda() {
@@ -327,20 +327,20 @@ QScriptValue makeScopedHandlerObject(QScriptValue scopeOrCallback, QScriptValue 
             callback = methodOrName;
         } else if (!methodOrName.isValid()) {
             // instantiate from an existing scoped handler object
-            if (scopeOrCallback.property("callback").isFunction()) {
-                scope = scopeOrCallback.property("scope");
-                callback = scopeOrCallback.property("callback");
+            if (scopeOrCallback.property(QStringLiteral("callback")).isFunction()) {
+                scope = scopeOrCallback.property(QStringLiteral("scope"));
+                callback = scopeOrCallback.property(QStringLiteral("callback"));
             }
         }
     }
     auto handler = engine->newObject();
-    handler.setProperty("scope", scope);
-    handler.setProperty("callback", callback);
+    handler.setProperty(QStringLiteral("scope"), scope);
+    handler.setProperty(QStringLiteral("callback"), callback);
     return handler;
 }
 
 QScriptValue callScopedHandlerObject(QScriptValue handler, QScriptValue err, QScriptValue result) {
-    return handler.property("callback").call(handler.property("scope"), QScriptValueList({ err, result }));
+    return handler.property(QStringLiteral("callback")).call(handler.property(QStringLiteral("scope")), QScriptValueList({ err, result }));
 }
 
 #ifdef DEBUG_JS

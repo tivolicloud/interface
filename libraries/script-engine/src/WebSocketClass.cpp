@@ -61,7 +61,7 @@ void WebSocketClass::close() {
 }
 
 void WebSocketClass::close(QWebSocketProtocol::CloseCode closeCode) {
-    this->close(closeCode, QStringLiteral(""));
+    this->close(closeCode, QString());
 }
 
 void WebSocketClass::close(QWebSocketProtocol::CloseCode closeCode, QString reason) {
@@ -85,9 +85,9 @@ void WebSocketClass::handleOnClose() {
     if (_onCloseEvent.isFunction()) {
         QScriptValueList args;
         QScriptValue arg = _engine->newObject();
-        arg.setProperty("code", hasError ? QWebSocketProtocol::CloseCodeAbnormalDisconnection : _webSocket->closeCode());
-        arg.setProperty("reason", _webSocket->closeReason());
-        arg.setProperty("wasClean", !hasError);
+        arg.setProperty(QStringLiteral("code"), hasError ? QWebSocketProtocol::CloseCodeAbnormalDisconnection : _webSocket->closeCode());
+        arg.setProperty(QStringLiteral("reason"), _webSocket->closeReason());
+        arg.setProperty(QStringLiteral("wasClean"), !hasError);
         args << arg;
         _onCloseEvent.call(QScriptValue(), args);
     }
@@ -164,7 +164,7 @@ void WebSocketClass::handleOnMessage(const QString& message) {
     if (_onMessageEvent.isFunction()) {
         QScriptValueList args;
         QScriptValue arg = _engine->newObject();
-        arg.setProperty("data", message);
+        arg.setProperty(QStringLiteral("data"), message);
         args << arg;
         _onMessageEvent.call(QScriptValue(), args);
     }

@@ -27,8 +27,8 @@ Overlay::Overlay(const Overlay* overlay) :
 }
 
 void Overlay::setProperties(const QVariantMap& properties) {
-    if (properties["visible"].isValid()) {
-        bool visible = properties["visible"].toBool();
+    if (properties[QStringLiteral("visible")].isValid()) {
+        bool visible = properties[QStringLiteral("visible")].toBool();
         setVisible(visible);
     }
 }

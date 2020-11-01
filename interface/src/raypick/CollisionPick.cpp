@@ -41,17 +41,17 @@ void buildObjectIntersectionsMap(IntersectionType intersectionType, const std::v
         auto at = intersections.find(objectIntersection.foundID);
         if (at == intersections.end()) {
             QVariantMap intersectingObject;
-            intersectingObject["id"] = objectIntersection.foundID;
-            intersectingObject["type"] = intersectionType;
+            intersectingObject[QStringLiteral("id")] = objectIntersection.foundID;
+            intersectingObject[QStringLiteral("type")] = intersectionType;
             intersections[objectIntersection.foundID] = intersectingObject;
 
             collisionPointPairs[objectIntersection.foundID] = QVariantList();
         }
 
         QVariantMap collisionPointPair;
-        collisionPointPair["pointOnPick"] = vec3toVariant(objectIntersection.testCollisionPoint);
-        collisionPointPair["pointOnObject"] = vec3toVariant(objectIntersection.foundCollisionPoint);
-        collisionPointPair["normalOnPick"] = vec3toVariant(objectIntersection.collisionNormal);
+        collisionPointPair[QStringLiteral("pointOnPick")] = vec3toVariant(objectIntersection.testCollisionPoint);
+        collisionPointPair[QStringLiteral("pointOnObject")] = vec3toVariant(objectIntersection.foundCollisionPoint);
+        collisionPointPair[QStringLiteral("normalOnPick")] = vec3toVariant(objectIntersection.collisionNormal);
 
         collisionPointPairs[objectIntersection.foundID].append(collisionPointPair);
     }
@@ -91,7 +91,7 @@ void buildObjectIntersectionsMap(IntersectionType intersectionType, const std::v
 QVariantMap CollisionPickResult::toVariantMap() const {
     QVariantMap variantMap;
 
-    variantMap["intersects"] = intersects;
+    variantMap[QStringLiteral("intersects")] = intersects;
 
     std::unordered_map<QUuid, QVariantMap> intersections;
     std::unordered_map<QUuid, QVariantList> collisionPointPairs;
@@ -104,12 +104,12 @@ QVariantMap CollisionPickResult::toVariantMap() const {
         const QUuid& id = intersectionKeyVal.first;
         QVariantMap& intersection = intersectionKeyVal.second;
 
-        intersection["collisionContacts"] = collisionPointPairs[id];
+        intersection[QStringLiteral("collisionContacts")] = collisionPointPairs[id];
         qIntersectingObjects.append(intersection);
     }
 
-    variantMap["intersectingObjects"] = qIntersectingObjects;
-    variantMap["collisionRegion"] = pickVariant;
+    variantMap[QStringLiteral("intersectingObjects")] = qIntersectingObjects;
+    variantMap[QStringLiteral("collisionRegion")] = pickVariant;
 
     return variantMap;
 }

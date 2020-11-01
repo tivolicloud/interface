@@ -18,7 +18,7 @@ bool isListOfStrings(const QScriptValue& arg) {
         return false;
     }
 
-    auto lengthProperty = arg.property("length");
+    auto lengthProperty = arg.property(QStringLiteral("length"));
     if (!lengthProperty.isNumber()) {
         return false;
     }

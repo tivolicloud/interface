@@ -468,17 +468,17 @@ bool CharacterController::onGround() const {
 static const char* stateToStr(CharacterController::State state) {
     switch (state) {
     case CharacterController::State::Ground:
-        return "Ground";
+        return QStringLiteral("Ground");
     case CharacterController::State::Takeoff:
-        return "Takeoff";
+        return QStringLiteral("Takeoff");
     case CharacterController::State::InAir:
-        return "InAir";
+        return QStringLiteral("InAir");
     case CharacterController::State::Hover:
-        return "Hover";
+        return QStringLiteral("Hover");
     case CharacterController::State::Seated:
-        return "Seated";
+        return QStringLiteral("Seated");
     default:
-        return "Unknown";
+        return QStringLiteral("Unknown");
     }
 }
 #endif // #ifdef DEBUG_STATE_CHANGE
@@ -862,7 +862,7 @@ void CharacterController::updateState() {
         return;
     }
     if (_pendingFlags & PENDING_FLAG_RECOMPUTE_FLYING) {
-         SET_STATE(CharacterController::State::Hover, "recomputeFlying");
+         SET_STATE(CharacterController::State::Hover, QStringLiteral("recomputeFlying"));
          _hasSupport = false;
          _stepHeight = _minStepHeight; // clears memory of last step obstacle
          _pendingFlags &= ~PENDING_FLAG_RECOMPUTE_FLYING;
@@ -936,23 +936,23 @@ void CharacterController::updateState() {
             case State::Ground:
                 if (!rayHasHit && !_hasSupport) {
                     if (_hoverWhenUnsupported) {
-                       SET_STATE(State::Hover, "no ground detected");
+                       SET_STATE(State::Hover, QStringLiteral("no ground detected"));
                     } else {
-                       SET_STATE(State::InAir, "falling");
+                       SET_STATE(State::InAir, QStringLiteral("falling"));
                     }
                 } else if (_pendingFlags & PENDING_FLAG_JUMP && _jumpButtonDownCount != _takeoffJumpButtonID) {
                     _takeoffJumpButtonID = _jumpButtonDownCount;
                     _takeoffToInAirStartTime = now;
-                    SET_STATE(State::Takeoff, "jump pressed");
+                    SET_STATE(State::Takeoff, QStringLiteral("jump pressed"));
                 } else if (rayHasHit && !_hasSupport && _floorDistance > GROUND_TO_FLY_THRESHOLD) {
-                    SET_STATE(State::InAir, "falling");
+                    SET_STATE(State::InAir, QStringLiteral("falling"));
                 }
                 break;
             case State::Takeoff:
                 if (_hoverWhenUnsupported && (!rayHasHit && !_hasSupport)) {
-                    SET_STATE(State::Hover, "no ground");
+                    SET_STATE(State::Hover, QStringLiteral("no ground"));
                 } else if ((now - _takeoffToInAirStartTime) > TAKE_OFF_TO_IN_AIR_PERIOD) {
-                    SET_STATE(State::InAir, "takeoff done");
+                    SET_STATE(State::InAir, QStringLiteral("takeoff done"));
 
                     // compute jumpSpeed based on the scaled jump height for the default avatar in default gravity.
                     const float jumpHeight = std::max(_scaleFactor * DEFAULT_AVATAR_JUMP_HEIGHT, DEFAULT_AVATAR_MIN_JUMP_HEIGHT);
@@ -965,7 +965,7 @@ void CharacterController::updateState() {
                 const float jumpHeight = std::max(_scaleFactor * DEFAULT_AVATAR_JUMP_HEIGHT, DEFAULT_AVATAR_MIN_JUMP_HEIGHT);
                 const float jumpSpeed = sqrtf(2.0f * -DEFAULT_AVATAR_GRAVITY * jumpHeight);
                 if ((velocity.dot(_currentUp) <= (jumpSpeed / 2.0f)) && ((_floorDistance < FLY_TO_GROUND_THRESHOLD) || _hasSupport)) {
-                    SET_STATE(State::Ground, "hit ground");
+                    SET_STATE(State::Ground, QStringLiteral("hit ground"));
                 } else if (_zoneFlyingAllowed) {
                     btVector3 desiredVelocity = _targetVelocity;
                     if (desiredVelocity.length2() < MIN_TARGET_SPEED_SQUARED) {
@@ -973,12 +973,12 @@ void CharacterController::updateState() {
                     }
                     bool vertTargetSpeedIsNonZero = desiredVelocity.dot(_currentUp) > MIN_TARGET_SPEED;
                     if (_comfortFlyingAllowed && (jumpButtonHeld || vertTargetSpeedIsNonZero) && (_takeoffJumpButtonID != _jumpButtonDownCount)) {
-                        SET_STATE(State::Hover, "double jump button");
+                        SET_STATE(State::Hover, QStringLiteral("double jump button"));
                     } else if (_comfortFlyingAllowed && (jumpButtonHeld || vertTargetSpeedIsNonZero) && (now - _jumpButtonDownStartTime) > JUMP_TO_HOVER_PERIOD) {
-                        SET_STATE(State::Hover, "jump button held");
+                        SET_STATE(State::Hover, QStringLiteral("jump button held"));
                     } else if (_hoverWhenUnsupported && ((!rayHasHit && !_hasSupport) || _floorDistance > _scaleFactor * DEFAULT_AVATAR_FALL_HEIGHT)) {
                         // Transition to hover if there's no ground beneath us or we are above the fall threshold, regardless of _comfortFlyingAllowed
-                        SET_STATE(State::Hover, "above fall threshold");
+                        SET_STATE(State::Hover, QStringLiteral("above fall threshold"));
                     }
                 }
                 break;
@@ -987,18 +987,18 @@ void CharacterController::updateState() {
                 btScalar horizontalSpeed = (velocity - velocity.dot(_currentUp) * _currentUp).length();
                 bool flyingFast = horizontalSpeed > (MAX_WALKING_SPEED * 0.75f);
                 if (!_zoneFlyingAllowed) {
-                    SET_STATE(State::InAir, "zone flying not allowed");
+                    SET_STATE(State::InAir, QStringLiteral("zone flying not allowed"));
                 } else if (!_comfortFlyingAllowed && (rayHasHit || _hasSupport || _floorDistance < FLY_TO_GROUND_THRESHOLD)) {
-                    SET_STATE(State::InAir, "comfort flying not allowed");
+                    SET_STATE(State::InAir, QStringLiteral("comfort flying not allowed"));
                 } else if ((_floorDistance < MIN_HOVER_HEIGHT) && !jumpButtonHeld && !flyingFast) {
-                    SET_STATE(State::InAir, "near ground");
+                    SET_STATE(State::InAir, QStringLiteral("near ground"));
                 } else if (((_floorDistance < FLY_TO_GROUND_THRESHOLD) || _hasSupport) && !flyingFast) {
-                    SET_STATE(State::Ground, "touching ground");
+                    SET_STATE(State::Ground, QStringLiteral("touching ground"));
                 }
                 break;
             }
             case State::Seated: {
-                SET_STATE(State::Ground, "Standing up");
+                SET_STATE(State::Ground, QStringLiteral("Standing up"));
                 break;
             }
         }

@@ -58,7 +58,7 @@ unsigned int PickScriptingInterface::createPick(const PickQuery::PickType type, 
         return PickManager::INVALID_PICK_ID;
     }
 
-    propMap["pickType"] = (int)type;
+    propMap[QStringLiteral("pickType")] = (int)type;
 
     pick->setScriptParameters(propMap);
 
@@ -107,10 +107,10 @@ PickFilter getPickFilter(unsigned int filter) {
  */
 std::shared_ptr<PickQuery> PickScriptingInterface::buildRayPick(const QVariantMap& propMap) {
 #if defined (Q_OS_ANDROID)
-    QString jointName { "" };
-    if (propMap["joint"].isValid()) {
-        QString jointName = propMap["joint"].toString();
-        const QString MOUSE_JOINT = "Mouse";
+    QString jointName { QString() };
+    if (propMap[QStringLiteral("joint")].isValid()) {
+        QString jointName = propMap[QStringLiteral("joint")].toString();
+        const QString MOUSE_JOINT = QStringLiteral("Mouse");
         if (jointName == MOUSE_JOINT) {
             return nullptr;
         }
@@ -118,37 +118,37 @@ std::shared_ptr<PickQuery> PickScriptingInterface::buildRayPick(const QVariantMa
 #endif
 
     bool enabled = false;
-    if (propMap["enabled"].isValid()) {
-        enabled = propMap["enabled"].toBool();
+    if (propMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propMap[QStringLiteral("enabled")].toBool();
     }
 
     PickFilter filter = PickFilter();
-    if (propMap["filter"].isValid()) {
-        filter = getPickFilter(propMap["filter"].toUInt());
+    if (propMap[QStringLiteral("filter")].isValid()) {
+        filter = getPickFilter(propMap[QStringLiteral("filter")].toUInt());
     }
 
     float maxDistance = 0.0f;
-    if (propMap["maxDistance"].isValid()) {
-        maxDistance = propMap["maxDistance"].toFloat();
+    if (propMap[QStringLiteral("maxDistance")].isValid()) {
+        maxDistance = propMap[QStringLiteral("maxDistance")].toFloat();
     }
 
     glm::vec3 position = Vectors::ZERO;
-    if (propMap["position"].isValid()) {
-        position = vec3FromVariant(propMap["position"]);
-    } else if (propMap["posOffset"].isValid()) {
-        position = vec3FromVariant(propMap["posOffset"]);
+    if (propMap[QStringLiteral("position")].isValid()) {
+        position = vec3FromVariant(propMap[QStringLiteral("position")]);
+    } else if (propMap[QStringLiteral("posOffset")].isValid()) {
+        position = vec3FromVariant(propMap[QStringLiteral("posOffset")]);
     }
 
     // direction has two defaults to ensure compatibility with older scripts
     // Joint ray picks had default direction = Vec3.UP
     // Static ray picks had default direction = -Vec3.UP
-    glm::vec3 direction = propMap["joint"].isValid() ? Vectors::UP : -Vectors::UP;
-    if (propMap["orientation"].isValid()) {
-        direction = quatFromVariant(propMap["orientation"]) * Vectors::UP;
-    } else if (propMap["direction"].isValid()) {
-        direction = vec3FromVariant(propMap["direction"]);
-    } else if (propMap["dirOffset"].isValid()) {
-        direction = vec3FromVariant(propMap["dirOffset"]);
+    glm::vec3 direction = propMap[QStringLiteral("joint")].isValid() ? Vectors::UP : -Vectors::UP;
+    if (propMap[QStringLiteral("orientation")].isValid()) {
+        direction = quatFromVariant(propMap[QStringLiteral("orientation")]) * Vectors::UP;
+    } else if (propMap[QStringLiteral("direction")].isValid()) {
+        direction = vec3FromVariant(propMap[QStringLiteral("direction")]);
+    } else if (propMap[QStringLiteral("dirOffset")].isValid()) {
+        direction = vec3FromVariant(propMap[QStringLiteral("dirOffset")]);
     }
 
     auto rayPick = std::make_shared<RayPick>(position, direction, filter, maxDistance, enabled);
@@ -178,30 +178,30 @@ std::shared_ptr<PickQuery> PickScriptingInterface::buildRayPick(const QVariantMa
 std::shared_ptr<PickQuery> PickScriptingInterface::buildStylusPick(const QVariantMap& propMap) {
     bilateral::Side side = bilateral::Side::Invalid;
     {
-        QVariant handVar = propMap["hand"];
+        QVariant handVar = propMap[QStringLiteral("hand")];
         if (handVar.isValid()) {
             side = bilateral::side(handVar.toInt());
         }
     }
 
     bool enabled = false;
-    if (propMap["enabled"].isValid()) {
-        enabled = propMap["enabled"].toBool();
+    if (propMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propMap[QStringLiteral("enabled")].toBool();
     }
 
     PickFilter filter = PickFilter();
-    if (propMap["filter"].isValid()) {
-        filter = getPickFilter(propMap["filter"].toUInt());
+    if (propMap[QStringLiteral("filter")].isValid()) {
+        filter = getPickFilter(propMap[QStringLiteral("filter")].toUInt());
     }
 
     float maxDistance = 0.0f;
-    if (propMap["maxDistance"].isValid()) {
-        maxDistance = propMap["maxDistance"].toFloat();
+    if (propMap[QStringLiteral("maxDistance")].isValid()) {
+        maxDistance = propMap[QStringLiteral("maxDistance")].toFloat();
     }
 
     glm::vec3 tipOffset = TIP_OFFSET;
-    if (propMap["tipOffset"].isValid()) {
-        tipOffset = vec3FromVariant(propMap["tipOffset"]);
+    if (propMap[QStringLiteral("tipOffset")].isValid()) {
+        tipOffset = vec3FromVariant(propMap[QStringLiteral("tipOffset")]);
     }
 
     return std::make_shared<StylusPick>(side, filter, maxDistance, enabled, tipOffset);
@@ -257,60 +257,60 @@ std::shared_ptr<PickQuery> PickScriptingInterface::buildStylusPick(const QVarian
  */
 std::shared_ptr<PickQuery> PickScriptingInterface::buildParabolaPick(const QVariantMap& propMap) {
     bool enabled = false;
-    if (propMap["enabled"].isValid()) {
-        enabled = propMap["enabled"].toBool();
+    if (propMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propMap[QStringLiteral("enabled")].toBool();
     }
 
     PickFilter filter = PickFilter();
-    if (propMap["filter"].isValid()) {
-        filter = getPickFilter(propMap["filter"].toUInt());
+    if (propMap[QStringLiteral("filter")].isValid()) {
+        filter = getPickFilter(propMap[QStringLiteral("filter")].toUInt());
     }
 
     float maxDistance = 0.0f;
-    if (propMap["maxDistance"].isValid()) {
-        maxDistance = propMap["maxDistance"].toFloat();
+    if (propMap[QStringLiteral("maxDistance")].isValid()) {
+        maxDistance = propMap[QStringLiteral("maxDistance")].toFloat();
     }
 
     float speed = 1.0f;
-    if (propMap["speed"].isValid()) {
-        speed = propMap["speed"].toFloat();
+    if (propMap[QStringLiteral("speed")].isValid()) {
+        speed = propMap[QStringLiteral("speed")].toFloat();
     }
 
     glm::vec3 accelerationAxis = -Vectors::UP;
-    if (propMap["accelerationAxis"].isValid()) {
-        accelerationAxis = vec3FromVariant(propMap["accelerationAxis"]);
+    if (propMap[QStringLiteral("accelerationAxis")].isValid()) {
+        accelerationAxis = vec3FromVariant(propMap[QStringLiteral("accelerationAxis")]);
     }
 
     bool rotateAccelerationWithAvatar = true;
-    if (propMap["rotateAccelerationWithAvatar"].isValid()) {
-        rotateAccelerationWithAvatar = propMap["rotateAccelerationWithAvatar"].toBool();
+    if (propMap[QStringLiteral("rotateAccelerationWithAvatar")].isValid()) {
+        rotateAccelerationWithAvatar = propMap[QStringLiteral("rotateAccelerationWithAvatar")].toBool();
     }
 
     bool rotateAccelerationWithParent = false;
-    if (propMap["rotateAccelerationWithParent"].isValid()) {
-        rotateAccelerationWithParent = propMap["rotateAccelerationWithParent"].toBool();
+    if (propMap[QStringLiteral("rotateAccelerationWithParent")].isValid()) {
+        rotateAccelerationWithParent = propMap[QStringLiteral("rotateAccelerationWithParent")].toBool();
     }
 
     bool scaleWithParent = true;
-    if (propMap["scaleWithParent"].isValid()) {
-        scaleWithParent = propMap["scaleWithParent"].toBool();
-    } else if (propMap["scaleWithAvatar"].isValid()) {
-        scaleWithParent = propMap["scaleWithAvatar"].toBool();
+    if (propMap[QStringLiteral("scaleWithParent")].isValid()) {
+        scaleWithParent = propMap[QStringLiteral("scaleWithParent")].toBool();
+    } else if (propMap[QStringLiteral("scaleWithAvatar")].isValid()) {
+        scaleWithParent = propMap[QStringLiteral("scaleWithAvatar")].toBool();
     }
 
     glm::vec3 position = Vectors::ZERO;
-    glm::vec3 direction = propMap["joint"].isValid() ? Vectors::UP : -Vectors::FRONT;
-    if (propMap["position"].isValid()) {
-        position = vec3FromVariant(propMap["position"]);
-    } else if (propMap["posOffset"].isValid()) {
-        position = vec3FromVariant(propMap["posOffset"]);
+    glm::vec3 direction = propMap[QStringLiteral("joint")].isValid() ? Vectors::UP : -Vectors::FRONT;
+    if (propMap[QStringLiteral("position")].isValid()) {
+        position = vec3FromVariant(propMap[QStringLiteral("position")]);
+    } else if (propMap[QStringLiteral("posOffset")].isValid()) {
+        position = vec3FromVariant(propMap[QStringLiteral("posOffset")]);
     }
-    if (propMap["orientation"].isValid()) {
-        direction = quatFromVariant(propMap["orientation"]) * Vectors::UP;
-    } else if (propMap["direction"].isValid()) {
-        direction = vec3FromVariant(propMap["direction"]);
-    } else if (propMap["dirOffset"].isValid()) {
-        direction = vec3FromVariant(propMap["dirOffset"]);
+    if (propMap[QStringLiteral("orientation")].isValid()) {
+        direction = quatFromVariant(propMap[QStringLiteral("orientation")]) * Vectors::UP;
+    } else if (propMap[QStringLiteral("direction")].isValid()) {
+        direction = vec3FromVariant(propMap[QStringLiteral("direction")]);
+    } else if (propMap[QStringLiteral("dirOffset")].isValid()) {
+        direction = vec3FromVariant(propMap[QStringLiteral("dirOffset")]);
     }
 
     auto parabolaPick = std::make_shared<ParabolaPick>(position, direction, speed, accelerationAxis,
@@ -358,23 +358,23 @@ std::shared_ptr<PickQuery> PickScriptingInterface::buildParabolaPick(const QVari
  */
 std::shared_ptr<PickQuery> PickScriptingInterface::buildCollisionPick(const QVariantMap& propMap) {
     bool enabled = false;
-    if (propMap["enabled"].isValid()) {
-        enabled = propMap["enabled"].toBool();
+    if (propMap[QStringLiteral("enabled")].isValid()) {
+        enabled = propMap[QStringLiteral("enabled")].toBool();
     }
 
     PickFilter filter = PickFilter();
-    if (propMap["filter"].isValid()) {
-        filter = getPickFilter(propMap["filter"].toUInt());
+    if (propMap[QStringLiteral("filter")].isValid()) {
+        filter = getPickFilter(propMap[QStringLiteral("filter")].toUInt());
     }
 
     float maxDistance = 0.0f;
-    if (propMap["maxDistance"].isValid()) {
-        maxDistance = propMap["maxDistance"].toFloat();
+    if (propMap[QStringLiteral("maxDistance")].isValid()) {
+        maxDistance = propMap[QStringLiteral("maxDistance")].toFloat();
     }
 
     bool scaleWithParent = true;
-    if (propMap["scaleWithParent"].isValid()) {
-        scaleWithParent = propMap["scaleWithParent"].toBool();
+    if (propMap[QStringLiteral("scaleWithParent")].isValid()) {
+        scaleWithParent = propMap[QStringLiteral("scaleWithParent")].toBool();
     }
 
     CollisionRegion collisionRegion(propMap);
@@ -459,7 +459,7 @@ void PickScriptingInterface::registerMetaTypes(QScriptEngine* engine) {
     for (int i = 0; i < PickQuery::PickType::NUM_PICK_TYPES; ++i) {
         pickTypes.setProperty(metaEnum.key(i), metaEnum.value(i));
     }
-    engine->globalObject().setProperty("PickType", pickTypes);
+    engine->globalObject().setProperty(QStringLiteral("PickType"), pickTypes);
 
     qScriptRegisterMetaType(engine, pickTypesToScriptValue, pickTypesFromScriptValue);
 }
@@ -477,18 +477,18 @@ void PickScriptingInterface::setParentTransform(std::shared_ptr<PickQuery> pick,
     int parentJointIndex = 0;
     auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
 
-    if (propMap["parentID"].isValid()) {
-        parentUuid = propMap["parentID"].toUuid();
-        if (propMap["parentJointIndex"].isValid()) {
-            parentJointIndex = propMap["parentJointIndex"].toInt();
+    if (propMap[QStringLiteral("parentID")].isValid()) {
+        parentUuid = propMap[QStringLiteral("parentID")].toUuid();
+        if (propMap[QStringLiteral("parentJointIndex")].isValid()) {
+            parentJointIndex = propMap[QStringLiteral("parentJointIndex")].toInt();
         }
-    } else if (propMap["joint"].isValid()) {
-        QString joint = propMap["joint"].toString();
-        if (joint == "Mouse") {
+    } else if (propMap[QStringLiteral("joint")].isValid()) {
+        QString joint = propMap[QStringLiteral("joint")].toString();
+        if (joint == QStringLiteral("Mouse")) {
             pick->parentTransform = std::make_shared<MouseTransformNode>();
             pick->setJointState(PickQuery::JOINT_STATE_MOUSE);
             return;
-        } else if (joint == "Avatar") {
+        } else if (joint == QStringLiteral("Avatar")) {
             pick->parentTransform = std::make_shared<MyAvatarHeadTransformNode>();
             return;
         } else {
@@ -523,7 +523,7 @@ void PickScriptingInterface::setParentTransform(std::shared_ptr<PickQuery> pick,
             }
         }
     } else {
-        unsigned int pickID = propMap["parentID"].toUInt();
+        unsigned int pickID = propMap[QStringLiteral("parentID")].toUInt();
 
         if (pickID != 0) {
             pick->parentTransform = std::make_shared<PickTransformNode>(pickID);

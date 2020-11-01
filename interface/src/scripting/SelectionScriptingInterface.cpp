@@ -275,8 +275,8 @@ QVariantMap SelectionScriptingInterface::getSelectedItemsList(const QString& lis
                 }
             }
         }
-        list["avatars"] = (avatarIDs);
-        list["entities"] = (entityIDs);
+        list[QStringLiteral("avatars")] = (avatarIDs);
+        list[QStringLiteral("entities")] = (entityIDs);
         qDebug() << "SELECTION LISTS CONSTAIN " << list;
         return list;
     }
@@ -395,7 +395,7 @@ void SelectionToSceneHandler::updateSceneFromSelectedList() {
 }
 
 bool SelectionHighlightStyle::fromVariantMap(const QVariantMap& properties) {
-    auto colorVariant = properties["outlineUnoccludedColor"];
+    auto colorVariant = properties[QStringLiteral("outlineUnoccludedColor")];
     if (colorVariant.isValid()) {
         bool isValid;
         auto color = u8vec3FromVariant(colorVariant, isValid);
@@ -403,7 +403,7 @@ bool SelectionHighlightStyle::fromVariantMap(const QVariantMap& properties) {
             _style._outlineUnoccluded.color = toGlm(color);
         }
     }
-    colorVariant = properties["outlineOccludedColor"];
+    colorVariant = properties[QStringLiteral("outlineOccludedColor")];
     if (colorVariant.isValid()) {
         bool isValid;
         auto color = u8vec3FromVariant(colorVariant, isValid);
@@ -411,7 +411,7 @@ bool SelectionHighlightStyle::fromVariantMap(const QVariantMap& properties) {
             _style._outlineOccluded.color = toGlm(color);
         }
     }
-    colorVariant = properties["fillUnoccludedColor"];
+    colorVariant = properties[QStringLiteral("fillUnoccludedColor")];
     if (colorVariant.isValid()) {
         bool isValid;
         auto color = u8vec3FromVariant(colorVariant, isValid);
@@ -419,7 +419,7 @@ bool SelectionHighlightStyle::fromVariantMap(const QVariantMap& properties) {
             _style._fillUnoccluded.color = toGlm(color);
         }
     }
-    colorVariant = properties["fillOccludedColor"];
+    colorVariant = properties[QStringLiteral("fillOccludedColor")];
     if (colorVariant.isValid()) {
         bool isValid;
         auto color = u8vec3FromVariant(colorVariant, isValid);
@@ -428,28 +428,28 @@ bool SelectionHighlightStyle::fromVariantMap(const QVariantMap& properties) {
         }
     }
 
-    auto intensityVariant = properties["outlineUnoccludedAlpha"];
+    auto intensityVariant = properties[QStringLiteral("outlineUnoccludedAlpha")];
     if (intensityVariant.isValid()) {
         _style._outlineUnoccluded.alpha = intensityVariant.toFloat();
     }
-    intensityVariant = properties["outlineOccludedAlpha"];
+    intensityVariant = properties[QStringLiteral("outlineOccludedAlpha")];
     if (intensityVariant.isValid()) {
         _style._outlineOccluded.alpha = intensityVariant.toFloat();
     }
-    intensityVariant = properties["fillUnoccludedAlpha"];
+    intensityVariant = properties[QStringLiteral("fillUnoccludedAlpha")];
     if (intensityVariant.isValid()) {
         _style._fillUnoccluded.alpha = intensityVariant.toFloat();
     }
-    intensityVariant = properties["fillOccludedAlpha"];
+    intensityVariant = properties[QStringLiteral("fillOccludedAlpha")];
     if (intensityVariant.isValid()) {
         _style._fillOccluded.alpha = intensityVariant.toFloat();
     }
 
-    auto outlineWidth = properties["outlineWidth"];
+    auto outlineWidth = properties[QStringLiteral("outlineWidth")];
     if (outlineWidth.isValid()) {
         _style._outlineWidth = outlineWidth.toFloat();
     }
-    auto isOutlineSmooth = properties["isOutlineSmooth"];
+    auto isOutlineSmooth = properties[QStringLiteral("isOutlineSmooth")];
     if (isOutlineSmooth.isValid()) {
         _style._isOutlineSmooth = isOutlineSmooth.toBool();
     }
@@ -476,18 +476,18 @@ QVariantMap SelectionHighlightStyle::toVariantMap() const {
     QVariantMap properties;
 
     const float MAX_COLOR = 255.0f;
-    properties["outlineUnoccludedColor"] = u8vec3ColortoVariant(_style._outlineUnoccluded.color * MAX_COLOR);
-    properties["outlineOccludedColor"] = u8vec3ColortoVariant(_style._outlineOccluded.color * MAX_COLOR);
-    properties["fillUnoccludedColor"] = u8vec3ColortoVariant(_style._fillUnoccluded.color * MAX_COLOR);
-    properties["fillOccludedColor"] = u8vec3ColortoVariant(_style._fillOccluded.color * MAX_COLOR);
+    properties[QStringLiteral("outlineUnoccludedColor")] = u8vec3ColortoVariant(_style._outlineUnoccluded.color * MAX_COLOR);
+    properties[QStringLiteral("outlineOccludedColor")] = u8vec3ColortoVariant(_style._outlineOccluded.color * MAX_COLOR);
+    properties[QStringLiteral("fillUnoccludedColor")] = u8vec3ColortoVariant(_style._fillUnoccluded.color * MAX_COLOR);
+    properties[QStringLiteral("fillOccludedColor")] = u8vec3ColortoVariant(_style._fillOccluded.color * MAX_COLOR);
 
-    properties["outlineUnoccludedAlpha"] = _style._outlineUnoccluded.alpha;
-    properties["outlineOccludedAlpha"] = _style._outlineOccluded.alpha;
-    properties["fillUnoccludedAlpha"] = _style._fillUnoccluded.alpha;
-    properties["fillOccludedAlpha"] = _style._fillOccluded.alpha;
+    properties[QStringLiteral("outlineUnoccludedAlpha")] = _style._outlineUnoccluded.alpha;
+    properties[QStringLiteral("outlineOccludedAlpha")] = _style._outlineOccluded.alpha;
+    properties[QStringLiteral("fillUnoccludedAlpha")] = _style._fillUnoccluded.alpha;
+    properties[QStringLiteral("fillOccludedAlpha")] = _style._fillOccluded.alpha;
 
-    properties["outlineWidth"] = _style._outlineWidth;
-    properties["isOutlineSmooth"] = _style._isOutlineSmooth;
+    properties[QStringLiteral("outlineWidth")] = _style._outlineWidth;
+    properties[QStringLiteral("isOutlineSmooth")] = _style._isOutlineSmooth;
 
     return properties;
 }

@@ -46,67 +46,67 @@ void AnimStats::updateStats(bool force) {
     glm::quat rotation = myAvatar->getWorldOrientation();
     glm::vec3 velocity = myAvatar->getWorldVelocity();
 
-    _positionText = QString("Position: (%1, %2, %3)").
+    _positionText = QStringLiteral("Position: (%1, %2, %3)").
         arg(QString::number(position.x, 'f', 2)).
         arg(QString::number(position.y, 'f', 2)).
         arg(QString::number(position.z, 'f', 2));
     emit positionTextChanged();
 
     glm::vec3 eulerRotation = safeEulerAngles(rotation);
-    _rotationText = QString("Heading: %1").
+    _rotationText = QStringLiteral("Heading: %1").
         arg(QString::number(glm::degrees(eulerRotation.y), 'f', 2));
     emit rotationTextChanged();
 
     // transform velocity into rig coordinate frame. z forward.
     glm::vec3 localVelocity = Quaternions::Y_180 * glm::inverse(rotation) * velocity;
-    _velocityText = QString("Local Vel: (%1, %2, %3)").
+    _velocityText = QStringLiteral("Local Vel: (%1, %2, %3)").
         arg(QString::number(localVelocity.x, 'f', 2)).
         arg(QString::number(localVelocity.y, 'f', 2)).
         arg(QString::number(localVelocity.z, 'f', 2));
     emit velocityTextChanged();
 
     // print if we are recentering or not.
-    _recenterText = "Recenter: ";
+    _recenterText = QStringLiteral("Recenter: ");
     if (myAvatar->isFollowActive(MyAvatar::FollowHelper::Rotation)) {
-        _recenterText += "Rotation ";
+        _recenterText += QStringLiteral("Rotation ");
     }
     if (myAvatar->isFollowActive(MyAvatar::FollowHelper::Horizontal)) {
-        _recenterText += "Horizontal ";
+        _recenterText += QStringLiteral("Horizontal ");
     }
     if (myAvatar->isFollowActive(MyAvatar::FollowHelper::Vertical)) {
-        _recenterText += "Vertical ";
+        _recenterText += QStringLiteral("Vertical ");
     }
     emit recenterTextChanged();
 
     // print current standing vs sitting state.
     if (myAvatar->getIsInSittingState()) {
-        _sittingText = "SittingState: Sit";
+        _sittingText = QStringLiteral("SittingState: Sit");
     } else {
-        _sittingText = "SittingState: Stand";
+        _sittingText = QStringLiteral("SittingState: Stand");
     }
     emit sittingTextChanged();
 
     // print current walking vs leaning state.
     if (myAvatar->getIsInWalkingState()) {
-        _walkingText = "WalkingState: Walk";
+        _walkingText = QStringLiteral("WalkingState: Walk");
     } else {
-        _walkingText = "WalkingState: Lean";
+        _walkingText = QStringLiteral("WalkingState: Lean");
     }
     emit walkingTextChanged();
 
     // print current overrideJointText
     int overrideJointCount = myAvatar->getOverrideJointCount();
-    _overrideJointText = QString("Override Joint Count: %1").arg(overrideJointCount);
+    _overrideJointText = QStringLiteral("Override Joint Count: %1").arg(overrideJointCount);
     emit overrideJointTextChanged();
 
     // print current flowText
     bool flowActive = myAvatar->getFlowActive();
-    _flowText = QString("Flow: %1").arg(flowActive ? "enabled" : "disabled");
+    _flowText = QStringLiteral("Flow: %1").arg(flowActive ? "enabled" : "disabled");
     emit flowTextChanged();
 
     // print current networkGraphText
     bool networkGraphActive = myAvatar->getNetworkGraphActive();
-    _networkGraphText = QString("Network Graph: %1").arg(networkGraphActive ? "enabled" : "disabled");
+    _networkGraphText = QStringLiteral("Network Graph: %1").arg(networkGraphActive ? "enabled" : "disabled");
     emit networkGraphTextChanged();
 
     // update animation debug alpha values

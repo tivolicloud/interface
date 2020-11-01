@@ -495,14 +495,14 @@ void GLTextureTransferEngineDefault::processDemotes(size_t reliefRequired, const
 QString getTextureMemoryPressureModeString() {
     switch (_memoryPressureState) {
         case MemoryPressureState::Undersubscribed:
-            return "Undersubscribed";
+            return QStringLiteral("Undersubscribed");
 
         case MemoryPressureState::Transfer:
-            return "Transfer";
+            return QStringLiteral("Transfer");
 
         case MemoryPressureState::Idle:
-            return "Idle";
+            return QStringLiteral("Idle");
     }
     Q_UNREACHABLE();
-    return "Unknown";
+    return QStringLiteral("Unknown");
 }

@@ -80,7 +80,7 @@ public:
     NetworkMaterialResource() : Resource() {}
     NetworkMaterialResource(const QUrl& url);
 
-    QString getType() const override { return "NetworkMaterial"; }
+    QString getType() const override { return QStringLiteral("NetworkMaterial"); }
 
     virtual void downloadFinished(const QByteArray& data) override;
 

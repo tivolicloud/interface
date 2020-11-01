@@ -188,7 +188,7 @@ void MeshPartPayload::bindTransform(gpu::Batch& batch, RenderArgs::RenderMode re
 }
 
 void MeshPartPayload::render(RenderArgs* args) {
-    PerformanceTimer perfTimer("MeshPartPayload::render");
+    PerformanceTimer perfTimer(QStringLiteral("MeshPartPayload::render"));
 
     if (!args) {
         return;
@@ -221,7 +221,7 @@ void MeshPartPayload::render(RenderArgs* args) {
 
     // Draw!
     {
-        PerformanceTimer perfTimer("batch.drawIndexed()");
+        PerformanceTimer perfTimer(QStringLiteral("batch.drawIndexed()"));
         drawCall(batch);
     }
 
@@ -479,7 +479,7 @@ void ModelMeshPartPayload::bindTransform(gpu::Batch& batch, RenderArgs::RenderMo
 }
 
 void ModelMeshPartPayload::render(RenderArgs* args) {
-    PerformanceTimer perfTimer("ModelMeshPartPayload::render");
+    PerformanceTimer perfTimer(QStringLiteral("ModelMeshPartPayload::render"));
 
     if (!args || (args->_renderMode == RenderArgs::RenderMode::DEFAULT_RENDER_MODE && _cauterized)) {
         return;
@@ -520,7 +520,7 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
 
     // Draw!
     {
-        PerformanceTimer perfTimer("batch.drawIndexed()");
+        PerformanceTimer perfTimer(QStringLiteral("batch.drawIndexed()"));
         drawCall(batch);
     }
 

@@ -15,7 +15,7 @@
 #include <PathUtils.h>
 
 FadeEffect::FadeEffect() {
-    auto texturePath = PathUtils::resourcesPath() + "images/fadeMask.png";
+    auto texturePath = PathUtils::resourcesPath() + QStringLiteral("images/fadeMask.png");
     _maskMap = DependencyManager::get<TextureCache>()->getImageTexture(texturePath, image::TextureUsage::STRICT_TEXTURE);
 }
 

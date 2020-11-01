@@ -137,7 +137,7 @@ void RenderEventHandler::qmlRender(bool sceneGraphSync) {
     resize();
 
     if (_currentSize != QSize()) {
-        PROFILE_RANGE(render_qml_gl, "render");
+        PROFILE_RANGE(render_qml_gl, QStringLiteral("render"));
         GLuint texture = SharedObject::getTextureCache().acquireTexture(_currentSize);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
         glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);

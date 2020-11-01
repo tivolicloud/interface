@@ -21,8 +21,8 @@ void processMaterialMapping(MaterialMapping& materialMapping, const QJsonObject&
 
             // Old subsurface scattering mapping
             {
-                auto scatteringIter = mappingValue.find("scattering");
-                auto scatteringMapIter = mappingValue.find("scatteringMap");
+                auto scatteringIter = mappingValue.find(QStringLiteral("scattering"));
+                auto scatteringMapIter = mappingValue.find(QStringLiteral("scatteringMap"));
                 if (scatteringIter != mappingValue.end() || scatteringMapIter != mappingValue.end()) {
                     std::shared_ptr<NetworkMaterial> material = std::make_shared<NetworkMaterial>();
 
@@ -71,7 +71,7 @@ void ParseMaterialMappingTask::run(const baker::BakeContextPointer& context, con
     const auto& url = input.get1();
     MaterialMapping materialMapping;
 
-    auto mappingIter = mapping.find("materialMap");
+    auto mappingIter = mapping.find(QStringLiteral("materialMap"));
     if (mappingIter != mapping.end()) {
         QByteArray materialMapValue = mappingIter.value().toByteArray();
         QJsonDocument materialMapJSON = QJsonDocument::fromJson(materialMapValue);

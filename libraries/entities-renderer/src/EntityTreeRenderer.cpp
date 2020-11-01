@@ -366,8 +366,8 @@ void EntityTreeRenderer::shutdown() {
 }
 
 void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
-    PROFILE_RANGE_EX(simulation_physics, "AddToScene", 0xffff00ff, (uint64_t)_entitiesToAdd.size());
-    PerformanceTimer pt("add");
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("AddToScene"), 0xffff00ff, (uint64_t)_entitiesToAdd.size());
+    PerformanceTimer pt(QStringLiteral("add"));
     // Clear any expired entities
     // FIXME should be able to use std::remove_if, but it fails due to some
     // weird compilation error related to EntityItemID assignment operators
@@ -394,7 +394,7 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
             }
             if (entity->getSpaceIndex() == -1) {
                 std::unique_lock<std::mutex> lock(_spaceLock);
-                auto spaceIndex = _space->allocateID();
+                const auto spaceIndex = _space->allocateID();
                 workload::Sphere sphere(entity->getWorldPosition(), entity->getBoundingRadius());
                 workload::Transaction transaction;
                 SpatiallyNestablePointer nestable = std::static_pointer_cast<SpatiallyNestable>(entity);
@@ -404,8 +404,8 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
                 connect(entity.get(), &EntityItem::spaceUpdate, this, &EntityTreeRenderer::handleSpaceUpdate, Qt::QueuedConnection);
             }
 
-            auto entityID = entity->getEntityItemID();
-            auto renderable = EntityRenderer::addToScene(*this, entity, scene, transaction);
+            const auto entityID = entity->getEntityItemID();
+            const auto renderable = EntityRenderer::addToScene(*this, entity, scene, transaction);
             if (renderable) {
                 _entitiesInScene.insert({ entityID, renderable });
                 processedIds.insert(entityID);
@@ -422,8 +422,8 @@ void EntityTreeRenderer::addPendingEntities(const render::ScenePointer& scene, r
 }
 
 void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene, render::Transaction& transaction) {
-    PROFILE_RANGE_EX(simulation_physics, "ChangeInScene", 0xffff00ff, (uint64_t)_changedEntities.size());
-    PerformanceTimer pt("change");
+    PROFILE_RANGE_EX(simulation_physics, QStringLiteral("ChangeInScene"), 0xffff00ff, (uint64_t)_changedEntities.size());
+    PerformanceTimer pt(QStringLiteral("change"));
     std::unordered_set<EntityItemID> changedEntities;
     _changedEntitiesGuard.withWriteLock([&] {
         changedEntities.swap(_changedEntities);
@@ -434,41 +434,38 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
     _priorityRenderablesToUpdate.clear();
 
     {   // build list of renderables and priority renderables. 
-        PROFILE_RANGE_EX(simulation_physics, "CopyRenderables", 0xffff00ff, (uint64_t)changedEntities.size());
+        PROFILE_RANGE_EX(simulation_physics, QStringLiteral("CopyRenderables"), 0xffff00ff, (uint64_t)changedEntities.size());
+        
+        EntityPriority _entityPriority = EntityPriority();
         for (const EntityItemID& entityId : changedEntities) {
             // quint16 t = 0; 
             const EntityRendererPointer& renderable = renderableForEntityId(entityId);
+            if (!renderable) continue;
             if (getSceneIsReady()) {
                 // no priority optimization until everything's loaded
-                EntityItemPointer _entity = getEntity(entityId);
-            
-                if (!_entity || _entity->isDead()) continue;
-                if (!renderable) continue;
+                const EntityItemPointer _entity = getEntity(entityId);            
+                if (!_entity || _entity->isDead()) continue;           
 
-                EntityPriority _entityPriority = _entity->getEntityPriority();
+               _entityPriority = _entity->getEntityPriority();
 
                 if (_isEditMode || getBypassPrioritySorting()) {
                     _entityPriority = EntityPriority::AUTOMATIC;
                 }
 
                 // make sure avatar entities and shapes aren't somehow set to static
-                if (
-                    _entityPriority == EntityPriority::STATIC && 
-                    (_entity->isAvatarEntity() || _entity->isPrimitiveShapeType())
-                ) {
+                if (_entityPriority == EntityPriority::STATIC && 
+                    (_entity->isAvatarEntity() || _entity->isPrimitiveShapeType())) {
                     _entityPriority = EntityPriority::AUTOMATIC;
                 }
 
                 if (_entityPriority == EntityPriority::AUTOMATIC) { 
                     _renderablesToUpdate.insert(renderable);
-                } else if (_entityPriority == EntityPriority::PRIORITIZED) {
-                    _priorityRenderablesToUpdate.insert(renderable);
                 } else if (_entityPriority == EntityPriority::STATIC) {
                     _staticRenderablesToUpdate.insert(renderable); 
-                }
-             }
-             else 
-             {
+                } else if (_entityPriority == EntityPriority::PRIORITIZED) {
+                    _priorityRenderablesToUpdate.insert(renderable);
+                } 
+             } else {
                  _renderablesToUpdate.insert(renderable);
              }
             
@@ -492,9 +489,9 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
         }
 
         if (expectedUpdateCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET) { 
-            PROFILE_RANGE_EX(simulation_physics, "UpdateRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
+            PROFILE_RANGE_EX(simulation_physics, QStringLiteral("UpdateRenderables"), 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
 
-            uint64_t updateStart = usecTimestampNow();
+            const uint64_t updateStart = usecTimestampNow();
 
             for (const EntityRendererPointer& renderable : _renderablesToUpdate) {
                 assert(renderable);  // only valid renderables are added to _renderablesToUpdate
@@ -505,7 +502,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             }
 
             _prevNumEntityUpdates = _renderablesToUpdate.size();
-            size_t numRenderables = _prevNumEntityUpdates + 1;  // add one to avoid divide by zero
+            const size_t numRenderables = _prevNumEntityUpdates + 1;  // add one to avoid divide by zero
             _renderablesToUpdate.clear();
             float cost = (float)(usecTimestampNow() - updateStart) / (float)(numRenderables); // compute average per-renderable update cost
             const float BLEND = 0.1f;
@@ -535,24 +532,24 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
             PrioritySortUtil::PriorityQueue<SortableRenderer> sortedRenderables(views);
             sortedRenderables.reserve(_renderablesToUpdate.size());
             {
-                PROFILE_RANGE_EX(simulation_physics, "BuildSortedRenderables", 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
+                PROFILE_RANGE_EX(simulation_physics, QStringLiteral("BuildSortedRenderables"), 0xffff00ff, (uint64_t)_renderablesToUpdate.size());
                 for (const auto& renderable : _renderablesToUpdate) {
                     assert(renderable); // only valid renderables are added to _renderablesToUpdate
                     if (renderable) sortedRenderables.push(SortableRenderer(renderable));
                 }
             }
             {
-                PROFILE_RANGE_EX(simulation_physics, "SortAndUpdateRenderables", 0xffff00ff, sortedRenderables.size());
+                PROFILE_RANGE_EX(simulation_physics, QStringLiteral("SortAndUpdateRenderables"), 0xffff00ff, sortedRenderables.size());
 
                 // compute remaining time budget
                 const auto& sortedRenderablesVector = sortedRenderables.getSortedVector();
-                uint64_t updateStart = usecTimestampNow();
-                uint64_t sortCost = updateStart - sortStart;
+                const uint64_t updateStart = usecTimestampNow();
+                const uint64_t sortCost = updateStart - sortStart;
                 uint64_t timeBudget = MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET;
                 if (sortCost < MAX_UPDATE_RENDERABLES_TIME_BUDGET - MIN_SORTED_UPDATE_RENDERABLES_TIME_BUDGET) {
                     timeBudget = MAX_UPDATE_RENDERABLES_TIME_BUDGET - sortCost;
                 }
-                uint64_t expiry = updateStart + timeBudget;
+               const uint64_t expiry = updateStart + timeBudget;
 
                 // process the sorted renderables
                 for (const auto& sortedRenderable : sortedRenderablesVector) {
@@ -570,7 +567,7 @@ void EntityTreeRenderer::updateChangedEntities(const render::ScenePointer& scene
                 // compute average per-renderable update cost
                 _prevNumEntityUpdates = sortedRenderables.size() - _renderablesToUpdate.size();
                 size_t numUpdated = _prevNumEntityUpdates + 1; // add one to avoid divide by zero
-                float cost = (float)(usecTimestampNow() - updateStart) / (float)(numUpdated);
+                const float cost = (float)(usecTimestampNow() - updateStart) / (float)(numUpdated);
                 const float BLEND = 0.1f;
                 _avgRenderableUpdateCost = (1.0f - BLEND) * _avgRenderableUpdateCost + BLEND * cost;
             }
@@ -586,21 +583,21 @@ void EntityTreeRenderer::preUpdate() {
 }
 
 void EntityTreeRenderer::update(bool simulate) {
-    PROFILE_RANGE(simulation_physics, "ETR::update");
-    PerformanceTimer perfTimer("ETRupdate");
+    PROFILE_RANGE(simulation_physics, QStringLiteral("ETR::update"));
+    PerformanceTimer perfTimer(QStringLiteral("ETRupdate"));
     if (_tree && !_shuttingDown) {
         EntityTreePointer tree = std::static_pointer_cast<EntityTree>(_tree);
 
         // here we update _currentFrame and _lastAnimated and sync with the server properties.
         {
-            PerformanceTimer perfTimer("tree::update");
+            PerformanceTimer perfTimer(QStringLiteral("tree::update"));
             tree->update(simulate);
         }
 
         {  // Update the rendereable entities as needed
-            PROFILE_RANGE(simulation_physics, "Scene");
-            PerformanceTimer sceneTimer("scene");
-            auto scene = _viewState->getMain3DScene();
+            PROFILE_RANGE(simulation_physics, QStringLiteral("Scene"));
+            PerformanceTimer sceneTimer(QStringLiteral("scene"));
+            const auto scene = _viewState->getMain3DScene();
             if (scene) { // ->getTransactionQueueSize() > 0) {
                 render::Transaction transaction;
                 addPendingEntities(scene, transaction);
@@ -610,7 +607,7 @@ void EntityTreeRenderer::update(bool simulate) {
         }
 
         {
-            PerformanceTimer perfTimer("workload::transaction");
+            PerformanceTimer perfTimer(QStringLiteral("workload::transaction"));
             workload::Transaction spaceTransaction;
             {  // update proxies in the workload::Space
                 std::unique_lock<std::mutex> lock(_spaceLock);
@@ -651,17 +648,17 @@ void EntityTreeRenderer::handleSpaceUpdate(std::pair<int32_t, glm::vec4> proxyUp
 
 // Make a list of all the entities inside entity. 
 void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool hasCompoundShape) {
-    auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID)); // get a pointer to the zone entity item
-    glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
-    glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
+    const auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(entityID)); // get a pointer to the zone entity item
+    const glm::vec3 boundingBoxCorner = zoneItem->getWorldPosition() - (zoneItem->getScaledDimensions() * 0.5f); // get the bounding box corner of the zone
+    const glm::vec3 scaledDimensions = zoneItem->getScaledDimensions(); // get zone dimensions
     QVector<QUuid> result;
     // _flags[AVATARS] looks like we can also pick and perhaps derender outside avatars.  have a look 
     unsigned int searchFilter = PickFilter::getBitMask(PickFilter::FlagBit::DOMAIN_ENTITIES) |
                                 PickFilter::getBitMask(PickFilter::FlagBit::AVATAR_ENTITIES) |
                                 PickFilter::getBitMask(PickFilter::FlagBit::LOCAL_ENTITIES);
     _tree->withReadLock([&] {
-        auto entityTree = std::static_pointer_cast<EntityTree>(_tree);  // get pointer to tree
-        AABox box(boundingBoxCorner, scaledDimensions);
+        const auto entityTree = std::static_pointer_cast<EntityTree>(_tree);  // get pointer to tree
+        const AABox box(boundingBoxCorner, scaledDimensions);
         entityTree->evalEntitiesInBox(box, PickFilter(searchFilter), result); // find all the stuff in the bounding box and put in uuid vector
     });
 
@@ -669,7 +666,7 @@ void EntityTreeRenderer::updateZoneContentsLists(EntityItemID& entityID, bool ha
 }
 
 void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemID>& entitiesContainingAvatar) {
-    float radius = 0.01f; // for now, assume 0.01 meter radius, because we actually check the point inside later
+    const float radius = 0.01f; // for now, assume 0.01 meter radius, because we actually check the point inside later
     QVector<QUuid> entityIDs;
 
     // find the entities near us
@@ -685,13 +682,13 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
 
         // create a list of entities that actually contain the avatar's position
         for (auto& entityID : entityIDs) {
-            auto entity = entityTree->findEntityByID(entityID);
+            const auto entity = entityTree->findEntityByID(entityID);
             if (!entity) {
                 continue;
             }
 
-            auto isZone = entity->getType() == EntityTypes::Zone;
-            auto hasScript = !entity->getScript().isEmpty();
+            const auto isZone = entity->getType() == EntityTypes::Zone;
+            const auto hasScript = !entity->getScript().isEmpty();
 
             // only consider entities that are zones or have scripts, all other entities can
             // be ignored because they can't have events fired on them.
@@ -701,7 +698,7 @@ void EntityTreeRenderer::findBestZoneAndMaybeContainingEntities(QSet<EntityItemI
             // also, don't flag a scripted entity as containing the avatar until the script is loaded,
             // so that the script is awake in time to receive the "entityEntity" call (even if the entity is a zone).
             bool contains = false;
-            bool scriptHasLoaded = hasScript && entity->isScriptPreloadFinished();
+            const bool scriptHasLoaded = hasScript && entity->isScriptPreloadFinished();
             if (isZone || scriptHasLoaded) {
                 contains = entity->contains(_avatarPosition);
             }
@@ -738,11 +735,11 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
     _zoneCullSkipList.clear();    
 
     for (int i = 0; i < _zoneCullingStack.size(); ++i) { // stack of zones to determine where you are. pretty small list generally.
-        auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
+        const auto zoneItem = std::dynamic_pointer_cast<ZoneEntityItem>(getTree()->findEntityByEntityItemID(_zoneCullingStack[i])); // Get ref to each zone entity
        
         if (!zoneItem) continue;
         // to do -- make seond parameter true if compound shape mode! zoneItem->); // second param should be if compound shape is on
-        uint32_t _zoneMode = zoneItem->getZoneCullingMode();
+        const uint32_t _zoneMode = zoneItem->getZoneCullingMode();
     
         switch (_zoneMode) {
             case ZONE_CULLING_INHERIT:  // do nothing
@@ -778,9 +775,9 @@ void EntityTreeRenderer::evaluateZoneCullingStack() {
 }
 
 void EntityTreeRenderer::checkEnterLeaveEntities() {
-    PROFILE_RANGE(simulation_physics, "EnterLeave");
-    PerformanceTimer perfTimer("enterLeave");
-    auto now = usecTimestampNow();
+    PROFILE_RANGE(simulation_physics, QStringLiteral("EnterLeave"));
+    PerformanceTimer perfTimer(QStringLiteral("enterLeave"));
+    const auto now = usecTimestampNow();
 
     if (_tree && !_shuttingDown) {
         glm::vec3 avatarPosition = _viewState->getAvatarPosition();
@@ -789,8 +786,8 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
         // if some amount of time has elapsed since we last checked. We check the time
         // elapsed because zones or entities might have been created "around us" while we've
         // been stationary
-        auto movedEnough = glm::distance(avatarPosition, _avatarPosition) > ZONE_CHECK_DISTANCE;
-        auto enoughTimeElapsed = (now - _lastZoneCheck) > ZONE_CHECK_INTERVAL;
+        const auto movedEnough = glm::distance(avatarPosition, _avatarPosition) > ZONE_CHECK_DISTANCE;
+        const auto enoughTimeElapsed = (now - _lastZoneCheck) > ZONE_CHECK_INTERVAL ;
 
         if (_forceRecheckEntities || movedEnough || enoughTimeElapsed) {
             _avatarPosition = avatarPosition;
@@ -814,7 +811,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                         emit leaveEntity(entityID);
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "leaveEntity");
 
-                        auto entity = getEntity(entityID);
+                        const auto entity = getEntity(entityID);
                         // remove this zone ID from the zoneCullingStack
                         if (entity && entity->getType() == EntityTypes::Zone) {
                             // if it exists, remove it
@@ -832,7 +829,7 @@ void EntityTreeRenderer::checkEnterLeaveEntities() {
                         _entitiesScriptEngine->callEntityScriptMethod(entityID, "enterEntity");
 
                         // Add this ID to the zoneCullingStack
-                        auto entity = getEntity(entityID);
+                        const auto entity = getEntity(entityID);
                         if (entity && entity->getType() == EntityTypes::Zone) {     
                             if (_zoneCullingStack.indexOf(entityID) == -1) {
                                 _zoneCullingStack.append(entityID);
@@ -850,7 +847,7 @@ void EntityTreeRenderer::leaveDomainAndNonOwnedEntities() {
     if (_tree && !_shuttingDown) {
         QSet<EntityItemID> currentEntitiesInsideToSave;
         foreach (const EntityItemID& entityID, _currentEntitiesInside) {
-            EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
+            const EntityItemPointer entityItem = getTree()->findEntityByEntityItemID(entityID);
             if (entityItem && !(entityItem->isLocalEntity() || entityItem->isMyAvatarEntity())) {
                 emit leaveEntity(entityID);
                 if (_entitiesScriptEngine) {
@@ -983,7 +980,7 @@ QUuid EntityTreeRenderer::mousePressEvent(QMouseEvent* event) {
         return UNKNOWN_ENTITY_ID;
     }
 
-    PerformanceTimer perfTimer("EntityTreeRenderer::mousePressEvent");
+    PerformanceTimer perfTimer(QStringLiteral("EntityTreeRenderer::mousePressEvent"));
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
     PickRay ray = _viewState->computePickRay(event->x(), event->y());
     RayToEntityIntersectionResult rayPickResult = _getPrevRayPickResultOperator(_mouseRayPickID);
@@ -1017,7 +1014,7 @@ void EntityTreeRenderer::mouseDoublePressEvent(QMouseEvent* event) {
         return;
     }
 
-    PerformanceTimer perfTimer("EntityTreeRenderer::mouseDoublePressEvent");
+    PerformanceTimer perfTimer(QStringLiteral("EntityTreeRenderer::mouseDoublePressEvent"));
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
     PickRay ray = _viewState->computePickRay(event->x(), event->y());
     RayToEntityIntersectionResult rayPickResult = _getPrevRayPickResultOperator(_mouseRayPickID);
@@ -1048,7 +1045,7 @@ void EntityTreeRenderer::mouseReleaseEvent(QMouseEvent* event) {
         return;
     }
 
-    PerformanceTimer perfTimer("EntityTreeRenderer::mouseReleaseEvent");
+    PerformanceTimer perfTimer(QStringLiteral("EntityTreeRenderer::mouseReleaseEvent"));
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
     PickRay ray = _viewState->computePickRay(event->x(), event->y());
     RayToEntityIntersectionResult rayPickResult = _getPrevRayPickResultOperator(_mouseRayPickID);
@@ -1093,7 +1090,7 @@ void EntityTreeRenderer::mouseMoveEvent(QMouseEvent* event) {
         return;
     }
 
-    PerformanceTimer perfTimer("EntityTreeRenderer::mouseMoveEvent");
+    PerformanceTimer perfTimer(QStringLiteral("EntityTreeRenderer::mouseMoveEvent"));
     auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
     PickRay ray = _viewState->computePickRay(event->x(), event->y());
     RayToEntityIntersectionResult rayPickResult = _getPrevRayPickResultOperator(_mouseRayPickID);
@@ -1403,7 +1400,6 @@ void EntityTreeRenderer::updateZone(const EntityItemID& id) {
 
 bool EntityTreeRenderer::LayeredZones::clearDomainAndNonOwnedZones() {
     bool zonesChanged = false;
-
     auto it = begin();
     while (it != end()) {
         auto zone = it->zone.lock();

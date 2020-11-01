@@ -1552,9 +1552,9 @@ void RenderablePolyVoxEntityItem::setCollisionPoints(ShapeInfo::PointCollection 
     // include the registrationPoint in the shape key, because the offset is already
     // included in the points and the shapeManager wont know that the shape has changed.
     withWriteLock([&] {
-        QString shapeKey = QString(_voxelData.toBase64()) + "," +
-            QString::number(_registrationPoint.x) + "," +
-            QString::number(_registrationPoint.y) + "," +
+        QString shapeKey = QString(_voxelData.toBase64()) + QStringLiteral(",") +
+            QString::number(_registrationPoint.x) + QStringLiteral(",") +
+            QString::number(_registrationPoint.y) + QStringLiteral(",") +
             QString::number(_registrationPoint.z);
         _shapeInfo.setParams(SHAPE_TYPE_COMPOUND, collisionModelDimensions, shapeKey);
         _shapeInfo.setPointCollection(pointCollection);
@@ -1853,7 +1853,7 @@ void PolyVoxEntityRenderer::doRender(RenderArgs* args) {
     }
 
 
-    PerformanceTimer perfTimer("RenderablePolyVoxEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderablePolyVoxEntityItem::render"));
     gpu::Batch& batch = *args->_batch;
 
     Transform transform(_lastVoxelToWorldMatrix);

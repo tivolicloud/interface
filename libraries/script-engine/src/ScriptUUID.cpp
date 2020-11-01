@@ -39,7 +39,7 @@ bool ScriptUUID::isNull(const QUuid& id) {
 }
 
 void ScriptUUID::print(const QString& label, const QUuid& id) {
-    QString message = QString("%1 %2").arg(qPrintable(label));
+    QString message = QStringLiteral("%1 %2").arg(qPrintable(label));
     message = message.arg(id.toString());
     qCDebug(scriptengine) << message;
     if (ScriptEngine* scriptEngine = qobject_cast<ScriptEngine*>(engine())) {

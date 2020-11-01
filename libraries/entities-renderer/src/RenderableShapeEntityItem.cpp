@@ -235,7 +235,7 @@ void ShapeEntityRenderer::doRender(RenderArgs* args) {
     // win anyway, being so low-poly, we'll not
     // const bool hasChanged = evaluateEntityZoneCullState(_entity);
 
-    PerformanceTimer perfTimer("RenderableShapeEntityItem::render");
+    PerformanceTimer perfTimer(QStringLiteral("RenderableShapeEntityItem::render"));
     Q_ASSERT(args->_batch);
 
     gpu::Batch& batch = *args->_batch;
