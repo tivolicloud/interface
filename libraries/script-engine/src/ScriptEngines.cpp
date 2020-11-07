@@ -17,6 +17,7 @@
 #include <UserActivityLogger.h>
 #include <PathUtils.h>
 #include <shared/FileUtils.h>
+#include <NetworkingConstants.h>
 
 #include "ScriptEngine.h"
 #include "ScriptEngineLogging.h"
@@ -85,7 +86,7 @@ QUrl normalizeScriptURL(const QUrl& rawScriptURL) {
             fullNormal.setPath("/~/" + fullNormal.path().mid(defaultScriptLoc.path().size()));
         }
         return fullNormal;
-    } else if (rawScriptURL.scheme() == "http" || rawScriptURL.scheme() == "https" || rawScriptURL.scheme() == "atp") {
+    } else if (KNOWN_SCHEMES.contains(rawScriptURL.scheme(), Qt::CaseInsensitive)) {
         return rawScriptURL;
     } else {
         // don't accidently support gopher
@@ -101,11 +102,7 @@ QString expandScriptPath(const QString& rawPath) {
 
 QUrl expandScriptUrl(const QUrl& rawScriptURL) {
     QUrl normalizedScriptURL = normalizeScriptURL(rawScriptURL);
-    if (normalizedScriptURL.scheme() == "http" ||
-        normalizedScriptURL.scheme() == "https" ||
-        normalizedScriptURL.scheme() == "atp") {
-        return normalizedScriptURL;
-    } else if (normalizedScriptURL.scheme() == "file") {
+    if (normalizedScriptURL.scheme() == "file") {
         if (normalizedScriptURL.path().startsWith("/~/")) {
             QUrl url = normalizedScriptURL;
             url.setPath(expandScriptPath(url.path()));
@@ -127,6 +124,8 @@ QUrl expandScriptUrl(const QUrl& rawScriptURL) {
             }
             return url;
         }
+        return normalizedScriptURL;
+    } else if (KNOWN_SCHEMES.contains(normalizedScriptURL.scheme(), Qt::CaseInsensitive)) {
         return normalizedScriptURL;
     } else {
         return QUrl("");
@@ -499,12 +498,7 @@ ScriptEnginePointer ScriptEngines::loadScript(const QUrl& scriptFilename, bool i
         return result;
     }
     QUrl scriptUrl;
-    if (!scriptFilename.isValid() ||
-        (scriptFilename.scheme() != "http" &&
-         scriptFilename.scheme() != "https" &&
-         scriptFilename.scheme() != "atp" &&
-         scriptFilename.scheme() != "file" &&
-         scriptFilename.scheme() != "about")) {
+    if (!KNOWN_SCHEMES.contains(scriptFilename.scheme(), Qt::CaseInsensitive)) {
         // deal with a "url" like c:/something
         scriptUrl = normalizeScriptURL(QUrl::fromLocalFile(scriptFilename.toString()));
     } else {

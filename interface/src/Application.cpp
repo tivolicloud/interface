@@ -2261,30 +2261,50 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         startedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_STARTED).toInt();
         startedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_STARTED).toInt();
         startedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_STARTED).toInt();
-        startedRequests["total"] = startedRequests["atp"].toInt() + startedRequests["http"].toInt()
-            + startedRequests["file"].toInt();
+        startedRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_STARTED).toInt();
+        startedRequests["total"] = (
+            startedRequests["atp"].toInt() +
+            startedRequests["http"].toInt() +
+            startedRequests["file"].toInt() +
+            startedRequests["tea"].toInt()
+        );
         properties["started_requests"] = startedRequests;
 
         QJsonObject successfulRequests;
         successfulRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_SUCCESS).toInt();
         successfulRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_SUCCESS).toInt();
         successfulRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_SUCCESS).toInt();
-        successfulRequests["total"] = successfulRequests["atp"].toInt() + successfulRequests["http"].toInt()
-            + successfulRequests["file"].toInt();
+        successfulRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_SUCCESS).toInt();
+        successfulRequests["total"] = (
+            successfulRequests["atp"].toInt() +
+            successfulRequests["http"].toInt() +
+            successfulRequests["file"].toInt() +
+            successfulRequests["tea"].toInt()
+        );
         properties["successful_requests"] = successfulRequests;
 
         QJsonObject failedRequests;
         failedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_FAILED).toInt();
         failedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_FAILED).toInt();
         failedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_FAILED).toInt();
-        failedRequests["total"] = failedRequests["atp"].toInt() + failedRequests["http"].toInt()
-            + failedRequests["file"].toInt();
+        failedRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_FAILED).toInt();
+        failedRequests["total"] = (
+            failedRequests["atp"].toInt() +
+            failedRequests["http"].toInt() +
+            failedRequests["file"].toInt() +
+            failedRequests["tea"].toInt()
+        );
         properties["failed_requests"] = failedRequests;
 
         QJsonObject cacheRequests;
         cacheRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_CACHE).toInt();
         cacheRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_CACHE).toInt();
-        cacheRequests["total"] = cacheRequests["atp"].toInt() + cacheRequests["http"].toInt();
+        cacheRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_CACHE).toInt();
+        cacheRequests["total"] = (
+            cacheRequests["atp"].toInt() +
+            cacheRequests["http"].toInt() +
+            cacheRequests["tea"].toInt()
+        );
         properties["cache_requests"] = cacheRequests;
 
         QJsonObject atpMappingRequests;
@@ -2299,10 +2319,12 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         auto atpBytes = statTracker->getStat(STAT_ATP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto httpBytes = statTracker->getStat(STAT_HTTP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto fileBytes = statTracker->getStat(STAT_FILE_RESOURCE_TOTAL_BYTES).toLongLong();
+        auto teaBytes = statTracker->getStat(STAT_TEA_RESOURCE_TOTAL_BYTES).toLongLong();
         bytesDownloaded["atp"] = atpBytes;
         bytesDownloaded["http"] = httpBytes;
         bytesDownloaded["file"] = fileBytes;
-        bytesDownloaded["total"] = atpBytes + httpBytes + fileBytes;
+        bytesDownloaded["tea"] = teaBytes;
+        bytesDownloaded["total"] = atpBytes + httpBytes + fileBytes + teaBytes;
         properties["bytes_downloaded"] = bytesDownloaded;
 
         auto myAvatar = getMyAvatar();
