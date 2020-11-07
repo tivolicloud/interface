@@ -1296,7 +1296,7 @@ void NodeList::requestUsernameFromSessionID(const QUuid& nodeID) {
         usernameFromIDRequestPacket->write(nodeID.toRfc4122());
     }
 
-    qCDebug(networking) << "Sending packet to get username/fingerprint/admin status of node" << uuidStringWithoutCurlyBraces(nodeID);
+    // qCDebug(networking) << "Sending packet to get username/fingerprint/admin status of node" << uuidStringWithoutCurlyBraces(nodeID);
 
     sendPacket(std::move(usernameFromIDRequestPacket), _domainHandler.getSockAddr());
 }
@@ -1311,8 +1311,8 @@ void NodeList::processUsernameFromIDReply(QSharedPointer<ReceivedMessage> messag
     bool isAdmin;
     message->readPrimitive(&isAdmin);
 
-    qCDebug(networking) << "Got username" << username << "and machine fingerprint"
-        << machineFingerprintString << "for node" << nodeUUIDString << ". isAdmin:" << isAdmin;
+    // qCDebug(networking) << "Got username" << username << "and machine fingerprint"
+    //     << machineFingerprintString << "for node" << nodeUUIDString << ". isAdmin:" << isAdmin;
 
     emit usernameFromIDReply(nodeUUIDString, username, machineFingerprintString, isAdmin);
 }
