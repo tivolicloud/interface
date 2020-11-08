@@ -50,6 +50,8 @@ public:
     virtual void setProxyWindow(QWindow* proxyWindow) override;
     virtual QObject* getEventHandler() override;
 
+    gpu::TexturePointer getTexture() { return _texture; };
+
 protected:
     virtual bool needsRenderUpdate() const override;
     virtual bool needsRenderUpdateFromTypedEntity(const TypedEntityPointer& entity) const override;

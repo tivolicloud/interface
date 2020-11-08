@@ -9633,6 +9633,23 @@ void Application::setConfigFileURL(const QString& fileUrl) {
     DependencyManager::get<AccountManager>()->setConfigFileURL(fileUrl);
 }
 
+gpu::TexturePointer Application::getTextureForWebEntity(const QUuid& entityID) {
+    std::shared_ptr<render::entities::WebEntityRenderer> webEntity;
+
+    auto entities = getEntities();
+    auto entity = entities->getEntity(entityID);
+
+    if (entity && entity->isVisible() && entity->getType() == EntityTypes::Web) {
+        webEntity = std::static_pointer_cast<render::entities::WebEntityRenderer>(
+            entities->renderableForEntityId(entityID)
+        );
+        if (webEntity == nullptr) return nullptr;
+        return webEntity->getTexture();
+    } else {
+        return nullptr;
+    }
+}
+
 #if defined(Q_OS_ANDROID)
 void Application::beforeEnterBackground() {
     auto nodeList = DependencyManager::get<NodeList>();

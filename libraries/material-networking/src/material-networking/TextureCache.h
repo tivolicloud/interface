@@ -85,7 +85,7 @@ protected:
     Q_INVOKABLE void loadMetaContent(const QByteArray& content);
     Q_INVOKABLE void loadTextureContent(const QByteArray& content);
 
-    Q_INVOKABLE void setImage(gpu::TexturePointer texture, int originalWidth, int originalHeight);
+    Q_INVOKABLE void setImage(gpu::TexturePointer texture, int originalWidth, int originalHeight, bool doSetSize = true);
 
     Q_INVOKABLE void startRequestForNextMipLevel();
 
@@ -252,6 +252,9 @@ private:
 
     NetworkTexturePointer _hmdPreviewNetworkTexture;
     gpu::FramebufferPointer _hmdPreviewFramebuffer;
+
+    QMap<QUuid, NetworkTexturePointer> _entityNetworkTextures;
+    // QMap<QUuid, gpu::FramebufferPointer> _entityFramebuffer;
 };
 
 #endif // hifi_TextureCache_h

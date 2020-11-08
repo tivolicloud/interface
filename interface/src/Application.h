@@ -385,6 +385,8 @@ public:
     // used by preferences and HMDScriptingInterface...
     VisionSqueeze& getVisionSqueeze() { return _visionSqueeze; }
 
+    Q_INVOKABLE gpu::TexturePointer getTextureForWebEntity(const QUuid& entityID);
+
 signals:
     void svoImportRequested(const QString& url);
 

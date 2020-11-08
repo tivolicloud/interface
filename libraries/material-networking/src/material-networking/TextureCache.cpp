@@ -42,6 +42,7 @@
 #include <PathUtils.h>
 #include <Finally.h>
 #include <Profile.h>
+#include <gpu/Forward.h>
 
 #include "NetworkLogging.h"
 #include "MaterialNetworkingLogging.h"
@@ -467,8 +468,11 @@ void NetworkTexture::setExtra(void* extra) {
     }
 }
 
-void NetworkTexture::setImage(gpu::TexturePointer texture, int originalWidth,
-                              int originalHeight) {
+void NetworkTexture::setImage(
+    gpu::TexturePointer texture,
+    int originalWidth, int originalHeight,
+    bool doSetSize
+) {
     _originalWidth = originalWidth;
     _originalHeight = originalHeight;
 
@@ -478,7 +482,7 @@ void NetworkTexture::setImage(gpu::TexturePointer texture, int originalWidth,
     if (texture) {
         _width = texture->getWidth();
         _height = texture->getHeight();
-        setSize(texture->getStoredSize());
+        if (doSetSize) setSize(texture->getStoredSize());
         finishedLoading(true);
     } else {
         _width = _height = 0;
@@ -1320,6 +1324,7 @@ void ImageReader::read() {
 
 NetworkTexturePointer TextureCache::getResourceTexture(const QUrl& resourceTextureUrl) {
     gpu::TexturePointer texture;
+    
     if (resourceTextureUrl == SPECTATOR_CAMERA_FRAME_URL) {
         if (!_spectatorCameraNetworkTexture) {
             _spectatorCameraNetworkTexture.reset(new NetworkTexture(resourceTextureUrl, true));
@@ -1330,6 +1335,7 @@ NetworkTexturePointer TextureCache::getResourceTexture(const QUrl& resourceTextu
         updateSpectatorCameraNetworkTexture();
         return _spectatorCameraNetworkTexture;
     }
+
     // FIXME: Generalize this, DRY up this code
     if (resourceTextureUrl == HMD_PREVIEW_FRAME_URL) {
         if (!_hmdPreviewNetworkTexture) {
@@ -1342,6 +1348,39 @@ NetworkTexturePointer TextureCache::getResourceTexture(const QUrl& resourceTextu
                 _hmdPreviewNetworkTexture->setImage(texture, texture->getWidth(), texture->getHeight());
                 return _hmdPreviewNetworkTexture;
             }
+        }
+    }
+
+    if (resourceTextureUrl.host().toLower() == "entity") {
+        QUuid entityID = QUuid(resourceTextureUrl.path().remove(0, 1));
+        // check if valid quuid
+        qDebug() << "RESOURCE entityID" << entityID;
+
+        gpu::TexturePointer texture;
+        QMetaObject::invokeMethod(
+            qApp, "getTextureForWebEntity",
+            Qt::DirectConnection,
+            Q_RETURN_ARG(gpu::TexturePointer, texture),
+            Q_ARG(const QUuid&, entityID)
+        );
+
+        qDebug() << "RESOURCE texture" << texture.get();
+
+        if (texture != nullptr) {
+            auto _entityNetworkTexture = _entityNetworkTextures[entityID];
+            qDebug() << "RESOURCE _entityNetworkTexture" << _entityNetworkTexture;
+            if (_entityNetworkTexture.isNull()) {
+                _entityNetworkTexture.reset(new NetworkTexture(resourceTextureUrl, true));
+            }
+            qDebug() << "RESOURCE _entityNetworkTexture 2" << _entityNetworkTexture;
+            texture->setSource(resourceTextureUrl.toString().toStdString());
+
+            qDebug() << "RESOURCE semantic" << texture->getTexelFormat().getSemantic();
+
+            _entityNetworkTexture->setImage(texture, 512, 512, false);
+
+            qDebug() << "RESOURCE _entityNetworkTexture 3" << _entityNetworkTexture;
+            return _entityNetworkTexture;
         }
     }
 
