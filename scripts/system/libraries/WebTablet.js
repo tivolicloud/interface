@@ -50,7 +50,6 @@ var SUBMESH = 2;
 function calcSpawnInfo(hand, landscape) {
     var finalPosition;
 
-    var LEFT_HAND = Controller.Standard.LeftHand;
     var sensorToWorldScale = MyAvatar.sensorToWorldScale;
     var headPos = (HMD.active && (Camera.mode === "first person" || Camera.mode === "first person look at")) ? HMD.position : Camera.position;
     var headRot = Quat.cancelOutRollAndPitch((HMD.active && (Camera.mode === "first person" || Camera.mode === "first person look at")) ?
@@ -60,9 +59,11 @@ function calcSpawnInfo(hand, landscape) {
     var forward = Quat.getForward(headRot);
     var up = Quat.getUp(headRot);
 
-    var FORWARD_OFFSET = 0.5 * sensorToWorldScale;
-    var UP_OFFSET = -0.16 * sensorToWorldScale;
-    var RIGHT_OFFSET = ((hand === LEFT_HAND) ? -0.18 : 0.18) * sensorToWorldScale;
+    var FORWARD_OFFSET = 0.45 * sensorToWorldScale;
+    var UP_OFFSET = -0.25 * sensorToWorldScale;
+    // var LEFT_HAND = Controller.Standard.LeftHand;
+    // var RIGHT_OFFSET = ((hand === LEFT_HAND) ? -0.18 : 0.18) * sensorToWorldScale;
+    var RIGHT_OFFSET = 0; // if not centered, causes neck pain when opening too much
 
     var forwardPosition = Vec3.sum(headPos, Vec3.multiply(FORWARD_OFFSET, forward));
     var lateralPosition = Vec3.sum(forwardPosition, Vec3.multiply(RIGHT_OFFSET, right));
