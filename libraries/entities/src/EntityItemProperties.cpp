@@ -1234,7 +1234,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  *     speedSpread: 0.01,
  *     emitAcceleration: { x: 0, y: 0.02, z: 0 },
  *     polarFinish: Math.PI,
- *     textures: "https://content.highfidelity.com/DomainContent/production/Particles/wispy-smoke.png",
+ *     textures: "qrc:///images/wispy-smoke.png",
  *     particleRadius: 0.1,
  *     color: { red: 0, green: 255, blue: 0 },
  *     alphaFinish: 0,
