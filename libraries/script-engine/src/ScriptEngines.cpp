@@ -86,7 +86,7 @@ QUrl normalizeScriptURL(const QUrl& rawScriptURL) {
             fullNormal.setPath("/~/" + fullNormal.path().mid(defaultScriptLoc.path().size()));
         }
         return fullNormal;
-    } else if (KNOWN_SCHEMES.contains(rawScriptURL.scheme(), Qt::CaseInsensitive)) {
+    } else if (rawScriptURL.scheme() != "about" && KNOWN_SCHEMES.contains(rawScriptURL.scheme(), Qt::CaseInsensitive)) {
         return rawScriptURL;
     } else {
         // don't accidently support gopher
@@ -125,7 +125,7 @@ QUrl expandScriptUrl(const QUrl& rawScriptURL) {
             return url;
         }
         return normalizedScriptURL;
-    } else if (KNOWN_SCHEMES.contains(normalizedScriptURL.scheme(), Qt::CaseInsensitive)) {
+    } else if (normalizedScriptURL.scheme() != "about" && KNOWN_SCHEMES.contains(normalizedScriptURL.scheme(), Qt::CaseInsensitive)) {
         return normalizedScriptURL;
     } else {
         return QUrl("");
