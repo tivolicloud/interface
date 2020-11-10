@@ -113,6 +113,21 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	fieldOfView: number;
+	readonly defaultFieldOfView = 45;
+	onFieldOfViewChange(e: MatSliderChange) {
+		this.script.rpc("Render.fieldOfView", e.value).subscribe(() => {
+			this.refresh();
+		});
+	}
+	restoreFieldOfView() {
+		this.script
+			.rpc("Render.fieldOfView", this.defaultFieldOfView)
+			.subscribe(() => {
+				this.refresh();
+			});
+	}
+
 	refresh() {
 		this.script
 			.rpc<number>("Performance.performancePreset")
@@ -157,6 +172,9 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			.subscribe(nametags => {
 				this.nametags = nametags;
 			});
+		this.script.rpc<number>("Render.fieldOfView").subscribe(fieldOfView => {
+			this.fieldOfView = fieldOfView;
+		});
 	}
 
 	ngOnInit() {
