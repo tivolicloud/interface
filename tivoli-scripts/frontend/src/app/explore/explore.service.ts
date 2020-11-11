@@ -54,14 +54,18 @@ export class ExploreService {
 		private scriptService: ScriptService,
 		private http: HttpClient,
 	) {
-		this.scriptService.event$.subscribe(({ key, value }) => {
-			switch (key) {
-				case "getCurrentProtocol":
-					this.protocol = value;
-					this.loadWorlds();
-					break;
-			}
-		});
+		if ((window as any).qt != null) {
+			this.scriptService.event$.subscribe(({ key, value }) => {
+				switch (key) {
+					case "getCurrentProtocol":
+						this.protocol = value;
+						this.loadWorlds();
+						break;
+				}
+			});
+		} else {
+			this.loadWorlds();
+		}
 
 		this.scriptService.emitEvent("explore", "getCurrentProtocol");
 		this.loadFriends();

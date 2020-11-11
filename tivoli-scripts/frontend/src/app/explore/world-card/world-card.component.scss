@@ -16,17 +16,25 @@
 		cursor: pointer;
 		overflow: hidden;
 
-		> .incompatible {
+		> .banner {
 			position: absolute;
 			margin: auto;
 			top: 0;
 			left: 0;
 			right: 0;
-			background-color: #f44336;
 			color: #fff;
 			text-align: center;
-			padding: 4px 0;
+			height: 28px;
 			font-weight: 500;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.material-icons {
+				width: 22px;
+				height: 22px;
+				font-size: 22px;
+			}
 		}
 
 		> .label {
