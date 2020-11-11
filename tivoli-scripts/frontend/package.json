@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"scripts": {
 		"start": "ng build --watch",
 		"build": "ng build --prod"
