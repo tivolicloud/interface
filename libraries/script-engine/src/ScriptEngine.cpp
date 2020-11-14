@@ -400,6 +400,38 @@ void ScriptEngine::runInThread() {
     workerThread->setObjectName(QString("js:") + getFilename().replace("about:",""));
     moveToThread(workerThread);
 
+    if (QProcessEnvironment::systemEnvironment().contains("TIVOLI_SCRIPT_DEBUG")) {
+        static QMenuBar* menuBar { nullptr };
+        static QMenu* scriptDebugMenu { nullptr };
+        static size_t scriptMenuCount { 0 };
+    
+        if (!scriptDebugMenu) {
+            for (auto window : qApp->topLevelWidgets()) {
+                auto mainWindow = qobject_cast<QMainWindow*>(window);
+                if (mainWindow) {
+                    menuBar = mainWindow->menuBar();
+                    break;
+                }
+            }
+            if (menuBar) {
+                scriptDebugMenu = menuBar->addMenu("Script Debug");
+            }
+        }
+
+        _debugger = new QScriptEngineDebugger(this);
+        _debugger->attachTo(this);
+
+        QMenu* parentMenu = scriptDebugMenu;
+        QMenu* scriptMenu { nullptr };
+        if (parentMenu) {
+            ++scriptMenuCount;
+            scriptMenu = parentMenu->addMenu(_fileNameString);
+            scriptMenu->addMenu(_debugger->createStandardMenu(qApp->activeWindow()));
+        } else {
+            qWarning() << "Unable to add script debug menu";
+        }
+    }
+
     // NOTE: If you connect any essential signals for proper shutdown or cleanup of
     // the script engine, make sure to add code to "reconnect" them to the
     // disconnectNonEssentialSignals() method

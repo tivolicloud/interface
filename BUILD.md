@@ -95,6 +95,7 @@ When working on QML, you'll need a way to easily see the changes you're making.
 ## Other runtime environment variables
 
 -   `HIFI_SHOW_DEVELOPER_CRASH_MENU` - enables menu to test crashing
+-   `TIVOLI_SCRIPT_DEBUG` - adds "Script Debug" menu for all running scripts
 
 ## Optional components
 
