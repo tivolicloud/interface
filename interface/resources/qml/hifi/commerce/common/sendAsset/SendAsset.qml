@@ -69,7 +69,7 @@ Item {
     Connections {
         target: Commerce;
 
-        function onBalanceResult(): {
+        function onBalanceResult() {
             balanceText.text = result.data.balance;
             sendButton.enabled = true;
         }
