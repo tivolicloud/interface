@@ -68,12 +68,14 @@ endif()
                 self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-macos.tar.gz'
             elif system == 'Linux':
                 issue = open("/etc/issue", "r").read()
-                if issue.startswith("Ubuntu 18.04"):
+                if issue.startswith("Ubuntu 16.04"):
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.1-ubuntu-16.04.tar.gz'
+                elif issue.startswith("Ubuntu 18.04"):
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-ubuntu-18.04.tar.gz'
                 elif issue.startswith("Ubuntu 20.04"):
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-ubuntu-20.04.tar.gz'
                 elif issue.startswith("Arch Linux"):
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.0-arch-linux.tar.gz'
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.1-arch-linux.tar.gz'
                 else:
                     raise Exception('Unsupported Linux version')
             else:
