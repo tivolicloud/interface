@@ -49,6 +49,7 @@ private:
     std::shared_ptr<graphics::ProceduralMaterial> _material { std::make_shared<graphics::ProceduralMaterial>() };
     glm::vec3 _color { NAN };
     float _alpha { NAN };
+    BillboardMode _billboardMode { BillboardMode::NONE };
 
     glm::vec3 _position;
     glm::vec3 _dimensions;
