@@ -32,8 +32,8 @@ rm -rf cmake-3.14.2 cmake-3.14.2.tar.gz && \
 # mv ninja /usr/bin/ninja && \
 # cd .. && \
 \
-# install nodejs 12
-curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+# install nodejs 14
+curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
 apt-get install -y nodejs
 # npm i -g @sentry/cli
 
