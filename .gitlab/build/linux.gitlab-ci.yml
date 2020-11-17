@@ -4,7 +4,7 @@ linux build image:
 
     only:
         refs:
-            - master
+            - master@tivolicloud/interface
         changes:
             - .gitlab/build/linux.Dockerfile
 
