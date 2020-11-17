@@ -9,7 +9,6 @@ interface macos:
         BUILD_TYPE: Release
         RELEASE_TYPE: PRODUCTION
         STABLE_BUILD: 1
-
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
         OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1h
@@ -17,7 +16,6 @@ interface macos:
         OSX_SDK: "10.11"
 
         CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
-
         # SENTRY_AUTH_TOKEN
         SENTRY_ORG: tivolicloud
 
@@ -37,6 +35,55 @@ interface macos:
 
         # TODO: source code doesn't show
         - sentry-cli upload-dif --include-sources -p interface interface
+
+        # incase it isnt written
+        - cd interface/interface.app/Contents/Resources
+        - echo "[Paths]" > qt.conf
+        - echo "Plugins = PlugIns" >> qt.conf
+        - echo "Imports = Resources/qml" >> qt.conf
+        - echo "Qml2Imports = Resources/qml" >> qt.conf
+
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/interface/interface.app
+
+interface macos merge request:
+    stage: build
+    tags:
+        - macos
+
+    extends: .merge_request
+
+    variables:
+        BUILD_TYPE: Release
+        RELEASE_TYPE: PR
+        RELEASE_NUMBER: $CI_COMMIT_SHORT_SHA
+
+        OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1h
+        OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
+        OSX_SDK: "10.11"
+
+        # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+        # SENTRY_AUTH_TOKEN
+        # SENTRY_ORG: tivolicloud
+
+    script:
+        - mkdir -p build
+        - cd build
+
+        # TODO: update cmake to use env vars
+        - cmake
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
+          -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
+          -G Ninja .. # -G Xcode ..
+
+        # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
+        - cmake --build . --target interface --config $BUILD_TYPE
+
+        # TODO: source code doesn't show
+        # - sentry-cli upload-dif --include-sources -p interface interface
 
         # incase it isnt written
         - cd interface/interface.app/Contents/Resources
