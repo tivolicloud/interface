@@ -99,7 +99,7 @@ interface windows merge request:
         - del *.pdb
 
     artifacts:
-        expire_in: 1 day
+        expire_in: 7 days
         paths:
             - build/interface/Release
 

@@ -115,7 +115,7 @@ interface linux merge request:
         - python3 ../tools/make_appdir.py interface .
 
     artifacts:
-        expire_in: 1 day
+        expire_in: 7 days
         paths:
             - build/interface/interface.AppDir
 

@@ -93,7 +93,7 @@ interface macos merge request:
         - echo "Qml2Imports = Resources/qml" >> qt.conf
 
     artifacts:
-        expire_in: 1 day
+        expire_in: 7 days
         paths:
             - build/interface/interface.app
 
