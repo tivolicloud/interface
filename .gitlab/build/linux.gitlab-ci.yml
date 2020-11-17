@@ -56,7 +56,6 @@ all linux:
         BUILD_TYPE: Release
         RELEASE_TYPE: PRODUCTION
         STABLE_BUILD: 1
-
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
@@ -88,6 +87,38 @@ all linux:
             - build/server.AppDir
             - build/ice-server.AppDir
 
+interface linux merge request:
+    stage: build
+    image: $CI_REGISTRY_IMAGE/build:linux
+
+    extends: .merge_request
+
+    variables:
+        BUILD_TYPE: Release
+        RELEASE_TYPE: PR
+        RELEASE_NUMBER: $CI_COMMIT_SHORT_SHA
+
+        # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+        # SENTRY_AUTH_TOKEN
+        # SENTRY_ORG: tivolicloud
+
+    script:
+        - mkdir -p build
+        - cd build
+        - /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja
+        - cmake --build . --config $BUILD_TYPE --target interface
+
+        # upload symbols and sources to sentry
+        # - sentry-cli upload-dif --include-sources -p interface interface
+
+        # make AppDirs
+        - python3 ../tools/make_appdir.py interface .
+
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - build/interface/interface.AppDir
+
 server linux arm64:
     stage: build
     image: $CI_REGISTRY_IMAGE/build:linux-arm64
@@ -100,7 +131,6 @@ server linux arm64:
         BUILD_TYPE: Release
         RELEASE_TYPE: PRODUCTION
         STABLE_BUILD: 1
-
         RELEASE_NUMBER: $CI_COMMIT_TAG
 
     script:
