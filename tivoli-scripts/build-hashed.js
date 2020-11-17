@@ -16,6 +16,7 @@ const run = (command, args, cwd) => {
 		const proc = child_process.spawn(command, args, {
 			cwd,
 			env: process.env,
+			shell: process.platform == "win32",
 		});
 		proc.stdout.pipe(process.stdout);
 		proc.stderr.pipe(process.stderr);
