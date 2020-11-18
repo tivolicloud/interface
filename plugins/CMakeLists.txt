@@ -69,5 +69,5 @@ else()
 endif()
 
 # example plugins
-# set(DIR "example-plugin")
+# set(DIR "js-api-example-plugin")
 # add_subdirectory(${DIR})
