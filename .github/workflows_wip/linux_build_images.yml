@@ -1,11 +1,12 @@
 name: Linux build images
 on:
     push:
-        # paths:
-        #     - cmake/ports/**
-        #     - docker/linux.Dockerfile
-        # branches:
-        #     - master
+        paths:
+            - docker/linux.Dockerfile
+            - cmake/ports/**
+            - hifi_qt.py
+        branches:
+            - master
 jobs:
     build:
         runs-on: ubuntu-latest
