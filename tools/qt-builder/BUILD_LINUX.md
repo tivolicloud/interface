@@ -17,7 +17,7 @@ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```bash
 grep '^deb ' /etc/apt/sources.list | perl -pe 's/deb /deb-src /' >> /etc/apt/sources.list
 apt-get update -y
-apt-get build-dep -y qt5-default
+DEBIAN_FRONTEND=noninteractive apt-get build-dep -y qt5-default
 DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential curl perl python git '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev flex bison gperf libicu-dev libxslt-dev ruby libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libproxy-dev xinput libopenal-dev ninja-build libre2-dev libminizip-dev libevent-dev libprotobuf-dev liblcms2-dev libharfbuzz-dev
 # if nodejs not installed
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
@@ -58,7 +58,7 @@ Guide from https://cloudwafer.com/blog/installing-openssl-on-ubuntu-16-04-18-04
 There might be too many packages
 
 ```bash
-pacman -Syu --noconfirm git libxcb xcb-proto xcb-util xcb-util-cursor xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm libxi base-devel gperf python python2 mesa xf86-video-vesa xf86-video-intel vulkan-intel xf86-input-libinput libxcursor libxcomposite libxdamage libxrandr xorg-xrandr libxtst alsa-lib eglexternalplatform libglvnd gtk3 libinput tslib libxkbcommon libxkbcommon-x11 pulseaudio pulseaudio-alsa gstreamer nss re2 icu libwebp opus ffmpeg libvpx snappy minizip libevent jsoncpp protobuf libxml2 libxslt ninja gn ccache double-conversion libproxy openssl md4c
+pacman -Syu --noconfirm git libxcb xcb-proto xcb-util xcb-util-cursor xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm libxi base-devel gperf python python2 mesa xf86-video-vesa xf86-video-intel vulkan-intel xf86-input-libinput libxcursor libxcomposite libxdamage libxrandr xorg-xrandr libxtst alsa-lib eglexternalplatform libglvnd gtk3 libinput tslib libxkbcommon libxkbcommon-x11 pulseaudio pulseaudio-alsa gstreamer nss re2 icu libwebp opus ffmpeg libvpx snappy minizip libevent jsoncpp protobuf libxml2 libxslt ninja gn ccache double-conversion libproxy openssl md4c nodejs npm wayland
 ```
 
 ### More at [old readme](README.old.md)
