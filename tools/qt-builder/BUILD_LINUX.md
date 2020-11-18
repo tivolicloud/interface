@@ -12,7 +12,7 @@ If you want to run a Docker ARM image on x86_64 hardware, run this once on the h
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```
 
-### Ubuntu 16.04+
+### Ubuntu 16.04 to 20.04
 
 ```bash
 grep '^deb ' /etc/apt/sources.list | perl -pe 's/deb /deb-src /' >> /etc/apt/sources.list
