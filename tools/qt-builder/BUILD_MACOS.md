@@ -1,4 +1,4 @@
-# Building Qt 5.15.0 for macOS
+# Building Qt 5.15.1 for macOS
 
 ## Install depenencies
 
@@ -14,29 +14,33 @@ sudo xcode-select --switch /Applications/Xcode.app
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.0 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.1 --single-branch
 ```
 
 ### Apply patches:
 
 ```bash
-cp -r patches qt5
 cd qt5
 
-git apply --ignore-space-change --ignore-whitespace patches/mac-web-video.patch
-git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
-git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
+git apply --ignore-space-change --ignore-whitespace ../patches/mac-web-video.patch
+git apply --ignore-space-change --ignore-whitespace ../patches/chromium-override-audio-output-permission.patch
 
 cd ..
 ```
 
 ### Configure and build:
 
+You might have to add this in the configure command after `-openssl`:
+
+```bash
+OPENSSL_PREFIX="/usr/local/opt/openssl@1.1"
+```
+
 ```bash
 mkdir qt5-install qt5-build
 cd qt5-build
 
-../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
+../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -openssl -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtquick3d -skip qtlocation -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
 
 make -j$(sysctl -n hw.logicalcpu)
 make install -j$(sysctl -n hw.logicalcpu)
@@ -60,7 +64,7 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15.0-macos.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.1-macos.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.
