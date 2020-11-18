@@ -42,12 +42,9 @@ apt-get install -y nodejs
 RUN \
 # download interface from master
 cd / && \
-# curl -O https://git.tivolicloud.com/tivolicloud/interface/-/archive/master/interface-master.tar.gz && \
-# tar -xf interface-master.tar.gz && \
-# rm -f interface-master.tar.gz && \
-wget https://github.com/tivolicloud/interface/archive/master.zip && \
-unzip -q master.zip && \
-rm -rf master.zip && \
+curl -O https://git.tivolicloud.com/tivolicloud/interface/-/archive/master/interface-master.tar.gz && \
+tar -xf interface-master.tar.gz && \
+rm -f interface-master.tar.gz && \
 # remove all but cmake and *.py
 mkdir /interface && \
 cp -r /interface-master/cmake /interface && \
