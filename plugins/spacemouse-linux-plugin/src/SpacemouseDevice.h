@@ -50,7 +50,7 @@ public:
 	glm::vec3 currentPosition;
     glm::vec3 currentRotation;
 
-	void setButton(int lastButtonState);
+	void setButton(int button, bool pressed);
     void handleAxisEvent();
 };
 

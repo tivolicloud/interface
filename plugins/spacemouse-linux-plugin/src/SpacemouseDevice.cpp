@@ -44,7 +44,7 @@ controller::Input::NamedVector SpacemouseDevice::getAvailableInputs() const {
     static const Input::NamedVector availableInputs{
         makePair(BUTTON_1, "LeftButton"),
         makePair(BUTTON_2, "RightButton"),
-        //makePair(BUTTON_3, "BothButtons"),
+        // makePair(BUTTON_3, "BothButtons"),
         makePair(TRANSLATE_X, "TranslateX"),
         makePair(TRANSLATE_Y, "TranslateY"),
         makePair(TRANSLATE_Z, "TranslateZ"),
@@ -70,9 +70,12 @@ void SpacemouseDevice::focusOutEvent() {
 	_buttonPressedMap.clear();
 };
 
-void SpacemouseDevice::setButton(int lastButtonState) {
-	_buttonPressedMap.clear();
-	_buttonPressedMap.insert(lastButtonState);
+void SpacemouseDevice::setButton(int button, bool pressed) {
+	if (pressed) {
+		_buttonPressedMap.insert(button + 1);
+	} else {
+		_buttonPressedMap.erase(button + 1);
+	}
 }
 
 void SpacemouseDevice::handleAxisEvent() {

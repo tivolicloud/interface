@@ -44,7 +44,7 @@ void SpacemouseManager::pluginFocusOutEvent() {
 
 void SpacemouseManager::pluginUpdate(float deltaTime, const controller::InputCalibrationData& inputCalibrationData) {
     if (spnav_poll_event(&sev)) {
-		if(sev.type == SPNAV_EVENT_MOTION) {
+		if (sev.type == SPNAV_EVENT_MOTION) {
             instance->currentPosition.x = sev.motion.x;
             instance->currentPosition.y = sev.motion.y;
             instance->currentPosition.z = sev.motion.z;
@@ -52,11 +52,8 @@ void SpacemouseManager::pluginUpdate(float deltaTime, const controller::InputCal
             instance->currentRotation.y = sev.motion.ry;
             instance->currentRotation.z = sev.motion.rz;
             instance->handleAxisEvent();
-		} else { // SPNAV_EVENT_BUTTON
-			// printf("got button %s event b(%d)\n", sev.button.press ? "press" : "release", sev.button.bnum);
-            // if (sev.button.press == "press") {
-            //     instance->setButton(sev.button.bnum);
-            // }
+		} else if (sev.type == SPNAV_EVENT_BUTTON) {
+            instance->setButton(sev.button.bnum, sev.button.press);
 		}
 	}
 }

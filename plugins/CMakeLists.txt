@@ -26,8 +26,12 @@ if (NOT SERVER_ONLY AND NOT ANDROID)
     add_subdirectory(${DIR})
   endif()
   
+  # hopefully we can eventually rewrite windows and macos
   set(DIR "spacemouse-plugin")
   add_subdirectory(${DIR})
+  set(DIR "spacemouse-linux-plugin")
+  add_subdirectory(${DIR})
+
   set(DIR "neuron-plugin")
   add_subdirectory(${DIR})
   set(DIR "kinect-plugin")
