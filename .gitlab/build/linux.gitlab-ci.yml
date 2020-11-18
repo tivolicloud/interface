@@ -7,6 +7,8 @@ linux build image:
             - master@tivolicloud/interface
         changes:
             - docker/linux.Dockerfile
+            - cmake/ports/**/*
+            - hifi_qt.py
 
     variables:
         DOCKER_TLS_CERTDIR: ""
@@ -31,7 +33,9 @@ linux arm64 build image:
         refs:
             - master@tivolicloud/interface
         changes:
-            - docker/linux-arm64.Dockerfile
+            - docker/linux.Dockerfile
+            - cmake/ports/**/*
+            - hifi_qt.py
 
     variables:
         DOCKER_TLS_CERTDIR: ""
