@@ -1,4 +1,4 @@
-# Building Qt 5.15.0 for Windows
+# Building Qt 5.15.1 for Windows
 
 ## Install depenencies from [old readme](README.old.md). Make sure to install Visual Studio 2019 instead! (I recommend using [Chocolatey](https://chocolatey.org))
 
@@ -7,21 +7,16 @@
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.0 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.1 --single-branch
 ```
 
 ### Apply patches:
 
-No patches necessary!
-
 ```bash
-xcopy /E /I C:\path\to\interface\tools\qt-builder\patches qt5\patches
 cd qt5
 
-git apply --ignore-space-change --ignore-whitespace patches/chromium-missing-import.patch
-git apply --ignore-space-change --ignore-whitespace patches/qimage-scaled-multithread-fix.patch
-git apply --ignore-space-change --ignore-whitespace patches/chromium-override-audio-output-permission.patch
-git apply --ignore-space-change --ignore-whitespace patches/chromium-rtc-use-h264-with-msvc.patch
+git apply --ignore-space-change --ignore-whitespace ../patches/chromium-override-audio-output-permission.patch
+git apply --ignore-space-change --ignore-whitespace ../patches/chromium-rtc-use-h264-with-msvc.patch
 
 cd ..
 ```
@@ -34,7 +29,7 @@ cd qt5-build
 
 C:\path\to\interface\tools\qt-builder\qt5vars.bat
 
-..\qt5\configure -force-debug-info -release -opensource -confirm-license -recheck-all -opengl desktop -platform win32-msvc -openssl-linked OPENSSL_PREFIX="%TIVOLI_VCPKG_BASE_VERSION%\installed\x64-windows-release" -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtlocation -skip qtwayland -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -prefix ..\qt5-install
+..\qt5\configure -force-debug-info -release -opensource -confirm-license -recheck-all -opengl desktop -platform win32-msvc -openssl-linked OPENSSL_PREFIX="%TIVOLI_VCPKG_BASE_VERSION%\installed\x64-windows-release" -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtquick3d -skip qtlocation -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -prefix ..\qt5-install
 
 jom
 jom install
@@ -58,7 +53,7 @@ cd ..
 ### Archiving (in WSL):
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15.0-windows.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.1-windows.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.

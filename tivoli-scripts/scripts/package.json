@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"scripts": {
 		"files": "copyfiles -u 1 src/assets/**/* ../dist/tivoli",
 		"minify": "terser --config-file terser.json ../dist/tivoli.js -o ../dist/tivoli.js",

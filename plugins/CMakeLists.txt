@@ -64,10 +64,10 @@ set(DIR "tea-protocol-plugin")
 if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${DIR}")
   add_subdirectory(${DIR})
 else()
-  # set(DIR "teaProtocolPrebuilt")
-  # add_subdirectory(${DIR})
+  set(DIR "tea-protocol-plugin-prebuilt")
+  add_subdirectory(${DIR})
 endif()
 
 # example plugins
-# set(DIR "example-plugin")
+# set(DIR "js-api-example-plugin")
 # add_subdirectory(${DIR})

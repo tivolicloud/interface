@@ -1,20 +1,20 @@
-set(TARGET_NAME teaProtocolPrebuilt)
+set(TARGET_NAME tea-protocol-plugin-prebuilt)
 
 add_custom_target(${TARGET_NAME})
 
-# download teaProtocol here
+# download tea-protocol-plugin
 
 set(TEA_PROTOCOL_PLUGIN_VERSION "1.0.0")
 
-set(TEA_PROTOCOL_EXTRACTED_PATH "${CMAKE_CURRENT_SOURCE_DIR}/teaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}")
+set(TEA_PROTOCOL_EXTRACTED_PATH "${CMAKE_CURRENT_SOURCE_DIR}/tea-protocol-plugin-${TEA_PROTOCOL_PLUGIN_VERSION}")
 
 if(NOT EXISTS ${TEA_PROTOCOL_EXTRACTED_PATH})
-	message(STATUS "Downloading \"Tea Protocol ${TEA_PROTOCOL_PLUGIN_VERSION}\" plugin")
+	message(STATUS "Downloading \"Tea protocol ${TEA_PROTOCOL_PLUGIN_VERSION}\" plugin")
 
-	set(TEA_PROTOCOL_DOWNLOAD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/teaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}.tar.gz")
+	set(TEA_PROTOCOL_DOWNLOAD_PATH "${TEA_PROTOCOL_EXTRACTED_PATH}.zip")
 
 	file(DOWNLOAD
-		https://cdn.tivolicloud.com/dependencies/teaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}.tar.gz 
+		https://cdn.tivolicloud.com/dependencies/tea-protocol-plugin-${TEA_PROTOCOL_PLUGIN_VERSION}.zip
 		${TEA_PROTOCOL_DOWNLOAD_PATH}
 		TIMEOUT 60
 		TLS_VERIFY ON
@@ -53,14 +53,20 @@ else()
 endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-	set(TEA_PROTOCOL_OS_PATH "linux/libteaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}.so")
+	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+		set(TEA_PROTOCOL_OS_PATH "linux-arm64/libtivoli-tea-protocol-plugin.so")
+	else ()
+		set(TEA_PROTOCOL_OS_PATH "linux/libtivoli-tea-protocol-plugin.so")
+	endif ()
 elseif (APPLE)
-	set(TEA_PROTOCOL_OS_PATH "macos/libteaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}.dylib")
+	set(TEA_PROTOCOL_OS_PATH "macos/libtivoli-tea-protocol-plugin.dylib")
 else()
-	set(TEA_PROTOCOL_OS_PATH "windows/teaProtocol-${TEA_PROTOCOL_PLUGIN_VERSION}.dll")
+	set(TEA_PROTOCOL_OS_PATH "windows/tivoli-tea-protocol-plugin.dll")
 endif()
 
 set(TEA_PROTOCOL_PREBUILT_EXTRACTED_OS_PATH "${TEA_PROTOCOL_EXTRACTED_PATH}/${TEA_PROTOCOL_OS_PATH}")
+
+message(STATUS "Using \"${TEA_PROTOCOL_OS_PATH}\"")
 
 # create the destination for the client plugin binaries
 add_custom_command(

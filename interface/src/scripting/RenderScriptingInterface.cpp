@@ -32,6 +32,7 @@ void RenderScriptingInterface::loadSettings() {
         _viewportResolutionScale = (_viewportResolutionScaleSetting.get());
         _nametagsEnabled = (_nametagsEnabledSetting.get());
         // _maximumTextureMemory = (_maximumTextureMemorySetting.get()); // handled by gpu::Texture
+        _fieldOfView = (_fieldOfViewSetting.get());
     });
     forceRenderMethod((RenderMethod)_renderMethod);
     forceShadowsEnabled(_shadowsEnabled);
@@ -40,6 +41,7 @@ void RenderScriptingInterface::loadSettings() {
     forceViewportResolutionScale(_viewportResolutionScale);
     forceNametagsEnabled(_nametagsEnabled);
     forceMaximumTextureMemory(_maximumTextureMemorySetting.get());
+    forceFieldOfView(_fieldOfView);
 }
 
 RenderScriptingInterface::RenderMethod RenderScriptingInterface::getRenderMethod() const {
@@ -299,4 +301,21 @@ void RenderScriptingInterface::forceMaximumTextureMemory(int maximumTextureMemor
    
     gpu::Context::Size newMaximumTextureMemory = MB_TO_BYTES(maximumTextureMemory);
     gpu::Texture::setAllowedGPUMemoryUsage(newMaximumTextureMemory);
+}
+
+float RenderScriptingInterface::getFieldOfView() const {
+    return _fieldOfView;
+}
+
+void RenderScriptingInterface::setFieldOfView(float fieldOfView) {
+    if (_fieldOfView != fieldOfView) {
+        forceFieldOfView(fieldOfView);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceFieldOfView(float fieldOfView) {
+    _fieldOfView = fieldOfView;
+    _fieldOfViewSetting.set(fieldOfView);
+    qApp->setFieldOfView(fieldOfView);
 }

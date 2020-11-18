@@ -72,6 +72,9 @@ class Quaternions {
     static const quat X_180;
     static const quat Y_180;
     static const quat Z_180;
+    static const quat X_90;
+    static const quat Y_90;
+    static const quat Z_90;
 };
 
 class Vectors {

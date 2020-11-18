@@ -91,7 +91,6 @@ EntityPropertyFlags EntityItem::getEntityProperties(EncodeBitstreamParams& param
     requestedProperties += PROP_PRIVATE_USER_DATA;
     requestedProperties += PROP_HREF;
     requestedProperties += PROP_DESCRIPTION;
-    requestedProperties += PROP_CUSTOM_TAGS;
     requestedProperties += PROP_POSITION;
     requestedProperties += PROP_DIMENSIONS;
     requestedProperties += PROP_ROTATION;
@@ -294,7 +293,6 @@ OctreeElement::AppendState EntityItem::appendEntityData(
         APPEND_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, privateUserData);
         APPEND_ENTITY_PROPERTY(PROP_HREF, getHref());
         APPEND_ENTITY_PROPERTY(PROP_DESCRIPTION, getDescription());
-        APPEND_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, getCustomTags());
         APPEND_ENTITY_PROPERTY(PROP_POSITION, getLocalPosition());
         APPEND_ENTITY_PROPERTY(PROP_DIMENSIONS, getScaledDimensions());
         APPEND_ENTITY_PROPERTY(PROP_ROTATION, getLocalOrientation());
@@ -829,7 +827,6 @@ int EntityItem::readEntityDataFromBuffer(const unsigned char* data, int bytesLef
     READ_ENTITY_PROPERTY(PROP_PRIVATE_USER_DATA, QString, setPrivateUserData);
     READ_ENTITY_PROPERTY(PROP_HREF, QString, setHref);
     READ_ENTITY_PROPERTY(PROP_DESCRIPTION, QString, setDescription);
-    READ_ENTITY_PROPERTY(PROP_CUSTOM_TAGS, QString, setCustomTags);
     {  // When we own the simulation we don't accept updates to the entity's transform/velocities
         // we also want to ignore any duplicate packets that have the same "recently updated" values
         // as a packet we've already recieved. This is because we want multiple edits of the same
@@ -1110,33 +1107,6 @@ void EntityItem::setHref(QString value) {
     withWriteLock([&] { _href = value; });
 }
 
-// TIVOLI tagging
-void EntityItem::setCustomTags(QString value) {  // TIVOLI tagging
-    value = value.toLower();
-    if (_customTags.length() == 0) value = "," + value;  // should always start with a comma
-    withWriteLock([&] { _customTags = value; });
-}
-
-// TIVOLI tagging
-void EntityItem::addTag(QString value) {  // TIVOLI tagging    
-    value = value.toLower();
-    QString result;
-    withReadLock([&] { 
-        result = _customTags;     
-    });
-   //value.remove(QRegExp(QString::fromUtf8("[-`~!@#$%^&*()_—+=|:;<>«»,.?/{}\'\"\\\[\\\]\\\\]")));
-    if (result.indexOf(","+value+",") > -1) return; // Check if the tag already exists, if so, do nothing
-    result += value + ",";  //
-    withWriteLock([&] { _customTags = result; });
-    qDebug() << " NEW TAGS LIST IS " << result;
-}
-
-QString EntityItem::getCustomTags() const {  // TIVOLI tagging
-    QString result;
-    withReadLock([&] { result = _customTags; });
-    return result; 
-}
-
 void EntityItem::setCollisionSoundURL(const QString& value) {
     bool modified = false;
     withWriteLock([&] {
@@ -1391,7 +1361,6 @@ EntityItemProperties EntityItem::getProperties(const EntityPropertyFlags& desire
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(privateUserData, getPrivateUserData);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(href, getHref);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(description, getDescription);
-    COPY_ENTITY_PROPERTY_TO_PROPERTIES(customTags, getCustomTags);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(entityPriority, getEntityPriority);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(position, getLocalPosition);
     COPY_ENTITY_PROPERTY_TO_PROPERTIES(dimensions, getScaledDimensions);
@@ -1540,7 +1509,6 @@ bool EntityItem::setProperties(const EntityItemProperties& properties) {
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(privateUserData, setPrivateUserData);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(href, setHref);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(description, setDescription);
-    SET_ENTITY_PROPERTY_FROM_PROPERTIES(customTags, setCustomTags);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(position, setPosition);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(dimensions, setScaledDimensions);
     SET_ENTITY_PROPERTY_FROM_PROPERTIES(rotation, setRotation);

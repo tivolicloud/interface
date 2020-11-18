@@ -123,6 +123,18 @@ void ShapeEntityRenderer::doRenderUpdateAsynchronousTyped(const TypedEntityPoint
             _proceduralData = userData;
             _material->setProceduralData(_proceduralData);
             materialChanged = true;
+
+            auto userDataObject = QJsonDocument::fromJson(userData.toUtf8()).object();
+            if (userDataObject.contains("billboardMode")) {
+                auto billboardMode = userDataObject["billboardMode"].toString();
+                if (billboardMode == "full") {
+                    _billboardMode = BillboardMode::FULL;
+                } else if (billboardMode == "yaw") {
+                    _billboardMode = BillboardMode::YAW;
+                } else {
+                    _billboardMode = BillboardMode::NONE;
+                }
+            }
         }
 
         auto materials = _materials.find("0");
@@ -251,6 +263,19 @@ void ShapeEntityRenderer::doRender(RenderArgs* args) {
         geometryShape = geometryCache->getShapeForEntityShape(_shape);
         primitiveMode = _primitiveMode;
         renderLayer = _renderLayer;
+        if (_billboardMode != BillboardMode::NONE) {
+            auto rotation = EntityItem::getBillboardRotation(
+                _renderTransform.getTranslation(),
+                _renderTransform.getRotation(),
+                _billboardMode,
+                args->getViewFrustum().getPosition()
+            );
+            // rotate quad so it's upright
+            if (_shape == entity::Shape::Quad || _shape == entity::Shape::Circle) {
+                rotation *= Quaternions::X_90;
+            }
+            _renderTransform.setRotation(rotation);
+        }
         batch.setModelTransform(_renderTransform);  // use a transform with scale, rotation, registration point and translation
         materials = _materials["0"];
         pipelineType = getPipelineType(materials);

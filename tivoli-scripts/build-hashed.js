@@ -1,33 +1,76 @@
+const child_process = require("child_process");
+const crypto = require("crypto");
 const fs = require("fs");
-const npm = require("npm");
-const { hashElement } = require("folder-hash");
+const path = require("path");
 
-const options = {
-	folders: { exclude: ["node_modules", "dist"] },
-	// files: { include: ['*.js', '*.json'] }
+const hashMapPath = path.join(__dirname, "cache.txt");
+
+const overrideBuild = fs.existsSync(path.join(__dirname, "dist")) == false;
+
+const log = message => {
+	console.log("Tivoli.js:", message);
 };
 
-const hashMapPath = __dirname + "/cache.txt";
+const run = (command, args, cwd) => {
+	return new Promise((resolve, reject) => {
+		const proc = child_process.spawn(command, args, {
+			cwd,
+			env: process.env,
+			shell: process.platform == "win32",
+		});
+		proc.stdout.pipe(process.stdout);
+		proc.stderr.pipe(process.stderr);
+		proc.on("close", (code, signal) => {
+			if (code !== 0) {
+				reject();
+			} else {
+				resolve();
+			}
+		});
+	});
+};
 
-const overrideBuild = fs.existsSync(__dirname + "/dist") == false;
+const hash = data => {
+	const hash = crypto.createHash("SHA1");
+	hash.update(data);
+	return hash.digest("hex");
+};
 
-function log(message) {
-	console.log("Tivoli.js:", message);
-}
+const hashFiles = (folderPath, fileHashes = []) => {
+	const filenames = fs.readdirSync(folderPath);
+
+	for (const filename of filenames) {
+		if (filename == "node_modules" || filename == "dist") continue;
+
+		const filePath = path.join(folderPath, filename);
+		const stats = fs.statSync(filePath);
+
+		if (stats.isDirectory()) {
+			fileHashes = fileHashes.concat(hashFolder(filePath));
+		} else {
+			const fileHash = hash(fs.readFileSync(filePath));
+			fileHashes.push(fileHash);
+		}
+	}
+
+	return fileHashes;
+};
+
+const hashFolder = folderPath => {
+	const hashes = hashFiles(folderPath);
+	return hash(hashes.join(""));
+};
 
 async function buildIfNecessary(folder, hashMap) {
-	const hash = (await hashElement(folder, options)).hash;
+	const folderPath = path.join(__dirname, folder);
+	const hash = hashFolder(folderPath);
 	if (hashMap[folder] == hash && overrideBuild == false) {
 		log(`"${folder}" already built`);
 		return hash;
 	}
 
-	npm.load(
-		{
-			prefix: __dirname,
-		},
-		() => npm.run("build:" + folder),
-	);
+	await run("npm", ["install", "--no-save"], folderPath);
+	await run("npm", ["run", "build"], folderPath);
 
 	return hash;
 }

@@ -41,6 +41,9 @@ const quat Quaternions::IDENTITY{ 1.0f, 0.0f, 0.0f, 0.0f };
 const quat Quaternions::X_180{ 0.0f, 1.0f, 0.0f, 0.0f };
 const quat Quaternions::Y_180{ 0.0f, 0.0f, 1.0f, 0.0f };
 const quat Quaternions::Z_180{ 0.0f, 0.0f, 0.0f, 1.0f };
+const quat Quaternions::X_90{ 0.707f, 0.707f, 0.0f, 0.0f };
+const quat Quaternions::Y_90{ 0.707f, 0.0f, 0.707f, 0.0f };
+const quat Quaternions::Z_90{ 0.707f, 0.0f, 0.0f, 0.707f };
 
 const mat4 Matrices::IDENTITY { glm::mat4() };
 const mat4 Matrices::X_180 { createMatFromQuatAndPos(Quaternions::X_180, Vectors::ZERO) };

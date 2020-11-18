@@ -1,0 +1,40 @@
+# name: "Docker build images"
+# on:
+#     push:
+#         branches:
+#             - master
+#         paths:
+#             - .github/workflows/linux.Dockerfile
+# jobs:
+#     linux:
+#         name: Linux
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Check out the repo
+#               uses: actions/checkout@v2
+#             - name: Push to GitHub Packages
+#               uses: docker/build-push-action@v2
+#               with:
+#                   context: .github/workflows
+#                   file: .github/workflows/linux.Dockerfile
+#                   username: ${{ github.actor }}
+#                   password: ${{ secrets.GITHUB_TOKEN }}
+#                   registry: docker.pkg.github.com
+#                   repository: tivolicloud/interface/build
+#                   tags: linux
+#     linux_arm64:
+#         name: Linux arm64
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Check out the repo
+#               uses: actions/checkout@v2
+#             - name: Push to GitHub Packages
+#               uses: docker/build-push-action@v2
+#               with:
+#                   context: .github/workflows
+#                   file: .github/workflows/linux-arm64.Dockerfile
+#                   username: ${{ github.actor }}
+#                   password: ${{ secrets.GITHUB_TOKEN }}
+#                   registry: docker.pkg.github.com
+#                   repository: tivolicloud/interface/build
+#                   tags: linux-arm64

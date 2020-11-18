@@ -9,6 +9,10 @@ stages:
     only:
         - /^[0-9]+?\.[0-9]+?\.[0-9]+?$/i
 
+.merge_request:
+    only:
+        - merge_requests
+
 include:
     - local: .gitlab/build/linux.gitlab-ci.yml
     - local: .gitlab/build/windows.gitlab-ci.yml

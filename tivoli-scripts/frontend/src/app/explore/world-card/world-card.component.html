@@ -17,13 +17,23 @@
 			(click)="onJoinWorld()"
 		>
 			<p
-				class="incompatible"
+				class="banner"
+				style="background-color: #f44336"
+				*ngIf="world.restriction == 'open'"
+			>
+				<mat-icon style="margin-right: 4px">error</mat-icon>
+				Allows anonymous users
+			</p>
+			<p
+				class="banner"
+				style="background-color: #f44336"
 				*ngIf="
 					exploreService.protocol
 						? world.protocol != exploreService.protocol
 						: false
 				"
 			>
+				<mat-icon style="margin-right: 4px">error</mat-icon>
 				Incompatible protocol {{ world.version }}
 			</p>
 			<p class="label">{{ world.label }}</p>
@@ -37,7 +47,7 @@
 			</h3>
 			<p class="subtitle">{{ world.username }}</p>
 
-			<span style="flex-grow: 1;"></span>
+			<span style="flex-grow: 1"></span>
 
 			<button
 				mat-flat-button

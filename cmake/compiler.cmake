@@ -70,7 +70,7 @@ else ()
 endif()
 
 if (ANDROID)
-    # assume that the toolchain selected for android has C++11 support
+    # assume that the toolchain selected for android has C++14 support
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 elseif(APPLE)
   set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
@@ -88,7 +88,7 @@ elseif ((NOT MSVC12) AND (NOT MSVC14))
     if (COMPILER_SUPPORTS_CXX14)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     else()
-        message(FATAL_ERROR  "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+        message(FATAL_ERROR  "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
     endif()
 endif ()
 

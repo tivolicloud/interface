@@ -39,11 +39,11 @@ Item {
     Connections {
         target: Commerce;
 
-        function onBalanceResult(): {
+        function onBalanceResult() {
             balanceText.text = result.data.balance;
         }
 
-        function onHistoryResult(): {
+        function onHistoryResult() {
             transactionHistoryModel.handlePage(null, result);
         }
     }

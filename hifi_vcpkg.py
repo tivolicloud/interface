@@ -77,7 +77,7 @@ endif()
         # A format version attached to the tag file... increment when you want to force the build systems to rebuild 
         # without the contents of the ports changing
         self.version = 1
-        self.vcpkgVersion = "2020.07"
+        self.vcpkgVersion = "2020.11-1"
         self.tagContents = "{}_{}".format(self.id, self.version)
         self.bootstrapEnv = os.environ.copy()
         self.buildEnv = os.environ.copy()
@@ -123,7 +123,6 @@ endif()
                 self.bootstrapCmds.append("-useSystemBinaries")
                 self.buildEnv["VCPKG_FORCE_SYSTEM_BINARIES"] = "1"
                 self.hostTriplet = "arm64-linux"
-                self.vcpkgVersion = "2020.04"
 
         if self.args.android:
             self.triplet = 'arm64-android'
@@ -132,7 +131,10 @@ endif()
             self.triplet = self.hostTriplet
 
     def writeEnv(self, var, value=""):
-        with open(os.path.join(self.args.build_root, '_env', var + ".txt"), "w") as fp:
+        envPath = os.path.join(self.args.build_root, "_env")
+        if not os.path.isdir(envPath):
+            os.mkdir(envPath)
+        with open(os.path.join(envPath, var + ".txt"), "w") as fp:
             fp.write(value)
             fp.close()
 
@@ -220,20 +222,6 @@ endif()
             if platform.system() != "Windows":
                 hifi_utils.executeSubprocess(["chmod", "+x", os.path.join(self.path, "bootstrap-vcpkg.sh")])
 
-            # add arm64-linux.cmake if it doesn't exist
-            # TODO: remove once vcpkg has arm64-linux triplet
-            ARM64_LINUX_TRIPLET_PATH = os.path.join(self.path, "triplets", "arm64-linux.cmake")
-            if not os.path.isfile(ARM64_LINUX_TRIPLET_PATH):
-                with open(ARM64_LINUX_TRIPLET_PATH, "w") as file:
-                    file.write("\n".join([
-                        "set(VCPKG_TARGET_ARCHITECTURE arm64)",
-                        "set(VCPKG_CRT_LINKAGE dynamic)",
-                        "set(VCPKG_LIBRARY_LINKAGE static)",
-                        "",
-                        "set(VCPKG_CMAKE_SYSTEM_NAME Linux)",
-                        "",
-                    ]))
-
             print("Bootstrapping vcpkg")
             hifi_utils.executeSubprocess(self.bootstrapCmds, folder=self.path, env=self.bootstrapEnv)      
 
@@ -256,9 +244,16 @@ endif()
 
     def copyTripletForBuildType(self, triplet):
         print('Copying triplet ' + triplet + ' to have build type ' + self.vcpkgBuildType)
+
         tripletPath = os.path.join(self.path, 'triplets', triplet + '.cmake')
+        if not os.path.isfile(tripletPath):
+            tripletPath = os.path.join(self.path, 'triplets/community', triplet + '.cmake')
+            if not os.path.isfile(tripletPath):
+                raise RuntimeError('Triplet ' + triplet + ' not found')
+
         tripletForBuildTypePath = os.path.join(self.path, 'triplets', self.getTripletWithBuildType(triplet) + '.cmake')
         shutil.copy(tripletPath, tripletForBuildTypePath)
+
         with open(tripletForBuildTypePath, "a") as tripletForBuildTypeFile:
             tripletForBuildTypeFile.write("set(VCPKG_BUILD_TYPE " + self.vcpkgBuildType + ")\n")
 

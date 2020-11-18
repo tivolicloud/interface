@@ -353,7 +353,7 @@ void Ledger::accountFailure(QNetworkReply* reply) {
     failResponse("account", reply);
 }
 void Ledger::account() {
-    send("hfc_account", "accountSuccess", "accountFailure", QNetworkAccessManager::PutOperation, AccountManagerAuth::Required, QJsonObject());
+    // send("hfc_account", "accountSuccess", "accountFailure", QNetworkAccessManager::PutOperation, AccountManagerAuth::Required, QJsonObject());
 }
 
 // The api/failResponse is called just for the side effect of logging.

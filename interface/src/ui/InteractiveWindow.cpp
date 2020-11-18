@@ -53,8 +53,6 @@ static const char* const PRESENTATION_MODE_PROPERTY = "presentationMode";
 static const char* const DOCKED_PROPERTY = "presentationWindowInfo";
 static const char* const DOCK_AREA_PROPERTY = "dockArea";
 
-static const QStringList KNOWN_SCHEMES = QStringList() << "http" << "https" << "file" << "about" << "atp" << "qrc";
-
 static const int DEFAULT_HEIGHT = 60;
 
 QmlWindowProxy::QmlWindowProxy(QObject* qmlObject, QObject* parent) : QmlWrapper(qmlObject, parent) {

@@ -123,7 +123,10 @@ vr::IVRSystem* acquireOpenVrSystem() {
                 qCDebug(displayplugins) << "OpenVR display: HMD is " << activeHmd << " error is " << eError;
             #endif
 
-            if (eError == vr::VRInitError_Init_HmdNotFound) {
+            if (
+                eError == vr::VRInitError_Init_HmdNotFound ||
+                eError == vr::VRInitError_Init_FileNotFound // libudev.so.0: cannot open shared object file
+            ) {
                 isHMDInErrorState = true;
                 activeHmd = nullptr;
                 #if DEV_BUILD

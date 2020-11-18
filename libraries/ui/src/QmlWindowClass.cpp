@@ -24,6 +24,7 @@
 #include <QtCore/QJsonObject>
 
 #include <shared/QtHelpers.h>
+#include <NetworkingConstants.h>
 #include "OffscreenUi.h"
 #include "ui/types/TivoliWebEngineProfile.h"
 #include "ui/types/FileTypeProfile.h"
@@ -61,8 +62,7 @@ QVariantMap QmlWindowClass::parseArguments(QScriptContext* context) {
 
     QUrl url { properties[SOURCE_PROPERTY].toString() };
     // If the passed URL doesn't correspond to a known scheme, assume it's a local file path
-    if (url.scheme() != "http" && url.scheme() != "https" && url.scheme() != "file" && url.scheme() != "about" &&
-            url.scheme() != "atp" && url.scheme() != "qrc") {
+    if (!KNOWN_SCHEMES.contains(url.scheme(), Qt::CaseInsensitive)) {
         properties[SOURCE_PROPERTY] = QUrl::fromLocalFile(url.toString()).toString();
     }
 
