@@ -130,7 +130,19 @@ public:
     void merge(const EntityItemProperties& other);
 
     EntityTypes::EntityType getType() const { return _type; }
-    void setType(EntityTypes::EntityType type) { _type = type; }
+    void setType(EntityTypes::EntityType type) {
+        if (
+            (type == EntityTypes::EntityType::Box || type == EntityTypes::EntityType::Sphere) &&
+            (_shape != "Cube" && _shape != "Sphere")
+        ) {
+            // Make sure entity type is shape when the shape is not a cube or
+            // sphere. Somewhere else in the code it makes sure shape entities
+            // that are cube or sphere, become of entity type box or sphere.
+            _type = EntityTypes::EntityType::Shape;
+        } else {
+            _type = type;
+        }
+    }
 
     virtual QScriptValue copyToScriptValue(QScriptEngine* engine, bool skipDefaults, bool allowUnknownCreateTime = false,
         bool strictSemantics = false, EntityPsuedoPropertyFlags psueudoPropertyFlags = EntityPsuedoPropertyFlags()) const;
