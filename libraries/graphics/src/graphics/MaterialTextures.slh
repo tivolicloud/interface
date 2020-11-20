@@ -149,7 +149,7 @@ float fetchScatteringMap(vec2 uv) {
 
 <@endfunc@>
 
-<@func fetchMaterialTexturesCoord0(matKey, texcoord0, albedo, roughness, normal, metallic, emissive, scattering)@>
+<@func fetchMaterialTexturesCoord0(matKey, texcoord0, albedo, roughness, normal, metallic, emissive, scattering, occlusion)@>
     if (getTexMapArray()._materialParams.y != 1.0 && clamp(<$texcoord0$>, vec2(0.0), vec2(1.0)) != <$texcoord0$>) {
         discard;
     }
@@ -171,12 +171,12 @@ float fetchScatteringMap(vec2 uv) {
 <@if scattering@>
     float <$scattering$> = float((<$matKey$> & SCATTERING_MAP_BIT) != 0) * fetchScatteringMap(<$texcoord0$>);
 <@endif@>
+<@if occlusion@>
+    float <$occlusion$> = mix(1.0, fetchOcclusionMap(<$texcoord0$>), float((<$matKey$> & OCCLUSION_MAP_BIT) != 0));
+<@endif@>
 <@endfunc@>
 
-<@func fetchMaterialTexturesCoord1(matKey, texcoord1, occlusion, lightmap)@>
-<@if occlusion@>
-    float <$occlusion$> = mix(1.0, fetchOcclusionMap(<$texcoord1$>), float((<$matKey$> & OCCLUSION_MAP_BIT) != 0));
-<@endif@>
+<@func fetchMaterialTexturesCoord1(matKey, texcoord1, lightmap)@>
 <@if lightmap@>
     vec3 <$lightmap$> = fetchLightMap(<$texcoord1$>);
 <@endif@>
