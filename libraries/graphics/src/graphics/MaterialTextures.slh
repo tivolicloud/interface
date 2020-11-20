@@ -250,19 +250,44 @@ vec3 fetchLightMap(vec2 uv) {
 
 <@func evalMaterialRoughness(fetchedRoughness, materialRoughness, matKey, roughness)@>
 {
-    <$roughness$> = mix(<$materialRoughness$>, <$fetchedRoughness$>, float((<$matKey$> & ROUGHNESS_MAP_BIT) != 0));
+    // (hasTexture ?
+    //    texture * (hasFactor ? factor : 1) :
+    //    factor
+    // )
+    <$roughness$> = mix(
+        <$materialRoughness$>,
+        <$fetchedRoughness$> * mix(
+            1.0, <$materialRoughness$>,
+            float((<$matKey$> & GLOSSY_VAL_BIT) != 0) // GLOSSY needs to be renamed
+        ),
+        float((<$matKey$> & ROUGHNESS_MAP_BIT) != 0)
+    );
 }
 <@endfunc@>
 
 <@func evalMaterialMetallic(fetchedMetallic, materialMetallic, matKey, metallic)@>
 {
-    <$metallic$> = mix(<$materialMetallic$>, <$fetchedMetallic$>, float((<$matKey$> & METALLIC_MAP_BIT) != 0));
+    <$metallic$> = mix(
+        <$materialMetallic$>,
+        <$fetchedMetallic$> * mix(
+            1.0, <$materialMetallic$>,
+            float((<$matKey$> & METALLIC_VAL_BIT) != 0)
+        ),
+        float((<$matKey$> & METALLIC_MAP_BIT) != 0)
+    );
 }
 <@endfunc@>
 
 <@func evalMaterialEmissive(fetchedEmissive, materialEmissive, matKey, emissive)@>
 {
-    <$emissive$> = mix(<$materialEmissive$>, <$fetchedEmissive$>, float((<$matKey$> & EMISSIVE_MAP_BIT) != 0));
+    <$emissive$> = mix(
+        <$materialEmissive$>,
+        <$fetchedEmissive$> * mix(
+            vec3(1.0), <$materialEmissive$>,
+            float((<$matKey$> & EMISSIVE_VAL_BIT) != 0)
+        ),
+        float((<$matKey$> & EMISSIVE_MAP_BIT) != 0)
+    );
 }
 <@endfunc@>
 

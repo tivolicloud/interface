@@ -1771,24 +1771,10 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
     if (material.defined["pbrMetallicRoughness"]) {
         hfmMat.isPBSMaterial = true;
 
-        if (material.pbrMetallicRoughness.defined["metallicFactor"]) {
-            hfmMat.metallic = material.pbrMetallicRoughness.metallicFactor;
-        }
         if (material.pbrMetallicRoughness.defined["baseColorTexture"]) {
             hfmMat.opacityTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture]);
             hfmMat.albedoTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture]);
             hfmMat.useAlbedoMap = true;
-        }
-        if (material.pbrMetallicRoughness.defined["metallicRoughnessTexture"]) {
-            hfmMat.roughnessTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
-            hfmMat.roughnessTexture.sourceChannel = image::ColorChannel::GREEN;
-            hfmMat.useRoughnessMap = true;
-            hfmMat.metallicTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
-            hfmMat.metallicTexture.sourceChannel = image::ColorChannel::BLUE;
-            hfmMat.useMetallicMap = true;
-        }
-        if (material.pbrMetallicRoughness.defined["roughnessFactor"]) {
-            hfmMat._material->setRoughness(material.pbrMetallicRoughness.roughnessFactor);
         }
         if (material.pbrMetallicRoughness.defined["baseColorFactor"] &&
             material.pbrMetallicRoughness.baseColorFactor.size() == 4) {
@@ -1798,6 +1784,28 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
             hfmMat.diffuseColor = dcolor;
             hfmMat._material->setAlbedo(dcolor);
             hfmMat._material->setOpacity(material.pbrMetallicRoughness.baseColorFactor[3]);
+        }
+
+        if (material.pbrMetallicRoughness.defined["metallicRoughnessTexture"]) {
+            hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.occlusionTexture.sourceChannel = image::ColorChannel::RED;
+            hfmMat.useOcclusionMap = true;
+
+            hfmMat.roughnessTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.roughnessTexture.sourceChannel = image::ColorChannel::GREEN;
+            hfmMat.useRoughnessMap = true;
+
+            hfmMat.metallicTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.metallicTexture.sourceChannel = image::ColorChannel::BLUE;
+            hfmMat.useMetallicMap = true;
+        }
+        if (material.pbrMetallicRoughness.defined["roughnessFactor"]) {
+            hfmMat.roughness = material.pbrMetallicRoughness.roughnessFactor;
+            hfmMat._material->setRoughness(material.pbrMetallicRoughness.roughnessFactor);
+        }
+        if (material.pbrMetallicRoughness.defined["metallicFactor"]) {
+            hfmMat.metallic = material.pbrMetallicRoughness.metallicFactor;
+            hfmMat._material->setMetallic(material.pbrMetallicRoughness.metallicFactor);
         }
     }
 }
