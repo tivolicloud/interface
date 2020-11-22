@@ -902,17 +902,15 @@ void reorderNodeIndices(QVector<int>& indices, const ReorderMap& oldToNewIndexMa
 }  // namespace gltf
 
 void GLTFFile::populateMaterialNames() {
-    // Build material names
     QSet<QString> usedNames;
-    for (const auto& material : materials) {
-        if (!material.name.isEmpty()) {
-            usedNames.insert(material.name);
-        }
-    }
 
     int ukcount = 0;
     const QString unknown{ "Default_%1" };
+
     for (auto& material : materials) {
+        if (!material.name.isEmpty()) {
+            usedNames.insert(material.name);
+        } else {
         QString generatedName = unknown.arg(ukcount++);
         while (usedNames.contains(generatedName)) {
             generatedName = unknown.arg(ukcount++);
@@ -921,6 +919,7 @@ void GLTFFile::populateMaterialNames() {
         material.defined.insert("name", true);
         usedNames.insert(generatedName);
     }
+}
 }
 
 void GLTFFile::reorderNodes(const std::unordered_map<int, int>& oldToNewIndexMap) {
@@ -1121,6 +1120,7 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
         HFMMaterial& hfmMaterial = hfmModel.materials.back();
         hfmMaterial._material = std::make_shared<graphics::Material>();
         hfmMaterial.materialID =  matid;
+        hfmMaterial.name = matid;
         setHFMMaterial(hfmMaterial, material);
     }
 
