@@ -1,9 +1,10 @@
 // on Linux make sure `sudo spacenavd -v -d` is running
 //
 // features:
-// - alerts if Spacemouse wasn't found
+// - alerts if unable to connect to Spacemouse
 // - left button to toggle flying camera
 // - right button to toggle speed by 2.5
+// - cute camera with nametag appears where your camera is
 
 if (Controller.Hardware.Spacemouse != null) {
 	var DATA_MAPPING_NAME = "com.tivolicloud.spacemouseCamera.data";
@@ -22,6 +23,11 @@ if (Controller.Hardware.Spacemouse != null) {
 
 	var currentPosition = { x: 0, y: 0, z: 0 };
 	var currentRotation = { x: 0, y: 0, z: 0 };
+
+	var enabled = false;
+
+	var entityId;
+	var entityUpdateInterval;
 
 	[
 		["TranslateX", currentPosition, "x", 1],
@@ -72,23 +78,106 @@ if (Controller.Hardware.Spacemouse != null) {
 		);
 	}
 
-	var enabled = false;
+	function entityUpdate() {
+		Entities.editEntity(entityId, {
+			position: Camera.position,
+			rotation: Quat.multiply(
+				Camera.orientation,
+				Quat.fromPitchYawRollDegrees(0, 180, 0)
+			)
+		});
+	}
 
 	function enable() {
 		if (enabled) return;
 		enabled = true;
+
 		Camera.mode = "independent";
 		Camera.position = Vec3.sum(Camera.position, { y: 0.25 });
+		MyAvatar.audioListenerMode = MyAvatar.audioListenerModeCamera;
+
 		Controller.enableMapping(DATA_MAPPING_NAME);
 		Script.update.connect(update);
+
+		// camera entity (not using avatar entities since they lag too much)
+		entityId = Entities.addEntity(
+			{
+				type: "Model",
+				modelURL:
+					"https://files.tivolicloud.com/maki/avatars/cute-camera/cute-camera.fst",
+				dimensions: {
+					x: 0.265,
+					y: 0.265,
+					z: 0.265
+				},
+				grab: {
+					grabbable: false,
+					grabFollowsController: false,
+					equippable: false
+				},
+				position: Camera.position,
+				rotation: Quat.multiply(
+					Camera.orientation,
+					Quat.fromPitchYawRollDegrees(0, 180, 0)
+				),
+				lifetime: 86400 // 1 day lifetime in case it doesnt clean up
+			},
+			"domain"
+		);
+
+		// parent nametag to camera entity
+		Entities.addEntity({
+			type: "Image",
+			parentID: entityId,
+			localPosition: { y: 0.3 },
+			dimensions: { x: 1.5, y: 1.5 / 8 },
+			grab: {
+				grabbable: false,
+				grabFollowsController: false,
+				equippable: false
+			},
+			emissive: true,
+			keepAspectRatio: false,
+			billboardMode: "full",
+			imageURL:
+				Account.metaverseServerURL +
+				"/api/user/" +
+				Account.username.toLowerCase() +
+				"/nametag",
+			isVisibleInSecondaryCamera: false,
+			collisionless: true,
+			collisionMask: 0,
+			ignorePickIntersection: true
+		});
+
+		// make camera entity invisible
+		Script.setTimeout(function () {
+			var model = Graphics.getModel(entityId);
+			if (!model) return;
+			for (var i = 0; i < model.meshes.length; i++) {
+				model.meshes[i].updateVertexAttributes(function (a) {
+					return {
+						position: Vec3.multiply(a.position, 0)
+					};
+				});
+			}
+		}, 1000);
+
+		entityUpdateInterval = Script.setInterval(entityUpdate, 1000 / 30);
 	}
 
 	function disable() {
 		if (!enabled) return;
 		enabled = false;
+
 		Controller.disableMapping(DATA_MAPPING_NAME);
 		Script.update.disconnect(update);
+
+		Script.clearInterval(entityUpdateInterval);
+		Entities.deleteEntity(entityId);
+
 		Camera.mode = "look at";
+		MyAvatar.audioListenerMode = MyAvatar.audioListenerModeHead;
 	}
 
 	buttonsMapping
@@ -111,5 +200,5 @@ if (Controller.Hardware.Spacemouse != null) {
 		Controller.disableMapping(BUTTONS_MAPPING_NAME);
 	});
 } else {
-	Window.alert("Spacemouse not found!");
+	Window.alert("Failed to connect to Spacemouse!");
 }
