@@ -1,3 +1,5 @@
+#include <QFile>
+
 #include "SpacemouseManager.h"
 
 bool SpacemouseManager::isSupported() const {
@@ -5,8 +7,8 @@ bool SpacemouseManager::isSupported() const {
 }
 
 bool SpacemouseManager::activate() {
-    if (spnav_open() == -1) {
-        qDebug() << "Failed to connect to Spacemouse (spacenavd)";
+    if (!QFile::exists("/var/run/spnav.sock") || spnav_open() == -1) {
+        qDebug() << "Failed to connect to Spacemouse (spacenavd; /var/run/spnav.sock)";
         return false;
     }
 
