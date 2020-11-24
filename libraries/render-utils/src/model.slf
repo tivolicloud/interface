@@ -137,21 +137,22 @@ void main(void) {
 <@else@>
     <@if not HIFI_USE_LIGHTMAP@>
         <@if HIFI_USE_NORMALMAP and HIFI_USE_TRANSLUCENT@>
-            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, normalTex, metallicTex, emissiveTex, _SCRIBE_NULL, occlusionTex)$>
+            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, normalTex, metallicTex, emissiveTex, _SCRIBE_NULL)$>
         <@elif HIFI_USE_NORMALMAP@>
-            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, normalTex, metallicTex, emissiveTex, scatteringTex, occlusionTex)$>
+            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, normalTex, metallicTex, emissiveTex, scatteringTex)$>
         <@elif HIFI_USE_TRANSLUCENT@>
-            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, _SCRIBE_NULL, metallicTex, emissiveTex, _SCRIBE_NULL, occlusionTex)$>
+            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, _SCRIBE_NULL, metallicTex, emissiveTex, _SCRIBE_NULL)$>
         <@else@>
-            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, _SCRIBE_NULL, metallicTex, emissiveTex, scatteringTex, occlusionTex)$>
+            <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, _SCRIBE_NULL, metallicTex, emissiveTex, scatteringTex)$>
         <@endif@>
+            <$fetchMaterialTexturesCoord1(matKey, _texCoord1, occlusionTex)$>
     <@else@>
         <@if HIFI_USE_NORMALMAP@>
             <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, normalTex, metallicTex)$>
         <@else@>
             <$fetchMaterialTexturesCoord0(matKey, _texCoord0, albedoTex, roughnessTex, _SCRIBE_NULL, metallicTex)$>
         <@endif@>
-            <$fetchMaterialTexturesCoord1(matKey, _texCoord1, lightmap)$>
+            <$fetchMaterialTexturesCoord1(matKey, _texCoord1, _SCRIBE_NULL, lightmap)$>
     <@endif@>
 
     <@if HIFI_USE_TRANSLUCENT@>
