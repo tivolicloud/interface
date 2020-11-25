@@ -911,15 +911,15 @@ void GLTFFile::populateMaterialNames() {
         if (!material.name.isEmpty()) {
             usedNames.insert(material.name);
         } else {
-        QString generatedName = unknown.arg(ukcount++);
-        while (usedNames.contains(generatedName)) {
-            generatedName = unknown.arg(ukcount++);
+            QString generatedName = unknown.arg(ukcount++);
+            while (usedNames.contains(generatedName)) {
+                generatedName = unknown.arg(ukcount++);
+            }
+            material.name = generatedName;
+            material.defined.insert("name", true);
+            usedNames.insert(generatedName);
         }
-        material.name = generatedName;
-        material.defined.insert("name", true);
-        usedNames.insert(generatedName);
     }
-}
 }
 
 void GLTFFile::reorderNodes(const std::unordered_map<int, int>& oldToNewIndexMap) {
