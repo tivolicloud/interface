@@ -1,5 +1,5 @@
 # FROM archlinux:latest
-FROM ubuntu:18.04
+FROM debian:bullseye-slim
 
 ENV \
 HIFI_DOMAIN_SERVER_HTTP_PORT=40100 \
@@ -18,6 +18,8 @@ DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /root
 
+COPY dist/. /root
+
 # RUN \
 # pacman -Syu --noconfirm curl glib2 mesa harfbuzz nodejs npm && \
 # npm i -g pm2 && \
@@ -25,14 +27,23 @@ WORKDIR /root
 
 RUN \
 apt-get update -y && \
-apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin libopengl0 && \
-curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-apt-get install -y nodejs && \
-npm i -g pm2 && \
-# cleanup
+apt-get install -y wget libopengl0 libglib2.0-0 libgl1-mesa-glx libharfbuzz0b && \
+# install nodejs and npm
+if [ $(uname -m) = "x86_64" ]; then \
+    wget https://nodejs.org/dist/v14.15.1/node-v14.15.1-linux-x64.tar.gz && \
+	tar -C /usr/local --strip-components 1 -xzf node-v14.15.1-linux-x64.tar.gz && \
+	rm -f node-v14.15.1-linux-x64.tar.gz; \
+else \
+	wget https://nodejs.org/dist/v14.15.1/node-v14.15.1-linux-arm64.tar.gz && \
+	tar -C /usr/local --strip-components 1 -xzf node-v14.15.1-linux-arm64.tar.gz && \
+	rm -f node-v14.15.1-linux-arm64.tar.gz; \
+fi; \
+npm install -g pm2 && \
+# cleanup rest
+apt-get remove -y wget && \
+apt-get autoremove -y && \
 apt-get clean -y && \
-rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
-COPY dist/. /root
+npm remove -g npm && \
+rm -rf /var/lib/apt/* /var/lib/cache/* /var/lib/dpkg/* /var/cache/* ~/.npm
 
 CMD pm2-runtime start /root/ecosystem.config.js

@@ -1,12 +1,13 @@
-FROM ubuntu:18.04
+FROM debian:bullseye-slim
+
+COPY dist/. /root
 
 RUN \
 apt-get update -y && \
-DEBIAN_FRONTEND=noninteractive apt-get install -y curl glib2.0 libgl1-mesa-glx libharfbuzz-bin libopengl0 && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y libopengl0 libglib2.0-0 libgl1-mesa-glx libharfbuzz0b && \
 # cleanup
+apt-get autoremove -y && \
 apt-get clean -y && \
-rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
-COPY dist/. /root
+rm -rf /var/lib/apt/* /var/lib/cache/* /var/lib/dpkg/* /var/cache/*
 
 CMD /root/ice-server.AppDir/AppRun

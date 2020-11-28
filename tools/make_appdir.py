@@ -119,6 +119,13 @@ print("-- Installed linuxdeployqt")
 
 deferred_plugins = ["libtivoli-tea-protocol-plugin.so"]
 
+server_exclude_libs = [
+    "libQt5WebEngineCore.so.5",
+    "libQt5Quick.so.5",
+    "libQt5XmlPatterns.so.5",
+    "libQt5QmlModels.so.5",
+]
+
 if program == "interface":
 
 	# find all plugins
@@ -236,8 +243,9 @@ elif program == "server":
 	    "-executable=server.AppDir/usr/bin/oven",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
-	    "-qmldir=" + qt_path + "/qml",
-	    "-qmldir=../interface/resources/qml",
+	    "-exclude-libs=" + ",".join(server_exclude_libs),
+	    # "-qmldir=" + qt_path + "/qml",
+	    # "-qmldir=../interface/resources/qml",
 	    "-no-translations",
 	    "-no-copy-copyright-files",
 	    "-bundle-non-qt-libs",
@@ -288,8 +296,9 @@ elif program == "ice-server":
 	    "ice-server.AppDir/usr/bin/ice-server",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
-	    "-qmldir=" + qt_path + "/qml",
-	    "-qmldir=../interface/resources/qml",
+	    "-exclude-libs=" + ",".join(server_exclude_libs),
+	    # "-qmldir=" + qt_path + "/qml",
+	    # "-qmldir=../interface/resources/qml",
 	    "-no-translations",
 	    "-no-copy-copyright-files",
 	    "-bundle-non-qt-libs",
