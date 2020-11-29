@@ -1,5 +1,5 @@
 //
-//  AudioMixerSlave.h
+//  AudioMixerWorker.h
 //  assignment-client/src/audio
 //
 //  Created by Zach Pomerantz on 11/22/16.
@@ -9,8 +9,8 @@
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
 
-#ifndef hifi_AudioMixerSlave_h
-#define hifi_AudioMixerSlave_h
+#ifndef hifi_AudioMixerWorker_h
+#define hifi_AudioMixerWorker_h
 
 #if !defined(Q_MOC_RUN)
 #include <tbb/concurrent_vector.h>
@@ -30,7 +30,7 @@
 class AvatarAudioStream;
 class AudioHRTF;
 
-class AudioMixerSlave {
+class AudioMixerWorker {
 public:
     using ConstIter = NodeList::const_iterator;
     
@@ -40,7 +40,7 @@ public:
         std::vector<NodeIDStreamID> removedStreams;
     };
 
-    AudioMixerSlave(SharedData& sharedData) : _sharedData(sharedData) {};
+    AudioMixerWorker(SharedData& sharedData) : _sharedData(sharedData) {};
 
     // process packets for a given node (requires no configuration)
     void processPackets(const SharedNodePointer& node);
@@ -83,4 +83,4 @@ private:
     SharedData& _sharedData;
 };
 
-#endif // hifi_AudioMixerSlave_h
+#endif // hifi_AudioMixerWorker_h

@@ -23,7 +23,7 @@
 #include "../entities/EntityTreeHeadlessViewer.h"
 #include "AvatarMixerClientData.h"
 
-#include "AvatarMixerSlavePool.h"
+#include "AvatarMixerWorkerPool.h"
 
 /// Handles assignments of type AvatarMixer - distribution of avatar data to various clients
 class AvatarMixer : public ThreadedAssignment {
@@ -155,8 +155,8 @@ private:
 
     RateCounter<> _loopRate; // this is the rate that the main thread tight loop runs
 
-    AvatarMixerSlavePool _slavePool;
-    SlaveSharedData _slaveSharedData;
+    AvatarMixerWorkerPool _workerPool;
+    WorkerSharedData _workerSharedData;
 };
 
 #endif // hifi_AvatarMixer_h

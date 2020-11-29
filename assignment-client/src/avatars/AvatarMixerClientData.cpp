@@ -21,7 +21,7 @@
 
 #include "AvatarLogging.h"
 
-#include "AvatarMixerSlave.h"
+#include "AvatarMixerWorker.h"
 
 AvatarMixerClientData::AvatarMixerClientData(const QUuid& nodeID, Node::LocalID nodeLocalID) : NodeData(nodeID, nodeLocalID) {
     // in case somebody calls getSessionUUID on the AvatarData instance, make sure it has the right ID
@@ -52,7 +52,7 @@ void AvatarMixerClientData::queuePacket(QSharedPointer<ReceivedMessage> message,
     _packetQueue.push(message);
 }
 
-int AvatarMixerClientData::processPackets(const SlaveSharedData& slaveSharedData) {
+int AvatarMixerClientData::processPackets(const WorkerSharedData& workerSharedData) {
     int packetsProcessed = 0;
     SharedNodePointer node = _packetQueue.node;
     assert(_packetQueue.empty() || node);
@@ -65,10 +65,10 @@ int AvatarMixerClientData::processPackets(const SlaveSharedData& slaveSharedData
 
         switch (packet->getType()) {
             case PacketType::AvatarData:
-                parseData(*packet, slaveSharedData);
+                parseData(*packet, workerSharedData);
                 break;
             case PacketType::SetAvatarTraits:
-                processSetTraitsMessage(*packet, slaveSharedData, *node);
+                processSetTraitsMessage(*packet, workerSharedData, *node);
                 break;
             case PacketType::BulkAvatarTraitsAck:
                 processBulkAvatarTraitsAckMessage(*packet);
@@ -124,7 +124,7 @@ struct FindContainingZone {
 
 }  // namespace
 
-int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveSharedData& slaveSharedData) {
+int AvatarMixerClientData::parseData(ReceivedMessage& message, const WorkerSharedData& workerSharedData) {
     // pull the sequence number from the data first
     uint16_t sequenceNumber;
 
@@ -147,7 +147,7 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
 
     auto newPosition = _avatar->getClientGlobalPosition();
     if (newPosition != oldPosition || _avatar->getNeedsHeroCheck()) {
-        EntityTree& entityTree = *slaveSharedData.entityTree;
+        EntityTree& entityTree = *workerSharedData.entityTree;
         FindContainingZone findContainingZone{ newPosition };
         entityTree.recurseTreeWithOperation(&FindContainingZone::operation, &findContainingZone);
         bool currentlyHasPriority = findContainingZone.isInPriorityZone;
@@ -161,7 +161,7 @@ int AvatarMixerClientData::parseData(ReceivedMessage& message, const SlaveShared
 }
 
 void AvatarMixerClientData::processSetTraitsMessage(ReceivedMessage& message,
-                                                    const SlaveSharedData& slaveSharedData,
+                                                    const WorkerSharedData& workerSharedData,
                                                     Node& sendingNode) {
     // Trying to read more bytes than available, bail
     if (message.getBytesLeftToRead() < qint64(sizeof(AvatarTraits::TraitVersion))) {

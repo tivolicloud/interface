@@ -21,7 +21,7 @@
 #include <plugins/Forward.h>
 
 #include "AudioMixerStats.h"
-#include "AudioMixerSlavePool.h"
+#include "AudioMixerWorkerPool.h"
 
 class PositionalAudioStream;
 class AvatarAudioStream;
@@ -105,7 +105,7 @@ private:
     int _numStatFrames { 0 };
     AudioMixerStats _stats;
 
-    AudioMixerSlavePool _slavePool { _workerSharedData };
+    AudioMixerWorkerPool _workerPool { _workerSharedData };
 
     class Timer {
     public:
@@ -151,7 +151,7 @@ private:
     float _throttleStartTarget = 0.9f;
     float _throttleBackoffTarget = 0.44f;
 
-    AudioMixerSlave::SharedData _workerSharedData;
+    AudioMixerWorker::SharedData _workerSharedData;
 };
 
 #endif // hifi_AudioMixer_h
