@@ -94,6 +94,7 @@ export class Overview {
 
 	readonly width = 1100;
 	readonly uuid = "com.tivolicloud.defaultScripts.overview";
+	height = Overlays.height();
 
 	fixPosition() {
 		this.window.setPosition((Overlays.width() - this.width) / 2, 0);
@@ -101,7 +102,16 @@ export class Overview {
 
 	visible = false;
 	setVisible(visible: boolean) {
-		this.window.setSize(this.width, visible ? Overlays.height() : 0);
+		if (visible) {
+			const currentHeight = Overlays.height();
+			if (this.height != currentHeight) {
+				this.height = currentHeight;
+				this.window.setSize(this.width, this.height);
+			}
+			this.fixPosition();
+		} else {
+			this.window.setPosition(99999, 99999);
+		}
 		this.window.setEnabled(false);
 		this.handler.setEnabled(visible);
 	}
@@ -109,7 +119,7 @@ export class Overview {
 	constructor() {
 		this.window = new OverlayWebWindow({
 			width: this.width,
-			height: 0,
+			height: this.height,
 			visible: true,
 			frameless: true,
 			enabled: false,
@@ -118,7 +128,7 @@ export class Overview {
 				"#/overview?metaverseUrl=" +
 				AccountServices.metaverseServerURL,
 		});
-		this.window.setSize(this.width, 0);
+		this.window.setPosition(99999, 99999);
 		this.fixPosition();
 
 		this.handler = new OverviewHandler(this.uuid, {
