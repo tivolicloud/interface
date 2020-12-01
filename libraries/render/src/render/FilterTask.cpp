@@ -134,7 +134,6 @@ void IDsToBounds::run(const RenderContextPointer& renderContext, const ItemIDs& 
 
     // Now we have a selection of items to render
     outItems.clear();
-    _disableAABBs =  true; //  Circumvents regular crashing on Windows if true when reloading gltf models.
     if (!_disableAABBs) {
         for (auto id : inItems) {
             auto& item = scene->getItem(id);
