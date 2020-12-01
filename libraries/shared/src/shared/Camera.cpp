@@ -125,7 +125,12 @@ QString modeToString(CameraMode mode) {
 }
 
 Camera::Camera() : 
-    _projection(glm::perspective(glm::radians(DEFAULT_FIELD_OF_VIEW_DEGREES), 16.0f/9.0f, DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP))
+    _projection(
+        glm::perspective(
+            glm::radians(DEFAULT_FIELD_OF_VIEW_DEGREES / DEFAULT_ASPECT_RATIO),
+            DEFAULT_ASPECT_RATIO, DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP
+        )
+    )
 {
 }
 

@@ -3929,8 +3929,12 @@ void Application::resizeGL() {
 
     // FIXME the aspect ratio for stereo displays is incorrect based on this.
     float aspectRatio = displayPlugin->getRecommendedAspectRatio();
-    _myCamera.setProjection(glm::perspective(glm::radians(_fieldOfView.get()), aspectRatio,
-                                             DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP));
+    float fovY = _fieldOfView.get() / aspectRatio;
+    _myCamera.setProjection(
+        glm::perspective(
+            glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP
+        )
+    );
     // Possible change in aspect ratio
     {
         QMutexLocker viewLocker(&_viewMutex);
@@ -6831,10 +6835,11 @@ void Application::updateRenderArgs(float deltaTime) {
             {
                 QMutexLocker viewLocker(&_viewMutex);
                 // adjust near clip plane to account for sensor scaling.
-                auto adjustedProjection = glm::perspective(glm::radians(_fieldOfView.get()),
-                    getActiveDisplayPlugin()->getRecommendedAspectRatio(),
-                    DEFAULT_NEAR_CLIP * sensorToWorldScale,
-                    DEFAULT_FAR_CLIP);
+                float aspectRatio = getActiveDisplayPlugin()->getRecommendedAspectRatio();
+                float fovY = _fieldOfView.get() / aspectRatio;
+                auto adjustedProjection = glm::perspective(
+                    glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP * sensorToWorldScale, DEFAULT_FAR_CLIP
+                );
                 _viewFrustum.setProjection(adjustedProjection);
                 _viewFrustum.calculate();
             }

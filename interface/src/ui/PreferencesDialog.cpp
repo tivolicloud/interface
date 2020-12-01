@@ -221,17 +221,17 @@ void setupPreferences() {
         auto getter = [myAvatar]() -> float { return myAvatar->getRealWorldFieldOfView(); };
         auto setter = [myAvatar](float value) { myAvatar->setRealWorldFieldOfView(value); };
         auto preference =
-            new SpinnerPreference(VIEW_CATEGORY, "Real world vertical field of view (angular size of monitor)", getter, setter);
+            new SpinnerPreference(VIEW_CATEGORY, "Real world horizontal field of view (angular size of monitor)", getter, setter);
         preference->setMin(1);
-        preference->setMax(180);
+        preference->setMax(240);
         preferences->addPreference(preference);
     }
     {
         auto getter = []() -> float { return qApp->getFieldOfView(); };
         auto setter = [](float value) { qApp->setFieldOfView(value); };
-        auto preference = new SpinnerPreference(VIEW_CATEGORY, "Vertical field of view", getter, setter);
+        auto preference = new SpinnerPreference(VIEW_CATEGORY, "Horizontal field of view", getter, setter);
         preference->setMin(1);
-        preference->setMax(180);
+        preference->setMax(240);
         preference->setStep(1);
         preferences->addPreference(preference);
     }

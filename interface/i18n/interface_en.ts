@@ -346,12 +346,12 @@ p {margin:5px 0;}
     </message>
     <message>
         <location filename="../ui/preferencesDialog.ui" line="980"/>
-        <source>Real world vertical field of view (angular size of monitor)</source>
+        <source>Real world horizontal field of view (angular size of monitor)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/preferencesDialog.ui" line="1065"/>
-        <source>Vertical field of view</source>
+        <source>Horizontal field of view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
