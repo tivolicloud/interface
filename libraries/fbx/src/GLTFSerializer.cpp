@@ -503,12 +503,14 @@ bool GLTFSerializer::addImage(const QJsonObject& object) {
 
 bool GLTFSerializer::getIndexFromObject(const QJsonObject& object,
                                         const QString& field,
-                                        int& outidx,
+                                        int& textureOutidx,
+                                        int& texCoordOutidx,
                                         QMap<QString, bool>& defined) {
     QJsonObject subobject;
     if (getObjectVal(object, field, subobject, defined)) {
         QMap<QString, bool> tmpdefined = QMap<QString, bool>();
-        return getIntVal(subobject, "index", outidx, tmpdefined);
+        getIntVal(subobject, "texCoord", texCoordOutidx, tmpdefined);
+        return getIntVal(subobject, "index", textureOutidx, tmpdefined);
     }
     return false;
 }
@@ -518,10 +520,10 @@ bool GLTFSerializer::addMaterial(const QJsonObject& object) {
 
     getStringVal(object, "name", material.name, material.defined);
     getDoubleArrayVal(object, "emissiveFactor", material.emissiveFactor, material.defined);
-    getIndexFromObject(object, "emissiveTexture", material.emissiveTexture, material.defined);
-    getIndexFromObject(object, "normalTexture", material.normalTexture, material.defined);
-    getIndexFromObject(object, "occlusionTexture", material.occlusionTexture, material.defined);
-    getIndexFromObject(object, "lightmapTexture", material.lightmapTexture, material.defined); // proposal
+    getIndexFromObject(object, "emissiveTexture", material.emissiveTexture, material.emissiveTexCoord, material.defined);
+    getIndexFromObject(object, "normalTexture", material.normalTexture, material.normalTexCoord, material.defined);
+    getIndexFromObject(object, "occlusionTexture", material.occlusionTexture, material.occlusionTexCoord, material.defined);
+    getIndexFromObject(object, "lightmapTexture", material.lightmapTexture, material.lightmapTexCoord, material.defined); // proposal
     getBoolVal(object, "doubleSided", material.doubleSided, material.defined);
     QString alphaMode;
     if (getStringVal(object, "alphaMode", alphaMode, material.defined)) {
@@ -530,16 +532,26 @@ bool GLTFSerializer::addMaterial(const QJsonObject& object) {
     getDoubleVal(object, "alphaCutoff", material.alphaCutoff, material.defined);
     QJsonObject jsMetallicRoughness;
     if (getObjectVal(object, "pbrMetallicRoughness", jsMetallicRoughness, material.defined)) {
-        getDoubleArrayVal(jsMetallicRoughness, "baseColorFactor", material.pbrMetallicRoughness.baseColorFactor,
-                          material.pbrMetallicRoughness.defined);
-        getIndexFromObject(jsMetallicRoughness, "baseColorTexture", material.pbrMetallicRoughness.baseColorTexture,
-                           material.pbrMetallicRoughness.defined);
-        getDoubleVal(jsMetallicRoughness, "metallicFactor", material.pbrMetallicRoughness.metallicFactor,
-                     material.pbrMetallicRoughness.defined);
-        getDoubleVal(jsMetallicRoughness, "roughnessFactor", material.pbrMetallicRoughness.roughnessFactor,
-                     material.pbrMetallicRoughness.defined);
-        getIndexFromObject(jsMetallicRoughness, "metallicRoughnessTexture",
-                           material.pbrMetallicRoughness.metallicRoughnessTexture, material.pbrMetallicRoughness.defined);
+        getDoubleArrayVal(
+            jsMetallicRoughness, "baseColorFactor", material.pbrMetallicRoughness.baseColorFactor,
+            material.pbrMetallicRoughness.defined
+        );
+        getIndexFromObject(
+            jsMetallicRoughness, "baseColorTexture", material.pbrMetallicRoughness.baseColorTexture,
+            material.pbrMetallicRoughness.baseColorTexCoord, material.pbrMetallicRoughness.defined
+        );
+        getDoubleVal(
+            jsMetallicRoughness, "metallicFactor", material.pbrMetallicRoughness.metallicFactor,
+            material.pbrMetallicRoughness.defined
+        );
+        getDoubleVal(
+            jsMetallicRoughness, "roughnessFactor", material.pbrMetallicRoughness.roughnessFactor,
+            material.pbrMetallicRoughness.defined
+        );
+        getIndexFromObject(
+            jsMetallicRoughness, "metallicRoughnessTexture", material.pbrMetallicRoughness.metallicRoughnessTexture,
+            material.pbrMetallicRoughness.metallicRoughnessTexCoord, material.pbrMetallicRoughness.defined
+        );
     }
     _file.materials.push_back(material);
     return true;
@@ -1697,9 +1709,10 @@ QNetworkReply* GLTFSerializer::request(hifi::URL& url, bool isTest) {
     return netReply;  // trying to sync later on.
 }
 
-HFMTexture GLTFSerializer::getHFMTexture(const GLTFTexture& texture) {
+HFMTexture GLTFSerializer::getHFMTexture(const GLTFTexture& texture, const int texCoord) {
     HFMTexture fbxtex = HFMTexture();
-    fbxtex.texcoordSet = 0;
+    fbxtex.texcoordSet = texCoord;
+    fbxtex.texcoordSetName = "TEXCOORD_" + texCoord;
 
     if (texture.defined["source"]) {
         QString url = _file.images[texture.source].uri;
@@ -1748,23 +1761,23 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
     }
 
     if (material.defined["emissiveTexture"]) {
-        hfmMat.emissiveTexture = getHFMTexture(_file.textures[material.emissiveTexture]);
+        hfmMat.emissiveTexture = getHFMTexture(_file.textures[material.emissiveTexture], material.emissiveTexCoord);
         hfmMat.useEmissiveMap = true;
     }
 
     if (material.defined["normalTexture"]) {
-        hfmMat.normalTexture = getHFMTexture(_file.textures[material.normalTexture]);
+        hfmMat.normalTexture = getHFMTexture(_file.textures[material.normalTexture], material.normalTexCoord);
         hfmMat.useNormalMap = true;
     }
 
     if (material.defined["occlusionTexture"]) {
-        hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.occlusionTexture]);
+        hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.occlusionTexture], material.occlusionTexCoord);
         hfmMat.useOcclusionMap = true;
     }
 
     // https://github.com/KhronosGroup/glTF/pull/1658
     if (material.defined["lightmapTexture"]) {
-        hfmMat.lightmapTexture = getHFMTexture(_file.textures[material.lightmapTexture]);
+        hfmMat.lightmapTexture = getHFMTexture(_file.textures[material.lightmapTexture], material.lightmapTexCoord);
         // hfmMat.lightmapParams
     }
 
@@ -1772,8 +1785,8 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
         hfmMat.isPBSMaterial = true;
 
         if (material.pbrMetallicRoughness.defined["baseColorTexture"]) {
-            hfmMat.opacityTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture]);
-            hfmMat.albedoTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture]);
+            hfmMat.opacityTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture], material.pbrMetallicRoughness.baseColorTexCoord);
+            hfmMat.albedoTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.baseColorTexture], material.pbrMetallicRoughness.baseColorTexCoord);
             hfmMat.useAlbedoMap = true;
         }
         if (material.pbrMetallicRoughness.defined["baseColorFactor"] &&
@@ -1788,15 +1801,15 @@ void GLTFSerializer::setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& mat
 
         if (material.pbrMetallicRoughness.defined["metallicRoughnessTexture"]) {
             // gltf spec doesnt implement occlusion in the orm texture
-            // hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            // hfmMat.occlusionTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture], material.pbrMetallicRoughness.metallicRoughnessTexCoord);
             // hfmMat.occlusionTexture.sourceChannel = image::ColorChannel::RED;
             // hfmMat.useOcclusionMap = true;
 
-            hfmMat.roughnessTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.roughnessTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture], material.pbrMetallicRoughness.metallicRoughnessTexCoord);
             hfmMat.roughnessTexture.sourceChannel = image::ColorChannel::GREEN;
             hfmMat.useRoughnessMap = true;
 
-            hfmMat.metallicTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture]);
+            hfmMat.metallicTexture = getHFMTexture(_file.textures[material.pbrMetallicRoughness.metallicRoughnessTexture], material.pbrMetallicRoughness.metallicRoughnessTexCoord);
             hfmMat.metallicTexture.sourceChannel = image::ColorChannel::BLUE;
             hfmMat.useMetallicMap = true;
         }

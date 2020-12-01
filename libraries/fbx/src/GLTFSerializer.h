@@ -392,29 +392,21 @@ struct GLTFImage {
 struct GLTFpbrMetallicRoughness {
     QVector<double> baseColorFactor;
     int baseColorTexture;
+    int baseColorTexCoord;
     int metallicRoughnessTexture;
+    int metallicRoughnessTexCoord;
     double metallicFactor;
     double roughnessFactor;
     QMap<QString, bool> defined;
     void dump() {
-        if (defined["baseColorFactor"]) {
-            qCDebug(modelformat) << "baseColorFactor: " << baseColorFactor;
-        }
-        if (defined["baseColorTexture"]) {
-            qCDebug(modelformat) << "baseColorTexture: " << baseColorTexture;
-        }
-        if (defined["metallicRoughnessTexture"]) {
-            qCDebug(modelformat) << "metallicRoughnessTexture: " << metallicRoughnessTexture;
-        }
-        if (defined["metallicFactor"]) {
-            qCDebug(modelformat) << "metallicFactor: " << metallicFactor;
-        }
-        if (defined["roughnessFactor"]) {
-            qCDebug(modelformat) << "roughnessFactor: " << roughnessFactor;
-        }
-        if (defined["baseColorFactor"]) {
-            qCDebug(modelformat) << "baseColorFactor: " << baseColorFactor;
-        }
+        if (defined["baseColorFactor"]) qCDebug(modelformat) << "baseColorFactor: " << baseColorFactor;
+        if (defined["baseColorTexture"]) qCDebug(modelformat) << "baseColorTexture: " << baseColorTexture;
+        if (defined["baseColorTexCoord"]) qCDebug(modelformat) << "baseColorTexCoord: " << baseColorTexCoord;
+        if (defined["metallicRoughnessTexture"]) qCDebug(modelformat) << "metallicRoughnessTexture: " << metallicRoughnessTexture;
+        if (defined["metallicRoughnessTexCoord"]) qCDebug(modelformat) << "metallicRoughnessTexCoord: " << metallicRoughnessTexCoord;
+        if (defined["metallicFactor"]) qCDebug(modelformat) << "metallicFactor: " << metallicFactor;
+        if (defined["roughnessFactor"]) qCDebug(modelformat) << "roughnessFactor: " << roughnessFactor;
+        if (defined["baseColorFactor"]) qCDebug(modelformat) << "baseColorFactor: " << baseColorFactor;
     }
 };
 
@@ -422,42 +414,32 @@ struct GLTFMaterial {
     QString name;
     QVector<double> emissiveFactor;
     int emissiveTexture;
+    int emissiveTexCoord;
     int normalTexture;
+    int normalTexCoord;
     int occlusionTexture;
+    int occlusionTexCoord;
     int lightmapTexture; // proposal
+    int lightmapTexCoord; // proposal
     graphics::MaterialKey::OpacityMapMode alphaMode;
     double alphaCutoff;
     bool doubleSided;
     GLTFpbrMetallicRoughness pbrMetallicRoughness;
     QMap<QString, bool> defined;
     void dump() {
-        if (defined["name"]) {
-            qCDebug(modelformat) << "name: " << name;
-        }
-        if (defined["emissiveTexture"]) {
-            qCDebug(modelformat) << "emissiveTexture: " << emissiveTexture;
-        }
-        if (defined["normalTexture"]) {
-            qCDebug(modelformat) << "normalTexture: " << normalTexture;
-        }
-        if (defined["occlusionTexture"]) {
-            qCDebug(modelformat) << "occlusionTexture: " << occlusionTexture;
-        }
-        if (defined["lightmapTexture"]) {
-            qCDebug(modelformat) << "lightmapTexture: " << lightmapTexture;
-        }
-        if (defined["emissiveFactor"]) {
-            qCDebug(modelformat) << "emissiveFactor: " << emissiveFactor;
-        }
-        if (defined["alphaMode"]) {
-            qCDebug(modelformat) << "alphaMode: " << alphaMode;
-        }
-        if (defined["alphaCutoff"]) {
-            qCDebug(modelformat) << "alphaCutoff: " << alphaCutoff;
-        }
-        if (defined["pbrMetallicRoughness"]) {
-            pbrMetallicRoughness.dump();
-        }
+        if (defined["name"]) qCDebug(modelformat) << "name: " << name;
+        if (defined["emissiveTexture"]) qCDebug(modelformat) << "emissiveTexture: " << emissiveTexture;
+        if (defined["emissiveTexCoord"]) qCDebug(modelformat) << "emissiveTexCoord: " << emissiveTexCoord;
+        if (defined["normalTexture"]) qCDebug(modelformat) << "normalTexture: " << normalTexture;
+        if (defined["normalTexCoord"]) qCDebug(modelformat) << "normalTexCoord: " << normalTexCoord;
+        if (defined["occlusionTexture"]) qCDebug(modelformat) << "occlusionTexture: " << occlusionTexture;
+        if (defined["occlusionTexCoord"]) qCDebug(modelformat) << "occlusionTexCoord: " << occlusionTexCoord;
+        if (defined["lightmapTexture"]) qCDebug(modelformat) << "lightmapTexture: " << lightmapTexture;
+        if (defined["lightmapTexCoord"]) qCDebug(modelformat) << "lightmapTexCoord: " << lightmapTexCoord;
+        if (defined["emissiveFactor"]) qCDebug(modelformat) << "emissiveFactor: " << emissiveFactor;
+        if (defined["alphaMode"]) qCDebug(modelformat) << "alphaMode: " << alphaMode;
+        if (defined["alphaCutoff"]) qCDebug(modelformat) << "alphaCutoff: " << alphaCutoff;
+        if (defined["pbrMetallicRoughness"]) pbrMetallicRoughness.dump();
     }
 };
 
@@ -860,7 +842,8 @@ private:
     int getMeshPrimitiveRenderingMode(const QString& type);
 
     bool getIndexFromObject(const QJsonObject& object, const QString& field, 
-                            int& outidx, QMap<QString, bool>& defined);
+                            int& textureOutidx, int& texCoordOutidx,
+                            QMap<QString, bool>& defined);
 
     bool setAsset(const QJsonObject& object);
 
@@ -909,7 +892,7 @@ private:
     bool doesResourceExist(const QString& url);
 
     void setHFMMaterial(HFMMaterial& hfmMat, const GLTFMaterial& material);
-    HFMTexture getHFMTexture(const GLTFTexture& texture);
+    HFMTexture getHFMTexture(const GLTFTexture& texture, const int texCoord);
 
     void glTFDebugDump();
 };
