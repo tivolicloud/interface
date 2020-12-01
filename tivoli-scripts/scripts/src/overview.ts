@@ -129,7 +129,6 @@ export class Overview {
 				AccountServices.metaverseServerURL,
 		});
 		this.window.setPosition(99999, 99999);
-		this.fixPosition();
 
 		this.handler = new OverviewHandler(this.uuid, {
 			button: null,
