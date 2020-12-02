@@ -115,7 +115,7 @@ launcher windows:
           artifacts: true
 
     variables:
-        CSC_LINK: C:\Users\maki\tivoli-cloud-vr.ci.pfx
+        CSC_LINK: C:\tivoli-cloud-vr.ci.pfx
         # CSC_KEY_PASSWORD
 
     script:
