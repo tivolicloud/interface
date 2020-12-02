@@ -24,6 +24,8 @@ class Message {
 
 	public shouldBeShowing = true;
 
+	public date = new Date();
+
 	private getImageFromText() {
 		const urlMatches = this.message.match(
 			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:jpg|jpeg|png|gif|webp|apng|svg)/i,

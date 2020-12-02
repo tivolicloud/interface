@@ -22,7 +22,12 @@
 				'/image), url(./assets/default-user-icon.jpg)'
 			"
 		></div>
-		<div class="username" *ngIf="!message.extras.me">
+		<div
+			class="username"
+			*ngIf="!message.extras.me"
+			[matTooltip]="message.date | date: 'HH:mm, MMM d'"
+			matTooltipPosition="above"
+		>
 			<span class="badge" *ngIf="message.extras.tts">TTS</span>
 			{{ message.type == "message" ? message.username + ":" : "" }}
 		</div>
