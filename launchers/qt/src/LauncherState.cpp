@@ -516,7 +516,7 @@ void LauncherState::downloadClient() {
 void LauncherState::launcherDownloadComplete() {
     _launcherZipFile.close();
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     installLauncher();
 #elif defined(Q_OS_WIN)
     launchAutoUpdater(_launcherZipFile.fileName());
@@ -576,7 +576,7 @@ void LauncherState::downloadLauncher() {
     auto request = new QNetworkRequest(QUrl(_latestBuilds.launcherBuild.installerZipURL));
     auto reply = _networkAccessManager.get(*request);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     _launcherZipFile.setFileName(_launcherDirectory.absoluteFilePath("launcher.zip"));
 #elif defined(Q_OS_WIN)
     _launcherZipFile.setFileName(_launcherDirectory.absoluteFilePath("launcher.exe"));

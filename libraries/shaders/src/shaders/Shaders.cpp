@@ -39,7 +39,7 @@ const std::vector<Dialect>& allDialects() {
     return ALL_DIALECTS;
 }
     
-#elif defined(Q_OS_MAC) 
+#elif defined(Q_OS_MACOS) 
 
 const Dialect DEFAULT_DIALECT = Dialect::glsl410;
 
@@ -71,7 +71,7 @@ const std::string& dialectPath(Dialect dialect) {
 #if defined(USE_GLES) 
         case Dialect::glsl310es: return e310esPath;
 #else
-#if !defined(Q_OS_MAC)
+#if !defined(Q_OS_MACOS)
         case Dialect::glsl450: return e450Path;
 #endif
         case Dialect::glsl410: return e410Path;

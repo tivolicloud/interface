@@ -213,7 +213,7 @@ void PluginContainer::setFullscreen(const QScreen* target, bool hideMenu) {
     _window->windowHandle()->setScreen((QScreen*)target);
     _window->showFullScreen();
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     // also hide the QMainWindow's menuBar
     QMenuBar* menuBar = _window->menuBar();
     if (menuBar && hideMenu) {
@@ -242,7 +242,7 @@ void PluginContainer::unsetFullscreen(const QScreen* avoid) {
             targetGeometry = newTarget->availableGeometry();
         }
     }
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QTimer* timer = new QTimer();
     timer->singleShot(2000, [=] {
         _window->setGeometry(targetGeometry);
@@ -252,7 +252,7 @@ void PluginContainer::unsetFullscreen(const QScreen* avoid) {
     _window->setGeometry(targetGeometry);
 #endif
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     // also show the QMainWindow's menuBar
     QMenuBar* menuBar = _window->menuBar();
     if (menuBar) {

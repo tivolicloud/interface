@@ -24,7 +24,7 @@
 #include <QtCore/QUrl>
 #include <QtCore/QVector>
 
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
 #include <mach-o/dyld.h>
 #endif
 
@@ -53,7 +53,7 @@ const QString& PathUtils::getRccPath() {
     static std::once_flag once;
     std::call_once(once, [&] {
         static const QString rccName{ "/resources.rcc" };
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
         char buffer[8192];
         uint32_t bufferSize = sizeof(buffer);
         _NSGetExecutablePath(buffer, &bufferSize);
@@ -69,13 +69,13 @@ const QString& PathUtils::getRccPath() {
 
 #ifdef DEV_BUILD
 const QString& PathUtils::projectRootPath() {
-    static QString sourceFolder;
-    static std::once_flag once;
-    std::call_once(once, [&] {
-        QDir thisDir = QFileInfo(__FILE__).absoluteDir();
-        sourceFolder = QDir::cleanPath(thisDir.absoluteFilePath("../../../"));
-    });
-    return sourceFolder;
+    // static QString sourceFolder;
+    // static std::once_flag once;
+    // std::call_once(once, [&] {
+    //     QDir thisDir = QFileInfo(__FILE__).absoluteDir();
+    //     sourceFolder = QDir::cleanPath(thisDir.absoluteFilePath("../../../"));
+    // });
+    return BuildInfo::SOURCE_DIR;
 }
 #endif
 
@@ -118,7 +118,7 @@ QUrl PathUtils::expandToLocalDataAbsolutePath(const QUrl& fileUrl) {
         // this results in a qrc:// url...
         // return resourcesUrl(path.mid(3));
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
         static const QString staticResourcePath = QCoreApplication::applicationDirPath() + "/../Resources/";
 #elif defined (ANDROID)
         static const QString staticResourcePath =
@@ -279,7 +279,7 @@ QUrl PathUtils::defaultScriptsLocation(const QString& newDefaultPath) {
     if (!overriddenDefaultScriptsLocation.isEmpty()) {
         path = overriddenDefaultScriptsLocation;
     } else {
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
         path = QCoreApplication::applicationDirPath() + "/../Resources/scripts";
 #elif defined(Q_OS_ANDROID)
         path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/scripts";

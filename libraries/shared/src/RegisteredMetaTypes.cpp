@@ -25,6 +25,7 @@
 #include <QtScript/QScriptValue>
 #include <QtScript/QScriptValueIterator>
 #include <QJsonDocument>
+#include <QtCore/QThread>
 
 int uint32MetaTypeId = qRegisterMetaType<glm::uint32>("uint32");
 int glmUint32MetaTypeId = qRegisterMetaType<glm::uint32>("glm::uint32");
@@ -221,6 +222,11 @@ QScriptValue vec3ColorToScriptValue(QScriptEngine* engine, const glm::vec3& vec3
 }
 
 void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
+    
+    if (object.engine()->thread() != QThread::currentThread()) {
+      qWarning() << "XXX vec3FromScriptValue thread mismatch-- js value: " << object.engine()->thread() << " currentThread:" << QThread::currentThread();
+    }
+    
     if (object.isNumber()) {
         vec3 = glm::vec3(object.toVariant().toFloat());
     } else if (object.isString()) {
@@ -246,6 +252,7 @@ void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
             x = object.property("red");
         }
 
+        if (!object.isValid()) qDebug() << "WTF ITS INVALID WTF 1";
         QScriptValue y = object.property("y");
         if (!y.isValid()) {
             y = object.property("g");
@@ -254,6 +261,7 @@ void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
             y = object.property("green");
         }
 
+        if (!object.isValid()) qDebug() << "WTF ITS INVALID WTF 2";
         QScriptValue z = object.property("z");
         if (!z.isValid()) {
             z = object.property("b");
@@ -262,6 +270,7 @@ void vec3FromScriptValue(const QScriptValue& object, glm::vec3& vec3) {
             z = object.property("blue");
         }
 
+        if (!object.isValid()) qDebug() << "WTF ITS INVALID WTF 3";
         vec3.x = x.toVariant().toFloat();
         vec3.y = y.toVariant().toFloat();
         vec3.z = z.toVariant().toFloat();

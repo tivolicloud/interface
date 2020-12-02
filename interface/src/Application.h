@@ -425,7 +425,7 @@ public slots:
 
     void showDialog(const QUrl& widgetUrl, const QUrl& tabletUrl, const QString& name) const;
 
-    void showLoginScreen();  // TIVOLI making all login screens early out and commenting all calls
+    void showLoginScreen();
 
     // FIXME: Move addAssetToWorld* methods to own class?
     void addAssetToWorldFromURL(QString url);

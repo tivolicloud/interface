@@ -218,9 +218,7 @@ if (WIN32)
     add_dependency_external_projects(sixense)
   endif ()
 
-  add_dependency_external_projects(neuron)
   add_dependency_external_projects(wasapi)
-  add_dependency_external_projects(steamworks)
 endif()
 
 # disable /OPT:REF and /OPT:ICF for the Debug builds
@@ -257,6 +255,7 @@ target_opengl()
 add_crashpad()
 target_breakpad()
 target_json()
+target_gifh()
 target_discord_game_sdk()
 
 # perform standard include and linking for found externals
@@ -495,10 +494,6 @@ if (WIN32)
 
     package_libraries_for_deployment()
 endif()
-
-add_dependency_external_projects(GifCreator)
-find_package(GifCreator REQUIRED)
-target_include_directories(${TARGET_NAME} PUBLIC ${GIFCREATOR_INCLUDE_DIRS})
 
 # tell CMake to exclude ui_console.h for policy CMP0071
 set_property(SOURCE ui_console.h PROPERTY SKIP_AUTOMOC ON)

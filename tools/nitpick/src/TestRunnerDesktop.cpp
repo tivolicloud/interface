@@ -78,7 +78,7 @@ void TestRunnerDesktop::setWorkingFolderAndEnableControls() {
 
 #ifdef Q_OS_WIN
     _installationFolder = _workingFolder + "/High Fidelity";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     _installationFolder = _workingFolder + "/High_Fidelity";
 #endif
 
@@ -88,7 +88,7 @@ void TestRunnerDesktop::setWorkingFolderAndEnableControls() {
     connect(_timer, SIGNAL(timeout()), this, SLOT(checkTime()));
     _timer->start(30 * 1000);  //time specified in ms
     
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // Create MAC shell scripts
     QFile script;
     
@@ -242,7 +242,7 @@ void TestRunnerDesktop::runInstaller() {
     QString commandLine;
 #ifdef Q_OS_WIN
     commandLine = "\"" + QDir::toNativeSeparators(installerFullPath) + "\"" + " /S /D=" + QDir::toNativeSeparators(_installationFolder);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     // Create installation shell script
     QFile script;
     script.setFileName(_workingFolder + "/install_app.sh");
@@ -316,7 +316,7 @@ void TestRunnerDesktop::saveExistingHighFidelityAppDataFolder() {
     QString dataDirectory{ "NOT FOUND" };
 #ifdef Q_OS_WIN
     dataDirectory = qgetenv("USERPROFILE") + "\\AppData\\Roaming";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     dataDirectory = QDir::homePath() + "/Library/Application Support";
 #endif
     if (_runLatest->isChecked()) {
@@ -339,7 +339,7 @@ void TestRunnerDesktop::saveExistingHighFidelityAppDataFolder() {
     QDir canonicalAppDataFolder;
 #ifdef Q_OS_WIN
     canonicalAppDataFolder = QDir::currentPath() + "/AppDataHighFidelity";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     canonicalAppDataFolder = QCoreApplication::applicationDirPath() + "/AppDataHighFidelity";
 #endif
     if (canonicalAppDataFolder.exists()) {
@@ -417,7 +417,7 @@ void TestRunnerDesktop::killProcesses() {
         QMessageBox::critical(0, "Internal error: " + QString(__FILE__) + ":" + QString::number(__LINE__), "unknown error");
         exit(-1);
     }
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QString commandLine;
     
     commandLine = QString("killall interface") + "; " + _workingFolder +"/waitForFinish.sh interface";
@@ -443,7 +443,7 @@ void TestRunnerDesktop::startLocalServerProcesses() {
         "start \"assignment-client.exe\" \"" + QDir::toNativeSeparators(_installationFolder) + "\\assignment-client.exe\" -n 6";
     system(commandLine.toStdString().c_str());
 
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     commandLine = "open \"" +_installationFolder + "/Sandbox.app\"";
     system(commandLine.toStdString().c_str());
 #endif
@@ -493,7 +493,7 @@ void TestRunnerDesktop::runInterfaceWithTestScript() {
 
     _interfaceWorker->setCommandLine(commandLine);
     emit startInterface();
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QFile script;
     script.setFileName(_workingFolder + "/runInterfaceTests.sh");
     if (!script.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -678,7 +678,7 @@ QString TestRunnerDesktop::getPRNumberFromURL(const QString& url) {
         if (urlParts.size() <= 2) {
 #ifdef Q_OS_WIN
             throw "URL not in expected format, should look like `https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/13023/HighFidelity-Beta-Interface-PR14006-be76c43.exe`";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
             throw "URL not in expected format, should look like `https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/13023/HighFidelity-Beta-Interface-PR14006-be76c43.dmg`";
 #endif
         }
@@ -686,7 +686,7 @@ QString TestRunnerDesktop::getPRNumberFromURL(const QString& url) {
         if (filenameParts.size() <= 3) {
 #ifdef Q_OS_WIN
             throw "URL not in expected format, should look like `https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/13023/HighFidelity-Beta-Interface-PR14006-be76c43.exe`";
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
             throw "URL not in expected format, should look like `https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/13023/HighFidelity-Beta-Interface-PR14006-be76c43.dmg`";
 #endif
         }

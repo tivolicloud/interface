@@ -20,7 +20,6 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include <QtCore/QTimer>
-#include <QtCore/QCborValue>
 
 #include <shared/QtHelpers.h>
 #include <scripting/HMDScriptingInterface.h>
@@ -83,7 +82,7 @@ const int SCRIPTED_MOTOR_AVATAR_FRAME = 1;
 const int SCRIPTED_MOTOR_WORLD_FRAME = 2;
 const int SCRIPTED_MOTOR_SIMPLE_MODE = 0;
 const int SCRIPTED_MOTOR_DYNAMIC_MODE = 1;
-const QString& DEFAULT_AVATAR_COLLISION_SOUND_URL = "https://cdn.tivolicloud.com/assets/public-content/audio/legacy_hf/Body_Hits_Impact.wav";
+const QString& DEFAULT_AVATAR_COLLISION_SOUND_URL = "qrc:/sounds/Body_Hits_Impact.wav";
 
 const float MyAvatar::ZOOM_MIN = 0.5f;
 const float MyAvatar::ZOOM_MAX = 25.0f;
@@ -1921,7 +1920,7 @@ void MyAvatar::updateAvatarEntity(const QUuid& entityID, const QByteArray& entit
     // NOTE: this is an invokable Script call
     bool changed = false;
     _avatarEntitiesLock.withWriteLock([&] {
-        auto data = QCborValue::fromCbor(entityData).toJsonValue();
+        auto data = QJsonDocument::fromJson(entityData).toVariant().toJsonValue();
         if (data.isNull() || !data.isObject() || data.toObject().isEmpty()) {
             qDebug() << "ERROR!  Trying to update with invalid avatar entity data.  Skipping." << data;
         } else {

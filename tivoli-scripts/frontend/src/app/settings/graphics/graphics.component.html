@@ -146,3 +146,27 @@
 		style="margin-left: 24px; max-width: 600px; width: 600px"
 	></mat-slider>
 </div>
+<div class="setting" style="max-height: 16px; height: 16px">
+	<p class="label">
+		<mat-icon>photo_size_select_large</mat-icon>
+		Field of view ({{ fieldOfView }}&deg;)
+	</p>
+	<mat-slider
+		thumbLabel
+		min="1"
+		max="240"
+		step="1"
+		(input)="onFieldOfViewChange($event)"
+		[value]="fieldOfView"
+		style="max-width: 300px; width: 300px"
+	></mat-slider>
+	<button
+		mat-icon-button
+		*ngIf="fieldOfView != defaultFieldOfView"
+		color="primary"
+		(click)="restoreFieldOfView()"
+		style="margin-left: 8px"
+	>
+		<mat-icon>restore</mat-icon>
+	</button>
+</div>

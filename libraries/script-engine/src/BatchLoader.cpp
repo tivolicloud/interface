@@ -28,7 +28,11 @@ BatchLoader::BatchLoader(const QList<QUrl>& urls)
     : QObject(),
       _started(false),
       _finished(false),
+      #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+      _urls(urls.toSet()),
+      #else
       _urls(QSet<QUrl>(urls.begin(), urls.end())),
+      #endif
       _data(),
       _status() {
     qRegisterMetaType<QMap<QUrl, QString>>("QMap<QUrl, QString>");

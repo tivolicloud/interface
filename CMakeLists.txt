@@ -41,7 +41,7 @@ file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_env")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros/TargetPython.cmake")
 target_python()
 
-if (WIN32 AND NOT HIFI_ANDROID)
+if (WIN32 AND NOT HIFI_ANDROID AND MSVC)
     # Force x64 toolset
     set(CMAKE_GENERATOR_TOOLSET "host=x64" CACHE STRING "64-bit toolset" FORCE)
 endif()
@@ -64,29 +64,28 @@ if (DEFINED QT_CMAKE_PREFIX_PATH)
     set(ENV{QT_CMAKE_PREFIX_PATH} ${QT_CMAKE_PREFIX_PATH})
 endif()
 
-set(VCPKG_BUILD_TYPE_PARAM "")
+set(EXTRA_PREBUILD_ARGS "")
+
 if(VCPKG_BUILD_TYPE)
-  set(VCPKG_BUILD_TYPE_PARAM --vcpkg-build-type ${VCPKG_BUILD_TYPE})
+  list(APPEND EXTRA_PREBUILD_ARGS --vcpkg-build-type ${VCPKG_BUILD_TYPE})
 else()
   # only make release libraries since RelWithDebInfo is used most of the time
-  set(VCPKG_BUILD_TYPE_PARAM --vcpkg-build-type release)
+  list(APPEND EXTRA_PREBUILD_ARGS --vcpkg-build-type release)
+endif()
+  
+if(HIFI_ANDROID)
+  list(APPEND EXTRA_PREBUILD_ARGS --android ${HIFI_ANDROID_APP})
+else()
+  # squelch the Policy CMP0074 warning without requiring an update to cmake 3.12.
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
+    cmake_policy(SET CMP0074 NEW)
+  endif()
 endif()
 
-if (HIFI_ANDROID)
-    execute_process(
-        COMMAND ${HIFI_PYTHON_EXEC} ${CMAKE_CURRENT_SOURCE_DIR}/prebuild.py --release-type ${RELEASE_TYPE} --android ${HIFI_ANDROID_APP} --build-root ${CMAKE_BINARY_DIR} ${VCPKG_BUILD_TYPE_PARAM}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-else()
-    execute_process(
-        COMMAND ${HIFI_PYTHON_EXEC} ${CMAKE_CURRENT_SOURCE_DIR}/prebuild.py --release-type ${RELEASE_TYPE} --build-root ${CMAKE_BINARY_DIR} ${VCPKG_BUILD_TYPE_PARAM}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-    # squelch the Policy CMP0074 warning without requiring an update to cmake 3.12.
-    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
-        cmake_policy(SET CMP0074 NEW)
-    endif()
-endif()
+execute_process(
+  COMMAND ${HIFI_PYTHON_EXEC} ${CMAKE_CURRENT_SOURCE_DIR}/prebuild.py --release-type ${RELEASE_TYPE} --build-root ${CMAKE_BINARY_DIR} ${EXTRA_PREBUILD_ARGS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/vcpkg.cmake")
     message(FATAL_ERROR "vcpkg configuration missing.")
@@ -94,6 +93,10 @@ endif()
 include("${CMAKE_BINARY_DIR}/vcpkg.cmake")
 
 if (HIFI_ANDROID)
+  if (DEFINED HIFI_ANDROID_PRECOMPILED)
+      set(ENV{HIFI_ANDROID_PRECOMPILED} ${HIFI_ANDROID_PRECOMPILED})
+  endif()
+
   set(QT_CMAKE_PREFIX_PATH "$ENV{HIFI_ANDROID_PRECOMPILED}/qt/lib/cmake")
 else() 
   if(NOT EXISTS "${CMAKE_BINARY_DIR}/qt.cmake")
@@ -104,7 +107,7 @@ endif()
 
 option(VCPKG_APPLOCAL_DEPS OFF)
 
-project(hifi)
+project(tivoli)
 include("cmake/init.cmake")
 include("cmake/compiler.cmake")
 option(VCPKG_APPLOCAL_DEPS OFF)

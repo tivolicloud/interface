@@ -65,7 +65,7 @@ void TestRunnerMobile::setWorkingFolderAndEnableControls() {
 }
 
 void TestRunnerMobile::connectDevice() {
-#if defined Q_OS_WIN || defined Q_OS_MAC
+#if defined Q_OS_WIN || defined Q_OS_MACOS
     if (!_adbInterface) {
         _adbInterface = new AdbInterface();
     }
@@ -180,7 +180,7 @@ void TestRunnerMobile::downloadComplete() {
 }
 
 void TestRunnerMobile::installAPK() {
-#if defined Q_OS_WIN || defined Q_OS_MAC
+#if defined Q_OS_WIN || defined Q_OS_MACOS
     if (!_adbInterface) {
         _adbInterface = new AdbInterface();
     }
@@ -202,7 +202,7 @@ void TestRunnerMobile::installAPK() {
 }
 
 void TestRunnerMobile::runInterface() {
-#if defined Q_OS_WIN || defined Q_OS_MAC
+#if defined Q_OS_WIN || defined Q_OS_MACOS
     if (!_adbInterface) {
         _adbInterface = new AdbInterface();
     }
@@ -244,7 +244,7 @@ void TestRunnerMobile::runInterface() {
 }
 
 void TestRunnerMobile::pullFolder() {
-#if defined Q_OS_WIN || defined Q_OS_MAC
+#if defined Q_OS_WIN || defined Q_OS_MACOS
     if (!_adbInterface) {
         _adbInterface = new AdbInterface();
     }

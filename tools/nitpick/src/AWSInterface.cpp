@@ -615,7 +615,7 @@ void AWSInterface::updateAWS() {
 #ifdef Q_OS_WIN
     QStringList parameters = QStringList() << filename;
     process->start(_pythonCommand, parameters);
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     QStringList parameters = QStringList() << "-c" << _pythonCommand + " " + filename;
     process->start("sh", parameters);
 #endif

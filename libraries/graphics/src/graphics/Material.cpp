@@ -115,7 +115,8 @@ Material& Material::operator=(const Material& material) {
 }
 
 void Material::setEmissive(const glm::vec3& emissive, bool isSRGB) {
-    _key.setEmissive(glm::any(glm::greaterThan(emissive, glm::vec3(0.0f))));
+    // _key.setEmissive(glm::any(glm::greaterThan(emissive, glm::vec3(0.0f))));
+    _key.setEmissive(true); // should come through even if its 0.0f (gltf factor)
     _emissive = (isSRGB ? ColorUtils::sRGBToLinearVec3(emissive) : emissive);
 }
 
@@ -135,13 +136,15 @@ void Material::setAlbedo(const glm::vec3& albedo, bool isSRGB) {
 
 void Material::setRoughness(float roughness) {
     roughness = std::min(1.0f, std::max(roughness, 0.0f));
-    _key.setGlossy(roughness < 1.0f);
+    // _key.setGlossy(roughness < 1.0f);
+    _key.setGlossy(true); // should come through even if its 1.0f (gltf factor)
     _roughness = roughness;
 }
 
 void Material::setMetallic(float metallic) {
     metallic = glm::clamp(metallic, 0.0f, 1.0f);
-    _key.setMetallic(metallic > 0.0f);
+    // _key.setMetallic(metallic > 0.0f);
+    _key.setMetallic(true); // should come through even if its 0.0f (gltf factor)
     _metallic = metallic;
 }
 

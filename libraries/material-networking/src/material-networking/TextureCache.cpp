@@ -227,12 +227,14 @@ public:
 };
 
 namespace std {
-    // template <>
-    // struct hash<QByteArray> {
-    //     size_t operator()(const QByteArray& byteArray) const {
-    //         return qHash(byteArray);
-    //     }
-    // };
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+    template <>
+    struct hash<QByteArray> {
+        size_t operator()(const QByteArray& byteArray) const {
+            return qHash(byteArray);
+        }
+    };
+#endif
 
     template <>
     struct hash<TextureExtra> {
@@ -330,7 +332,7 @@ gpu::TexturePointer getFallbackTextureForType(image::TextureUsage::Type type) {
 gpu::BackendTarget getBackendTarget() {
 #if defined(USE_GLES)
     gpu::BackendTarget target = gpu::BackendTarget::GLES32;
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MACOS)
     gpu::BackendTarget target = gpu::BackendTarget::GL41;
 #else
     gpu::BackendTarget target = gpu::BackendTarget::GL45;

@@ -92,6 +92,10 @@ exports.handlers = {
 
 		console.log("Found " + docletsCount + " doclets in the source code");
 		if (isCached(e.source)) process.exit(0);
+
+		const outDir = path.join(__dirname, "../out");
+		if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
+		fs.writeFileSync(path.join(outDir, "doclets.js"), e.source);
 	},
 
 	newDoclet: e => {

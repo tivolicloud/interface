@@ -86,15 +86,6 @@ Java_io_highfidelity_oculus_OculusMobileActivity_questNativeOnResume(JNIEnv *env
 
 static const char* FRAME_FILE = "assets:/frames/20190121_1220.json";
 
-static void textureLoader(const std::string& filename, const gpu::TexturePointer& texture, uint16_t layer) {
-    QImage image;
-    QImageReader(filename.c_str()).read(&image);
-    if (layer > 0) {
-        return;
-    }
-    texture->assignStoredMip(0, image.byteCount(), image.constBits());
-}
-
 void RenderThread::submitFrame(const gpu::FramePointer& frame) {
     std::unique_lock<std::mutex> lock(_frameLock);
     _pendingFrames.push(frame);
@@ -136,7 +127,7 @@ void RenderThread::setup() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 
     if (QFileInfo(FRAME_FILE).exists()) {
-        auto frame = gpu::readFrame(FRAME_FILE, _externalTexture, &textureLoader);
+        auto frame = gpu::readFrame(FRAME_FILE, _externalTexture);
         submitFrame(frame);
     }
 }

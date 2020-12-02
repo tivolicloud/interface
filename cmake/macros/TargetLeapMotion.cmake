@@ -14,11 +14,11 @@ macro(TARGET_LEAPMOTION)
     target_link_libraries(${TARGET_NAME} ${LEAPMOTION_LIBRARIES})
     
     if (WIN32)
-        # vcpkg wont let dll's in bin 
-        add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/share/leapmotion")
+        add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/bin")
     elseif (APPLE)
+        add_paths_to_fixup_libs("${VCPKG_INSTALL_ROOT}/lib")
         add_custom_command(TARGET ${TARGET_NAME}
-            COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_PATH=${LEAPMOTION_LIBRARY_RELEASE} -P ${EXTERNAL_PROJECT_DIR}/OSXInstallNameChange.cmake
+            COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_PATH=${LEAPMOTION_LIBRARY_RELEASE} -P ${EXTERNAL_PROJECT_DIR}/MacOSInstallNameChange.cmake
             COMMENT "Calling install_name_tool on libraries to fix install name for dylib linking"
         )
     endif ()

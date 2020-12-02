@@ -42,4 +42,14 @@ const QString HIFI_URL_SCHEME_FTP = "ftp";
 const QString URL_SCHEME_ATP = "atp";
 const QString URL_SCHEME_TEA = "tea";
 
+const QStringList KNOWN_SCHEMES = QStringList()
+    << "about"
+    << "qrc"
+    << "file"
+    << "http"
+    << "https"
+    << "ftp"
+    << "atp"
+    << "tea";
+
 #endif // hifi_NetworkingConstants_h

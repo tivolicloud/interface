@@ -1,4 +1,4 @@
 Source: hifi-client-deps
 Version: 0.1
 Description: Collected dependencies for High Fidelity applications
-Build-Depends: hifi-deps, aristo (windows), glslang, liblo (windows), nlohmann-json, openvr (x64 & (windows|linux)), quazip (!android), sdl2 (!android), spirv (!android), vulkan-memory-allocator, sranipal (windows), crashpad (x64 & (osx|windows)), leapmotion (!android), discord-game-sdk (!android)
+Build-Depends: hifi-deps, aristo (windows), glslang, liblo (windows), nlohmann-json, ovr (windows), openvr (x64 & (windows|linux)), quazip (!android), sdl2 (!android), spirv (!android), vulkan-memory-allocator, sranipal (windows), crashpad (x64 & (osx|windows)), leapmotion (!android), steamworks (!android), gif-h, neuron (windows|osx), libspnav (linux), discord-game-sdk (!android)

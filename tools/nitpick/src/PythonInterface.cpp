@@ -29,7 +29,7 @@ QString PythonInterface::getPythonCommand() {
             exit(-1);
         }
     }
-#elif defined Q_OS_MAC
+#elif defined Q_OS_MACOS
     _pythonCommand = "/usr/local/bin/python3";
     if (!QFile::exists(_pythonCommand)) {
         QMessageBox::critical(0, "python not found",

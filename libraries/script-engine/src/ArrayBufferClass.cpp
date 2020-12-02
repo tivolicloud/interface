@@ -77,7 +77,7 @@ QScriptValue ArrayBufferClass::newInstance(qint32 size) {
         return QScriptValue();
     }
     // We've patched qt to fix https://highfidelity.atlassian.net/browse/BUGZ-46 on mac and windows only.
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
     engine()->reportAdditionalMemoryCost(size);
 #endif
     QScriptEngine* eng = engine();

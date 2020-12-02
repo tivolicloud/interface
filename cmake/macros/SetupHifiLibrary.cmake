@@ -86,4 +86,5 @@ macro(SETUP_HIFI_LIBRARY)
 
   set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "Libraries")
 
+  set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME tivoli-${TARGET_NAME})
 endmacro(SETUP_HIFI_LIBRARY)

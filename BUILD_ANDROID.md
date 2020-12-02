@@ -6,11 +6,11 @@ Please read the [general build guide](BUILD.md) for information on building othe
 
 # Dependencies
 
-Building is currently supported on Windows, OSX and Linux, but developers intending to do work on the library dependencies are strongly urged to use 64 bit Linux as a build platform.
+Building is currently supported on Windows, macOS and Linux, but developers intending to do work on the library dependencies are strongly urged to use 64 bit Linux as a build platform.
 
 ### OS specific dependencies
 
-Please install the dependencies for your OS using the [Windows](BUILD_WIN.md), [OSX](BUILD_OSX.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
+Please install the dependencies for your OS using the [Windows](BUILD_WIN.md), [macOS](BUILD_MACOS.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
 
 ### Android Studio
 
@@ -35,13 +35,13 @@ Also, make sure the NDK installed version is 18 (or higher).
 
 ### Create a keystore in Android Studio
 
-Follow the directions [here](https://developer.android.com/studio/publish/app-signing#generate-key) to create a keystore file. You can save it anywhere (preferably not in the `hifi` folder).
+Follow the directions [here](https://developer.android.com/studio/publish/app-signing#generate-key) to create a keystore file. You can save it anywhere (preferably not in the `tivoli` folder).
 
 ### Set up machine specific Gradle properties
 
 Create a `gradle.properties` file in the `.gradle` folder (`$HOME/.gradle` on Unix, `Users/<yourname>/.gradle` on Windows). Edit the file to contain the following
 
-    HIFI_ANDROID_PRECOMPILED=<your_home_directory>/Android/hifi_externals
+    HIFI_ANDROID_PRECOMPILED=<your_home_directory>/Android/tivoli_externals
     HIFI_ANDROID_KEYSTORE=<key_store_directory>/<keystore_name>.jks
     HIFI_ANDROID_KEYSTORE_PASSWORD=<password>
     HIFI_ANDROID_KEY_ALIAS=<key_alias>
@@ -75,7 +75,7 @@ The above code to suppress modules is not necessary, but will speed up the build
 
 -   Open Android Studio
 -   Choose _Open an existing Android Studio project_
--   Navigate to the `hifi` repository and choose the `android` folder and select _OK_
+-   Navigate to the `tivoli/interface` repository and choose the `android` folder and select _OK_
 -   Wait for Gradle to sync (this should take around 20 minutes the first time)
 -   From the _Build_ menu select _Make Project_
 

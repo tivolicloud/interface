@@ -185,7 +185,7 @@
     <message>
         <location filename="ui/preferencesDialog.ui" line="605"/>
         <location filename="../build/interface/ui_preferencesDialog.h" line="630"/>
-        <source>Vertical field of view</source>
+        <source>Horizontal field of view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

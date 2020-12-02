@@ -15,7 +15,7 @@
 
 #include <QtCore/QtGlobal>
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #include <unistd.h>
 #include <cpuid.h>
 #include <sys/sysctl.h>
@@ -44,7 +44,7 @@ void MACOSInstance::enumerateCpus() {
 
 
 void MACOSInstance::enumerateGpusAndDisplays() {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // ennumerate the displays first
     std::vector<GLuint> displayMasks;
     {
@@ -277,7 +277,7 @@ void MACOSInstance::enumerateGpusAndDisplays() {
             const auto& chipset = chipsetDescs[i];
             auto& gpu = _gpus[i];
             
-            if (   (chipset.vendor.find( gpu[keys::gpu::vendor]) != std::string::npos)
+            if (   (chipset.vendor.find( gpu[keys::gpu::vendor].get<std::string>()) != std::string::npos)
                 && (chipset.videoMemory == gpu[keys::gpu::videoMemory]) ) {
                 gpu[keys::gpu::model] = chipset.model;
                 gpu["macos_deviceID"] = chipset.deviceID;
@@ -291,7 +291,7 @@ void MACOSInstance::enumerateGpusAndDisplays() {
 void MACOSInstance::enumerateMemory() {
     json ram = {};
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
     ram[keys::memory::memTotal] = pages * page_size;
@@ -303,7 +303,7 @@ void MACOSInstance::enumerateComputer(){
     _computer[keys::computer::OS] = keys::computer::OS_MACOS;
     _computer[keys::computer::vendor] = keys::computer::vendor_Apple;
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 
     //get system name
     size_t len=0;

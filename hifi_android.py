@@ -79,7 +79,6 @@ ANDROID_PACKAGES = {
         'includeLibs': ['libtbb.so', 'libtbbmalloc.so'],
     },
     'hifiAC': {
-        'baseUrl': 'https://cdn.tivolicloud.com/dependencies/',
         'file': 'codecSDK-android_armv8-2.0.zip',
         'checksum': '1cbef929675818fc64c4101b72f84a6a'
     },

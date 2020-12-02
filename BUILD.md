@@ -1,7 +1,7 @@
 # OS specific guides (recommended)
 
 -   [BUILD_WIN.md](BUILD_WIN.md) - complete instructions for Windows
--   [BUILD_OSX.md](BUILD_OSX.md) - additional instructions for OS X
+-   [BUILD_MACOS.md](BUILD_MACOS.md) - additional instructions for macOS
 -   [BUILD_LINUX.md](BUILD_LINUX.md) - additional instructions for Linux
 -   [BUILD_ANDROID.md](BUILD_ANDROID.md) _...may not work anymore_
 
@@ -95,6 +95,7 @@ When working on QML, you'll need a way to easily see the changes you're making.
 ## Other runtime environment variables
 
 -   `HIFI_SHOW_DEVELOPER_CRASH_MENU` - enables menu to test crashing
+-   `TIVOLI_SCRIPT_DEBUG` - adds "Script Debug" menu for all running scripts
 
 ## Optional components
 

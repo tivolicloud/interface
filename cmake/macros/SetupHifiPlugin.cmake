@@ -26,7 +26,7 @@ macro(SETUP_HIFI_PLUGIN)
         set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG")
     endif()
 
-    if (CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    if (CMAKE_SYSTEM_NAME MATCHES "Linux" OR CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja")
         set(PLUGIN_FULL_PATH "${CMAKE_BINARY_DIR}/interface/${PLUGIN_PATH}/")
     else()
         set(PLUGIN_FULL_PATH "${CMAKE_BINARY_DIR}/interface/$<CONFIGURATION>/${PLUGIN_PATH}/")
@@ -39,9 +39,12 @@ macro(SETUP_HIFI_PLUGIN)
         ${PLUGIN_FULL_PATH}
     )
 
-    add_custom_command(TARGET ${DIR} POST_BUILD
+    add_custom_command(
+        TARGET ${TARGET_NAME} POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E copy
         "$<TARGET_FILE:${TARGET_NAME}>"
         ${PLUGIN_FULL_PATH}
     )
+
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME tivoli-${TARGET_NAME})
 endmacro()

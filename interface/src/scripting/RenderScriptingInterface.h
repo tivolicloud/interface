@@ -13,6 +13,7 @@
 #include "Application.h"
 
 #include "RenderForward.h"
+#include "ViewFrustum.h"
 
 /**jsdoc
  * The <code>Render</code> API enables you to configure the graphics engine.
@@ -40,6 +41,7 @@ class RenderScriptingInterface : public QObject {
     Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
     Q_PROPERTY(bool nametagsEnabled READ getNametagsEnabled WRITE setNametagsEnabled NOTIFY settingsChanged)
     Q_PROPERTY(int maximumTextureMemory READ getMaximumTextureMemory WRITE setMaximumTextureMemory NOTIFY settingsChanged)
+    Q_PROPERTY(float fieldOfView READ getFieldOfView WRITE setFieldOfView NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -275,6 +277,20 @@ public slots:
      */
     void setMaximumTextureMemory(int maximumTextureMemory);
 
+    /**jsdoc
+     * Gets the field of view in degrees.
+     * @function Render.getFieldOfView
+     * @returns {number}
+     */
+    float getFieldOfView() const;
+
+    /**jsdoc
+     * Sets the field of view in degrees.
+     * @function Render.setFieldOfView
+     * @param {number} fieldOfView
+     */
+    void setFieldOfView(float fieldOfView);
+
 signals:
 
     /**jsdoc
@@ -305,6 +321,7 @@ private:
     float _viewportResolutionScale{ 1.0f };
     bool _nametagsEnabled{ true };
     // int _maximumTextureMemory{ 8192 }; // handled by gpu::Texture
+    float _fieldOfView{ DEFAULT_FIELD_OF_VIEW_DEGREES };
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
@@ -314,6 +331,7 @@ private:
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
     Setting::Handle<bool> _nametagsEnabledSetting{ "nametagsEnabled", _nametagsEnabled };
     Setting::Handle<int> _maximumTextureMemorySetting{ "maximumTextureMemory", 8192 };
+    Setting::Handle<float> _fieldOfViewSetting{ "fieldOfView", _fieldOfView };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
@@ -323,6 +341,7 @@ private:
     void forceViewportResolutionScale(float scale);
     void forceNametagsEnabled(bool enabled);
     void forceMaximumTextureMemory(int maximumTextureMemory);
+    void forceFieldOfView(float fieldOfView);
 
     static std::once_flag registry_flag;
 };

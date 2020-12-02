@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"scripts": {
 		"build": "cross-env NODE_OPTIONS=--max_old_space_size=2048 jsdoc -R intro.md -c config.json"
 	},

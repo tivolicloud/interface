@@ -43,7 +43,7 @@ extern "C" {
 #endif
 
 int main(int argc, const char* argv[]) {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     auto format = getDefaultOpenGLSurfaceFormat();
     // Deal with some weirdness in the chromium context sharing on Mac.
     // The primary share context needs to be 3.2, so that the Chromium will
@@ -81,7 +81,7 @@ int main(int argc, const char* argv[]) {
     // QCommandLineOption noUpdaterOption("no-updater", "Do not show auto-updater");
     QCommandLineOption checkMinSpecOption("checkMinSpec", "Check if machine meets minimum specifications");
     QCommandLineOption runServerOption("runServer", "Whether to run the server");
-    QCommandLineOption serverContentPathOption("serverContentPath", "Where to find server content", "serverContentPath");
+    QCommandLineOption serverContentPathOption("serverContentPath", "Where to find server content <path>", "serverContentPath");
     QCommandLineOption allowMultipleInstancesOption("allowMultipleInstances", "Allow multiple instances to run");
     QCommandLineOption overrideAppLocalDataPathOption("cache", "set test cache <dir>", "dir");
     QCommandLineOption overrideScriptsPathOption(SCRIPTS_SWITCH, "set scripts <path>", "path");
@@ -125,7 +125,7 @@ int main(int argc, const char* argv[]) {
     // cross-platform implementation.
     {
         QCoreApplication tempApp(argc, const_cast<char**>(argv));
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         if (QFileInfo::exists(QCoreApplication::applicationDirPath() + "/../../../config.json")) {
             applicationPath = QCoreApplication::applicationDirPath() + "/../../../";
         } else {

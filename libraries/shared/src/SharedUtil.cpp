@@ -46,7 +46,7 @@ extern "C" FILE * __cdecl __iob_func(void) {
 #endif
 
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
 #include <signal.h>
 #include <cerrno>
 #endif
@@ -1114,7 +1114,7 @@ void watchParentProcess(int parentPID) {
     HANDLE newHandle;
     RegisterWaitForSingleObject(&newHandle, procHandle, parentDiedCallback, NULL, INFINITE, WT_EXECUTEONLYONCE);
 }
-#elif defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#elif defined(Q_OS_MACOS) || defined(Q_OS_LINUX)
 void watchParentProcess(int parentPID) {
     auto timer = new QTimer(qApp);
     timer->setInterval(MSECS_PER_SECOND);

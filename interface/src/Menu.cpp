@@ -51,7 +51,7 @@
 #include "PickManager.h"
 
 #include "scripting/SettingsScriptingInterface.h"
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
 #endif
 
@@ -61,9 +61,11 @@
 extern bool DEV_DECIMATE_TEXTURES;
 
 Menu* Menu::getInstance() {
-    auto window = qApp->getWindow();
-    if (window) return dynamic_cast<Menu*>(window->menuBar());
-    else return NULL;
+    MainWindow* window = qApp->getWindow();
+    if (window == nullptr) return nullptr;
+    QMenuBar* menuBar = window->menuBar();
+    if (menuBar == nullptr) return nullptr;
+    return dynamic_cast<Menu*>(menuBar);
 }
 
 const char* EXCLUSION_GROUP_KEY = "exclusionGroup";
@@ -75,17 +77,16 @@ Menu::Menu() {
     // File/Application menu ----------------------------------
     MenuWrapper* fileMenu = addMenu("File");
 
-    // TIVOLI commented out File>Login functionality
-    //// File > Login menu items
-    //{
-    //    addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
+    // File > Login menu items
+    if (qApp->arguments().indexOf("--tokens") == -1) {
+        addActionToQMenuAndActionHash(fileMenu, MenuOption::Login);
 
-    //    // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
-    //    connect(accountManager.data(), &AccountManager::profileChanged,
-    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-    //    connect(accountManager.data(), &AccountManager::logoutComplete,
-    //            dialogsManager.data(), &DialogsManager::toggleLoginDialog);
-    //}
+        // connect to the appropriate signal of the AccountManager so that we can change the Login/Logout menu item
+        connect(accountManager.data(), &AccountManager::profileChanged,
+                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+        connect(accountManager.data(), &AccountManager::logoutComplete,
+                dialogsManager.data(), &DialogsManager::toggleLoginDialog);
+    }
 
     // File > Quit
     addActionToQMenuAndActionHash(fileMenu, MenuOption::Quit, Qt::CTRL | Qt::Key_Q, qApp, SLOT(quit()), QAction::QuitRole);
@@ -415,7 +416,7 @@ Menu::Menu() {
                                            qApp, SLOT(updateVerboseLogging()));
     
     // Developer > Scripting > Enable Speech Control API
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     auto speechRecognizer = DependencyManager::get<SpeechRecognizer>();
     QAction* speechRecognizerAction = addCheckableActionToQMenuAndActionHash(scriptingOptionsMenu, MenuOption::ControlWithSpeech,
         Qt::CTRL | Qt::SHIFT | Qt::Key_C,

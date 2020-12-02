@@ -357,7 +357,7 @@ public:
      * @param {Vec3} offset - The skeleton offset to set.
      * @example <caption>Raise your avatar off the ground a little.</caption>
      * // Raise your avatar off the ground a little.
-     * MyAvatar.setSkeletonOffset({ x: 0, y: 0.1: z: 0 });
+     * MyAvatar.setSkeletonOffset({ x: 0, y: 0.1, z: 0 });
      *
      * // Restore its offset after 5s.
      * Script.setTimeout(function () {

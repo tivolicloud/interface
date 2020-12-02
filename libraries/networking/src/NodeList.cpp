@@ -19,7 +19,6 @@
 #include <QtCore/QMetaEnum>
 #include <QtCore/QUrl>
 #include <QtCore/QThread>
-#include <QtCore/QCborValue>
 #include <QtNetwork/QHostInfo>
 #include <QtNetwork/QNetworkInterface>
 
@@ -157,7 +156,7 @@ qint64 NodeList::sendStats(QJsonObject statsObject, HifiSockAddr destination) {
 
     auto statsPacketList = NLPacketList::create(PacketType::NodeJsonStats, QByteArray(), true, true);
 
-    statsPacketList->write(QCborValue::fromVariant(statsObject).toCbor());
+    statsPacketList->write(QJsonDocument(statsObject).toJson(QJsonDocument::Compact));
 
     sendPacketList(std::move(statsPacketList), destination);
     return 0;
@@ -1297,7 +1296,7 @@ void NodeList::requestUsernameFromSessionID(const QUuid& nodeID) {
         usernameFromIDRequestPacket->write(nodeID.toRfc4122());
     }
 
-    qCDebug(networking) << "Sending packet to get username/fingerprint/admin status of node" << uuidStringWithoutCurlyBraces(nodeID);
+    // qCDebug(networking) << "Sending packet to get username/fingerprint/admin status of node" << uuidStringWithoutCurlyBraces(nodeID);
 
     sendPacket(std::move(usernameFromIDRequestPacket), _domainHandler.getSockAddr());
 }
@@ -1312,8 +1311,8 @@ void NodeList::processUsernameFromIDReply(QSharedPointer<ReceivedMessage> messag
     bool isAdmin;
     message->readPrimitive(&isAdmin);
 
-    qCDebug(networking) << "Got username" << username << "and machine fingerprint"
-        << machineFingerprintString << "for node" << nodeUUIDString << ". isAdmin:" << isAdmin;
+    // qCDebug(networking) << "Got username" << username << "and machine fingerprint"
+    //     << machineFingerprintString << "for node" << nodeUUIDString << ". isAdmin:" << isAdmin;
 
     emit usernameFromIDReply(nodeUUIDString, username, machineFingerprintString, isAdmin);
 }

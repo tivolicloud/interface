@@ -25,7 +25,7 @@ finalize server:
 
         # login
 
-        - docker login registry.tivolicloud.com -u gitlab-ci-token -p $CI_JOB_TOKEN
+        - docker login $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
         - docker login -u makitsune -p $DOCKER_HUB_ACCESS_TOKEN
 
         # create manifests for our registry and upload

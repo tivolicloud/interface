@@ -484,7 +484,7 @@ private slots:
 private:
     mutable QReadWriteLock _sessionUUIDLock;
     QUuid _sessionUUID;
-    using LocalIDMapping = tbb::concurrent_unordered_map<Node::LocalID, SharedNodePointer>;
+    using LocalIDMapping = tbb::concurrent_unordered_map<Node::LocalID, SharedNodePointer, std::hash<Node::LocalID>>;
     LocalIDMapping _localIDMap;
     Node::LocalID _sessionLocalID { 0 };
     bool _flagTimeForConnectionStep { false }; // only keep track in interface

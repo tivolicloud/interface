@@ -150,13 +150,13 @@ Transform PickManager::getResultTransform(unsigned int uid) const {
 
 void PickManager::update() {
     uint64_t expiry = usecTimestampNow() + _perFrameTimeBudget;
+    if (getLasersEnabled()) expiry = usecTimestampNow() + _perFrameLaserTimeBudget;
     std::unordered_map<PickQuery::PickType, std::unordered_map<unsigned int, std::shared_ptr<PickQuery>>> cachedPicks;
     withReadLock([&] {
         cachedPicks = _picks;
     });
 
     bool shouldPickHUD = _shouldPickHUDOperator();
-    // FIXME: give each type its own expiry
     // Each type will update at least one pick, regardless of the expiry
     // {
     //     PROFILE_RANGE_EX(picks, "StylusPicks", 0xffff0000, (uint64_t)_totalPickCounts[PickQuery::Stylus]);

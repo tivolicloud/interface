@@ -84,12 +84,12 @@ std::vector<AvatarSharedPointer> AvatarReplicas::takeReplicas(const QUuid& paren
     return replicas;
 }
 
-void AvatarReplicas::processAvatarIdentity(const QUuid& parentID, const QByteArray& identityData, bool& identityChanged, bool& displayNameChanged) {
+void AvatarReplicas::processAvatarIdentity(const QUuid& parentID, const QByteArray& identityData, bool& identityChanged, bool& displayNameChanged, bool& skeletonModelURLChanged) {
     if (_replicasMap.find(parentID) != _replicasMap.end()) {
         auto &replicas = _replicasMap[parentID];
         QDataStream identityDataStream(identityData);
         for (auto avatar : replicas) {
-            avatar->processAvatarIdentity(identityDataStream, identityChanged, displayNameChanged);
+            avatar->processAvatarIdentity(identityDataStream, identityChanged, displayNameChanged, skeletonModelURLChanged);
         }
     }
 }
@@ -328,9 +328,10 @@ void AvatarHashMap::processAvatarIdentityPacket(QSharedPointer<ReceivedMessage> 
             auto avatar = newOrExistingAvatar(identityUUID, sendingNode, isNewAvatar);
             bool identityChanged = false;
             bool displayNameChanged = false;
+            bool skeletonModelURLChanged = false;
             // In this case, the "sendingNode" is the Avatar Mixer.
-            avatar->processAvatarIdentity(avatarIdentityStream, identityChanged, displayNameChanged);
-            _replicas.processAvatarIdentity(identityUUID, message->getMessage(), identityChanged, displayNameChanged);
+            avatar->processAvatarIdentity(avatarIdentityStream, identityChanged, displayNameChanged, skeletonModelURLChanged);
+            _replicas.processAvatarIdentity(identityUUID, message->getMessage(), identityChanged, displayNameChanged, skeletonModelURLChanged);
         }
     }
 }

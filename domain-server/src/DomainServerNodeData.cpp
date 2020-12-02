@@ -16,7 +16,6 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QVariant>
-#include <QtCore/QCborValue>
 
 #include <udt/PacketHeaders.h>
 
@@ -27,7 +26,7 @@ DomainServerNodeData::DomainServerNodeData() {
 }
 
 void DomainServerNodeData::updateJSONStats(QByteArray statsByteArray) {
-    auto value = QCborValue::fromCbor(statsByteArray).toJsonValue();
+    auto value = QJsonDocument::fromJson(statsByteArray).toVariant().toJsonValue();
     Q_ASSERT(value.isObject());
     _statsJSONObject = overrideValuesIfNeeded(value.toObject());
 }

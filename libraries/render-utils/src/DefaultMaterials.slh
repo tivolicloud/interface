@@ -11,7 +11,7 @@
 <@if not DEFAULT_MATERIAL_SLH@>
 <@def DEFAULT_MATERIAL_SLH@>
 
-const float DEFAULT_ROUGHNESS = 0.9;
+const float DEFAULT_ROUGHNESS = 1.0;
 const float DEFAULT_SHININESS = 10.0;
 const float DEFAULT_METALLIC = 0.0;
 const vec3 DEFAULT_SPECULAR = vec3(0.1);

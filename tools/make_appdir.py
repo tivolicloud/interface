@@ -117,6 +117,15 @@ print("-- Installed linuxdeployqt")
 
 # make appdir
 
+deferred_plugins = ["libtivoli-tea-protocol-plugin.so"]
+
+server_exclude_libs = [
+    "libQt5WebEngineCore.so.5",
+    "libQt5Quick.so.5",
+    "libQt5XmlPatterns.so.5",
+    "libQt5QmlModels.so.5",
+]
+
 if program == "interface":
 
 	# find all plugins
@@ -145,12 +154,10 @@ if program == "interface":
 	run(interface_dir, "cp -r jsdoc interface.AppDir/usr/bin")
 	if os.path.isdir(plugins_dir):
 		run(interface_dir, "cp -r plugins interface.AppDir/usr/bin")
+		for p in deferred_plugins:
+			run(interface_dir, "rm -f interface.AppDir/usr/bin/plugins/" + p)
 	run(interface_dir, "cp -r resources interface.AppDir/usr/bin")
 	run(interface_dir, "cp -r scripts interface.AppDir/usr/bin")
-
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(interface_dir, "mkdir -p interface.AppDir/usr/lib")
-	run(interface_dir, "cp ../libraries/gl/libgl.so interface.AppDir/usr/lib")
 
 	print("-- Creating interface.AppDir")
 
@@ -158,7 +165,6 @@ if program == "interface":
 	    linuxdeployqt,
 	    "interface.AppDir/usr/bin/interface",
 	    "-unsupported-allow-new-glibc",
-	    "-executable=interface.AppDir/usr/lib/libgl.so",
 	    "-qmake=" + qt_path + "/bin/qmake",
 	    "-qmldir=" + qt_path + "/qml",
 	    "-qmldir=../../interface/resources/qml",
@@ -170,6 +176,8 @@ if program == "interface":
 	]
 
 	for plugin in plugins:
+		if plugin in deferred_plugins:
+			continue
 		deploy_args.append(
 		    "-executable=interface.AppDir/usr/bin/plugins/" + plugin
 		)
@@ -180,6 +188,13 @@ if program == "interface":
 	run(interface_dir, " ".join(deploy_args), env)
 
 	run(appdir, "ln -s usr/bin/interface interface")
+
+	# add final plugins in
+	for plugin in deferred_plugins:
+		run(
+		    interface_dir,
+		    "cp plugins/" + plugin + " interface.AppDir/usr/bin/plugins"
+		)
 
 	print("-- Done!")
 
@@ -214,11 +229,9 @@ elif program == "server":
 	run(build_dir, "cp tools/oven/oven server.AppDir/usr/bin")
 	if os.path.isdir(plugins_dir):
 		run(build_dir, "cp -r assignment-client/plugins server.AppDir/usr/bin")
+		for p in deferred_plugins:
+			run(build_dir, "rm -f server.AppDir/usr/bin/plugins/" + p)
 	run(build_dir, "cp -r domain-server/resources server.AppDir/usr/bin")
-
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(build_dir, "mkdir -p server.AppDir/usr/lib")
-	run(build_dir, "cp libraries/gl/libgl.so server.AppDir/usr/lib")
 
 	print("-- Creating server.AppDir")
 
@@ -228,17 +241,19 @@ elif program == "server":
 	    "-unsupported-allow-new-glibc",
 	    "-executable=server.AppDir/usr/bin/assignment-client",
 	    "-executable=server.AppDir/usr/bin/oven",
-	    "-executable=server.AppDir/usr/lib/libgl.so",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
-	    "-qmldir=" + qt_path + "/qml",
-	    "-qmldir=../interface/resources/qml",
+	    "-exclude-libs=" + ",".join(server_exclude_libs),
+	    # "-qmldir=" + qt_path + "/qml",
+	    # "-qmldir=../interface/resources/qml",
 	    "-no-translations",
 	    "-no-copy-copyright-files",
 	    "-bundle-non-qt-libs",
 	]
 
 	for plugin in plugins:
+		if plugin in deferred_plugins:
+			continue
 		deploy_args.append(
 		    "-executable=server.AppDir/usr/bin/plugins/" + plugin
 		)
@@ -250,6 +265,13 @@ elif program == "server":
 	run(appdir, "ln -s usr/bin/domain-server domain-server")
 	run(appdir, "ln -s usr/bin/assignment-client assignment-client")
 	run(appdir, "ln -s usr/bin/oven oven")
+
+	# add final plugins in
+	for plugin in deferred_plugins:
+		run(
+		    build_dir, "cp assignment-client/plugins/" + plugin +
+		    " server.AppDir/usr/bin/plugins"
+		)
 
 	print("-- Done!")
 
@@ -267,20 +289,16 @@ elif program == "ice-server":
 	run(build_dir, "mkdir -p ice-server.AppDir/usr/bin")
 	run(build_dir, "cp ice-server/ice-server ice-server.AppDir/usr/bin")
 
-	# libgl is a bad name and is ignored by linuxdeployqt
-	run(build_dir, "mkdir -p ice-server.AppDir/usr/lib")
-	run(build_dir, "cp libraries/gl/libgl.so ice-server.AppDir/usr/lib")
-
 	print("-- Creating ice-server.AppDir")
 
 	deploy_args = [
 	    linuxdeployqt,
 	    "ice-server.AppDir/usr/bin/ice-server",
-	    "-executable=ice-server.AppDir/usr/lib/libgl.so",
 	    "-unsupported-allow-new-glibc",
 	    "-qmake=" + qt_path + "/bin/qmake",
-	    "-qmldir=" + qt_path + "/qml",
-	    "-qmldir=../interface/resources/qml",
+	    "-exclude-libs=" + ",".join(server_exclude_libs),
+	    # "-qmldir=" + qt_path + "/qml",
+	    # "-qmldir=../interface/resources/qml",
 	    "-no-translations",
 	    "-no-copy-copyright-files",
 	    "-bundle-non-qt-libs",

@@ -153,7 +153,11 @@ void inputControllerFromScriptValue(const QScriptValue &object, controller::Inpu
 //
 // Extract the url portion of a url that has been encoded with encodeEntityIdIntoEntityUrl(...)
 QString extractUrlFromEntityUrl(const QString& url) {
+    #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+    auto parts = url.split(' ', QString::SkipEmptyParts);
+    #else
     auto parts = url.split(' ', Qt::SkipEmptyParts);
+    #endif
     if (parts.length() > 0) {
         return parts[0];
     } else {
@@ -396,6 +400,38 @@ void ScriptEngine::runInThread() {
     workerThread->setObjectName(QString("js:") + getFilename().replace("about:",""));
     moveToThread(workerThread);
 
+    if (QProcessEnvironment::systemEnvironment().contains("TIVOLI_SCRIPT_DEBUG")) {
+        static QMenuBar* menuBar { nullptr };
+        static QMenu* scriptDebugMenu { nullptr };
+        static size_t scriptMenuCount { 0 };
+    
+        if (!scriptDebugMenu) {
+            for (auto window : qApp->topLevelWidgets()) {
+                auto mainWindow = qobject_cast<QMainWindow*>(window);
+                if (mainWindow) {
+                    menuBar = mainWindow->menuBar();
+                    break;
+                }
+            }
+            if (menuBar) {
+                scriptDebugMenu = menuBar->addMenu("Script Debug");
+            }
+        }
+
+        _debugger = new QScriptEngineDebugger(this);
+        _debugger->attachTo(this);
+
+        QMenu* parentMenu = scriptDebugMenu;
+        QMenu* scriptMenu { nullptr };
+        if (parentMenu) {
+            ++scriptMenuCount;
+            scriptMenu = parentMenu->addMenu(_fileNameString);
+            scriptMenu->addMenu(_debugger->createStandardMenu(qApp->activeWindow()));
+        } else {
+            qWarning() << "Unable to add script debug menu";
+        }
+    }
+
     // NOTE: If you connect any essential signals for proper shutdown or cleanup of
     // the script engine, make sure to add code to "reconnect" them to the
     // disconnectNonEssentialSignals() method
@@ -430,7 +466,7 @@ void ScriptEngine::waitTillDoneRunning() {
         // We should never be waiting (blocking) on our own thread
         assert(workerThread != QThread::currentThread());
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
         // On mac, don't call QCoreApplication::processEvents() here. This is to prevent
         // [NSApplication terminate:] from prematurely destroying the static destructors
         // while we are waiting for the scripts to shutdown. We will pump the message
@@ -1487,7 +1523,7 @@ void ScriptEngine::callAnimationStateHandler(QScriptValue callback, AnimVariantM
 void ScriptEngine::updateMemoryCost(const qint64& deltaSize) {
     if (deltaSize > 0) {
         // We've patched qt to fix https://highfidelity.atlassian.net/browse/BUGZ-46 on mac and windows only.
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
         reportAdditionalMemoryCost(deltaSize);
 #endif
     }

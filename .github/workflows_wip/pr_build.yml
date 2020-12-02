@@ -1,0 +1,35 @@
+name: PR build
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+            - labeled
+jobs:
+    interface:
+        strategy:
+            matrix:
+                arch:
+                    - amd64
+                    - arm64
+        runs-on: ubuntu-latest
+        container: tivolicloud/build:linux-${{ matrix.arch }}
+        steps:
+            - name: Configure
+              run: |
+                  export BUILD_TYPE=Release
+                  export RELEASE_TYPE=PR
+                  export RELEASE_NUMBER=$(git rev-parse --short "$GITHUB_SHA")
+
+                  mkdir -p build
+                  cd build
+                  /usr/local/bin/cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja
+
+            - name: Build
+              run: |
+                  cmake --build . --config $BUILD_TYPE --target interface
+
+            - name: Package
+              run: |
+                  python3 ../tools/make_appdir.py interface .

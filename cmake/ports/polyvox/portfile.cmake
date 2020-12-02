@@ -16,7 +16,7 @@ vcpkg_extract_source_archive_ex(
 vcpkg_configure_cmake(
   SOURCE_PATH ${SOURCE_PATH}
   PREFER_NINJA
-  OPTIONS -DENABLE_EXAMPLES=OFF -DENABLE_BINDINGS=OFF 
+  OPTIONS -DENABLE_EXAMPLES=OFF -DENABLE_BINDINGS=OFF -DLIBRARY_TYPE=STATIC
 )
 
 vcpkg_install_cmake()
@@ -87,7 +87,7 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 #     ${EXTERNAL_NAME}
 #     change-install-name-debug
 #     COMMENT "Calling install_name_tool on libraries to fix install name for dylib linking"
-#     COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_DIR=${INSTALL_NAME_LIBRARY_DIR}/Debug -P ${EXTERNAL_PROJECT_DIR}/OSXInstallNameChange.cmake
+#     COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_DIR=${INSTALL_NAME_LIBRARY_DIR}/Debug -P ${EXTERNAL_PROJECT_DIR}/MacOSInstallNameChange.cmake
 #     DEPENDEES install
 #     WORKING_DIRECTORY <SOURCE_DIR>
 #     LOG 1
@@ -96,7 +96,7 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 #     ${EXTERNAL_NAME}
 #     change-install-name-release
 #     COMMENT "Calling install_name_tool on libraries to fix install name for dylib linking"
-#     COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_DIR=${INSTALL_NAME_LIBRARY_DIR}/Release -P ${EXTERNAL_PROJECT_DIR}/OSXInstallNameChange.cmake
+#     COMMAND ${CMAKE_COMMAND} -DINSTALL_NAME_LIBRARY_DIR=${INSTALL_NAME_LIBRARY_DIR}/Release -P ${EXTERNAL_PROJECT_DIR}/MacOSInstallNameChange.cmake
 #     DEPENDEES install
 #     WORKING_DIRECTORY <SOURCE_DIR>
 #     LOG 1

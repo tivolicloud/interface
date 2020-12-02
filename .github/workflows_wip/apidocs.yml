@@ -1,0 +1,27 @@
+name: "API docs"
+on:
+    push:
+        branches:
+            - master
+jobs:
+    build_and_deploy:
+        name: Build and deploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v2
+
+            - name: Build API docs
+              shell: bash
+              run: |
+                  cd tools/jsdoc
+                  npm install --no-save
+                  BUILD_VERSION=$(git rev-parse --short "$GITHUB_SHA") npm run build
+
+            - name: Deploy to GitHub Pages
+              uses: JamesIves/github-pages-deploy-action@3.7.1
+              with:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  BRANCH: gh-pages
+                  FOLDER: tools/jsdoc/out
+                  SINGLE_COMMIT: true

@@ -8,7 +8,7 @@
 
 #include "../PlatformHelper.h"
 
-#if !defined(Q_OS_ANDROID) && !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_MACOS) && !defined(Q_OS_WIN)
 
 // FIXME support sleep/wake notifications
 class LinuxHelper : public PlatformHelper {

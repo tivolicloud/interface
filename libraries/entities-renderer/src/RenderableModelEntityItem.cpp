@@ -1046,23 +1046,21 @@ void ModelEntityRenderer::animate(const TypedEntityPointer& entity) {
 
     QVector<EntityJointData> jointsData;
 
-    const QVector<HFMAnimationFrame>&  frames = _animation->getFramesReference(); // NOTE: getFrames() is too heavy
+    const QVector<HFMAnimationFrame>& frames = _animation->getFramesReference(); // NOTE: getFrames() is too heavy
     int frameCount = frames.size();
     if (frameCount <= 0) {
         return;
     }
 
-    {
-        float currentFrame = fmod(entity->getAnimationCurrentFrame(), (float)(frameCount));
-        if (currentFrame < 0.0f) {
-            currentFrame += (float)frameCount;
-        }
-        int currentIntegerFrame = (int)(glm::floor(currentFrame));
-        if (currentIntegerFrame == _lastKnownCurrentFrame) {
-            return;
-        }
-        _lastKnownCurrentFrame = currentIntegerFrame;
+    float currentFrame = fmod(entity->getAnimationCurrentFrame(), (float)(frameCount));
+    if (currentFrame < 0.0f) {
+        currentFrame += (float)frameCount;
     }
+    int currentIntegerFrame = (int)(glm::floor(currentFrame));
+    // if (currentIntegerFrame == _lastKnownCurrentFrame) {
+    //     return;
+    // }
+    // _lastKnownCurrentFrame = currentIntegerFrame;
 
     if (_jointMapping.size() != _model->getJointStateCount()) {
         qCWarning(entitiesrenderer) << "RenderableModelEntityItem::getAnimationFrame -- joint count mismatch"
@@ -1078,8 +1076,31 @@ void ModelEntityRenderer::animate(const TypedEntityPointer& entity) {
 
     bool allowTranslation = entity->getAnimationAllowTranslation();
 
-    const QVector<glm::quat>& rotations = frames[_lastKnownCurrentFrame].rotations;
-    const QVector<glm::vec3>& translations = frames[_lastKnownCurrentFrame].translations;
+    QVector<glm::quat> rotations = frames[currentIntegerFrame].rotations;
+    QVector<glm::vec3> translations = frames[currentIntegerFrame].translations;
+
+    if (frameCount > 1) {
+        // do linear interpolation
+
+        int firstIntegerFrame = std::max((int)(glm::floor(entity->getAnimationFirstFrame())), 0);
+        int lastIntegerFrame = std::min((int)(glm::floor(entity->getAnimationLastFrame())), frameCount - 1);
+
+        int nextCurrentIntegerFrame = currentIntegerFrame + 1;
+        if (nextCurrentIntegerFrame > lastIntegerFrame) {
+            nextCurrentIntegerFrame = firstIntegerFrame;
+        }
+
+        const QVector<glm::quat>& nextRotations = frames[nextCurrentIntegerFrame].rotations;
+        const QVector<glm::vec3>& nextTranslations = frames[nextCurrentIntegerFrame].translations;
+
+        float alpha = std::min(std::max(currentFrame - currentIntegerFrame, 0.0f), 1.0f);
+        for (int i = 0; i < rotations.size(); i++) {
+            rotations[i] = safeLerp(rotations[i], nextRotations[i], alpha);
+        }
+        for (int i = 0; i < translations.size(); i++) {
+            translations[i] = lerp(translations[i], nextTranslations[i], alpha);
+        }
+    }
 
     jointsData.resize(_jointMapping.size());
     for (int j = 0; j < _jointMapping.size(); j++) {

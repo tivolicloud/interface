@@ -687,6 +687,18 @@ float ModelEntityItem::getAnimationFPS() const {
     });
 }
 
+float ModelEntityItem::getAnimationFirstFrame() const {
+    return resultWithReadLock<float>([&] {
+        return _animationProperties.getFirstFrame();
+    });
+}
+
+float ModelEntityItem::getAnimationLastFrame() const {
+    return resultWithReadLock<float>([&] {
+        return _animationProperties.getLastFrame();
+    });
+}
+
 bool ModelEntityItem::isAnimatingSomething() const {
     return resultWithReadLock<bool>([&] {
         return _animationProperties.isValidAndRunning();

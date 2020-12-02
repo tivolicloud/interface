@@ -201,7 +201,7 @@
 #include "scripting/ChatScriptingInterface.h"
 #include "scripting/DiskCacheScriptingInterface.h"
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
 #include "SpeechRecognizer.h"
 #endif
 #include "ui/ResourceImageItem.h"
@@ -268,7 +268,7 @@ extern "C" {
 #include "AndroidHelper.h"
 #endif
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
 // On Mac OS, disable App Nap to prevent audio glitches while running in the background
 #include "AppNapDisabler.h"
 static AppNapDisabler appNapDisabler;   // disabled, while in scope
@@ -376,7 +376,7 @@ class DeadlockWatchdogThread : public QThread {
 public:
     static const unsigned long HEARTBEAT_UPDATE_INTERVAL_SECS = 1;
     // TODO: go back to 2 min across the board, after figuring out the issues with mac
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     static const unsigned long MAX_HEARTBEAT_AGE_USECS = 600 * USECS_PER_SECOND; // 10 mins with no checkin probably a deadlock, right now, on MAC
 #else
     static const unsigned long MAX_HEARTBEAT_AGE_USECS = 120 * USECS_PER_SECOND; // 2 mins with no checkin probably a deadlock
@@ -901,7 +901,7 @@ bool setupEssentials(int& argc, char** argv, bool runningMarkerExisted) {
     DependencyManager::set<AssetMappingsScriptingInterface>();
     DependencyManager::set<DomainConnectionModel>();
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     DependencyManager::set<SpeechRecognizer>();
 #endif
     DependencyManager::set<DiscoverabilityManager>();
@@ -1588,19 +1588,20 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     });
 
     connect(offscreenUi.data(), &OffscreenUi::keyboardFocusActive, [this]() {
-#if !defined(Q_OS_ANDROID) && !defined(DISABLE_QML)
-        // Do not show login dialog if requested not to on the command line
-        // QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
-        // int index = arguments().indexOf(hifiNoLoginCommandLineKey);
-        // if (index != -1) {
-            resumeAfterLoginDialogActionTaken();
-            return;
-        // }
+// #if !defined(Q_OS_ANDROID) && !defined(DISABLE_QML)
+//         // Do not show login dialog if requested not to on the command line
+//         // QString hifiNoLoginCommandLineKey = QString("--").append(HIFI_NO_LOGIN_COMMAND_LINE_KEY);
+//         // int index = arguments().indexOf(hifiNoLoginCommandLineKey);
 
-        // TIVOLI showLoginScreen();
-#else
+//         if (arguments().indexOf("--tokens") != -1) {
+//             resumeAfterLoginDialogActionTaken();
+//             return;
+//         }
+
+//         showLoginScreen();
+// #else
         resumeAfterLoginDialogActionTaken();
-#endif
+// #endif
     });
 
     // Initialize the user interface and menu system
@@ -1930,7 +1931,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 #endif
     });
     _applicationStateDevice->setInputVariant(STATE_PLATFORM_MAC, []() -> float {
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
         return 1;
 #else
         return 0;
@@ -2260,30 +2261,50 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         startedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_STARTED).toInt();
         startedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_STARTED).toInt();
         startedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_STARTED).toInt();
-        startedRequests["total"] = startedRequests["atp"].toInt() + startedRequests["http"].toInt()
-            + startedRequests["file"].toInt();
+        startedRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_STARTED).toInt();
+        startedRequests["total"] = (
+            startedRequests["atp"].toInt() +
+            startedRequests["http"].toInt() +
+            startedRequests["file"].toInt() +
+            startedRequests["tea"].toInt()
+        );
         properties["started_requests"] = startedRequests;
 
         QJsonObject successfulRequests;
         successfulRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_SUCCESS).toInt();
         successfulRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_SUCCESS).toInt();
         successfulRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_SUCCESS).toInt();
-        successfulRequests["total"] = successfulRequests["atp"].toInt() + successfulRequests["http"].toInt()
-            + successfulRequests["file"].toInt();
+        successfulRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_SUCCESS).toInt();
+        successfulRequests["total"] = (
+            successfulRequests["atp"].toInt() +
+            successfulRequests["http"].toInt() +
+            successfulRequests["file"].toInt() +
+            successfulRequests["tea"].toInt()
+        );
         properties["successful_requests"] = successfulRequests;
 
         QJsonObject failedRequests;
         failedRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_FAILED).toInt();
         failedRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_FAILED).toInt();
         failedRequests["file"] = statTracker->getStat(STAT_FILE_REQUEST_FAILED).toInt();
-        failedRequests["total"] = failedRequests["atp"].toInt() + failedRequests["http"].toInt()
-            + failedRequests["file"].toInt();
+        failedRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_FAILED).toInt();
+        failedRequests["total"] = (
+            failedRequests["atp"].toInt() +
+            failedRequests["http"].toInt() +
+            failedRequests["file"].toInt() +
+            failedRequests["tea"].toInt()
+        );
         properties["failed_requests"] = failedRequests;
 
         QJsonObject cacheRequests;
         cacheRequests["atp"] = statTracker->getStat(STAT_ATP_REQUEST_CACHE).toInt();
         cacheRequests["http"] = statTracker->getStat(STAT_HTTP_REQUEST_CACHE).toInt();
-        cacheRequests["total"] = cacheRequests["atp"].toInt() + cacheRequests["http"].toInt();
+        cacheRequests["tea"] = statTracker->getStat(STAT_TEA_REQUEST_CACHE).toInt();
+        cacheRequests["total"] = (
+            cacheRequests["atp"].toInt() +
+            cacheRequests["http"].toInt() +
+            cacheRequests["tea"].toInt()
+        );
         properties["cache_requests"] = cacheRequests;
 
         QJsonObject atpMappingRequests;
@@ -2298,10 +2319,12 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
         auto atpBytes = statTracker->getStat(STAT_ATP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto httpBytes = statTracker->getStat(STAT_HTTP_RESOURCE_TOTAL_BYTES).toLongLong();
         auto fileBytes = statTracker->getStat(STAT_FILE_RESOURCE_TOTAL_BYTES).toLongLong();
+        auto teaBytes = statTracker->getStat(STAT_TEA_RESOURCE_TOTAL_BYTES).toLongLong();
         bytesDownloaded["atp"] = atpBytes;
         bytesDownloaded["http"] = httpBytes;
         bytesDownloaded["file"] = fileBytes;
-        bytesDownloaded["total"] = atpBytes + httpBytes + fileBytes;
+        bytesDownloaded["tea"] = teaBytes;
+        bytesDownloaded["total"] = atpBytes + httpBytes + fileBytes + teaBytes;
         properties["bytes_downloaded"] = bytesDownloaded;
 
         auto myAvatar = getMyAvatar();
@@ -2697,8 +2720,8 @@ void Application::toggleTabletUI(bool shouldOpen) const {
 void Application::checkChangeCursor() {
     QMutexLocker locker(&_changeCursorLock);
     if (_cursorNeedsChanging) {
-#ifdef Q_OS_MAC
-        auto cursorTarget = _window; // OSX doesn't seem to provide for hiding the cursor only on the GL widget
+#ifdef Q_OS_MACOS
+        auto cursorTarget = _window; // macOS doesn't seem to provide for hiding the cursor only on the GL widget
 #else
         // On windows and linux, hiding the top level cursor also means it's invisible when hovering over the
         // window menu, which is a pain, so only hide it for the GL surface
@@ -2986,7 +3009,7 @@ Application::~Application() {
     // Can't log to file past this point, FileLogger about to be deleted
     qInstallMessageHandler(LogHandler::verboseMessageHandler);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     // 10/16/2019 - Disabling this call. This causes known crashes (A), and it is not
     // fully understood whether it might cause other unknown crashes (B).
     //
@@ -3043,7 +3066,7 @@ void Application::initializeGL() {
             _chromiumShareContext = new OffscreenGLCanvas();
             _chromiumShareContext->setObjectName("ChromiumShareContext");
             auto format =QSurfaceFormat::defaultFormat();
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
             // On mac, the primary shared OpenGL context must be a 3.2 core context,
             // or chromium flips out and spews error spam (but renders fine)
             format.setMajorVersion(3);
@@ -3086,6 +3109,7 @@ void Application::initializeGL() {
 
     #if defined(Q_OS_LINUX)
         // Fixes "seccomp-bpf failure in syscall 0230" on Arch Linux
+        // CHECK THIS
         chromiumFlags << "--disable-seccomp-filter-sandbox";
     #endif
 
@@ -3205,7 +3229,6 @@ static void addDisplayPluginToMenu(const DisplayPluginPointer& displayPlugin, in
 #endif
 
 void Application::showLoginScreen() {
-    return;  // TIVOLI
 #if !defined(DISABLE_QML)
     auto accountManager = DependencyManager::get<AccountManager>();
     auto dialogsManager = DependencyManager::get<DialogsManager>();
@@ -3487,7 +3510,7 @@ void Application::onDesktopRootContextCreated(QQmlContext* surfaceContext) {
     surfaceContext->setContextProperty("UserActivityLogger", DependencyManager::get<UserActivityLoggerScriptingInterface>().data());
     surfaceContext->setContextProperty("Camera", &_myCamera);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     surfaceContext->setContextProperty("SpeechRecognizer", DependencyManager::get<SpeechRecognizer>().data());
 #endif
 
@@ -3909,8 +3932,12 @@ void Application::resizeGL() {
 
     // FIXME the aspect ratio for stereo displays is incorrect based on this.
     float aspectRatio = displayPlugin->getRecommendedAspectRatio();
-    _myCamera.setProjection(glm::perspective(glm::radians(_fieldOfView.get()), aspectRatio,
-                                             DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP));
+    float fovY = _fieldOfView.get() / aspectRatio;
+    _myCamera.setProjection(
+        glm::perspective(
+            glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP
+        )
+    );
     // Possible change in aspect ratio
     {
         QMutexLocker viewLocker(&_viewMutex);
@@ -4327,7 +4354,7 @@ bool Application::eventFilter(QObject* object, QEvent* event) {
         return true;
     }
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MACOS)
     // On Mac OS, Cmd+LeftClick is treated as a RightClick (more specifically, it seems to
     // be Cmd+RightClick without the modifier being dropped). Starting in Qt 5.12, only
     // on Mac, the MouseButtonRelease event for these mouse presses is sent to the top
@@ -4662,7 +4689,7 @@ void Application::synthesizeKeyReleasEvents() {
 }
 
 void Application::maybeToggleMenuVisible(QMouseEvent* event) const {
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     // If in full screen, and our main windows menu bar is hidden, and we're close to the top of the QMainWindow
     // then show the menubar.
     if (_window->isFullScreen()) {
@@ -4761,8 +4788,8 @@ void Application::mousePressEvent(QMouseEvent* event) {
         return;
     }
 
-#if defined(Q_OS_MAC)
-    // Fix for OSX right click dragging on window when coming from a native window
+#if defined(Q_OS_MACOS)
+    // Fix for macOS right click dragging on window when coming from a native window
     bool isFocussed = hasFocus();
     if (!isFocussed && event->button() == Qt::MouseButton::RightButton) {
         setFocus();
@@ -6815,10 +6842,11 @@ void Application::updateRenderArgs(float deltaTime) {
             {
                 QMutexLocker viewLocker(&_viewMutex);
                 // adjust near clip plane to account for sensor scaling.
-                auto adjustedProjection = glm::perspective(glm::radians(_fieldOfView.get()),
-                    getActiveDisplayPlugin()->getRecommendedAspectRatio(),
-                    DEFAULT_NEAR_CLIP * sensorToWorldScale,
-                    DEFAULT_FAR_CLIP);
+                float aspectRatio = getActiveDisplayPlugin()->getRecommendedAspectRatio();
+                float fovY = _fieldOfView.get() / aspectRatio;
+                auto adjustedProjection = glm::perspective(
+                    glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP * sensorToWorldScale, DEFAULT_FAR_CLIP
+                );
                 _viewFrustum.setProjection(adjustedProjection);
                 _viewFrustum.calculate();
             }
@@ -7512,7 +7540,7 @@ void Application::registerScriptEngineWithApplicationServices(const ScriptEngine
 
     scriptEngine->registerGlobalObject("Camera", &_myCamera);
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
     scriptEngine->registerGlobalObject("SpeechRecognizer", DependencyManager::get<SpeechRecognizer>().data());
 #endif
 
@@ -8834,19 +8862,31 @@ void Application::initPlugins(const QStringList& arguments) {
     parser.parse(arguments);
 
     if (parser.isSet(display)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto preferredDisplays = parser.value(display).split(',', QString::SkipEmptyParts);
+        #else
         auto preferredDisplays = parser.value(display).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Setting prefered display plugins:" << preferredDisplays;
         PluginManager::getInstance()->setPreferredDisplayPlugins(preferredDisplays);
     }
 
     if (parser.isSet(disableDisplays)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto disabledDisplays = parser.value(disableDisplays).split(',', QString::SkipEmptyParts);
+        #else
         auto disabledDisplays = parser.value(disableDisplays).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Disabling following display plugins:"  << disabledDisplays;
         PluginManager::getInstance()->disableDisplays(disabledDisplays);
     }
 
     if (parser.isSet(disableInputs)) {
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
+        auto disabledInputs = parser.value(disableInputs).split(',', QString::SkipEmptyParts);
+        #else
         auto disabledInputs = parser.value(disableInputs).split(',', Qt::SkipEmptyParts);
+        #endif
         qInfo() << "Disabling following input plugins:" << disabledInputs;
         PluginManager::getInstance()->disableInputs(disabledInputs);
     }

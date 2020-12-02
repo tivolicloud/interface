@@ -113,6 +113,8 @@ public:
     bool getAnimationIsPlaying() const;
     float getAnimationCurrentFrame() const;
     float getAnimationFPS() const;
+    float getAnimationFirstFrame() const;
+    float getAnimationLastFrame() const;
     bool isAnimatingSomething() const;
 
     static const QString DEFAULT_TEXTURES;

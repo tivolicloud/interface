@@ -124,7 +124,7 @@ def downloadProgressHook(count, block_size, total_size):
 def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
     for i in range(retries):
         tempFileName = None
-        # OSX Python doesn't support SSL, so we need to bypass it.  
+        # macOS Python doesn't support SSL, so we need to bypass it.  
         # However, we still validate the downloaded file's sha512 hash
         if 'Darwin' == platform.system():
             tempFileDescriptor, tempFileName = tempfile.mkstemp()
@@ -132,7 +132,12 @@ def downloadFile(url, hash=None, hasher=hashlib.sha512(), retries=3):
             with urllib.request.urlopen(url, context=context) as response, open(tempFileDescriptor, 'wb') as tempFile:
                 shutil.copyfileobj(response, tempFile)
         else:
-            tempFileName, headers = urllib.request.urlretrieve(url, reporthook=downloadProgressHook)
+            try:
+                tempFileName, headers = urllib.request.urlretrieve(url, reporthook=downloadProgressHook)
+            except urllib.error.HTTPError as e:
+                print("Failed to download {}".format(url))
+                print(e)
+                raise
 
         downloadHash = hashFile(tempFileName, hasher)
         # Verify the hash
@@ -155,3 +160,6 @@ def downloadAndExtract(url, destPath, hash=None, hasher=hashlib.sha512(), isZip=
         with tarfile.open(tempFileName, 'r:gz') as tgz:
             tgz.extractall(destPath)
     os.remove(tempFileName)
+
+def getMacVersion():
+    return list(map(lambda n: int(n), platform.mac_ver()[0].split(".")))

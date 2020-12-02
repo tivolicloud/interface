@@ -229,19 +229,24 @@ void FBXSerializer::consolidateHFMMaterials() {
 
         // Emissive color is the mix of emissiveColor with emissiveFactor
         auto emissive = material.emissiveColor * (isMaterialLambert ? 1.0f : material.emissiveFactor); // In lambert there is not emissiveFactor
-        material._material->setEmissive(emissive);
+        // To keep legacy support, don't let emissive mutltiply emissiveMap 
+        if (emissiveTextureID.isNull()) material._material->setEmissive(emissive);
 
         // Final diffuse color is the mix of diffuseColor with diffuseFactor
         auto diffuse = material.diffuseColor * material.diffuseFactor;
         material._material->setAlbedo(diffuse);
 
         if (material.isPBSMaterial) {
-            material._material->setRoughness(material.roughness);
-            material._material->setMetallic(material.metallic);
+            // Same legacy support as above
+            if (roughnessTextureID.isNull()) material._material->setRoughness(material.roughness);
+            if (metallicTextureID.isNull()) material._material->setMetallic(material.metallic);
         } else {
-            material._material->setRoughness(graphics::Material::shininessToRoughness(material.shininess));
-            float metallic = std::max(material.specularColor.x, std::max(material.specularColor.y, material.specularColor.z));
-            material._material->setMetallic(metallic);
+            // Same here as above
+            if (roughnessTextureID.isNull()) material._material->setRoughness(graphics::Material::shininessToRoughness(material.shininess));
+            if (metallicTextureID.isNull()) {
+                float metallic = std::max(material.specularColor.x, std::max(material.specularColor.y, material.specularColor.z));
+                material._material->setMetallic(metallic);
+            }
 
             if (isMaterialLambert) {
                 if (!material._material->getKey().isAlbedo()) {

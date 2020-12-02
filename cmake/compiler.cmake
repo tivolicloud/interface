@@ -32,12 +32,14 @@ if (WIN32)
   endif ()
 
   list(APPEND CMAKE_PREFIX_PATH "${WINDOW_SDK_PATH}")
-
-  # multi core parallel building
-  include(ProcessorCount)
-  ProcessorCount(PROCESSOR_COUNT)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
-  set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
+ 
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # multi core parallel building
+    include(ProcessorCount)
+    ProcessorCount(PROCESSOR_COUNT)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${PROCESSOR_COUNT}")
+    set(CMAKE_VS_MSBUILD_COMMAND "${CMAKE_VS_MSBUILD_COMMAND} /p:CL_MPCount=${PROCESSOR_COUNT} /m")
+  endif ()
 
   # /wd4351 disables warning C4351: new behavior: elements of array will be default initialized
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4351")
@@ -68,7 +70,7 @@ else ()
 endif()
 
 if (ANDROID)
-    # assume that the toolchain selected for android has C++11 support
+    # assume that the toolchain selected for android has C++14 support
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 elseif(APPLE)
   set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
@@ -86,7 +88,7 @@ elseif ((NOT MSVC12) AND (NOT MSVC14))
     if (COMPILER_SUPPORTS_CXX14)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     else()
-        message(FATAL_ERROR  "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+        message(FATAL_ERROR  "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
     endif()
 endif ()
 
@@ -120,9 +122,11 @@ if (APPLE)
   if (NOT _OSX_DESIRED_SDK_PATH)
     message(STATUS "Could not find OS X ${OSX_SDK} SDK. Will fall back to default. If you want a specific SDK, please pass OSX_SDK and optionally OSX_SDK_PATH to CMake.")
   else ()
-    message(STATUS "Found OS X ${OSX_SDK} SDK at ${_OSX_DESIRED_SDK_PATH}/MacOSX${OSX_SDK}.sdk")
-
+    set(OSX_DESIRED_SDK_PATH ${_OSX_DESIRED_SDK_PATH}/MacOSX${OSX_SDK}.sdk)
+    message(STATUS "Found OS X ${OSX_SDK} SDK at ${OSX_DESIRED_SDK_PATH}")
     # set that as the SDK to use
-    set(CMAKE_OSX_SYSROOT ${_OSX_DESIRED_SDK_PATH}/MacOSX${OSX_SDK}.sdk)
+    set(CMAKE_OSX_SYSROOT ${OSX_DESIRED_SDK_PATH})
+    # make sure find_library looks through the desired sdk
+    set(CMAKE_PREFIX_PATH ${OSX_DESIRED_SDK_PATH}/System/Library/Frameworks;${CMAKE_PREFIX_PATH})
   endif ()
 endif ()

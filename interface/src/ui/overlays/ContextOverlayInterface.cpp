@@ -25,9 +25,10 @@
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
-static const float CONTEXT_OVERLAY_TABLET_OFFSET = 30.0f; // Degrees
-static const float CONTEXT_OVERLAY_TABLET_ORIENTATION = 210.0f; // Degrees
-static const float CONTEXT_OVERLAY_TABLET_DISTANCE = 0.65F; // Meters
+// static const float CONTEXT_OVERLAY_TABLET_OFFSET = 30.0f; // Degrees
+// static const float CONTEXT_OVERLAY_TABLET_ORIENTATION = 210.0f; // Degrees
+// static const float CONTEXT_OVERLAY_TABLET_DISTANCE = 0.65F; // Meters
+
 ContextOverlayInterface::ContextOverlayInterface() {
     // "context_overlay" debug log category disabled by default.
     // Create your own "qtlogging.ini" file and set your "QT_LOGGING_CONF" environment variable
@@ -60,15 +61,18 @@ ContextOverlayInterface::ContextOverlayInterface() {
 
     connect(_tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system"), &TabletProxy::tabletShownChanged, this, [&]() {
         if (_contextOverlayJustClicked && _hmdScriptingInterface->isMounted()) {
-            QUuid tabletFrameID = _hmdScriptingInterface->getCurrentTabletFrameID();
-            auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
-            glm::quat cameraOrientation = qApp->getCamera().getOrientation();
+            // QUuid tabletFrameID = _hmdScriptingInterface->getCurrentTabletFrameID();
+            // auto myAvatar = DependencyManager::get<AvatarManager>()->getMyAvatar();
+            // glm::quat cameraOrientation = qApp->getCamera().getOrientation();
 
-            EntityItemProperties properties;
-            float sensorToWorldScale = myAvatar->getSensorToWorldScale();
-            properties.setPosition(myAvatar->getEyePosition() + glm::quat(glm::radians(glm::vec3(0.0f, CONTEXT_OVERLAY_TABLET_OFFSET, 0.0f))) * ((CONTEXT_OVERLAY_TABLET_DISTANCE * sensorToWorldScale) * (cameraOrientation * Vectors::FRONT)));
-            properties.setRotation(cameraOrientation * glm::quat(glm::radians(glm::vec3(0.0f, CONTEXT_OVERLAY_TABLET_ORIENTATION, 0.0f))));
-            DependencyManager::get<EntityScriptingInterface>()->editEntity(tabletFrameID, properties);
+            // EntityItemProperties properties;
+            // float sensorToWorldScale = myAvatar->getSensorToWorldScale();
+            // properties.setPosition(myAvatar->getEyePosition() + glm::quat(glm::radians(glm::vec3(0.0f, CONTEXT_OVERLAY_TABLET_OFFSET, 0.0f))) * ((CONTEXT_OVERLAY_TABLET_DISTANCE * sensorToWorldScale) * (cameraOrientation * Vectors::FRONT)));
+            // properties.setRotation(cameraOrientation * glm::quat(glm::radians(glm::vec3(0.0f, CONTEXT_OVERLAY_TABLET_ORIENTATION, 0.0f))));
+            // DependencyManager::get<EntityScriptingInterface>()->editEntity(tabletFrameID, properties);
+
+            // above gets handled in `scripts/system/libraries/WebTablet.js`
+
             _contextOverlayJustClicked = false;
         }
     });

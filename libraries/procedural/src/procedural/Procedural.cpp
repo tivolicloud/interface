@@ -426,6 +426,9 @@ void Procedural::setupUniforms() {
         if (value.isDouble()) {
             float v = value.toDouble();
             _uniforms.push_back([slot, v](gpu::Batch& batch) { batch._glUniform1f(slot, v); });
+        } else if (value.isBool()) {
+            int v = value.toBool() ? 1 : 0;
+            _uniforms.push_back([slot, v](gpu::Batch& batch) { batch._glUniform1i(slot, v); });
         } else if (value.isArray()) {
             auto valueArray = value.toArray();
             switch (valueArray.size()) {
