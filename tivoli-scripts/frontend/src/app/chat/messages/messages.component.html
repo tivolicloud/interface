@@ -25,7 +25,7 @@
 		<div
 			class="username"
 			*ngIf="!message.extras.me"
-			[matTooltip]="message.date | date: 'HH:mm, MMM d'"
+			[matTooltip]="message.date | date: 'HH:mm:ss, MMM d'"
 			matTooltipPosition="above"
 		>
 			<span class="badge" *ngIf="message.extras.tts">TTS</span>
