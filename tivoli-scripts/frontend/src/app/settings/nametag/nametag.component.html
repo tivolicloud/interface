@@ -59,18 +59,18 @@
 	<br />
 </ng-container>
 <div
-	*ngIf="rejoinRequired"
+	*ngIf="reconnectRequired"
 	style="display: flex; flex-direction: row; align-items: center"
 >
-	<button mat-flat-button color="primary" (click)="onRejoinWorld()">
+	<button mat-flat-button color="primary" (click)="onReconnectWorld()">
 		<mat-icon>refresh</mat-icon>
-		Rejoin world
+		Reconnect to world
 	</button>
 	<h3 style="margin-left: 16px">
-		You need to rejoin the world for others to see your changes
+		You need to reconnect for others to see your changes
 	</h3>
 </div>
-<ng-container *ngIf="rejoinRequired"><hr /></ng-container>
+<ng-container *ngIf="reconnectRequired"><hr /></ng-container>
 <button mat-flat-button color="primary" (click)="onUpdateImage()">
 	<mat-icon>open_in_new</mat-icon>
 	Update your image

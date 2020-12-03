@@ -318,10 +318,10 @@ public slots:
         handleUrl(SANDBOX_HIFI_ADDRESS + path, trigger); }
 
     /**jsdoc
-     * Reload the currently open world, the same as leaving the world for another and then returning.
-     * @function location.rejoin
+     * Reconnect to the current world, the same as leaving the world and returning.
+     * @function location.reconnect
      */
-    void rejoin();
+    void reconnect();
 
     /**jsdoc
      * Takes you to the default "welcome" metaverse address.

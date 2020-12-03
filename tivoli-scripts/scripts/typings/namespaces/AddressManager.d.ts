@@ -37,28 +37,29 @@ declare namespace AddressManager {
 		address: string,
 		fromSuggestions?: boolean,
 	): void;
+	function reconnect(): void;
 	function storeCurrentAddress(): void;
 
 	// signals
 	const goBackPossible: Signal<(isPossible: boolean) => any>;
 	const goForwardPossible: Signal<(isPossible: boolean) => any>;
 	const hostChanged: Signal<(hostname: string) => any>;
-	const locationChangeRequired: Signal<(
-		position: Vec3,
-		hasOrientationChange: boolean,
-		orientation: Quat,
-		shouldFaceLocation: boolean,
-	) => any>;
+	const locationChangeRequired: Signal<
+		(
+			position: Vec3,
+			hasOrientationChange: boolean,
+			orientation: Quat,
+			shouldFaceLocation: boolean,
+		) => any
+	>;
 	const lookupResultIsNotFound: Signal<() => any>;
 	const lookupResultIsOffline: Signal<() => any>;
 	const lookupResultsFinished: Signal<() => any>;
 	const pathChangeRequired: Signal<(path: string) => any>;
-	const possibleDomainChangeRequired: Signal<(
-		domainURL: string,
-		domainID: Uuid,
-	) => any>;
-	const possibleDomainChangeRequiredViaICEForID: Signal<(
-		iceServerHostName: string,
-		domainID: Uuid,
-	) => any>;
+	const possibleDomainChangeRequired: Signal<
+		(domainURL: string, domainID: Uuid) => any
+	>;
+	const possibleDomainChangeRequiredViaICEForID: Signal<
+		(iceServerHostName: string, domainID: Uuid) => any
+	>;
 }

@@ -6055,13 +6055,6 @@ void Application::reloadResourceCaches() {
     getMyAvatar()->resetFullAvatarURL();
 }
 
-
-// Reload a world without clearing the caches. 
-void Application::rejoin() { 
-    DependencyManager::get<AddressManager>()->rejoin();
-}
-
-
 void Application::rotationModeChanged() const {
     if (!Menu::getInstance()->isOptionChecked(MenuOption::CenterPlayerInView)) {
         getMyAvatar()->setHeadPitch(0);

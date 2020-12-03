@@ -85,6 +85,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 		this.refresh();
 	}
 
+	onReconnect() {
+		this.scriptService.emitEvent("explore", "reconnect");
+		this.scriptService.emitEvent("explore", "close");
+	}
+
 	onVisitTutorialWorld() {
 		this.scriptService.emitEvent(
 			"explore",

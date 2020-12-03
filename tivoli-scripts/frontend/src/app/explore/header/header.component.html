@@ -5,7 +5,7 @@
 	>
 		<mat-tab *ngFor="let tab of tabs">
 			<ng-template mat-tab-label>
-				<mat-icon style="margin-right: 8px;">{{ tab.icon }}</mat-icon>
+				<mat-icon style="margin-right: 8px">{{ tab.icon }}</mat-icon>
 				{{ tab.name }}
 			</ng-template>
 		</mat-tab>
@@ -13,10 +13,18 @@
 	<div class="extra">
 		<button
 			mat-stroked-button
-			style="margin-right: 8px;"
+			style="margin-right: 8px"
+			(click)="onReconnect()"
+		>
+			<mat-icon>refresh</mat-icon>
+			Reconnect
+		</button>
+		<button
+			mat-stroked-button
+			style="margin-right: 8px"
 			(click)="onVisitTutorialWorld()"
 		>
-			Visit tutorial world
+			Tutorial world
 		</button>
 		<mat-form-field appearance="outline">
 			<mat-icon matPrefix>search</mat-icon>

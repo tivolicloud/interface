@@ -467,7 +467,6 @@ public slots:
     Q_INVOKABLE void requeryOctree();
 
     void reloadResourceCaches();
-    void rejoin();
 
     Q_INVOKABLE void setTonemappingMode(int toneCurve, float exposure);
 

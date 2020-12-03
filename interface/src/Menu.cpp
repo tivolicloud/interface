@@ -159,8 +159,11 @@ Menu::Menu() {
     // Edit > Reload All Content and clear caches
     addActionToQMenuAndActionHash(editMenu, MenuOption::ReloadContent, 0, qApp, SLOT(reloadResourceCaches()));    
 
-    // Edit > Rejoin World 
-    addActionToQMenuAndActionHash(editMenu, MenuOption::Rejoin, Qt::CTRL | Qt::SHIFT | Qt::Key_R, qApp, SLOT(rejoin()));
+    // Edit > Reconnect to World 
+    auto reconnectAction = addActionToQMenuAndActionHash(editMenu, MenuOption::Reconnect, Qt::CTRL | Qt::SHIFT | Qt::Key_R);
+    connect(reconnectAction, &QAction::triggered, [] {
+        DependencyManager::get<AddressManager>()->reconnect();
+    });
 
     // Edit > Reload Avatar
 

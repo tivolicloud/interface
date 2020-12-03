@@ -895,13 +895,13 @@ bool AddressManager::canGoBack() const {
     return (_backStack.size() > 0);
 }
 
-void AddressManager::rejoin() {
-        LookupTrigger trigger = LookupTrigger::Internal;
-        QUrl urlToRefresh = currentAddress();//_lastVisitedURL;
-        handleUrl(EMPTY_HIFI_ADDRESS, trigger); 
-        QTimer::singleShot(2000, [=](){
-            handleUrl(urlToRefresh , trigger); 
-        });
+void AddressManager::reconnect() {
+    LookupTrigger trigger = LookupTrigger::Internal;
+    QUrl urlToRefresh = currentAddress(); // _lastVisitedURL;
+    handleUrl(EMPTY_HIFI_ADDRESS, trigger);
+    QTimer::singleShot(1000, [=](){
+        handleUrl(urlToRefresh , trigger);
+    });
 }
 
 void AddressManager::refreshPreviousLookup() {

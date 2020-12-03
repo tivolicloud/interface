@@ -28,7 +28,7 @@ export class NametagComponent implements OnInit, OnDestroy {
 	nametagDetails: NametagDetails;
 	nametagDetailsLoading = true;
 
-	rejoinRequired = false;
+	reconnectRequired = false;
 
 	onUpdateImage() {
 		this.script
@@ -65,7 +65,7 @@ export class NametagComponent implements OnInit, OnDestroy {
 				nametagDetails => {
 					this.nametagDetails = nametagDetails;
 					this.nametagDetailsLoading = false;
-					this.rejoinRequired = true;
+					this.reconnectRequired = true;
 					this.getNametagImage();
 				},
 				() => {
@@ -93,7 +93,7 @@ export class NametagComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onRejoinWorld() {
+	onReconnectWorld() {
 		this.script.rpc<string>("Window.location.href").subscribe(href => {
 			this.script
 				.rpc<string>("Window.location", "file:///")
@@ -102,7 +102,7 @@ export class NametagComponent implements OnInit, OnDestroy {
 						this.script
 							.rpc<string>("Window.location", href)
 							.subscribe(() => {
-								this.rejoinRequired = false;
+								this.reconnectRequired = false;
 							});
 					}, 1000);
 				});
