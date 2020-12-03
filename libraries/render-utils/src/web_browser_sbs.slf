@@ -44,7 +44,7 @@ layout(location=RENDER_UTILS_ATTR_TEXCOORD01) in vec4 _texCoord01;
 void main(void) {
     vec2 uv = _texCoord0;
     uv.x *= 0.5;
-	uv.x += cam_getStereoSide() * 0.5; // right eye
+    uv.x += cam_getStereoSide() * 0.5; // right eye
 
     vec4 texel = texture(webTexture, uv);
     texel = color_sRGBAToLinear(texel);
