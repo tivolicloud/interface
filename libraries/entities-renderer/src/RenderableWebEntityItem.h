@@ -96,6 +96,9 @@ private:
     WebInputMode _inputMode;
     bool _transparentBackground;
 
+    QString _userData;
+    bool _sideBySide { false };
+
     glm::vec3 _contextPosition;
 
     QTimer _timer;

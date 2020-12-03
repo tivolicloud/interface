@@ -241,6 +241,17 @@ void WebEntityRenderer::doRenderUpdateSynchronousTyped(const ScenePointer& scene
                         _contextPosition = contextPosition;
                     }
                 }
+
+                {
+                    auto userData = entity->getUserData();
+                    if (_userData != userData) {
+                        _userData = userData;
+
+                        auto userDataObject = QJsonDocument::fromJson(userData.toUtf8()).object();
+                        _sideBySide = userDataObject.contains("sbs") ?
+                            userDataObject["sbs"].toBool() : false;
+                    }
+                }
             }
 
             void* key = (void*)this;
@@ -322,7 +333,7 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 
     // Turn off jitter for these entities
     batch.pushProjectionJitter();
-    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, transparent, forward);
+    DependencyManager::get<GeometryCache>()->bindWebBrowserProgram(batch, transparent, forward, _sideBySide);
     DependencyManager::get<GeometryCache>()->renderQuad(batch, topLeft, bottomRight, texMin, texMax, color, _geometryId);
     batch.popProjectionJitter();
     batch.setResourceTexture(0, nullptr);

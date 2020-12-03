@@ -113,7 +113,7 @@ static const uint SHAPE_NORMALS_OFFSET = offsetof(GeometryCache::ShapeVertex, no
 static const uint SHAPE_TEXCOORD0_OFFSET = offsetof(GeometryCache::ShapeVertex, uv);
 static const uint SHAPE_TANGENT_OFFSET = offsetof(GeometryCache::ShapeVertex, tangent);
 
-std::map<std::pair<bool, bool>, gpu::PipelinePointer> GeometryCache::_webPipelines;
+std::map<std::tuple<bool, bool, bool>, gpu::PipelinePointer> GeometryCache::_webPipelines;
 std::map<std::pair<bool, bool>, gpu::PipelinePointer> GeometryCache::_gridPipelines;
 
 void GeometryCache::computeSimpleHullPointListForShape(const int entityShape, const glm::vec3 &entityExtents, ShapeInfo::PointList &outPointList) {
@@ -2119,20 +2119,23 @@ inline bool operator==(const SimpleProgramKey& a, const SimpleProgramKey& b) {
     return a.getRaw() == b.getRaw();
 }
 
-void GeometryCache::bindWebBrowserProgram(gpu::Batch& batch, bool transparent, bool forward) {
-    batch.setPipeline(getWebBrowserProgram(transparent, forward));
+void GeometryCache::bindWebBrowserProgram(gpu::Batch& batch, bool transparent, bool forward, bool sideBySide) {
+    batch.setPipeline(getWebBrowserProgram(transparent, forward, sideBySide));
 }
 
-gpu::PipelinePointer GeometryCache::getWebBrowserProgram(bool transparent, bool forward) {
+gpu::PipelinePointer GeometryCache::getWebBrowserProgram(bool transparent, bool forward, bool sideBySide) {
     if (_webPipelines.empty()) {
         using namespace shader::render_utils::program;
-        const int NUM_WEB_PIPELINES = 4;
+        const int NUM_WEB_PIPELINES = 8;
         for (int i = 0; i < NUM_WEB_PIPELINES; ++i) {
             bool transparent = i & 1;
             bool forward = i & 2;
+            bool sideBySide = i & 4;
 
             // For any non-opaque or non-deferred pipeline, we use web_browser_forward
-            auto pipeline = (transparent || forward) ? web_browser_forward : web_browser;
+            auto pipeline = (sideBySide) ?
+                ((transparent || forward) ? web_browser_sbs_forward : web_browser_sbs) :
+                ((transparent || forward) ? web_browser_forward : web_browser);
 
             gpu::StatePointer state = gpu::StatePointer(new gpu::State());
             state->setDepthTest(true, true, gpu::LESS_EQUAL);
@@ -2143,11 +2146,11 @@ gpu::PipelinePointer GeometryCache::getWebBrowserProgram(bool transparent, bool 
                 gpu::State::FACTOR_ALPHA, gpu::State::BLEND_OP_ADD, gpu::State::ONE);
             state->setCullMode(gpu::State::CULL_NONE);
 
-            _webPipelines[{ transparent, forward }] = gpu::Pipeline::create(gpu::Shader::createProgram(pipeline), state);
+            _webPipelines[{ transparent, forward, sideBySide }] = gpu::Pipeline::create(gpu::Shader::createProgram(pipeline), state);
         }
     }
 
-    return _webPipelines[{ transparent, forward }];
+    return _webPipelines[{ transparent, forward, sideBySide }];
 }
 
 void GeometryCache::bindSimpleProgram(gpu::Batch& batch, bool textured, bool transparent, bool unlit, bool depthBiased, bool isAntiAliased,
