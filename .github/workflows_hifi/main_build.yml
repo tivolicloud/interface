@@ -1,9 +1,9 @@
-name: Master CI Build
+name: Main CI Build
 
 on: 
   push:
     branches:
-      - master
+      - main
 
 env:
   #APP_NAME: gpu-frame-player

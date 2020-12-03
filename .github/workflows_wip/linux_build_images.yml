@@ -6,7 +6,7 @@ on:
             - cmake/ports/**
             - hifi_qt.py
         branches:
-            - master
+            - main
 jobs:
     build:
         runs-on: ubuntu-latest

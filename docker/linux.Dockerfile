@@ -40,17 +40,17 @@ apt-get install -y nodejs
 # project dependencies
 
 RUN \
-# download interface from master
+# download interface from main
 cd / && \
-curl -O https://git.tivolicloud.com/tivolicloud/interface/-/archive/master/interface-master.tar.gz && \
-tar -xf interface-master.tar.gz && \
-rm -f interface-master.tar.gz && \
+curl -O https://git.tivolicloud.com/tivolicloud/interface/-/archive/main/interface-main.tar.gz && \
+tar -xf interface-main.tar.gz && \
+rm -f interface-main.tar.gz && \
 # remove all but cmake and *.py
 mkdir /interface && \
-cp -r /interface-master/cmake /interface && \
-cp -r /interface-master/*.py /interface && \
+cp -r /interface-main/cmake /interface && \
+cp -r /interface-main/*.py /interface && \
 mkdir -p /interface/build && \
-rm -rf /interface-master && \
+rm -rf /interface-main && \
 # download dependencies
 python3 /interface/prebuild.py --release-type PRODUCTION --build-root /interface/build --vcpkg-build-type release && \
 # cleanup. vcpkg saves packages in /root/.cache/vcpkg

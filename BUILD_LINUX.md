@@ -19,7 +19,7 @@ Make sure you have general build tools, `git`, `cmake`, `python` 3+ and `node` 1
 
 We'll update this with the proper package lists for supported distros soon.
 
-A verbose list of packages used in our build system can be found here: https://git.tivolicloud.com/tivolicloud/interface/-/blob/master/.gitlab/build/linux.gitlab-ci.yml
+A verbose list of packages used in our build system can be found here: https://git.tivolicloud.com/tivolicloud/interface/-/blob/main/.gitlab/build/linux.gitlab-ci.yml
 
 ## Step 2. Configuring environment variables
 
@@ -66,7 +66,7 @@ git clone https://git.tivolicloud.com/tivolicloud/interface
 cd interface
 ```
 
-You can use the master branch (default) or checkout to the latest tag
+You can use the main branch (default) or checkout to the latest tag
 
 ```
 git tag

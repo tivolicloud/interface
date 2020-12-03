@@ -49,5 +49,5 @@ The server is freshly available for Docker on our [container registry](https://g
 
 If you want to run a self-compiled version, refer to:
 
--   https://git.tivolicloud.com/tivolicloud/interface/-/tree/master/docker/server
--   https://git.tivolicloud.com/tivolicloud/interface/-/tree/master/.gitlab/deploy.gitlab-ci.yml
+-   https://git.tivolicloud.com/tivolicloud/interface/-/tree/main/docker/server
+-   https://git.tivolicloud.com/tivolicloud/interface/-/tree/main/.gitlab/deploy.gitlab-ci.yml

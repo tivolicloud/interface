@@ -65,7 +65,7 @@ git clone https://git.tivolicloud.com/tivolicloud/interface
 cd interface
 ```
 
-You can use the master branch (default) or checkout to the latest tag
+You can use the main branch (default) or checkout to the latest tag
 
 ```
 git tag

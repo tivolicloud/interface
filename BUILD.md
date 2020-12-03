@@ -8,7 +8,7 @@
 We also recommended learning from example when new to building Tivoli. There are many complex systems in place and it's not always straightforward and easy.
 
 You can find our official production pipelines for GitLab here:
-https://git.tivolicloud.com/tivolicloud/interface/-/tree/master/.gitlab
+https://git.tivolicloud.com/tivolicloud/interface/-/tree/main/.gitlab
 
 # System dependencies
 
