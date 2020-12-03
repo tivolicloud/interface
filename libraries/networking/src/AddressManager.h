@@ -266,6 +266,15 @@ public:
     QString getDomainDescription() { return _domainDescription; }
     QString getDomainRestriction() { return _domainRestriction; }
 
+    struct Viewpoint {
+        bool success;
+        glm::vec3 position;
+        bool orientationChanged;
+        glm::quat orientation;
+    };
+
+    static Viewpoint parseViewpoint(const QString& viewpointString);
+
 public slots:
     /**jsdoc
      * Takes you to a specified metaverse address.

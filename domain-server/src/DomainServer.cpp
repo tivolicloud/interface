@@ -28,8 +28,10 @@
 #include <QUrlQuery>
 #include <QCommandLineParser>
 #include <QUuid>
+#include <QRandomGenerator>
 
 #include <AccountManager.h>
+#include <AddressManager.h>
 #include <AssetClient.h>
 #include <BuildInfo.h>
 #include <CrashAnnotations.h>
@@ -3249,9 +3251,11 @@ void DomainServer::processPathQueryPacket(QSharedPointer<ReceivedMessage> messag
 
         const QString PATHS_SETTINGS_KEYPATH_FORMAT = "%1.%2";
         const QString PATH_VIEWPOINT_KEY = "viewpoint";
+        const QString PATH_SPAWN_RADIUS_KEY = "spawn_radius";
         const QString INDEX_PATH = "/";
 
         QString responseViewpoint;
+        float responseSpawnRadius = 0.0f;
 
         // check out paths in the _configMap to see if we have a match
         auto pathsVariant = _settingsManager.valueForKeyPath(SETTINGS_PATHS_KEY);
@@ -3264,51 +3268,77 @@ void DomainServer::processPathQueryPacket(QSharedPointer<ReceivedMessage> messag
             // enumerate the paths and look case-insensitively for a matching one
             for (auto it = pathsMap.constKeyValueBegin(); it != pathsMap.constKeyValueEnd(); ++it) {
                 if ((*it).first.toLower() == lowerPathQuery) {
-                    responseViewpoint = (*it).second.toMap()[PATH_VIEWPOINT_KEY].toString().toLower();
+                    auto map = (*it).second.toMap();
+                    responseViewpoint = map[PATH_VIEWPOINT_KEY].toString().toLower();
+                    if (map[PATH_SPAWN_RADIUS_KEY].canConvert(QMetaType::Float)) {
+                        responseSpawnRadius = map[PATH_SPAWN_RADIUS_KEY].toFloat();
+                    }
                     break;
                 }
             }
         }
 
-        if (responseViewpoint.isEmpty() && pathQuery == INDEX_PATH) {
-            const QString DEFAULT_INDEX_PATH = "/0,0,0/0,0,0,1";
-            responseViewpoint = DEFAULT_INDEX_PATH;
+        AddressManager::Viewpoint viewpoint = AddressManager::parseViewpoint(responseViewpoint);
+
+        if (!viewpoint.success && pathQuery == INDEX_PATH) {
+            viewpoint.success = true;
+            viewpoint.position = glm::vec3(0, 0, 0);
+            viewpoint.orientationChanged = true;
+            viewpoint.orientation = glm::quat(0, 0, 0, 1);
         }
 
-        if (!responseViewpoint.isEmpty()) {
+        if (viewpoint.success && responseSpawnRadius > 0.0f) {
+            viewpoint.position.x = (
+                (float)QRandomGenerator::global()->generateDouble() * responseSpawnRadius * 2
+            ) - responseSpawnRadius;
+            viewpoint.position.z = (
+                (float)QRandomGenerator::global()->generateDouble() * responseSpawnRadius * 2
+            ) - responseSpawnRadius;
+        }
+
+        if (viewpoint.success) {
             // we got a match, respond with the resulting viewpoint
             auto nodeList = DependencyManager::get<LimitedNodeList>();
+            
+            QString viewpointStr = QString("/%1,%2,%3")
+                .arg(viewpoint.position.x).arg(viewpoint.position.y).arg(viewpoint.position.z);
 
-            if (!responseViewpoint.isEmpty()) {
-                QByteArray viewpointUTF8 = responseViewpoint.toUtf8();
+            if (viewpoint.orientationChanged) {
+                viewpointStr.append(
+                    QString("/%1,%2,%3,%4")
+                        .arg(viewpoint.orientation.w).arg(viewpoint.orientation.x)
+                        .arg(viewpoint.orientation.y).arg(viewpoint.orientation.z)
+                );
+            }
 
-                // prepare a packet for the response
-                auto pathResponsePacket = NLPacket::create(PacketType::DomainServerPathResponse, -1, true);
+            QByteArray viewpointBytes = viewpointStr.toUtf8();
 
-                // check the number of bytes the viewpoint is
-                quint16 numViewpointBytes = viewpointUTF8.size();
+            // prepare a packet for the response
+            auto pathResponsePacket = NLPacket::create(PacketType::DomainServerPathResponse, -1, true);
 
-                // are we going to be able to fit this response viewpoint in a packet?
-                if (numPathBytes + numViewpointBytes + sizeof(numViewpointBytes) + sizeof(numPathBytes)
-                        < (unsigned long) pathResponsePacket->bytesAvailableForWrite()) {
-                    // append the number of bytes this path is
-                    pathResponsePacket->writePrimitive(numPathBytes);
+            // check the number of bytes the viewpoint is
+            quint16 numViewpointBytes = viewpointBytes.size();
 
-                    // append the path itself
-                    pathResponsePacket->write(pathQuery.toUtf8());
+            // are we going to be able to fit this response viewpoint in a packet?
+            if (numPathBytes + numViewpointBytes + sizeof(numViewpointBytes) + sizeof(numPathBytes)
+                    < (unsigned long) pathResponsePacket->bytesAvailableForWrite()) {
+                // append the number of bytes this path is
+                pathResponsePacket->writePrimitive(numPathBytes);
 
-                    // append the number of bytes the resulting viewpoint is
-                    pathResponsePacket->writePrimitive(numViewpointBytes);
+                // append the path itself
+                pathResponsePacket->write(pathQuery.toUtf8());
 
-                    // append the viewpoint itself
-                    pathResponsePacket->write(viewpointUTF8);
+                // append the number of bytes the resulting viewpoint is
+                pathResponsePacket->writePrimitive(numViewpointBytes);
 
-                    qDebug() << "Sending a viewpoint response for path query" << pathQuery << "-" << viewpointUTF8;
+                // append the viewpoint itself
+                pathResponsePacket->write(viewpointBytes);
 
-                    // send off the packet - see if we can associate this outbound data to a particular node
-                    // TODO: does this senderSockAddr always work for a punched DS client?
-                    nodeList->sendPacket(std::move(pathResponsePacket), message->getSenderSockAddr());
-                }
+                qDebug() << "Sending a viewpoint response for path query" << pathQuery << "-" << viewpointStr;
+
+                // send off the packet - see if we can associate this outbound data to a particular node
+                // TODO: does this senderSockAddr always work for a punched DS client?
+                nodeList->sendPacket(std::move(pathResponsePacket), message->getSenderSockAddr());
             }
 
         } else {

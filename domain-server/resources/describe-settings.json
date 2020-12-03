@@ -79,6 +79,11 @@
               "name": "viewpoint",
               "label": "Viewpoint",
               "placeholder": "/0,0,0"
+            },
+            {
+              "name": "spawn_radius",
+              "label": "Spawn Radius (meters)",
+              "placeholder": "0"
             }
           ]
         }

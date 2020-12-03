@@ -729,8 +729,7 @@ void AddressManager::handlePath(const QString& path, LookupTrigger trigger, bool
     }
 }
 
-bool AddressManager::handleViewpoint(const QString& viewpointString, bool shouldFace, LookupTrigger trigger,
-                                     bool definitelyPathOnly, const QString& pathString) {
+AddressManager::Viewpoint AddressManager::parseViewpoint(const QString& viewpointString) {
     const QString FLOAT_REGEX_STRING = "([-+]?[0-9]*\\.?[0-9]+(?:[eE][-+]?[0-9]+)?)";
     const QString SPACED_COMMA_REGEX_STRING = "\\s*,\\s*";
     const QString POSITION_REGEX_STRING = QString("\\/") + FLOAT_REGEX_STRING + SPACED_COMMA_REGEX_STRING +
@@ -741,25 +740,15 @@ bool AddressManager::handleViewpoint(const QString& viewpointString, bool should
 
     QRegExp positionRegex(POSITION_REGEX_STRING);
 
+    Viewpoint viewpoint;
+
     if (positionRegex.indexIn(viewpointString) != -1) {
         // we have at least a position, so emit our signal to say we need to change position
-        glm::vec3 newPosition(positionRegex.cap(1).toFloat(),
-                              positionRegex.cap(2).toFloat(),
-                              positionRegex.cap(3).toFloat());
-
-        // We need to use definitelyPathOnly, pathString and _newHostLookupPath to determine if the current address
-        // should be stored in the history before we ask for a position/orientation change. A relative path that was
-        // not associated with a host lookup should always trigger a history change (definitelyPathOnly) and a viewpointString
-        // with a non empty pathString (suggesting this is the result of a lookup with the domain-server) that does not match
-        // _newHostLookupPath should always trigger a history change.
-        //
-        // We use _newHostLookupPath to determine if the client has already stored its last address
-        // before moving to a new host thanks to the information in the same lookup URL.
-
-        if (definitelyPathOnly || (!pathString.isEmpty() && pathString != _newHostLookupPath)
-            || trigger == Back || trigger == Forward) {
-            addCurrentAddressToHistory(trigger);
-        }
+        glm::vec3 newPosition(
+            positionRegex.cap(1).toFloat(),
+            positionRegex.cap(2).toFloat(),
+            positionRegex.cap(3).toFloat()
+        );
 
         if (!isNaN(newPosition)) {
             glm::quat newOrientation;
@@ -769,35 +758,78 @@ bool AddressManager::handleViewpoint(const QString& viewpointString, bool should
             bool orientationChanged = false;
 
             // we may also have an orientation
-            if (viewpointString[positionRegex.matchedLength() - 1] == QChar('/')
-                && orientationRegex.indexIn(viewpointString, positionRegex.matchedLength() - 1) != -1) {
+            if (
+                viewpointString[positionRegex.matchedLength() - 1] == QChar('/') &&
+                orientationRegex.indexIn(viewpointString, positionRegex.matchedLength() - 1) != -1
+            ) {
+                newOrientation = glm::normalize(
+                    glm::quat(
+                        orientationRegex.cap(4).toFloat(),
+                        orientationRegex.cap(1).toFloat(),
+                        orientationRegex.cap(2).toFloat(),
+                        orientationRegex.cap(3).toFloat()
+                    )
+                );
 
-                newOrientation = glm::normalize(glm::quat(orientationRegex.cap(4).toFloat(),
-                                                          orientationRegex.cap(1).toFloat(),
-                                                          orientationRegex.cap(2).toFloat(),
-                                                          orientationRegex.cap(3).toFloat()));
-
-                if (!isNaN(newOrientation.x) && !isNaN(newOrientation.y) && !isNaN(newOrientation.z)
-                    && !isNaN(newOrientation.w)) {
+                if (
+                    !isNaN(newOrientation.x) && !isNaN(newOrientation.y) &&
+                    !isNaN(newOrientation.z) && !isNaN(newOrientation.w)
+                ) {
                     orientationChanged = true;
                 } else {
-                    qCDebug(networking) << "Orientation parsed from lookup string is invalid. Won't use for location change.";
+                    qCDebug(networking)
+                        << "Orientation parsed from lookup string is invalid. Won't use for location change."
+                        << viewpointString;
                 }
             }
 
-            emit locationChangeRequired(newPosition, orientationChanged,
-                trigger == LookupTrigger::VisitUserFromPAL ? cancelOutRollAndPitch(newOrientation): newOrientation,
-                shouldFace
-            );
+            viewpoint.success = true;
+            viewpoint.position = newPosition;
+            viewpoint.orientationChanged = orientationChanged;
+            viewpoint.orientation = newOrientation;
+            return viewpoint;
 
         } else {
             qCDebug(networking) << "Could not jump to position from lookup string because it has an invalid value.";
-        }
 
-        return true;
+            viewpoint.success = false;
+            return viewpoint;
+        }
     } else {
+        viewpoint.success = false;
+        return viewpoint;
+    }
+}
+
+bool AddressManager::handleViewpoint(const QString& viewpointString, bool shouldFace, LookupTrigger trigger,
+                                     bool definitelyPathOnly, const QString& pathString) {
+
+    Viewpoint viewpoint = parseViewpoint(viewpointString);
+   
+    if (!viewpoint.success) {
         return false;
     }
+
+    // We need to use definitelyPathOnly, pathString and _newHostLookupPath to determine if the current address
+    // should be stored in the history before we ask for a position/orientation change. A relative path that was
+    // not associated with a host lookup should always trigger a history change (definitelyPathOnly) and a viewpointString
+    // with a non empty pathString (suggesting this is the result of a lookup with the domain-server) that does not match
+    // _newHostLookupPath should always trigger a history change.
+    //
+    // We use _newHostLookupPath to determine if the client has already stored its last address
+    // before moving to a new host thanks to the information in the same lookup URL.
+
+    if (definitelyPathOnly || (!pathString.isEmpty() && pathString != _newHostLookupPath)
+        || trigger == Back || trigger == Forward) {
+        addCurrentAddressToHistory(trigger);
+    }
+
+    emit locationChangeRequired(viewpoint.position, viewpoint.orientationChanged,
+        trigger == LookupTrigger::VisitUserFromPAL ? cancelOutRollAndPitch(viewpoint.orientation): viewpoint.orientation,
+        shouldFace
+    );
+
+    return true;
 }
 
 const QString GET_USER_LOCATION = "/api/v1/users/%1/location";
