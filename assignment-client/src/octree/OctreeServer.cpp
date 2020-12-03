@@ -401,11 +401,11 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
         statsString += "<b>Current Elements in scene:</b>\r\n";
         statsString += QString("       Total Elements: %1 nodes\r\n")
             .arg(locale.toString((uint)nodeCount).rightJustified(16, ' '));
-        statsString += QString().sprintf("    Internal Elements: %s nodes (%5.2f%%)\r\n",
+        statsString += QString().asprintf("    Internal Elements: %s nodes (%5.2f%%)\r\n",
                                          locale.toString((uint)internalNodeCount).rightJustified(16,
                                                                                                  ' ').toLocal8Bit().constData(),
                                          (double)((internalNodeCount / (float)nodeCount) * AS_PERCENT));
-        statsString += QString().sprintf("        Leaf Elements: %s nodes (%5.2f%%)\r\n",
+        statsString += QString().asprintf("        Leaf Elements: %s nodes (%5.2f%%)\r\n",
                                          locale.toString((uint)leafNodeCount).rightJustified(16, ' ').toLocal8Bit().constData(),
                                          (double)((leafNodeCount / (float)nodeCount) * AS_PERCENT));
         statsString += "\r\n";
@@ -440,12 +440,12 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             .arg(locale.toString((uint)howManyThreadsDidCallWriteDatagram(oneSecondAgo)).rightJustified(COLUMN_WIDTH, ' '));
 
         float averageLoopTime = getAverageLoopTime();
-        statsString += QString().sprintf("           Average packetLoop() time:      %7.2f msecs"
+        statsString += QString().asprintf("           Average packetLoop() time:      %7.2f msecs"
                                          "                 samples: %12d \r\n",
                                          (double)averageLoopTime, _averageLoopTime.getSampleCount());
 
         float averageInsideTime = getAverageInsideTime();
-        statsString += QString().sprintf("               Average 'inside' time:    %9.2f usecs"
+        statsString += QString().asprintf("               Average 'inside' time:    %9.2f usecs"
                                          "                 samples: %12d \r\n\r\n",
                                          (double)averageInsideTime, _averageInsideTime.getSampleCount());
 
@@ -455,29 +455,29 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             int allWaitTimes = _extraLongProcessWait +_longProcessWait + _shortProcessWait + _noProcessWait;
 
             float averageProcessWaitTime = getAverageProcessWaitTime();
-            statsString += QString().sprintf("      Average process lock wait time:"
+            statsString += QString().asprintf("      Average process lock wait time:"
                                              "    %9.2f usecs                 samples: %12d \r\n",
                                              (double)averageProcessWaitTime, allWaitTimes);
 
             float zeroVsTotal = (allWaitTimes > 0) ? ((float)_noProcessWait / (float)allWaitTimes) : 0.0f;
-            statsString += QString().sprintf("                        No Lock Wait:"
+            statsString += QString().asprintf("                        No Lock Wait:"
                                              "                          (%6.2f%%) samples: %12d \r\n",
                                              (double)(zeroVsTotal * AS_PERCENT), _noProcessWait);
 
             float shortVsTotal = (allWaitTimes > 0) ? ((float)_shortProcessWait / (float)allWaitTimes) : 0.0f;
-            statsString += QString().sprintf("    Avg process lock short wait time:"
+            statsString += QString().asprintf("    Avg process lock short wait time:"
                                              "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                              (double)_averageProcessShortWaitTime.getAverage(),
                                              (double)(shortVsTotal * AS_PERCENT), _shortProcessWait);
 
             float longVsTotal = (allWaitTimes > 0) ? ((float)_longProcessWait / (float)allWaitTimes) : 0.0f;
-            statsString += QString().sprintf("     Avg process lock long wait time:"
+            statsString += QString().asprintf("     Avg process lock long wait time:"
                                              "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                              (double)_averageProcessLongWaitTime.getAverage(),
                                              (double)(longVsTotal * AS_PERCENT), _longProcessWait);
 
             float extraLongVsTotal = (allWaitTimes > 0) ? ((float)_extraLongProcessWait / (float)allWaitTimes) : 0.0f;
-            statsString += QString().sprintf("Avg process lock extralong wait time:"
+            statsString += QString().asprintf("Avg process lock extralong wait time:"
                                              "          %9.2f usecs (%6.2f%%) samples: %12d \r\n\r\n",
                                              (double)_averageProcessExtraLongWaitTime.getAverage(),
                                              (double)(extraLongVsTotal * AS_PERCENT), _extraLongProcessWait);
@@ -487,129 +487,129 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
         int allWaitTimes = _extraLongTreeWait +_longTreeWait + _shortTreeWait + _noTreeWait;
 
         float averageTreeWaitTime = getAverageTreeWaitTime();
-        statsString += QString().sprintf("         Average tree lock wait time:"
+        statsString += QString().asprintf("         Average tree lock wait time:"
                                          "    %9.2f usecs                 samples: %12d \r\n",
                                          (double)averageTreeWaitTime, allWaitTimes);
 
         float zeroVsTotal = (allWaitTimes > 0) ? ((float)_noTreeWait / (float)allWaitTimes) : 0.0f;
-        statsString += QString().sprintf("                        No Lock Wait:"
+        statsString += QString().asprintf("                        No Lock Wait:"
                                          "                          (%6.2f%%) samples: %12d \r\n",
                                          (double)(zeroVsTotal * AS_PERCENT), _noTreeWait);
 
         float shortVsTotal = (allWaitTimes > 0) ? ((float)_shortTreeWait / (float)allWaitTimes) : 0.0f;
-        statsString += QString().sprintf("       Avg tree lock short wait time:"
+        statsString += QString().asprintf("       Avg tree lock short wait time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageTreeShortWaitTime.getAverage(),
                                          (double)(shortVsTotal * AS_PERCENT), _shortTreeWait);
 
         float longVsTotal = (allWaitTimes > 0) ? ((float)_longTreeWait / (float)allWaitTimes) : 0.0f;
-        statsString += QString().sprintf("        Avg tree lock long wait time:"
+        statsString += QString().asprintf("        Avg tree lock long wait time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageTreeLongWaitTime.getAverage(),
                                          (double)(longVsTotal * AS_PERCENT), _longTreeWait);
 
         float extraLongVsTotal = (allWaitTimes > 0) ? ((float)_extraLongTreeWait / (float)allWaitTimes) : 0.0f;
-        statsString += QString().sprintf("  Avg tree lock extra long wait time:"
+        statsString += QString().asprintf("  Avg tree lock extra long wait time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n\r\n",
                                          (double)_averageTreeExtraLongWaitTime.getAverage(),
                                          (double)(extraLongVsTotal * AS_PERCENT), _extraLongTreeWait);
 
         // traverse
         float averageTreeTraverseTime = getAverageTreeTraverseTime();
-        statsString += QString().sprintf("          Average tree traverse time:    %9.2f usecs\r\n\r\n", (double)averageTreeTraverseTime);
+        statsString += QString().asprintf("          Average tree traverse time:    %9.2f usecs\r\n\r\n", (double)averageTreeTraverseTime);
 
         // encode
         float averageEncodeTime = getAverageEncodeTime();
-        statsString += QString().sprintf("                 Average encode time:    %9.2f usecs\r\n", (double)averageEncodeTime);
+        statsString += QString().asprintf("                 Average encode time:    %9.2f usecs\r\n", (double)averageEncodeTime);
 
         int allEncodeTimes = _noEncode + _shortEncode + _longEncode + _extraLongEncode;
 
         float zeroVsTotalEncode = (allEncodeTimes > 0) ? ((float)_noEncode / (float)allEncodeTimes) : 0.0f;
-        statsString += QString().sprintf("                           No Encode:"
+        statsString += QString().asprintf("                           No Encode:"
                                          "                          (%6.2f%%) samples: %12d \r\n",
                                          (double)(zeroVsTotalEncode * AS_PERCENT), _noEncode);
 
         float shortVsTotalEncode = (allEncodeTimes > 0) ? ((float)_shortEncode / (float)allEncodeTimes) : 0.0f;
-        statsString += QString().sprintf("               Avg short encode time:"
+        statsString += QString().asprintf("               Avg short encode time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageShortEncodeTime.getAverage(),
                                          (double)(shortVsTotalEncode * AS_PERCENT), _shortEncode);
 
         float longVsTotalEncode = (allEncodeTimes > 0) ? ((float)_longEncode / (float)allEncodeTimes) : 0.0f;
-        statsString += QString().sprintf("                Avg long encode time:"
+        statsString += QString().asprintf("                Avg long encode time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageLongEncodeTime.getAverage(),
                                          (double)(longVsTotalEncode * AS_PERCENT), _longEncode);
 
         float extraLongVsTotalEncode = (allEncodeTimes > 0) ? ((float)_extraLongEncode / (float)allEncodeTimes) : 0.0f;
-        statsString += QString().sprintf("          Avg extra long encode time:"
+        statsString += QString().asprintf("          Avg extra long encode time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n\r\n",
                                          (double)_averageExtraLongEncodeTime.getAverage(),
                                          (double)(extraLongVsTotalEncode * AS_PERCENT), _extraLongEncode);
 
 
         float averageCompressAndWriteTime = getAverageCompressAndWriteTime();
-        statsString += QString().sprintf("     Average compress and write time:    %9.2f usecs\r\n",
+        statsString += QString().asprintf("     Average compress and write time:    %9.2f usecs\r\n",
                                          (double)averageCompressAndWriteTime);
 
         int allCompressTimes = _noCompress + _shortCompress + _longCompress + _extraLongCompress;
 
         float zeroVsTotalCompress = (allCompressTimes > 0) ? ((float)_noCompress / (float)allCompressTimes) : 0.0f;
-        statsString += QString().sprintf("                      No compression:"
+        statsString += QString().asprintf("                      No compression:"
                                          "                          (%6.2f%%) samples: %12d \r\n",
                                          (double)(zeroVsTotalCompress * AS_PERCENT), _noCompress);
 
         float shortVsTotalCompress = (allCompressTimes > 0) ? ((float)_shortCompress / (float)allCompressTimes) : 0.0f;
-        statsString += QString().sprintf("             Avg short compress time:"
+        statsString += QString().asprintf("             Avg short compress time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageShortCompressTime.getAverage(),
                                          (double)(shortVsTotalCompress * AS_PERCENT), _shortCompress);
 
         float longVsTotalCompress = (allCompressTimes > 0) ? ((float)_longCompress / (float)allCompressTimes) : 0.0f;
-        statsString += QString().sprintf("              Avg long compress time:"
+        statsString += QString().asprintf("              Avg long compress time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n",
                                          (double)_averageLongCompressTime.getAverage(),
                                          (double)(longVsTotalCompress * AS_PERCENT), _longCompress);
 
         float extraLongVsTotalCompress = (allCompressTimes > 0) ? ((float)_extraLongCompress / (float)allCompressTimes) : 0.0f;
-        statsString += QString().sprintf("        Avg extra long compress time:"
+        statsString += QString().asprintf("        Avg extra long compress time:"
                                          "          %9.2f usecs (%6.2f%%) samples: %12d \r\n\r\n",
                                          (double)_averageExtraLongCompressTime.getAverage(),
                                          (double)(extraLongVsTotalCompress * AS_PERCENT), _extraLongCompress);
 
         float averagePacketSendingTime = getAveragePacketSendingTime();
-        statsString += QString().sprintf("         Average packet sending time:    %9.2f usecs (includes node lock)\r\n",
+        statsString += QString().asprintf("         Average packet sending time:    %9.2f usecs (includes node lock)\r\n",
                                          (double)averagePacketSendingTime);
 
         float noVsTotalSend = (_averagePacketSendingTime.getSampleCount() > 0) ?
                                         ((float)_noSend / (float)_averagePacketSendingTime.getSampleCount()) : 0.0f;
-        statsString += QString().sprintf("                         Not sending:"
+        statsString += QString().asprintf("                         Not sending:"
                                          "                          (%6.2f%%) samples: %12d \r\n",
                                          (double)(noVsTotalSend * AS_PERCENT), _noSend);
 
         float averageNodeWaitTime = getAverageNodeWaitTime();
-        statsString += QString().sprintf("         Average node lock wait time:    %9.2f usecs\r\n",
+        statsString += QString().asprintf("         Average node lock wait time:    %9.2f usecs\r\n",
                                          (double)averageNodeWaitTime);
 
-        statsString += QString().sprintf("--------------------------------------------------------------\r\n");
+        statsString += QString().asprintf("--------------------------------------------------------------\r\n");
 
         float encodeToInsidePercent = averageInsideTime == 0.0f ? 0.0f : (averageEncodeTime / averageInsideTime) * AS_PERCENT;
-        statsString += QString().sprintf("                          encode ratio:      %5.2f%%\r\n",
+        statsString += QString().asprintf("                          encode ratio:      %5.2f%%\r\n",
                                          (double)encodeToInsidePercent);
 
         float waitToInsidePercent = averageInsideTime == 0.0f ? 0.0f
                     : ((averageTreeWaitTime + averageNodeWaitTime) / averageInsideTime) * AS_PERCENT;
-        statsString += QString().sprintf("                         waiting ratio:      %5.2f%%\r\n",
+        statsString += QString().asprintf("                         waiting ratio:      %5.2f%%\r\n",
                                          (double)waitToInsidePercent);
 
         float compressAndWriteToInsidePercent = averageInsideTime == 0.0f ? 0.0f
                     : (averageCompressAndWriteTime / averageInsideTime) * AS_PERCENT;
-        statsString += QString().sprintf("              compress and write ratio:      %5.2f%%\r\n",
+        statsString += QString().asprintf("              compress and write ratio:      %5.2f%%\r\n",
                                          (double)compressAndWriteToInsidePercent);
 
         float sendingToInsidePercent = averageInsideTime == 0.0f ? 0.0f
                     : (averagePacketSendingTime / averageInsideTime) * AS_PERCENT;
-        statsString += QString().sprintf("                         sending ratio:      %5.2f%%\r\n",
+        statsString += QString().asprintf("                         sending ratio:      %5.2f%%\r\n",
                                          (double)sendingToInsidePercent);
 
 
@@ -629,13 +629,13 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
 
         statsString += QString("               Total Wasted Bytes: %1 bytes\r\n")
             .arg(locale.toString((uint)totalWastedBytes).rightJustified(COLUMN_WIDTH, ' '));
-        statsString += QString().sprintf("            Total OctalCode Bytes: %s bytes (%5.2f%%)\r\n",
+        statsString += QString().asprintf("            Total OctalCode Bytes: %s bytes (%5.2f%%)\r\n",
             locale.toString((uint)totalBytesOfOctalCodes).rightJustified(COLUMN_WIDTH, ' ').toLocal8Bit().constData(),
             (double)((totalBytesOfOctalCodes / (float)totalOutboundBytes) * AS_PERCENT));
-        statsString += QString().sprintf("             Total BitMasks Bytes: %s bytes (%5.2f%%)\r\n",
+        statsString += QString().asprintf("             Total BitMasks Bytes: %s bytes (%5.2f%%)\r\n",
             locale.toString((uint)totalBytesOfBitMasks).rightJustified(COLUMN_WIDTH, ' ').toLocal8Bit().constData(),
             (double)(((float)totalBytesOfBitMasks / (float)totalOutboundBytes) * AS_PERCENT));
-        statsString += QString().sprintf("                Total Color Bytes: %s bytes (%5.2f%%)\r\n",
+        statsString += QString().asprintf("                Total Color Bytes: %s bytes (%5.2f%%)\r\n",
             locale.toString((uint)totalBytesOfColor).rightJustified(COLUMN_WIDTH, ' ').toLocal8Bit().constData(),
             (double)((totalBytesOfColor / (float)totalOutboundBytes) * AS_PERCENT));
 
@@ -643,7 +643,7 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
         statsString += "\r\n";
 
         // display inbound packet stats
-        statsString += QString().sprintf("<b>%s Edit Statistics... <a href='/resetStats'>[RESET]</a></b>\r\n",
+        statsString += QString().asprintf("<b>%s Edit Statistics... <a href='/resetStats'>[RESET]</a></b>\r\n",
                                          getMyServerName());
         quint64 currentPacketsInQueue = _octreeInboundPacketProcessor->packetsToProcessCount();
         float incomingPPS = _octreeInboundPacketProcessor->getIncomingPPS();
@@ -678,7 +678,7 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             .arg(locale.toString((uint)totalPacketsProcessed).rightJustified(COLUMN_WIDTH, ' '));
         statsString += QString("          Total Inbound Elements: %1 elements\r\n")
             .arg(locale.toString((uint)totalElementsProcessed).rightJustified(COLUMN_WIDTH, ' '));
-        statsString += QString().sprintf(" Average Inbound Elements/Packet: %f elements/packet\r\n",
+        statsString += QString().asprintf(" Average Inbound Elements/Packet: %f elements/packet\r\n",
                                          (double)averageElementsPerPacket);
         statsString += QString("     Average Transit Time/Packet: %1 usecs\r\n")
             .arg(locale.toString((uint)averageTransitTimePerPacket).rightJustified(COLUMN_WIDTH, ' '));
@@ -739,7 +739,7 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
                 .arg(locale.toString((uint)totalPacketsProcessed).rightJustified(COLUMN_WIDTH, ' '));
             statsString += QString("              Total Inbound Elements: %1 elements\r\n")
                 .arg(locale.toString((uint)totalElementsProcessed).rightJustified(COLUMN_WIDTH, ' '));
-            statsString += QString().sprintf("     Average Inbound Elements/Packet: %f elements/packet\r\n",
+            statsString += QString().asprintf("     Average Inbound Elements/Packet: %f elements/packet\r\n",
                                              (double)averageElementsPerPacket);
             statsString += QString("         Average Transit Time/Packet: %1 usecs\r\n")
                 .arg(locale.toString((uint)averageTransitTimePerPacket).rightJustified(COLUMN_WIDTH, ' '));
@@ -776,7 +776,7 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
 
         // display memory usage stats
         statsString += "<b>Current Memory Usage Statistics</b>\r\n";
-        statsString += QString().sprintf("\r\nOctreeElement size... %ld bytes\r\n", sizeof(OctreeElement));
+        statsString += QString().asprintf("\r\nOctreeElement size... %ld bytes\r\n", sizeof(OctreeElement));
         statsString += "\r\n";
 
         const char* memoryScaleLabel;
@@ -791,15 +791,15 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
             memoryScale = GIGABYTES;
         }
 
-        statsString += QString().sprintf("Element Node Memory Usage:       %8.2f %s\r\n",
+        statsString += QString().asprintf("Element Node Memory Usage:       %8.2f %s\r\n",
                                          OctreeElement::getOctreeMemoryUsage() / (double)memoryScale, memoryScaleLabel);
-        statsString += QString().sprintf("Octcode Memory Usage:            %8.2f %s\r\n",
+        statsString += QString().asprintf("Octcode Memory Usage:            %8.2f %s\r\n",
                                          OctreeElement::getOctcodeMemoryUsage() / (double)memoryScale, memoryScaleLabel);
-        statsString += QString().sprintf("External Children Memory Usage:  %8.2f %s\r\n",
+        statsString += QString().asprintf("External Children Memory Usage:  %8.2f %s\r\n",
                                          OctreeElement::getExternalChildrenMemoryUsage() / (double)memoryScale,
                                          memoryScaleLabel);
         statsString += "                                 -----------\r\n";
-        statsString += QString().sprintf("                         Total:  %8.2f %s\r\n",
+        statsString += QString().asprintf("                         Total:  %8.2f %s\r\n",
                                          OctreeElement::getTotalMemoryUsage() / (double)memoryScale, memoryScaleLabel);
         statsString += "\r\n";
 
@@ -807,7 +807,7 @@ bool OctreeServer::handleHTTPRequest(HTTPConnection* connection, const QUrl& url
         checkSum = 0;
         for (int i=0; i <= NUMBER_OF_CHILDREN; i++) {
             checkSum += OctreeElement::getChildrenCount(i);
-            statsString += QString().sprintf("    Nodes with %d children:      %s nodes (%5.2f%%)\r\n", i,
+            statsString += QString().asprintf("    Nodes with %d children:      %s nodes (%5.2f%%)\r\n", i,
                 locale.toString((uint)OctreeElement::getChildrenCount(i)).rightJustified(16, ' ').toLocal8Bit().constData(),
                 (double)(((float)OctreeElement::getChildrenCount(i) / (float)nodeCount) * AS_PERCENT));
         }
@@ -1339,7 +1339,7 @@ QString OctreeServer::getUptime() {
         if (hours > 0 || minutes > 0) {
             formattedUptime += QString(" ");
         }
-        formattedUptime += QString().sprintf("%.3f seconds", (double)seconds);
+        formattedUptime += QString().asprintf("%.3f seconds", (double)seconds);
     }
     return formattedUptime;
 }
@@ -1378,7 +1378,7 @@ QString OctreeServer::getFileLoadTime() {
             if (hours > 0 || minutes > 0) {
                 result += QString(" ");
             }
-            result += QString().sprintf("%.3f seconds", (double)seconds);
+            result += QString().asprintf("%.3f seconds", (double)seconds);
         }
     } else {
         result = "Not yet loaded...";
