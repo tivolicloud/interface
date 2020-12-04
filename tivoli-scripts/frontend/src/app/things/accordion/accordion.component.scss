@@ -112,5 +112,26 @@
 				}
 			}
 		}
+
+		.sub-things-menu {
+			::ng-deep {
+				mdc-list {
+					padding: 0;
+				}
+			}
+
+			width: max-content;
+			max-height: max-content !important;
+
+			.image {
+				width: 64px;
+				height: 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				margin-left: -1em;
+				margin-right: 1em;
+			}
+		}
 	}
 }

@@ -11,6 +11,8 @@ export class Thing {
 	public readonly usableImage: string;
 	public readonly usableUrl: string;
 
+	public readonly hasSubThings: boolean;
+
 	constructor(
 		public readonly subCategory: SubCategory,
 		public readonly key: string,
@@ -18,7 +20,10 @@ export class Thing {
 		public readonly image: string,
 		public readonly url: string,
 		public readonly type: "avatars" | "scripts" | "entities",
+		public readonly subThings: Thing[] = [],
 	) {
+		this.hasSubThings = this.subThings.length > 0;
+
 		const usable =
 			subCategory.thingsService.thingsUrl +
 			"/" +
@@ -32,16 +37,20 @@ export class Thing {
 			image.startsWith("http") ? image : usable + "/" + image,
 		);
 
-		this.usableUrl = purifyUrl(
-			url.startsWith("http") || url.startsWith("tea")
-				? url
-				: usable + "/" + url,
-		);
+		if (!this.hasSubThings) {
+			this.usableUrl = purifyUrl(
+				url.startsWith("http") || url.startsWith("tea")
+					? url
+					: usable + "/" + url,
+			);
+		}
 	}
 
 	enabled = false;
 
 	async toggleEnable() {
+		if (this.hasSubThings) return;
+
 		const scriptService = this.subCategory.thingsService.scriptService;
 		const rpc = scriptService.rpc.bind(scriptService);
 		if (this.type == "avatars") {
@@ -123,16 +132,24 @@ export class SubCategory {
 	}
 }
 
+type SubThingData = {
+	name: string;
+	image: string;
+	url: string;
+};
+
+type ThingData = {
+	key: string;
+	name: string;
+	image: string;
+	url: string | SubThingData[];
+};
+
 type SubCategoryData = {
 	key: string;
 	name: string;
 	image?: string;
-	things: {
-		key: string;
-		name: string;
-		image: string;
-		url: string;
-	}[];
+	things: ThingData[];
 }[];
 
 type IndexData = {
@@ -183,14 +200,37 @@ export class ThingsService {
 				);
 				subCategories.push(subCategory);
 
-				for (const { key, name, image, url } of things) {
+				for (const {
+					key,
+					name,
+					image,
+					url: urlOrSubThings,
+				} of things) {
+					const subThings: Thing[] = [];
+
+					if (Array.isArray(urlOrSubThings)) {
+						for (const { name, image, url } of urlOrSubThings) {
+							subThings.push(
+								new Thing(
+									subCategory,
+									key,
+									name,
+									image,
+									url,
+									category,
+								),
+							);
+						}
+					}
+
 					const thing = new Thing(
 						subCategory,
 						key,
 						name,
 						image,
-						url,
+						Array.isArray(urlOrSubThings) ? null : urlOrSubThings,
 						category,
+						subThings,
 					);
 					subCategory.things.push(thing);
 				}
@@ -231,16 +271,32 @@ export class ThingsService {
 					for (const thing of subCategory.things) {
 						switch (thing.type) {
 							case "avatars":
-								thing.enabled = thing.usableUrl == avatarUrl;
+								thing.enabled = thing.hasSubThings
+									? thing.subThings
+											.map(subThing => subThing.usableUrl)
+											.includes(avatarUrl)
+									: thing.usableUrl == avatarUrl;
 								break;
 
 							case "scripts":
-								const scriptFilename = urlFilename(
-									thing.usableUrl,
-								);
-								thing.enabled = runningScriptsFilenames.includes(
-									scriptFilename,
-								);
+								const filenames = thing.hasSubThings
+									? thing.subThings.map(subThing =>
+											urlFilename(subThing.usableUrl),
+									  )
+									: [urlFilename(thing.usableUrl)];
+
+								let running = false;
+								for (const filename of filenames) {
+									if (
+										runningScriptsFilenames.includes(
+											filename,
+										)
+									) {
+										running = true;
+										break;
+									}
+								}
+								thing.enabled = running;
 								break;
 						}
 					}

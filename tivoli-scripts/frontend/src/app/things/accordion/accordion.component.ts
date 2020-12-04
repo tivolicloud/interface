@@ -1,3 +1,4 @@
+import { MdcMenu } from "@angular-mdc/web";
 import { Component, Input, OnInit } from "@angular/core";
 import { SubCategory, Thing } from "../things.service";
 
@@ -25,5 +26,13 @@ export class AccordionComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.open = this.alwaysOpen;
+	}
+
+	toggleEnableThing(thing: Thing, menu: MdcMenu) {
+		if (thing.hasSubThings && menu) {
+			menu.open = !menu.open;
+		} else {
+			thing.toggleEnable();
+		}
 	}
 }
