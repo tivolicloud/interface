@@ -140,7 +140,7 @@ declare type DriveKey =
 	| typeof DriveKeys.DELTA_YAW
 	| typeof DriveKeys.DELTA_PITCH;
 
-declare enum FilterFlags {
+declare const enum FilterFlags {
 	PICK_DOMAIN_ENTITIES = 1,
 	PICK_AVATAR_ENTITIES = 2,
 	PICK_LOCAL_ENTITIES = 4,
@@ -163,7 +163,7 @@ declare interface IntersectingObject {
 	collisionContacts: CollisionContact[];
 }
 
-declare enum IntersectionType {
+declare const enum IntersectionType {
 	INTERSECTED_NONE,
 	INTERSECTED_ENTITY,
 	INTERSECTED_LOCAL_ENTITY,
@@ -221,7 +221,7 @@ declare interface MouseEvent {
 	isLeftButton: boolean;
 	isMiddleButton: boolean;
 	isRightButton: boolean;
-	isShift: boolean;
+	isShifted: boolean;
 	isMeta: boolean;
 	isControl: boolean;
 	isAlt: boolean;
@@ -251,10 +251,10 @@ declare interface PickRay {
 }
 
 // declare type PickType =
-// 	| typeof PickType.Ray
-// 	| typeof PickType.Parabola
-// 	| typeof PickType.Stylus
-// 	| typeof PickType.Collision;
+// 	| PickType.Ray
+// 	| PickType.Parabola
+// 	| PickType.Stylus
+// 	| PickType.Collision;
 
 declare interface PointerEvent {
 	type: "Press" | "DoublePress" | "Release" | "Move";

@@ -86,10 +86,20 @@ declare namespace MyAvatar {
 	var allowTeleporting: boolean;
 
 	// methods
+	function getAnimationRoles(): string[];
 	function getDefaultFullAvatarURL(): string;
 	function getFullAvatarModelName(): string;
 	function getFullAvatarURLFromPreferences(): string;
+	function overrideRoleAnimation(
+		role: string,
+		url: string,
+		fps: number,
+		loop: boolean,
+		firstFrame: number,
+		lastFrame: number,
+	): void;
 	function randomizeDefaultAvatar(): void;
+	function restoreRoleAnimation(role: string): void;
 	function setCollisionsEnabled(enabled: boolean): void;
 	function setOtherAvatarsCollisionsEnabled(enabled: boolean): void;
 	function useFullAvatarURL(modelURL: string, name: string): void;
