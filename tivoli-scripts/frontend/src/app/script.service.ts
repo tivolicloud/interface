@@ -14,6 +14,13 @@ export class ScriptService {
 
 	constructor(private zone: NgZone) {
 		this.initScriptEventListener();
+
+		// CTRL+W should close the window
+		window.addEventListener("keydown", event => {
+			if (event.code == "KeyW" && event.ctrlKey) {
+				this.emitEvent(null, "close");
+			}
+		});
 	}
 
 	emitEvent(uuid: string, key: string, value?: any) {
