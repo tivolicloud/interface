@@ -16,10 +16,15 @@ const routes: Routes = [
 		loadChildren: () =>
 			import("./avatar/avatar.module").then(m => m.AvatarModule),
 	},
+	// {
+	// 	path: "market",
+	// 	loadChildren: () =>
+	// 		import("./market/market.module").then(m => m.MarketModule),
+	// },
 	{
-		path: "market",
+		path: "things",
 		loadChildren: () =>
-			import("./market/market.module").then(m => m.MarketModule),
+			import("./things/things.module").then(m => m.ThingsModule),
 	},
 	{
 		path: "chat",

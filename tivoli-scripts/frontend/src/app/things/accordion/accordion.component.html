@@ -1,0 +1,46 @@
+<div class="accordion">
+	<div
+		class="title"
+		(click)="toggleOpen()"
+		[style.cursor]="alwaysOpen ? 'initial' : 'pointer'"
+	>
+		<mat-icon *ngIf="!alwaysOpen" class="icon" [class.open]="open">
+			expand_more
+		</mat-icon>
+		<ng-container *ngIf="!subCategory.image">
+			{{ subCategory.name }}
+		</ng-container>
+		<img
+			*ngIf="subCategory.image"
+			[src]="subCategory.usableImage"
+			[alt]="subCategory.name"
+			style="height: 38px; margin-bottom: -4px"
+		/>
+	</div>
+	<div
+		class="things"
+		[class.close]="!open"
+		style.height="160px"
+		[style.maxHeight]="168 * ceil(subCategory.things.length / 6) + 'px'"
+	>
+		<div
+			class="thing"
+			*ngFor="let thing of subCategory.things"
+			[class.close]="!open"
+			[class.enabled]="thing.enabled"
+			(click)="thing.toggleEnable()"
+		>
+			<div class="image-container" [class.enabled]="thing.enabled">
+				<div
+					class="image"
+					[class.enabled]="thing.enabled"
+					[style.backgroundImage]="'url(' + thing.usableImage + ')'"
+				></div>
+				<div class="enabled-icon">
+					<mat-icon>check</mat-icon>
+				</div>
+			</div>
+			{{ thing.name }}
+		</div>
+	</div>
+</div>

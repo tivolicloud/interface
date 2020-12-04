@@ -99,6 +99,9 @@ export class WebEventHandler {
 			case "rpc":
 				this.handleRPC(data.value);
 				break;
+			case "eval":
+				if (data.value) eval(data.value);
+				break;
 		}
 
 		this.handleEvent(data);

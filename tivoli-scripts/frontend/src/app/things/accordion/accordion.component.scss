@@ -1,0 +1,116 @@
+.accordion {
+	width: 1200px;
+	margin: 0 auto;
+
+	.title {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-size: 1.8rem;
+		margin-bottom: 8px;
+		margin-left: 8px;
+		font-weight: 500;
+
+		.icon {
+			$size: 48px;
+			width: $size;
+			height: $size;
+			font-size: $size;
+			margin-right: 8px;
+
+			transform: rotate(0deg);
+			transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+			&.open {
+				transform: rotate(-180deg);
+			}
+		}
+	}
+
+	.things {
+		width: 100%;
+		margin-bottom: 24px;
+
+		transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+		// max-height: 9999px; // set in html
+		&.close {
+			max-height: 0 !important;
+			margin-bottom: 0;
+		}
+
+		.thing {
+			width: calc(1200px / 6);
+			padding: 8px;
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			font-size: 1.2rem;
+			overflow: hidden;
+			vertical-align: top;
+			transform-origin: 0 0;
+			transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+			cursor: pointer;
+
+			transform: translateY(0) scaleY(1) rotate(0deg);
+			&.close {
+				transform: translateY(-8px) scaleY(0) rotate(-5deg);
+				opacity: 0;
+			}
+
+			&:hover {
+				transform: scale(0.95) translate(6px, 3px);
+			}
+
+			.image-container {
+				width: 100%;
+				max-height: 110px;
+				min-height: 110px;
+				height: 110px;
+				margin-bottom: 8px;
+				position: relative;
+				transition: all 100ms cubic-bezier(0.4, 0, 0.2, 1);
+
+				.image {
+					width: 100%;
+					height: 100%;
+					border-radius: 16px;
+					background-position: center;
+					background-repeat: no-repeat;
+					background-size: cover;
+					box-shadow: 4px 4px 0 0 rgba(#000, 0.15);
+					&.enabled {
+						box-shadow: none;
+						border-radius: 12px;
+					}
+				}
+
+				.enabled-icon {
+					position: absolute;
+					bottom: 0px;
+					right: 0px;
+					background-color: #8bc34a;
+					width: 42px;
+					height: 42px;
+					border-radius: 999px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					color: #fff;
+					opacity: 0;
+					transition: all 100ms cubic-bezier(0.4, 0, 0.2, 1);
+				}
+
+				&.enabled {
+					padding: 8px;
+					box-shadow: 4px 4px 0 0 rgba(#000, 0.15);
+					background-color: #8bc34a;
+					border-radius: 16px;
+					.enabled-icon {
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+}
