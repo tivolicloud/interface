@@ -154,7 +154,9 @@ upload server arm64:
 
 upload launcher:
     stage: deploy
-    image: banst/awscli
+    image:
+        name: banst/awscli
+        entrypoint: [""]
 
     extends: .deploy
 
