@@ -28,16 +28,16 @@ interface macos:
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
-          -G Ninja .. # -G Xcode ..
+          -G Xcode .. # -G Ninja ..
 
-        # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
-        - cmake --build . --target interface --config $BUILD_TYPE
+        - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
+        # - cmake --build . --target interface --config $BUILD_TYPE
 
         # TODO: source code doesn't show
         - sentry-cli upload-dif --include-sources -p interface interface
 
         # incase it isnt written
-        - cd interface/interface.app/Contents/Resources
+        - cd interface/Release/interface.app/Contents/Resources
         - echo "[Paths]" > qt.conf
         - echo "Plugins = PlugIns" >> qt.conf
         - echo "Imports = Resources/qml" >> qt.conf
@@ -46,7 +46,7 @@ interface macos:
     artifacts:
         expire_in: 1 day
         paths:
-            - build/interface/interface.app
+            - build/interface/Release/interface.app
 
 interface macos merge request:
     stage: build
@@ -77,16 +77,16 @@ interface macos merge request:
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
-          -G Ninja .. # -G Xcode ..
+          -G Xcode .. # -G Ninja ..
 
-        # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
-        - cmake --build . --target interface --config $BUILD_TYPE
+        - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
+        # - cmake --build . --target interface --config $BUILD_TYPE
 
         # TODO: source code doesn't show
         # - sentry-cli upload-dif --include-sources -p interface interface
 
         # incase it isnt written
-        - cd interface/interface.app/Contents/Resources
+        - cd interface/Release/interface.app/Contents/Resources
         - echo "[Paths]" > qt.conf
         - echo "Plugins = PlugIns" >> qt.conf
         - echo "Imports = Resources/qml" >> qt.conf
@@ -95,7 +95,7 @@ interface macos merge request:
     artifacts:
         expire_in: 7 days
         paths:
-            - build/interface/interface.app
+            - build/interface/Release/interface.app
 
 launcher macos:
     stage: package
@@ -116,7 +116,7 @@ launcher macos:
         - rm -rf launcher # just incase
         - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
         - mkdir -p launcher/interface
-        - mv build/interface/interface.app launcher/interface # interface.app is a folder
+        - mv build/interface/Release/interface.app launcher/interface # interface.app is a folder
 
         # TODO: this needs changing
         - cd launcher/.gitlab
