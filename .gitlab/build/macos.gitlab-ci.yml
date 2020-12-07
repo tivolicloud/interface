@@ -13,7 +13,7 @@ interface macos:
 
         OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1h
         OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
-        OSX_SDK: "10.11"
+        OSX_SDK: "10.13"
 
         CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
         # SENTRY_AUTH_TOKEN
@@ -36,13 +36,6 @@ interface macos:
         # TODO: source code doesn't show
         - sentry-cli upload-dif --include-sources -p interface interface
 
-        # incase it isnt written
-        - cd interface/interface.app/Contents/Resources
-        - echo "[Paths]" > qt.conf
-        - echo "Plugins = PlugIns" >> qt.conf
-        - echo "Imports = Resources/qml" >> qt.conf
-        - echo "Qml2Imports = Resources/qml" >> qt.conf
-
     artifacts:
         expire_in: 1 day
         paths:
@@ -62,7 +55,7 @@ interface macos merge request:
 
         OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1h
         OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
-        OSX_SDK: "10.11"
+        OSX_SDK: "10.13"
 
         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
         # SENTRY_AUTH_TOKEN
@@ -84,13 +77,6 @@ interface macos merge request:
 
         # TODO: source code doesn't show
         # - sentry-cli upload-dif --include-sources -p interface interface
-
-        # incase it isnt written
-        - cd interface/interface.app/Contents/Resources
-        - echo "[Paths]" > qt.conf
-        - echo "Plugins = PlugIns" >> qt.conf
-        - echo "Imports = Resources/qml" >> qt.conf
-        - echo "Qml2Imports = Resources/qml" >> qt.conf
 
     artifacts:
         expire_in: 7 days

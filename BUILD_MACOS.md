@@ -8,19 +8,19 @@ Download and install these programs:
 
     You can find Xcode on the **App Store**.
 
--   **MacOSX 10.11 SDK**
+-   **MacOSX 10.13 SDK**
 
-    You'll have to download the **10.11 SDK** because compiling with newer SDKs like 10.15 (Catalina) causes lots of issues.
+    You'll have to download the **10.13 SDK** because compiling with newer SDKs like 10.15 (Catalina) causes lots of issues.
 
     To install, make sure Xcode is installed and follow these instructions in your terminal:
 
     ```bash
     cd /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
 
-    sudo curl -LJO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.11.sdk.tar.xz
+    sudo curl -LJO https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.13.sdk.tar.xz
 
-    sudo tar -xf MacOSX10.11.sdk.tar.xz
-    sudo rm -f MacOSX10.11.sdk.tar.xz
+    sudo tar -xf MacOSX10.13.sdk.tar.xz
+    sudo rm -f MacOSX10.13.sdk.tar.xz
     ```
 
 -   **Homebrew package manager**: https://brew.sh
@@ -91,7 +91,7 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h/include -DOSX_SDK=10.11 -G Xcode ..
+cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1h/include -DOSX_SDK=10.13 -G Xcode ..
 ```
 
 **Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.

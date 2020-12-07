@@ -50,8 +50,8 @@ endif()
 # (needs to be set before first project() call and before prebuild.py)
 # Will affect VCPKG dependencies
 if (APPLE)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE STRING "Minimum OS X deployment version" FORCE)
-  set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.11)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
+  set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.13)
 endif()
 
 set(RELEASE_TYPE "$ENV{RELEASE_TYPE}")
