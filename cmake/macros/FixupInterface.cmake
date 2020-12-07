@@ -37,5 +37,16 @@ macro(fixup_interface)
                 COMMAND ${MACDEPLOYQT_COMMAND} "$<TARGET_FILE_DIR:${TARGET_NAME}>/../.." -verbose=2 -qmldir=${CMAKE_SOURCE_DIR}/interface/resources/qml/
             )
         endif()
+
+        # https://bugreports.qt.io/browse/QTBUG-86759
+        # will be fixed in qt 5.15.2
+        if (${Qt5_VERSION} VERSION_EQUAL 5.15.1)
+            set(QT_WEBENGINECORE_COPY_FROM "${QT_CMAKE_PREFIX_PATH}/../../lib/QtWebEngineCore.framework/Versions/5/Helpers")
+            set(QT_WEBENGINECORE_COPY_TO "$<TARGET_FILE_DIR:${TARGET_NAME}>/../Frameworks/QtWebEngineCore.framework/Versions/5/Helpers")
+
+            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND "${CMAKE_COMMAND}" -E remove_directory "${QT_WEBENGINECORE_COPY_TO}" && "${CMAKE_COMMAND}" -E copy_directory "${QT_WEBENGINECORE_COPY_FROM}" "${QT_WEBENGINECORE_COPY_TO}"
+            )
+        endif()
     endif ()
 endmacro()
