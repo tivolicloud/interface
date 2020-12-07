@@ -319,6 +319,12 @@ bool AddressManager::handleUrl(const QUrl& lookupUrlIn, LookupTrigger trigger) {
                     path = INDEX_PATH;
                 }
 
+                // clear all domain info
+                _domainLabel = QString();
+                _domainAuthor = QString();
+                _domainDescription = QString();
+                _domainRestriction = QString();
+
                 // we may have a path that defines a relative viewpoint - if so we should jump to that now
                 handlePath(path, trigger);
             } else if (handleDomainID(lookupUrl.host())){
