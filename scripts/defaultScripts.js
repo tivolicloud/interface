@@ -16,21 +16,23 @@
 	// "system/marketplaces/marketplaces.js",
 	// "system/notifications.js",
 	// "system/commerce/wallet.js",
-	"system/create/edit.js",
 	"system/tablet-ui/tabletUI.js",
 	"system/emote.js",
 	// "system/miniTablet.js",
 	// "system/audioMuteOverlay.js", // the big text that appears when you're muted
-	"system/keyboardShortcuts/keyboardShortcuts.js",
-
-	"system/controllers/controllerScripts.js"
+	"system/keyboardShortcuts/keyboardShortcuts.js"
 	// "system/interstitialPage.js"
 ].forEach(function (script) {
 	Script.include("file:///~/" + script);
 });
 
 // loaded scripts
-["tivoli/tivoli.js", "system/inspect.js"].forEach(function (script) {
+[
+	"tivoli/tivoli.js",
+	"system/inspect.js",
+	"system/controllers/controllerScripts.js",
+	"system/create/edit.js"
+].forEach(function (script) {
 	var runningScripts = ScriptDiscoveryService.getRunning();
 
 	for (var i = 0; i < runningScripts.length; i++) {
