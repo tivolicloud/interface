@@ -238,12 +238,18 @@ void FBXSerializer::consolidateHFMMaterials() {
 
         if (material.isPBSMaterial) {
             // Same legacy support as above
-            if (roughnessTextureID.isNull()) material._material->setRoughness(material.roughness);
-            if (metallicTextureID.isNull()) material._material->setMetallic(material.metallic);
+            if (roughnessTextureID.isNull() && shininessTextureID.isNull()) {
+                material._material->setRoughness(material.roughness);
+            }
+            if (metallicTextureID.isNull() && specularTextureID.isNull()) {
+                material._material->setMetallic(material.metallic);
+            }
         } else {
             // Same here as above
-            if (roughnessTextureID.isNull()) material._material->setRoughness(graphics::Material::shininessToRoughness(material.shininess));
-            if (metallicTextureID.isNull()) {
+            if (roughnessTextureID.isNull() && shininessTextureID.isNull()) {
+                material._material->setRoughness(graphics::Material::shininessToRoughness(material.shininess));
+            }
+            if (metallicTextureID.isNull() && specularTextureID.isNull()) {
                 float metallic = std::max(material.specularColor.x, std::max(material.specularColor.y, material.specularColor.z));
                 material._material->setMetallic(metallic);
             }
