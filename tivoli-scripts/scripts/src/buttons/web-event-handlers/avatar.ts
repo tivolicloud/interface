@@ -131,11 +131,11 @@ export class AvatarHandler extends WebEventHandler {
 				break;
 
 			// other
-			case "openMarket":
+			case "openThings":
 				for (const button of this.otherButtons) {
 					if (
 						button.button.getProperties().text.toLowerCase() ==
-						"market"
+						"things"
 					) {
 						this.button.close();
 						button.open();

@@ -194,8 +194,8 @@ export class AvatarComponent implements OnInit, OnDestroy {
 	// 	});
 	// }
 
-	openMarket() {
-		this.scriptService.emitEvent("avatar", "openMarket");
+	openThings() {
+		this.scriptService.emitEvent("avatar", "openThings");
 	}
 
 	onUseDefault() {
