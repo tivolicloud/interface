@@ -3114,7 +3114,13 @@ void Application::initializeGL() {
     chromiumFlags << "--autoplay-policy=no-user-gesture-required";
 
     // Enable this for debugging chromium
-    //chromiumFlags << "--enable-logging" << "--log-level=0" << "--v=1";
+    // chromiumFlags << "--enable-logging" << "--log-level=0" << "--v=1";
+
+    // Fixes QtWebEngineCore::DisplayGLOutputSurface::swapBuffersOnGpuThread SIGSEGV
+    // https://bugreports.qt.io/browse/QTBUG-86599
+    #if (QT_VERSION_CHECK(5, 15, 0) || QT_VERSION_CHECK(5, 15, 1))
+        chromiumFlags << "--disable-gpu-compositing";
+    #endif
 
     // Ensure all Qt webengine processes launched from us have the appropriate command line flags
     if (!chromiumFlags.empty()) {
