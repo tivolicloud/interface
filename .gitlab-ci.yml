@@ -16,6 +16,11 @@ stages:
 push main to master:
     stage: prepare
     image: alpine
+
+    only:
+        refs:
+            - main@tivolicloud/interface
+
     script:
         - apk add git openssh
 
