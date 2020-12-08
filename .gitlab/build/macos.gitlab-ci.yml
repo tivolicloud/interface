@@ -28,6 +28,8 @@ interface macos:
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           -G Ninja .. # -G Xcode ..
 
         # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
@@ -70,6 +72,8 @@ interface macos merge request:
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           -G Ninja .. # -G Xcode ..
 
         # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
