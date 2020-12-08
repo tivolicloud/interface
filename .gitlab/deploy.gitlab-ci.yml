@@ -171,6 +171,7 @@ upload launcher:
     variables:
         S3_BUCKET: tivolicloud
         S3_REGION: us-east-1
+        CLOUDFRONT_ID: E14KDGO1BZG0J3
         # AWS_ACCESS_KEY_ID
         # AWS_SECRET_ACCESS_KEY
 
@@ -183,3 +184,7 @@ upload launcher:
           --include "*.dmg" --include "*.zip"
           --include "*.AppImage" --include "*.deb" --include "*.pacman"
           --include "*.yml" --include "*.blockmap"
+
+        - aws cloudfront create-invalidation
+          --distribution-id $CLOUDFRONT_ID
+          --paths "/releases/*"
