@@ -114,7 +114,7 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 	}
 
 	fieldOfView: number;
-	readonly defaultFieldOfView = 90;
+	readonly defaultFieldOfView = 120;
 	onFieldOfViewChange(e: MatSliderChange) {
 		this.script.rpc("Render.fieldOfView", e.value).subscribe(() => {
 			this.refresh();
