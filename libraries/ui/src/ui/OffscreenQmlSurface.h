@@ -84,6 +84,7 @@ public slots:
     void changeAudioOutputDevice(const QString& deviceName, bool isHtmlUpdate = false);
     void forceHtmlAudioOutputDeviceUpdate();
     void forceQmlAudioOutputDeviceUpdate();
+    void updateCursor(const QString& cursor);
 
 private:
     bool _focusText { false };

@@ -2743,6 +2743,15 @@ void Application::showCursor(const Cursor::Icon& cursor) {
     _cursorNeedsChanging = true;
 }
 
+void Application::updateSystemCursor(const Qt::CursorShape cursor) {
+    QMutexLocker locker(&_changeCursorLock);
+
+    if (_desiredCursor != Qt::BlankCursor && _desiredCursor != cursor) {
+        _desiredCursor = cursor;
+        _cursorNeedsChanging = true;
+    }
+}
+
 void Application::updateHeartbeat() const {
     DeadlockWatchdogThread::updateHeartbeat();
 }

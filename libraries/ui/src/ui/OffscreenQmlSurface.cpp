@@ -58,6 +58,7 @@
 #include "TabletScriptingInterface.h"
 #include "ToolbarScriptingInterface.h"
 #include "Logging.h"
+#include "../CursorManager.h"
 
 namespace hifi { namespace qml { namespace offscreen {
 
@@ -472,6 +473,8 @@ void OffscreenQmlSurface::hoverEndEvent(const PointerEvent& event, class QTouchD
         PointerEvent endMoveEvent(PointerEvent::Move, event.getID());
         // If we aren't pressing, we want to release this TouchPoint
         handlePointerEvent(endMoveEvent, device, !_activeTouchPoints[event.getID()].pressed);
+        // Make sure cursor is reset
+        updateCursor("default");
     }
 }
 
@@ -817,6 +820,16 @@ void OffscreenQmlSurface::forceQmlAudioOutputDeviceUpdate() {
         _audioOutputUpdateTimer.start();
     }
 #endif
+}
+
+void OffscreenQmlSurface::updateCursor(const QString& cursor) {
+    Qt::CursorShape cursorShape = cssQtCursorMap.contains(cursor) ?
+        cssQtCursorMap[cursor] : Qt::CursorShape::ArrowCursor;
+
+    QMetaObject::invokeMethod(
+        qApp, "updateSystemCursor", Qt::DirectConnection,
+        Q_ARG(const Qt::CursorShape, cursorShape)
+    );
 }
 
 void OffscreenQmlSurface::loadFromQml(const QUrl& qmlSource, QQuickItem* parent, const QJSValue& callback) {

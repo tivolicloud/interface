@@ -28,6 +28,7 @@
 #include "OffscreenUi.h"
 #include "ui/types/TivoliWebEngineProfile.h"
 #include "ui/types/FileTypeProfile.h"
+#include "CursorManager.h"
 
 static const char* const SOURCE_PROPERTY = "source";
 static const char* const TITLE_PROPERTY = "title";
@@ -209,6 +210,16 @@ void QmlWindowClass::emitWebEvent(const QVariant& webMessage) {
             emit webEventReceived(webMessage);
         }
     }
+}
+
+void QmlWindowClass::updateCursor(const QString& cursor) {
+    Qt::CursorShape cursorShape = cssQtCursorMap.contains(cursor) ?
+        cssQtCursorMap[cursor] : Qt::CursorShape::ArrowCursor;
+
+    QMetaObject::invokeMethod(
+        qApp, "updateSystemCursor", Qt::DirectConnection,
+        Q_ARG(const Qt::CursorShape, cursorShape)
+    );
 }
 
 void QmlWindowClass::setKeyboardRaised(QObject* object, bool raised, bool numeric) {

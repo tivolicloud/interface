@@ -166,6 +166,7 @@ public:
     void raise();
 
     void showCursor(const Cursor::Icon& cursor);
+    Q_INVOKABLE void updateSystemCursor(const Qt::CursorShape cursor);
 
     bool isThrottleRendering() const;
 

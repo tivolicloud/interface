@@ -275,6 +275,9 @@ public slots:
      */
     void emitWebEvent(const QVariant& webMessage);
 
+    // used with EventBridge to update cursor
+    void updateCursor(const QString& cursor);
+
 signals:
 
     /**jsdoc

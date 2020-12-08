@@ -122,6 +122,57 @@ var EventBridge;
 			EventBridge.forceHtmlAudioOutputDeviceUpdate();
 		});
 
+		let currentCursor = "default";
+
+		// libraries/ui/src/CursorManager.h
+		const availableCursors = [
+			"crosshair",
+			"wait",
+			"text",
+			"ns-resize",
+			"ew-resize",
+			"nesw-resize",
+			"nwse-resize",
+			"move",
+			// "none",
+			"row-resize",
+			"col-resize",
+			"pointer",
+			"not-allowed",
+			"grab",
+			"grabbing",
+			"help",
+			"progress",
+		];
+
+		const checkCursor = el => {
+			let cursor = getComputedStyle(el).cursor;
+			if (!availableCursors.includes(cursor)) cursor = "default";
+			if (currentCursor == cursor) return;
+			currentCursor = cursor;
+			if (EventBridge.updateCursor) {
+				EventBridge.updateCursor(currentCursor);
+			}
+		};
+
+		window.addEventListener("mouseover", e => {
+			checkCursor(e.target);
+		});
+		window.addEventListener("mousedown", e => {
+			checkCursor(e.target);
+		});
+		window.addEventListener("mouseup", e => {
+			checkCursor(e.target);
+		});
+		window.addEventListener("mouseout", event => {
+			if (event.toElement != null) return;
+			if (currentCursor == "default") return;
+			currentCursor = "default";
+			if (EventBridge.updateCursor) {
+				EventBridge.updateCursor(currentCursor);
+			}
+		});
+
 		tempEventBridge._callbacks.forEach(callback => {
 			EventBridge.scriptEventReceived.connect(callback);
 		});

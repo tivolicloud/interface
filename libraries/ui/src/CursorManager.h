@@ -12,6 +12,32 @@
 
 #include <GLMHelpers.h>
 
+// https://doc.qt.io/qt-5/qt.html#CursorShape-enum
+// https://csscursor.info
+static const QHash<QString, Qt::CursorShape> cssQtCursorMap {
+    // { "auto", Qt::CursorShape::ArrowCursor },
+    // { "default", Qt::CursorShape::ArrowCursor },
+    // { "", Qt::CursorShape::UpArrowCursor },
+    { "crosshair", Qt::CursorShape::CrossCursor },
+    { "wait", Qt::CursorShape::WaitCursor },
+    { "text", Qt::CursorShape::IBeamCursor },
+    { "ns-resize", Qt::CursorShape::SizeVerCursor },
+    { "ew-resize", Qt::CursorShape::SizeHorCursor },
+    { "nesw-resize", Qt::CursorShape::SizeBDiagCursor },
+    { "nwse-resize", Qt::CursorShape::SizeFDiagCursor },
+    { "move", Qt::CursorShape::SizeAllCursor },
+    { "all-scroll", Qt::CursorShape::SizeAllCursor }, // not the same, but almost
+    // { "none", Qt::CursorShape::BlankCursor },
+    { "row-resize", Qt::CursorShape::SplitVCursor },
+    { "col-resize", Qt::CursorShape::SplitHCursor },
+    { "pointer", Qt::CursorShape::PointingHandCursor },
+    { "not-allowed", Qt::CursorShape::ForbiddenCursor },
+    { "grab", Qt::CursorShape::OpenHandCursor },
+    { "grabbing", Qt::CursorShape::ClosedHandCursor },
+    { "help", Qt::CursorShape::WhatsThisCursor },
+    { "progress", Qt::CursorShape::BusyCursor }, 
+};
+
 namespace Cursor {
     enum class Source {
         MOUSE,
