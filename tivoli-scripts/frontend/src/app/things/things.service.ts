@@ -55,11 +55,15 @@ export class Thing {
 		const rpc = scriptService.rpc.bind(scriptService);
 		if (this.type == "avatars") {
 			if (this.enabled) return;
-			rpc("MyAvatar.setSkeletonModelURL()", this.usableUrl).subscribe(
-				() => {
+			rpc(
+				"MyAvatar.useFullAvatarURL()",
+				this.usableUrl,
+				this.usableUrl.split("/").pop(),
+			).subscribe(() => {
+				rpc("MyAvatar.scale", 1).subscribe(() => {
 					this.subCategory.thingsService.update();
-				},
-			);
+				});
+			});
 			scriptService.emitEvent(null, "close");
 		} else if (this.type == "scripts") {
 			if (this.enabled) {
@@ -86,9 +90,10 @@ export class Thing {
 					this.usableUrl,
 					true, // user loaded
 				]).subscribe(() => {
+					// TODO: find a better way to figure out when script is loaded
 					setTimeout(() => {
 						this.subCategory.thingsService.update();
-					}, 500); // wait till loaded
+					}, 1000); // wait till loaded
 				});
 			}
 		} else if (this.type == "entities") {
