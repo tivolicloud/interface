@@ -27,6 +27,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe)
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.tar.gz
     TIMEOUT 60
     TLS_VERIFY ON
+    EXPECTED_MD5 "b4d08fa26f4c22d7b6621d70678d5c98"
   )
   execute_process(
     COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_SOURCE_DIR}/resources/squirrel-nut-cafe.tar.gz
