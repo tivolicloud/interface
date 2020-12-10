@@ -79,7 +79,7 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -G "Unix Makefiles" ..
+cmake -GNinja ..
 ```
 
 CMake will now download dependencies including Qt and prepare build files.
