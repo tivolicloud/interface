@@ -15,7 +15,7 @@ The JavaScript API reference can be found under [apidocs.tivolicloud.com](https:
 
 We have a [Discord server](https://tivolicloud.com/discord) where you can always ask for help.
 
-There is also detailed documentation on [our coding standards](howtos/CODING_STANDARD.md).
+There is also detailed documentation on [our coding standards](CODING_STANDARD.md).
 
 # License
 
@@ -25,7 +25,7 @@ Built atop HFVRP Copyright 2019 High Fidelity, Inc.
 
 # Building
 
-All information required to build is found in the [build guide](howtos/BUILD.md).
+All information required to build is found in the [build guide](BUILD.md).
 
 # Running interface
 
