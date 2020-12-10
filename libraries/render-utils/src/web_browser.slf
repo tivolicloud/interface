@@ -13,12 +13,19 @@
 <@include gpu/Color.slh@>
 <@include render-utils/ShaderConstants.h@>
 
+<@if HIFI_USE_SBS@>
+    <@include gpu/Transform.slh@>
+    <$declareStandardCameraTransform()$>
+<@endif@>
+
 <@if HIFI_USE_FORWARD@>
     <@include LightingModel.slh@>
     <@include graphics/Haze.slh@>
 
-    <@include gpu/Transform.slh@>
-    <$declareStandardCameraTransform()$>
+    <@if not HIFI_USE_SBS@>
+        <@include gpu/Transform.slh@>
+        <$declareStandardCameraTransform()$>
+    <@endif@>
 
     <@include graphics/Light.slh@>
     <$declareLightBuffer()$>
@@ -42,7 +49,16 @@ layout(location=RENDER_UTILS_ATTR_TEXCOORD01) in vec4 _texCoord01;
 #define _texCoord1 _texCoord01.zw
 
 void main(void) {
+<@if HIFI_USE_SBS@>
+    vec2 uv = _texCoord0;
+    uv.x *= 0.5;
+    uv.x += cam_getStereoSide() * 0.5; // right eye
+    
+    vec4 texel = texture(webTexture, uv);
+<@else@>
     vec4 texel = texture(webTexture, _texCoord0);
+<@endif@>
+
     texel = color_sRGBAToLinear(texel);
     texel *= _color;
 

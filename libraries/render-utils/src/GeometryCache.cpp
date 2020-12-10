@@ -2134,7 +2134,7 @@ gpu::PipelinePointer GeometryCache::getWebBrowserProgram(bool transparent, bool 
 
             // For any non-opaque or non-deferred pipeline, we use web_browser_forward
             auto pipeline = (sideBySide) ?
-                ((transparent || forward) ? web_browser_sbs_forward : web_browser_sbs) :
+                ((transparent || forward) ? web_browser_forward_sbs : web_browser_sbs) :
                 ((transparent || forward) ? web_browser_forward : web_browser);
 
             gpu::StatePointer state = gpu::StatePointer(new gpu::State());
