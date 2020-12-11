@@ -14,7 +14,7 @@ Download and install these programs:
 
 -   **Python 3 or higher**: https://www.python.org/downloads
 
--   **Node.js 12 or higher**: https://nodejs.org/en
+-   **Node.js v10.13 or higher**: https://nodejs.org/en
 
 Make sure `cmake`, `python` and `node` are available in your PATH.
 

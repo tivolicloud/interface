@@ -15,7 +15,7 @@ https://git.tivolicloud.com/tivolicloud/interface/-/tree/main/.gitlab
 -   [git](https://git-scm.com/downloads)
 -   [cmake](https://cmake.org/download)
 -   [Python](https://www.python.org/downloads)
--   [Node.JS](https://nodejs.org/en)
+-   [Node.js](https://nodejs.org/en) v10.13 or higher
 
 # CMake
 

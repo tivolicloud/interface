@@ -15,7 +15,7 @@ We're looking into ways to make this easier. Compiling Qt yourself takes a very 
 
 ## Step 1. Installing dependencies
 
-Make sure you have general build tools, `git`, `cmake`, `python` 3+ and `node` 12+ installed.
+Make sure you have general build tools, `git`, `cmake`, `python` 3+ and `node` v10.13+ installed.
 
 We'll update this with the proper package lists for supported distros soon.
 
