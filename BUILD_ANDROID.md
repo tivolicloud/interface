@@ -10,7 +10,7 @@ Building is currently supported on Windows, macOS and Linux, but developers inte
 
 ### OS specific dependencies
 
-Please install the dependencies for your OS using the [Windows](BUILD_WIN.md), [macOS](BUILD_MACOS.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
+Please install the dependencies for your OS using the [Windows](BUILD_WINDOWS.md), [macOS](BUILD_MACOS.md) or [Linux](BUILD_LINUX.md) build instructions before attempting to build for Android.
 
 ### Android Studio
 
