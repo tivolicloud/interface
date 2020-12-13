@@ -1,4 +1,4 @@
-# Building Qt 5.15.1 for Linux
+# Building Qt 5.15.2 for Linux
 
 https://wiki.qt.io/Building_Qt_5_from_Git
 
@@ -29,15 +29,15 @@ If using Ubuntu 16.04, you'll have to update OpenSSL to 1.1:
 ```bash
 # download and compile
 cd /usr/local/src
-curl -O https://www.openssl.org/source/openssl-1.1.1g.tar.gz
-tar -xvf openssl-1.1.1g.tar.gz
-cd openssl-1.1.1g
+curl -O https://www.openssl.org/source/openssl-1.1.1i.tar.gz
+tar -xvf openssl-1.1.1i.tar.gz
+cd openssl-1.1.1i
 ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl
 make -j$(nproc)
 make test -j$(nproc)
 make install -j$(nproc)
 # config openssl shared objects
-echo "/usr/local/ssl/lib" > /etc/ld.so.conf.d/openssl-1.1.1g.conf
+echo "/usr/local/ssl/lib" > /etc/ld.so.conf.d/openssl-1.1.1i.conf
 ldconfig -v
 # config openssl binary
 mv /usr/bin/c_rehash /usr/bin/c_rehash.backup
@@ -68,7 +68,7 @@ pacman -Syu --noconfirm git libxcb xcb-proto xcb-util xcb-util-cursor xcb-util-i
 ### Clone Qt:
 
 ```bash
-git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.1 --single-branch
+git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.2 --single-branch
 ```
 
 ### Apply patches:
@@ -116,11 +116,11 @@ cd ..
 ### Archiving:
 
 ```bash
-tar -zcvf tivoli-qt5-install-5.15.1-ubuntu-16.04.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15.1-ubuntu-18.04.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15.1-ubuntu-18.04-arm64v8.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15.1-ubuntu-20.04.tar.gz qt5-install
-tar -zcvf tivoli-qt5-install-5.15.1-arch-linux.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.2-ubuntu-16.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.2-ubuntu-18.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.2-ubuntu-18.04-arm64v8.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.2-ubuntu-20.04.tar.gz qt5-install
+tar -zcvf tivoli-qt5-install-5.15.2-arch-linux.tar.gz qt5-install
 ```
 
 Then upload the tar and update [hifi_qt.py](../../hifi_qt.py) to the new link.
