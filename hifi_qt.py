@@ -85,7 +85,7 @@ endif()
             if system == 'Linux':
                 issue = open("/etc/issue", "r").read()
                 if issue.startswith("Ubuntu 18.04"): 
-                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.1-ubuntu-18.04-arm64v8.tar.gz'
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.2-ubuntu-18.04-arm64v8.tar.gz'
                 else:
                     raise Exception('Unsupported arm64 Linux version')
             else:
