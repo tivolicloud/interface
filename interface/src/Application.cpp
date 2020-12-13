@@ -3129,7 +3129,6 @@ void Application::initializeGL() {
     // https://bugreports.qt.io/browse/QTBUG-86599
     #if (QT_VERSION == QT_VERSION_CHECK(5, 15, 0) || QT_VERSION == QT_VERSION_CHECK(5, 15, 1))
         chromiumFlags << "--disable-gpu-compositing";
-        qDebug() << "MAKI DISABLE GPU COMPOSITING";
     #endif
 
     // Ensure all Qt webengine processes launched from us have the appropriate command line flags
