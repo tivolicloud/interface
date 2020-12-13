@@ -523,14 +523,16 @@ void NodeList::sendPendingDSPathQuery() {
             if (!pendingPath.isEmpty()) {
                 DependencyManager::get<AddressManager>()->goToViewpointForPath(viewpoint, pendingPath);
             }
+            _domainHandler.clearPendingPath();
         } else {
             qCDebug(networking) << "Attempting to send pending query to DS for path" << pendingPath;
             // this is a slot triggered if we just established a network link with a DS and want to send a path query
-            sendDSPathQuery(_domainHandler.getPendingPath());
+            // the path query can get sent too quickly
+            QTimer::singleShot(500, [=]{
+                sendDSPathQuery(pendingPath);
+            });
+            // _domainHandler.clearPendingPath(); // gets cleared when received
         }
-
-        // clear whatever the pending path was
-        _domainHandler.clearPendingPath();
     }
 }
 
@@ -568,6 +570,9 @@ void NodeList::sendDSPathQuery(const QString& newPath) {
 void NodeList::processDomainServerPathResponse(QSharedPointer<ReceivedMessage> message) {
     // This is a response to a path query we theoretically made.
     // In the future we may want to check that this was actually from our DS and for a query we actually made.
+
+    // make sure to clear pending path
+    _domainHandler.clearPendingPath();
 
     // figure out how many bytes the path query is
     quint16 numPathBytes;
