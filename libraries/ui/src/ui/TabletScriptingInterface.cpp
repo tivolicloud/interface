@@ -804,6 +804,13 @@ void TabletProxy::loadHomeScreen(bool forceOntoHomeScreen) {
         return;
     }
 
+    if (forceOntoHomeScreen == false) {
+        QMetaObject::invokeMethod(
+            qApp, "updateSystemCursor", Qt::DirectConnection,
+            Q_ARG(const Qt::CursorShape, Qt::CursorShape::ArrowCursor)
+        );
+    }
+
     if ((_state != State::Home && _state != State::Uninitialized) || forceOntoHomeScreen) {
         if (!_toolbarMode && _qmlTabletRoot) {
             QMetaObject::invokeMethod(_qmlTabletRoot, "loadSource", Q_ARG(const QVariant&, QVariant(TABLET_HOME_SOURCE_URL)));

@@ -113,6 +113,11 @@ void HMDScriptingInterface::deactivateHMDHandMouse() {
 void  HMDScriptingInterface::closeTablet() {
     _showTablet = false;
     _tabletContextualMode = false;
+
+    QMetaObject::invokeMethod(
+        qApp, "updateSystemCursor", Qt::DirectConnection,
+        Q_ARG(const Qt::CursorShape, Qt::CursorShape::ArrowCursor)
+    );
 }
 
 void HMDScriptingInterface::openTablet(bool contextualMode) {
