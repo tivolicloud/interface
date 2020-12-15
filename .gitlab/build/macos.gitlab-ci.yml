@@ -82,10 +82,13 @@ interface macos merge request:
         # TODO: source code doesn't show
         # - sentry-cli upload-dif --include-sources -p interface interface
 
+        - cd ..
+        - mv build/interface/interface.app interface-$CI_COMMIT_SHORT_SHA.app
+
     artifacts:
         expire_in: 7 days
         paths:
-            - build/interface/interface.app
+            - interface-$CI_COMMIT_SHORT_SHA.app
 
 launcher macos:
     stage: package

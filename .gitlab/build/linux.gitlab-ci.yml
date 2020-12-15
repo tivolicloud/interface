@@ -118,10 +118,13 @@ interface linux merge request:
         # make AppDirs
         - python3 ../tools/make_appdir.py interface .
 
+        - cd ..
+        - mv build/interface/interface.AppDir interface-$CI_COMMIT_SHORT_SHA.AppDir
+
     artifacts:
         expire_in: 7 days
         paths:
-            - build/interface/interface.AppDir
+            - interface-$CI_COMMIT_SHORT_SHA.AppDir
 
 server linux arm64:
     stage: build

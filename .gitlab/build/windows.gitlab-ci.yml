@@ -98,10 +98,13 @@ interface windows merge request:
         - del *.lib
         - del *.pdb
 
+        - cd ..\..\..
+        - move build\interface\Release interface-$CI_COMMIT_SHORT_SHA
+
     artifacts:
         expire_in: 7 days
         paths:
-            - build/interface/Release
+            - interface-$CI_COMMIT_SHORT_SHA
 
 launcher windows:
     stage: package
