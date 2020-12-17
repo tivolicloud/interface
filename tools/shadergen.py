@@ -170,8 +170,8 @@ def processCommand(line):
     glslangExec = args.tools_dir + '/glslangValidator'
     spirvCrossExec = args.tools_dir + '/spirv-cross'
     spirvOptExec = args.tools_dir + '/spirv-tools/spirv-opt'
-    if platform.system() == "Windows": # uses an older vcpkg port
-        spirvOptExec = args.tools_dir + '/spirv-opt'
+    # if platform.system() == "Windows": # uses an older vcpkg port
+        # spirvOptExec = args.tools_dir + '/spirv-opt'
     params = line.split(';')
     dialect = params.pop(0)
     variant = params.pop(0)
