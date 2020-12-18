@@ -728,78 +728,117 @@ class FileDialogListener : public ModalDialogListener {
 
     friend class OffscreenUi;
     FileDialogListener(QQuickItem* messageBox) : ModalDialogListener(messageBox) {
-        if (_finished) {
-            return;
+        if (_finished) return;
+        if (_dialog) {
+            connect(_dialog, SIGNAL(selectedFile(QVariant)), this, SLOT(onSelectedFile(QVariant)));
+            connect(_dialog, SIGNAL(canceled()), this, SLOT(onSelectedFile()));
         }
-        connect(_dialog, SIGNAL(selectedFile(QVariant)), this, SLOT(onSelectedFile(QVariant)));
-        connect(_dialog, SIGNAL(canceled()), this, SLOT(onSelectedFile()));
     }
 
-private slots:
-    void onSelectedFile(QVariant file = "") {
-        _result = file.toUrl().toLocalFile();
+// private slots:
+    void onSelectedFile(QVariant fileUrl = "", QString fileString = "") {
+        _result = fileString.isEmpty() ? fileUrl.toUrl().toLocalFile() : fileString;
         _finished = true;
         auto offscreenUi = DependencyManager::get<OffscreenUi>();
         emit response(_result);
         offscreenUi->removeModalDialog(qobject_cast<QObject*>(this));
-        disconnect(_dialog);
+        if (_dialog) disconnect(_dialog);
     }
 };
 
 
 QString OffscreenUi::fileDialog(const QVariantMap& properties) {
     QVariant buildDialogResult;
-    bool invokeResult;
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
     TabletProxy* tablet = dynamic_cast<TabletProxy*>(tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system"));
+    
     if (tablet->getToolbarMode()) {
-       invokeResult =  QMetaObject::invokeMethod(_desktop, "fileDialog",
-                                  Q_RETURN_ARG(QVariant, buildDialogResult),
-                                  Q_ARG(QVariant, QVariant::fromValue(properties)));
+        // invokeResult =  QMetaObject::invokeMethod(_desktop, "fileDialog",
+        //                           Q_RETURN_ARG(QVariant, buildDialogResult),
+        //                           Q_ARG(QVariant, QVariant::fromValue(properties)));
+
+        QFileDialog* fileDialog = new QFileDialog(
+            nullptr,
+            properties["caption"].toString(), 
+            QUrl(properties["dir"].toString()).toLocalFile(),
+            properties["filter"].toString()
+        );
+        fileDialog->setOptions(static_cast<QFileDialog::Options>(properties["options"].toInt()));
+        if (properties["saveDialog"].toBool()) fileDialog->setAcceptMode(QFileDialog::AcceptSave);
+        if (properties["selectDirectory"].toBool()) fileDialog->setFileMode(QFileDialog::Directory);
+        fileDialog->show();
+
+        int result = fileDialog->exec();
+        disconnect(fileDialog);
+        if (result) {
+            return fileDialog->selectedFiles()[0];
+        } else {
+            return QString();
+        }
     } else {
         QQuickItem* tabletRoot = tablet->getTabletRoot();
-        invokeResult =  QMetaObject::invokeMethod(tabletRoot, "fileDialog",
+        bool invokeResult =  QMetaObject::invokeMethod(tabletRoot, "fileDialog",
                                   Q_RETURN_ARG(QVariant, buildDialogResult),
                                   Q_ARG(QVariant, QVariant::fromValue(properties)));
         emit tabletScriptingInterface->tabletNotification();
-    }
 
-    if (!invokeResult) {
-        qWarning() << "Failed to create file open dialog";
-        return QString();
-    }
+        if (!invokeResult) {
+            qWarning() << "Failed to create file open dialog";
+            return QString();
+        }
 
-    QVariant result = FileDialogListener(qvariant_cast<QQuickItem*>(buildDialogResult)).waitForResult();
-    if (!result.isValid()) {
-        return QString();
+        QVariant result = FileDialogListener(qvariant_cast<QQuickItem*>(buildDialogResult)).waitForResult();
+        if (!result.isValid()) {
+            return QString();
+        }
+        return result.toString();
     }
-    qCDebug(uiLogging) << result.toString();
-    return result.toString();
 }
 
 ModalDialogListener* OffscreenUi::fileDialogAsync(const QVariantMap& properties) {
     QVariant buildDialogResult;
-    bool invokeResult;
     auto tabletScriptingInterface = DependencyManager::get<TabletScriptingInterface>();
     TabletProxy* tablet = dynamic_cast<TabletProxy*>(tabletScriptingInterface->getTablet("com.highfidelity.interface.tablet.system"));
+    
+    FileDialogListener* fileDialogListener;
+
     if (tablet->getToolbarMode()) {
-       invokeResult =  QMetaObject::invokeMethod(_desktop, "fileDialog",
-                                  Q_RETURN_ARG(QVariant, buildDialogResult),
-                                  Q_ARG(QVariant, QVariant::fromValue(properties)));
+        // invokeResult =  QMetaObject::invokeMethod(_desktop, "fileDialog",
+        //                           Q_RETURN_ARG(QVariant, buildDialogResult),
+        //                           Q_ARG(QVariant, QVariant::fromValue(properties)));
+
+        fileDialogListener = new FileDialogListener(nullptr);
+
+        QFileDialog* fileDialog = new QFileDialog(
+            nullptr,
+            properties["caption"].toString(), 
+            QUrl(properties["dir"].toString()).toLocalFile(),
+            properties["filter"].toString()
+        );
+        fileDialog->setOptions(static_cast<QFileDialog::Options>(properties["options"].toInt()));
+        if (properties["saveDialog"].toBool()) fileDialog->setAcceptMode(QFileDialog::AcceptSave);
+        if (properties["selectDirectory"].toBool()) fileDialog->setFileMode(QFileDialog::Directory);
+        fileDialog->show();
+
+        connect(fileDialog, &QFileDialog::fileSelected, [=](const QString& file){
+            fileDialogListener->onSelectedFile("", file);
+            disconnect(fileDialog);
+        });
     } else {
         QQuickItem* tabletRoot = tablet->getTabletRoot();
-        invokeResult =  QMetaObject::invokeMethod(tabletRoot, "fileDialog",
+        bool invokeResult =  QMetaObject::invokeMethod(tabletRoot, "fileDialog",
                                   Q_RETURN_ARG(QVariant, buildDialogResult),
                                   Q_ARG(QVariant, QVariant::fromValue(properties)));
         emit tabletScriptingInterface->tabletNotification();
+
+        if (!invokeResult) {
+            qWarning() << "Failed to create file open dialog";
+            return nullptr;
+        }
+
+        fileDialogListener = new FileDialogListener(qvariant_cast<QQuickItem*>(buildDialogResult));
     }
 
-    if (!invokeResult) {
-        qWarning() << "Failed to create file open dialog";
-        return nullptr;
-    }
-
-    FileDialogListener* fileDialogListener = new FileDialogListener(qvariant_cast<QQuickItem*>(buildDialogResult));
     QObject* fileModalDialog = qobject_cast<QObject*>(fileDialogListener);
     _modalDialogListeners.push_back(fileModalDialog);
 
@@ -1183,13 +1222,11 @@ ModalDialogListener::ModalDialogListener(QQuickItem *dialog) : _dialog(dialog) {
         _finished = true;
         return;
     }
-    connect(_dialog, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+    if (_dialog) connect(_dialog, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
 }
 
 ModalDialogListener::~ModalDialogListener() {
-    if (_dialog) {
-        disconnect(_dialog);
-    }
+    if (_dialog) disconnect(_dialog);
 }
 
 QVariant ModalDialogListener::waitForResult() {
@@ -1201,7 +1238,7 @@ QVariant ModalDialogListener::waitForResult() {
 
 void ModalDialogListener::onDestroyed() {
     _finished = true;
-    disconnect(_dialog);
+    if (_dialog) disconnect(_dialog);
     _dialog = nullptr;
 }
 
