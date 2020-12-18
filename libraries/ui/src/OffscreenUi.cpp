@@ -771,7 +771,15 @@ QString OffscreenUi::fileDialog(const QVariantMap& properties) {
         int result = fileDialog->exec();
         disconnect(fileDialog);
         if (result) {
-            return fileDialog->selectedFiles()[0];
+            QString file = fileDialog->selectedFiles()[0];
+            if (properties["saveDialog"].toBool()) { // make sure file ends with extension
+                QString fileExt = properties["filter"].toString().trimmed();
+                if (fileExt.contains(QRegExp("^\\*\\.\\S+$"))) {
+                    fileExt = fileExt.replace(QRegExp("^\\*"), "");
+                    if (!file.endsWith(fileExt, Qt::CaseInsensitive)) file += fileExt;
+                }
+            }
+            return file;
         } else {
             return QString();
         }
@@ -820,7 +828,15 @@ ModalDialogListener* OffscreenUi::fileDialogAsync(const QVariantMap& properties)
         if (properties["selectDirectory"].toBool()) fileDialog->setFileMode(QFileDialog::Directory);
         fileDialog->show();
 
-        connect(fileDialog, &QFileDialog::fileSelected, [=](const QString& file){
+        connect(fileDialog, &QFileDialog::fileSelected, [=](const QString& fileConst){
+            QString file = fileConst;
+            if (properties["saveDialog"].toBool()) { // make sure file ends with extension
+                QString fileExt = properties["filter"].toString().trimmed();
+                if (fileExt.contains(QRegExp("^\\*\\.\\S+$"))) {
+                    fileExt = fileExt.replace(QRegExp("^\\*"), "");
+                    if (!file.endsWith(fileExt, Qt::CaseInsensitive)) file += fileExt;
+                }
+            }
             fileDialogListener->onSelectedFile("", file);
             disconnect(fileDialog);
         });
