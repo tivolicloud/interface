@@ -335,8 +335,8 @@ gpu::BackendTarget getBackendTarget() {
 #elif defined(Q_OS_MACOS)
     gpu::BackendTarget target = gpu::BackendTarget::GL41;
 #else
-    gpu::BackendTarget target = gpu::BackendTarget::GL45;
-    if (gl::disableGl45()) {
+    gpu::BackendTarget target = gpu::BackendTarget::GL46;
+    if (gl::disableGl45OrHigher()) {
         target = gpu::BackendTarget::GL41;
     }
 #endif

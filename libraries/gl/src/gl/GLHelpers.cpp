@@ -26,19 +26,21 @@ size_t evalGLFormatSwapchainPixelSize(const QSurfaceFormat& format) {
     return pixelSize;
 }
 
-static bool FORCE_DISABLE_OPENGL_45 = false;
+static bool FORCE_DISABLE_OPENGL_45_OR_HIGHER = false;
 
-void gl::setDisableGl45(bool disable) {
-    FORCE_DISABLE_OPENGL_45 = disable;
+void gl::setDisableGl45OrHigher(bool disable) {
+    FORCE_DISABLE_OPENGL_45_OR_HIGHER = disable;
 }
 
-bool gl::disableGl45() {
+bool gl::disableGl45OrHigher() {
 #if defined(USE_GLES)
     return false;
 #else
-    static const QString DEBUG_FLAG("HIFI_DISABLE_OPENGL_45");
-    static bool disableOpenGL45 = QProcessEnvironment::systemEnvironment().contains(DEBUG_FLAG);
-    return FORCE_DISABLE_OPENGL_45 || disableOpenGL45;
+    static const QString DEBUG_FLAG_45("HIFI_DISABLE_OPENGL_45");
+    static const QString DEBUG_FLAG_46("HIFI_DISABLE_OPENGL_46");
+    static bool disableOpenGL45 = QProcessEnvironment::systemEnvironment().contains(DEBUG_FLAG_45);
+    static bool disableOpenGL46 = QProcessEnvironment::systemEnvironment().contains(DEBUG_FLAG_46);
+    return FORCE_DISABLE_OPENGL_45_OR_HIGHER || disableOpenGL45 || disableOpenGL46;
 #endif
 }
 
@@ -88,7 +90,7 @@ uint16_t gl::getTargetVersion() {
     minor = 1;
 #else
     major = 4;
-    minor = disableGl45() ? 1 : 5;
+    minor = disableGl45OrHigher() ? 1 : 6;
 #endif
     return GL_MAKE_VERSION(major, minor);
 }
@@ -241,7 +243,7 @@ uint16_t gl::getAvailableVersion() {
 
         // Intel has *notoriously* buggy DSA implementations, especially around cubemaps
         if (std::string::npos != glvendor.find("intel")) {
-            gl::setDisableGl45(true);
+            gl::setDisableGl45OrHigher(true);
         }
 
         wglMakeCurrent(0, 0);
@@ -251,10 +253,13 @@ uint16_t gl::getAvailableVersion() {
         }
 
         // The only two versions we care about on Windows 
-        // are 4.5 and 4.1
-        if (GLAD_GL_VERSION_4_5) {
+        // are 4.6, 4.5 and 4.1
+        if (GLAD_GL_VERSION_4_6) {
             major = 4;
-            minor = disableGl45() ? 1 : 5;
+            minor = disableGl45OrHigher() ? 1 : 6;
+        } else if (GLAD_GL_VERSION_4_5) {
+            major = 4;
+            minor = disableGl45OrHigher() ? 1 : 5;
         } else if (GLAD_GL_VERSION_4_1) {
             major = 4;
             minor = 1;
@@ -262,7 +267,7 @@ uint16_t gl::getAvailableVersion() {
 #else
         // FIXME do runtime detection of GL version on non-Mac/Windows/Mobile platforms
         major = 4;
-        minor = disableGl45() ? 1 : 5;
+        minor = disableGl45OrHigher() ? 1 : 6;
 #endif
     });
     return GL_MAKE_VERSION(major, minor);

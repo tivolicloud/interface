@@ -52,7 +52,7 @@ static vr::VRTextureBounds_t OPENVR_TEXTURE_BOUNDS_RIGHT{ 0.5f, 0, 1, 1 };
 #define REPROJECTION_BINDING 1
 
 static const char* HMD_REPROJECTION_VERT = R"SHADER(
-#version 450 core
+#version 460 core
 
 out vec3 vPosition;
 out vec2 vTexCoord;
@@ -74,7 +74,7 @@ void main(void) {
 )SHADER";
 
 static const char* HMD_REPROJECTION_FRAG = R"SHADER(
-#version 450 core
+#version 460 core
 
 uniform sampler2D sampler;
 layout(binding = 1, std140) uniform Reprojection

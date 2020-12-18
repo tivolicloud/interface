@@ -19,7 +19,7 @@
 
 
 static const char* VERTEX_SHADER = R"SHADER(
-#version 450 core
+#version 460 core
 
 out vec2 vTexCoord;
 
@@ -39,7 +39,7 @@ void main(void) {
 )SHADER";
 
 static const char* FRAGMENT_SHADER = R"SHADER(
-#version 450 core
+#version 460 core
 
 uniform sampler2D sampler;
 

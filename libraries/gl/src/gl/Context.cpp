@@ -252,8 +252,10 @@ void Context::create(QOpenGLContext* shareContext) {
 #if defined(USE_GLES)
         _version = 0x0302;
 #else
-        if (gl::disableGl45()) {
+        if (gl::setDisableGl45OrHigher()) {
             _version = 0x0401;
+        } else if (GLAD_GL_VERSION_4_6) {
+            _version = 0x0406;
         } else if (GLAD_GL_VERSION_4_5) {
             _version = 0x0405;
         } else if (GLAD_GL_VERSION_4_3) {

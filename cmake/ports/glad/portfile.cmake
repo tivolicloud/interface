@@ -11,9 +11,9 @@ else()
     # else Linux desktop
     vcpkg_download_distfile(
         SOURCE_ARCHIVE
-        URLS https://cdn.tivolicloud.com/dependencies/glad/glad45.zip
-        SHA512 653a7b873f9fbc52e0ab95006cc3143bc7b6f62c6e032bc994e87669273468f37978525c9af5efe36f924cb4acd221eb664ad9af0ce4bf711b4f1be724c0065e
-        FILENAME glad45.zip
+        URLS https://cdn.tivolicloud.com/dependencies/glad/glad46.zip
+        SHA512 f8bd55df0414fb1140f879fa05874dabdc6ed7941d5a09e04d570e13e0f0963587f9dadc50cda422095c88d17d602591d03ba69716b443ccbdc0db5dfb51ba7e
+        FILENAME glad46.zip
     )
 endif()
 

@@ -73,8 +73,8 @@ namespace gl {
 
     bool checkGLErrorDebug(const char* name);
 
-    bool disableGl45();
-    void setDisableGl45(bool disable);
+    bool disableGl45OrHigher();
+    void setDisableGl45OrHigher(bool disable);
 
     uint16_t getTargetVersion();
 

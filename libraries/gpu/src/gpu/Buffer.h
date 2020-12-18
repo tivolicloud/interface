@@ -160,6 +160,7 @@ protected:
     friend class gl::GLBuffer;
     friend class gl41::GL41Buffer;
     friend class gl45::GL45Buffer;
+    friend class gl46::GL46Buffer;
     friend class gles::GLESBuffer;
 };
 

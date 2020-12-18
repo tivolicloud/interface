@@ -46,6 +46,7 @@ namespace gpu {
 enum class BackendTarget {
     GL41,
     GL45,
+    GL46,
     GLES32
 };
 

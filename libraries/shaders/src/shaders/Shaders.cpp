@@ -50,10 +50,10 @@ const std::vector<Dialect>& allDialects() {
 
 #else
 
-const Dialect DEFAULT_DIALECT = Dialect::glsl450;
+const Dialect DEFAULT_DIALECT = Dialect::glsl460;
 
 const std::vector<Dialect> & allDialects() {
-    static const std::vector<Dialect> ALL_DIALECTS{ { Dialect::glsl450, Dialect::glsl410 } };
+    static const std::vector<Dialect> ALL_DIALECTS{ { Dialect::glsl460, Dialect::glsl410 } };
     return ALL_DIALECTS;
 }
 #endif
@@ -67,12 +67,13 @@ const std::string& dialectPath(Dialect dialect) {
     static const std::string e310esPath { "/310es/" };
     static const std::string e410Path { "/410/" };
     static const std::string e450Path { "/450/" };
+    static const std::string e460Path { "/460/" };
     switch (dialect) {
 #if defined(USE_GLES) 
         case Dialect::glsl310es: return e310esPath;
 #else
 #if !defined(Q_OS_MACOS)
-        case Dialect::glsl450: return e450Path;
+        case Dialect::glsl460: return e460Path;
 #endif
         case Dialect::glsl410: return e410Path;
 #endif

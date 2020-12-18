@@ -21,6 +21,7 @@
 
 #include "../gl41/GL41Backend.h"
 #include "../gl45/GL45Backend.h"
+#include "../gl46/GL46Backend.h"
 
 using namespace gpu;
 using namespace gpu::gl;
@@ -32,7 +33,10 @@ BackendPointer GLBackend::createBackend() {
     // Where the gpuContext is initialized and where the TRUE Backend is created and assigned
     auto version = QOpenGLContextWrapper::currentContextVersion();
     std::shared_ptr<GLBackend> result;
-    if (!::gl::disableGl45() && version >= 0x0405) {
+    if (!::gl::disableGl45OrHigher() && version >= 0x0406) {
+        qCDebug(gpugllogging) << "Using OpenGL 4.6 backend";
+        result = std::make_shared<gpu::gl46::GL46Backend>();
+    } else if (!::gl::disableGl45OrHigher() && version >= 0x0405) {
         qCDebug(gpugllogging) << "Using OpenGL 4.5 backend";
         result = std::make_shared<gpu::gl45::GL45Backend>();
     } else {

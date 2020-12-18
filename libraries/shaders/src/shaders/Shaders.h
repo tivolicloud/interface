@@ -36,7 +36,8 @@ enum class Dialect
     // Mac only supports 4.1
     glsl410,
 #else
-    // Everything else supports 4.1 and 4.5
+    // Everything else supports 4.1, 4.5 and 4.6
+    glsl460,
     glsl450,
     glsl410,
 #endif

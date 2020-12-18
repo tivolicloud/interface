@@ -145,6 +145,11 @@ namespace gpu {
         class GL45Buffer;
     }
 
+    namespace gl46 {
+        class GL46Backend;
+        class GL46Buffer;
+    }
+
     namespace gles {
         class GLESBackend;
         class GLESBuffer;

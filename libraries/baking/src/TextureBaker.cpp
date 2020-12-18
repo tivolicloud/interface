@@ -163,6 +163,7 @@ void TextureBaker::processTexture() {
     // Compressed KTX
     if (_compressionEnabled) {
         constexpr std::array<gpu::BackendTarget, 2> BACKEND_TARGETS {{
+            gpu::BackendTarget::GL46,
             gpu::BackendTarget::GL45,
             gpu::BackendTarget::GLES32
         }};
@@ -211,7 +212,7 @@ void TextureBaker::processTexture() {
     if (_textureType == image::TextureUsage::Type::SKY_TEXTURE || _textureType == image::TextureUsage::Type::AMBIENT_TEXTURE) {
         buffer->reset();
         auto processedTexture = image::processImage(std::move(buffer), _textureURL.toString().toStdString(), image::ColorChannel::NONE,
-                                                    ABSOLUTE_MAX_TEXTURE_NUM_PIXELS, _textureType, false, gpu::BackendTarget::GL45, _abortProcessing);
+                                                    ABSOLUTE_MAX_TEXTURE_NUM_PIXELS, _textureType, false, gpu::BackendTarget::GL46, _abortProcessing);
         if (!processedTexture) {
             handleError("Could not process texture " + _textureURL.toString());
             return;
