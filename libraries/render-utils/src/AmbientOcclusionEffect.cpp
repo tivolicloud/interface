@@ -208,7 +208,7 @@ AmbientOcclusionEffectConfig::AmbientOcclusionEffectConfig() :
     render::GPUJobConfig::Persistent(QStringList() << "Render" << "Engine" << "Ambient Occlusion"),
     perspectiveScale{ 1.0f },
     edgeSharpness{ 0.38f },
-    blurRadius{ 2 },
+    blurRadius{ 3 },
     resolutionLevel{ 1 },
 
     ssaoRadius{ 1.0f },
@@ -223,7 +223,7 @@ AmbientOcclusionEffectConfig::AmbientOcclusionEffectConfig() :
     hbaoFalloffAngle{ 0.23f },
 
     horizonBased{ true },
-    ditheringEnabled{ false },
+    ditheringEnabled{ true },
     borderingEnabled{ true },
     fetchMipsEnabled{ true },
     jitterEnabled{ false }{
