@@ -735,7 +735,12 @@ class FileDialogListener : public ModalDialogListener {
         }
     }
 
-// private slots:
+public:
+    void onSelectedFileOverride(QVariant fileUrl = "", QString fileString = "") {
+        return onSelectedFile(fileUrl, fileString);
+    }
+
+private slots:
     void onSelectedFile(QVariant fileUrl = "", QString fileString = "") {
         _result = fileString.isEmpty() ? fileUrl.toUrl().toLocalFile() : fileString;
         _finished = true;
@@ -837,7 +842,7 @@ ModalDialogListener* OffscreenUi::fileDialogAsync(const QVariantMap& properties)
                     if (!file.endsWith(fileExt, Qt::CaseInsensitive)) file += fileExt;
                 }
             }
-            fileDialogListener->onSelectedFile("", file);
+            fileDialogListener->onSelectedFileOverride("", file);
             disconnect(fileDialog);
         });
     } else {
@@ -1238,7 +1243,9 @@ ModalDialogListener::ModalDialogListener(QQuickItem *dialog) : _dialog(dialog) {
         _finished = true;
         return;
     }
-    if (_dialog) connect(_dialog, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+    if (_dialog) {
+        connect(_dialog, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+    }
 }
 
 ModalDialogListener::~ModalDialogListener() {
