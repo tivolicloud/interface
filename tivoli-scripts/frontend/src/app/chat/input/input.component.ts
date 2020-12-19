@@ -134,12 +134,18 @@ export class InputComponent implements OnInit {
 				event.altKey == false &&
 				event.shiftKey == false
 			) {
+				const el = this.input.nativeElement;
+
 				// send message
-				const message = this.input.nativeElement.innerText.trim();
+				let message = el.innerText.trim();
 				if (message.length == 0) return this.unfocus();
 
+				// microsoft edge uses <a> tags when copying urls
+				const a: HTMLAnchorElement = el.querySelector("a[href]");
+				if (a != null) message += " " + a.href;
+
 				this.chatService.sendMessage(message);
-				this.input.nativeElement.innerText = "";
+				el.innerText = "";
 				this.messageHistoryIndex = -1;
 
 				return this.unfocus();
