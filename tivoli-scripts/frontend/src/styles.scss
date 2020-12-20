@@ -110,3 +110,17 @@ input[type="number"]::-webkit-outer-spin-button {
 	height: 1.2em;
 	vertical-align: text-bottom;
 }
+
+mat-form-field.slim {
+	.mat-form-field-wrapper {
+		margin: 0;
+	}
+	.mat-form-field-infix {
+		border: none;
+		padding-top: 1em;
+		padding-bottom: 0.6em;
+	}
+	.mat-form-field-flex {
+		padding: 0 0.5em;
+	}
+}
