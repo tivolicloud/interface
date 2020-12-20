@@ -31,6 +31,7 @@
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  * @property {boolean} nametagsEnabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
  * @property {number} maximumTextureMemory - The maximum texture memory in MB.
+ * @property {number} farClip - The far clip distance.
  */
 class RenderScriptingInterface : public QObject {
     Q_OBJECT
