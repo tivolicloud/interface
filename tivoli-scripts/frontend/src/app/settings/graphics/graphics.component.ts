@@ -50,6 +50,15 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	ambientOcclusion: boolean;
+	onAmbientOcclusionChange(e: MatSlideToggleChange) {
+		this.script
+			.rpc("Render.ambientOcclusionEnabled", e.checked)
+			.subscribe(() => {
+				this.refresh();
+			});
+	}
+
 	deferred: boolean;
 	onDeferredChange(e: MatSlideToggleChange) {
 		this.script
@@ -142,6 +151,11 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 		this.script.rpc<boolean>("Render.shadowsEnabled").subscribe(shadows => {
 			this.shadows = shadows;
 		});
+		this.script
+			.rpc<boolean>("Render.ambientOcclusionEnabled")
+			.subscribe(ambientOcclusion => {
+				this.ambientOcclusion = ambientOcclusion;
+			});
 		this.script
 			.rpc<number>("Render.renderMethod")
 			.subscribe(renderMethod => {
