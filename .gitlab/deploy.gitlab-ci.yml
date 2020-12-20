@@ -25,7 +25,7 @@ pages:
 
     extends: .deploy
 
-    # needs: []
+    needs: []
 
     script:
         - cd tools/jsdoc
