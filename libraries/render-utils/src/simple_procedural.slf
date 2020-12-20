@@ -75,6 +75,7 @@ void main(void) {
     vec3 emissive = DEFAULT_EMISSIVE;
     float occlusion = DEFAULT_OCCLUSION;
     float scattering = DEFAULT_SCATTERING;
+    bool unlit = false;
 
     float emissiveAmount = 0.0;
 
@@ -114,7 +115,8 @@ void main(void) {
         roughness,
         metallic,
         occlusion,
-        scattering
+        scattering,
+        unlit
     );
 
 #if defined(PROCEDURAL_V3)
@@ -122,15 +124,21 @@ void main(void) {
 #else
     emissiveAmount = getProceduralFragmentWithPosition(proceduralData);
 #endif
-    normal = proceduralData.normal;
-    diffuse = proceduralData.diffuse;
-    fresnel = proceduralData.specular;
-    roughness = proceduralData.roughness;
-    metallic = proceduralData.metallic;
-    emissive = proceduralData.emissive;
-    occlusion = proceduralData.occlusion;
-    scattering = proceduralData.scattering;
-    alpha = proceduralData.alpha;
+    unlit = proceduralData.unlit;
+    if (unlit) {
+        diffuse = proceduralData.diffuse;
+        alpha = proceduralData.alpha;
+    } else {
+        normal = proceduralData.normal;
+        diffuse = proceduralData.diffuse;
+        fresnel = proceduralData.specular;
+        roughness = proceduralData.roughness;
+        metallic = proceduralData.metallic;
+        emissive = proceduralData.emissive;
+        occlusion = proceduralData.occlusion;
+        scattering = proceduralData.scattering;
+        alpha = proceduralData.alpha;
+    }
 
 #if defined(PROCEDURAL_V4)
     position = vec4(proceduralData.position, 1.0);
@@ -145,27 +153,34 @@ void main(void) {
 #endif
 
 <@if not HIFI_USE_TRANSLUCENT@>
-    if (emissiveAmount > 0.0) {
-        packDeferredFragmentLightmap(
+    if (unlit) {
+        packDeferredFragmentUnlit(
             normal,
             1.0,
-            diffuse,
-            roughness,
-            metallic,
-            emissive);
+            diffuse);
     } else {
-        packDeferredFragment(
-            normal,
-            1.0,
-            diffuse,
-            roughness,
-            metallic,
-            emissive,
-            occlusion,
-            scattering);
+        if (emissiveAmount > 0.0) {
+            packDeferredFragmentLightmap(
+                normal,
+                1.0,
+                diffuse,
+                roughness,
+                metallic,
+                emissive);
+        } else {
+            packDeferredFragment(
+                normal,
+                1.0,
+                diffuse,
+                roughness,
+                metallic,
+                emissive,
+                occlusion,
+                scattering);
+        }
     }
 <@else@>
-    if (emissiveAmount > 0.0) {
+    if (unlit || emissiveAmount > 0.0) {
         _fragColor0 = vec4(diffuse, alpha);
     } else {
         _fragColor0 = vec4(evalGlobalLightingAlphaBlended(

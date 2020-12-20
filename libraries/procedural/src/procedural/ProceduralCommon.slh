@@ -81,6 +81,7 @@ struct ProceduralFragment {
     float metallic;
     float occlusion;
     float scattering;
+    bool unlit;
 };
 
 // Same as ProceduralFragment but with position
@@ -95,6 +96,7 @@ struct ProceduralFragmentWithPosition {
     float metallic;
     float occlusion;
     float scattering;
+    bool unlit;
 };
 
 // Unimplemented uniforms
