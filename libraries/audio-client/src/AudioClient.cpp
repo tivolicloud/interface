@@ -106,6 +106,15 @@ QList<HifiAudioDeviceInfo> getAvailableDevices(QAudio::Mode mode, const QString&
     for (auto& device : devices) {
         // TODO: filter device names for Linux
         // https://forum.qt.io/topic/11343/get-the-list-of-available-audio-devices-in-linux
+        #ifdef Q_OS_LINUX
+            if (
+                !device.deviceName().startsWith("alsa_output.", Qt::CaseInsensitive) &&
+                !device.deviceName().startsWith("alsa_input.", Qt::CaseInsensitive) &&
+                !device.deviceName().startsWith("default", Qt::CaseInsensitive)
+            ) {
+                continue;
+            }
+        #endif
 
         newDevices.push_back(HifiAudioDeviceInfo(device, false, mode));
         if (device.deviceName() == defDeviceName.trimmed()) {
