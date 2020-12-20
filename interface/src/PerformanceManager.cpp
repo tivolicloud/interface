@@ -96,6 +96,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             );
 
             instance->setShadowsEnabled(true);
+            instance->setAmbientOcclusionEnabled(true);
             // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
             instance->setMaximumTextureMemory(8192);
@@ -110,6 +111,7 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             );
 
             instance->setShadowsEnabled(false);
+            instance->setAmbientOcclusionEnabled(false);
             // instance->setCustomShadersEnabled(true);
             instance->setViewportResolutionScale(1.0);
             instance->setMaximumTextureMemory(2048);
@@ -123,9 +125,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             );
 
             instance->setShadowsEnabled(false);
+            instance->setAmbientOcclusionEnabled(false);
             // instance->setCustomShadersEnabled(false);
-            instance->setViewportResolutionScale(1.0);
-            // instance->setViewportResolutionScale(recommendedPpiScale);
+            instance->setViewportResolutionScale(1.0); // recommendedPpiScale
             instance->setMaximumTextureMemory(512);
 
             // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
@@ -137,8 +139,9 @@ void PerformanceManager::applyPerformancePreset(PerformanceManager::PerformanceP
             );
 
             instance->setShadowsEnabled(false);
+            instance->setAmbientOcclusionEnabled(false);
             // instance->setCustomShadersEnabled(false);
-            instance->setViewportResolutionScale(0.5);
+            instance->setViewportResolutionScale(0.5); // recommendedPpiScale
             instance->setMaximumTextureMemory(64);
             
             // DependencyManager::get<LODManager>()->setWorldDetailQuality(WORLD_DETAIL_LOW);
