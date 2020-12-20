@@ -126,9 +126,7 @@ export class ButtonManager {
 							source: "about:blank",
 						}),
 						// for vr
-						entity: Entities.addEntity<
-							Entities.EntityPropertiesWeb
-						>(
+						entity: Entities.addEntity<Entities.EntityPropertiesWeb>(
 							{
 								type: "Web",
 								sourceUrl: "about:blank",
@@ -151,9 +149,9 @@ export class ButtonManager {
 			if (isPanel == "false") return;
 
 			const windowUrl = panel.window.getURL();
-			const entityUrl = Entities.getEntityProperties<
-				Entities.EntityPropertiesWeb
-			>(panel.entity).sourceUrl;
+			const entityUrl = Entities.getEntityProperties<Entities.EntityPropertiesWeb>(
+				panel.entity,
+			).sourceUrl;
 
 			const inVr = this.inVr();
 			const windowTargetUrl = inVr ? "about:blank" : url;
@@ -214,15 +212,14 @@ export class ButtonManager {
 					);
 
 					const dimensions = Vec3.multiply(
-						{
-							x: 1.6,
-							y: 0.9,
-							z:
-								0.01 *
-								(isPanel == "small"
-									? this.smallPanelModifier
-									: 1),
-						},
+						Vec3.multiply(
+							{
+								x: 1.6,
+								y: 0.9,
+								z: 0.01,
+							},
+							isPanel == "small" ? this.smallPanelModifier : 1,
+						),
 						this.panelScale * MyAvatar.scale,
 					);
 
