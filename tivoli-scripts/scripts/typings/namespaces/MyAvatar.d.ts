@@ -90,6 +90,19 @@ declare namespace MyAvatar {
 	function getDefaultFullAvatarURL(): string;
 	function getFullAvatarModelName(): string;
 	function getFullAvatarURLFromPreferences(): string;
+	function goToFeetLocation(
+		position: Vec3,
+		hasOrientation?: boolean,
+		orientation?: Quat,
+		shouldFaceLocation?: boolean,
+	): void;
+	function overrideAnimation(
+		url: string,
+		fps: number,
+		loop: boolean,
+		firstFrame: number,
+		lastFrame: number,
+	): void;
 	function overrideRoleAnimation(
 		role: string,
 		url: string,
@@ -99,9 +112,11 @@ declare namespace MyAvatar {
 		lastFrame: number,
 	): void;
 	function randomizeDefaultAvatar(): void;
+	function restoreAnimation(): void;
 	function restoreRoleAnimation(role: string): void;
 	function setCollisionsEnabled(enabled: boolean): void;
 	function setOtherAvatarsCollisionsEnabled(enabled: boolean): void;
+	function setParentID(parentID: Uuid): void;
 	function useFullAvatarURL(modelURL: string, name: string): void;
 
 	enum SitStandModelType {
@@ -114,9 +129,9 @@ declare namespace MyAvatar {
 	// signals
 	const collisionsEnabledChanged: Signal<(enabled: boolean) => any>;
 	const displayNameChanged: Signal<() => any>;
-	const otherAvatarsCollisionsEnabledChanged: Signal<(
-		enabled: boolean,
-	) => any>;
+	const otherAvatarsCollisionsEnabledChanged: Signal<
+		(enabled: boolean) => any
+	>;
 	const sessionUUIDChanged: Signal<() => any>;
 	const skeletonModelURLChanged: Signal<() => any>;
 }
