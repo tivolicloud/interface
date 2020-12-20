@@ -436,7 +436,7 @@ public:
                 continue;
             }
             uint64_t lastHeartbeat = _heartbeat; // sample atomic _heartbeat, because we could context switch away and have it updated on us
-            uint64_t now = usecTimestampNow();
+            uint64_t now = usecTimestampNow();      
             auto lastHeartbeatAge = (now > lastHeartbeat) ? now - lastHeartbeat : 0;
             auto elapsedMovingAverage = _movingAverage.getAverage();
 
@@ -1030,6 +1030,7 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _entityClipboard(new EntityTree()),
     _previousScriptLocation("LastScriptLocation", DESKTOP_LOCATION),
     _fieldOfView("fieldOfView", DEFAULT_FIELD_OF_VIEW_DEGREES),
+    _farClip("farClip", DEFAULT_FAR_CLIP),
     _hmdTabletScale("hmdTabletScale", DEFAULT_HMD_TABLET_SCALE_PERCENT),
     _desktopTabletScale("desktopTabletScale", DEFAULT_DESKTOP_TABLET_SCALE_PERCENT),
     _firstRun(Settings::firstRun, true),
@@ -3822,6 +3823,13 @@ void Application::setFieldOfView(float fov) {
     }
 }
 
+void Application::setFarClip(float farClip) {
+    if (farClip != _farClip.get()) {
+        _farClip.set(farClip);
+    }
+}
+
+
 void Application::setHMDTabletScale(float hmdTabletScale) {
     _hmdTabletScale.set(hmdTabletScale);
 }
@@ -3947,7 +3955,7 @@ void Application::resizeGL() {
     float fovY = _fieldOfView.get() / aspectRatio;
     _myCamera.setProjection(
         glm::perspective(
-            glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP, DEFAULT_FAR_CLIP
+            glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP, getFarClip()
         )
     );
     // Possible change in aspect ratio
@@ -6846,7 +6854,7 @@ void Application::updateRenderArgs(float deltaTime) {
                 float aspectRatio = getActiveDisplayPlugin()->getRecommendedAspectRatio();
                 float fovY = _fieldOfView.get() / aspectRatio;
                 auto adjustedProjection = glm::perspective(
-                    glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP * sensorToWorldScale, DEFAULT_FAR_CLIP
+                    glm::radians(fovY), aspectRatio, DEFAULT_NEAR_CLIP * sensorToWorldScale, getFarClip()
                 );
                 _viewFrustum.setProjection(adjustedProjection);
                 _viewFrustum.calculate();

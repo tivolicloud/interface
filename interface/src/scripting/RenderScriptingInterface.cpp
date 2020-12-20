@@ -33,6 +33,7 @@ void RenderScriptingInterface::loadSettings() {
         _nametagsEnabled = (_nametagsEnabledSetting.get());
         // _maximumTextureMemory = (_maximumTextureMemorySetting.get()); // handled by gpu::Texture
         _fieldOfView = (_fieldOfViewSetting.get());
+        _farClip = (_farClipSetting.get());
     });
     forceRenderMethod((RenderMethod)_renderMethod);
     forceShadowsEnabled(_shadowsEnabled);
@@ -318,4 +319,23 @@ void RenderScriptingInterface::forceFieldOfView(float fieldOfView) {
     _fieldOfView = fieldOfView;
     _fieldOfViewSetting.set(fieldOfView);
     qApp->setFieldOfView(fieldOfView);
+}
+
+
+
+float RenderScriptingInterface::getFarClip() const {
+    return _farClip;
+}
+
+void RenderScriptingInterface::setFarClip(float farClip) {
+    if (_farClip != farClip) {
+        forceFarClip(farClip);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceFarClip(float farClip) {
+    _farClip = farClip;
+    _farClipSetting.set(farClip);
+    qApp->setFarClip(farClip);
 }

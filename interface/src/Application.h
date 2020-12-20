@@ -210,6 +210,9 @@ public:
     float getFieldOfView() { return _fieldOfView.get(); }
     void setFieldOfView(float fov);
 
+    float getFarClip() { return _farClip.get(); }
+    void setFarClip(float farClip);
+
     float getHMDTabletScale() { return _hmdTabletScale.get(); }
     void setHMDTabletScale(float hmdTabletScale);
     float getDesktopTabletScale() { return _desktopTabletScale.get(); }
@@ -697,6 +700,7 @@ private:
 
     Setting::Handle<QString> _previousScriptLocation;
     Setting::Handle<float> _fieldOfView;
+    Setting::Handle<float> _farClip;
     Setting::Handle<float> _hmdTabletScale;
     Setting::Handle<float> _desktopTabletScale;
     Setting::Handle<bool> _firstRun;

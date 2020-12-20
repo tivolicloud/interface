@@ -291,6 +291,20 @@ public slots:
      */
     void setFieldOfView(float fieldOfView);
 
+    /**jsdoc
+     * Gets the far clip distance in units.
+     * @function Render.getFarClip
+     * @returns {number}
+     */
+    float getFarClip() const;
+
+    /**jsdoc
+     * Sets the field of view in degrees.
+     * @function Render.setFarClip
+     * @param {number} farClip
+     */
+    void setFarClip(float farClip);
+
 signals:
 
     /**jsdoc
@@ -322,6 +336,7 @@ private:
     bool _nametagsEnabled{ true };
     // int _maximumTextureMemory{ 8192 }; // handled by gpu::Texture
     float _fieldOfView{ DEFAULT_FIELD_OF_VIEW_DEGREES };
+    float _farClip { DEFAULT_FAR_CLIP };
 
     // Actual settings saved on disk
     Setting::Handle<int> _renderMethodSetting{ "renderMethod", _renderMethod };
@@ -332,6 +347,7 @@ private:
     Setting::Handle<bool> _nametagsEnabledSetting{ "nametagsEnabled", _nametagsEnabled };
     Setting::Handle<int> _maximumTextureMemorySetting{ "maximumTextureMemory", 8192 };
     Setting::Handle<float> _fieldOfViewSetting{ "fieldOfView", _fieldOfView };
+    Setting::Handle<float> _farClipSetting{ "farClip", _farClip };
 
     // Force assign both setting AND runtime value to the parameter value
     void forceRenderMethod(RenderMethod renderMethod);
@@ -342,6 +358,7 @@ private:
     void forceNametagsEnabled(bool enabled);
     void forceMaximumTextureMemory(int maximumTextureMemory);
     void forceFieldOfView(float fieldOfView);
+    void forceFarClip(float farClip);
 
     static std::once_flag registry_flag;
 };
