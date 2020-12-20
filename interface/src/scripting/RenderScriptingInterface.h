@@ -42,6 +42,7 @@ class RenderScriptingInterface : public QObject {
     Q_PROPERTY(bool nametagsEnabled READ getNametagsEnabled WRITE setNametagsEnabled NOTIFY settingsChanged)
     Q_PROPERTY(int maximumTextureMemory READ getMaximumTextureMemory WRITE setMaximumTextureMemory NOTIFY settingsChanged)
     Q_PROPERTY(float fieldOfView READ getFieldOfView WRITE setFieldOfView NOTIFY settingsChanged)
+    Q_PROPERTY(float farClip READ getFarClip WRITE setFarClip NOTIFY settingsChanged)
 
 public:
     RenderScriptingInterface();
@@ -292,14 +293,14 @@ public slots:
     void setFieldOfView(float fieldOfView);
 
     /**jsdoc
-     * Gets the far clip distance in units.
+     * Gets the far clip distance.
      * @function Render.getFarClip
      * @returns {number}
      */
     float getFarClip() const;
 
     /**jsdoc
-     * Sets the field of view in degrees.
+     * Sets the far clip distance.
      * @function Render.setFarClip
      * @param {number} farClip
      */

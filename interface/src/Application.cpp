@@ -436,7 +436,7 @@ public:
                 continue;
             }
             uint64_t lastHeartbeat = _heartbeat; // sample atomic _heartbeat, because we could context switch away and have it updated on us
-            uint64_t now = usecTimestampNow();      
+            uint64_t now = usecTimestampNow();
             auto lastHeartbeatAge = (now > lastHeartbeat) ? now - lastHeartbeat : 0;
             auto elapsedMovingAverage = _movingAverage.getAverage();
 
@@ -3828,7 +3828,6 @@ void Application::setFarClip(float farClip) {
         _farClip.set(farClip);
     }
 }
-
 
 void Application::setHMDTabletScale(float hmdTabletScale) {
     _hmdTabletScale.set(hmdTabletScale);

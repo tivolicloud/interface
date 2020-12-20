@@ -137,6 +137,20 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			});
 	}
 
+	farClip: number;
+	readonly defaultFarClip = 16384;
+	onFarClipChange(e: MatSliderChange) {
+		const value = e.value == null ? (e as any).target.value : e.value;
+		this.script.rpc("Render.farClip", value).subscribe(() => {
+			this.refresh();
+		});
+	}
+	restoreFarClip() {
+		this.script.rpc("Render.farClip", this.defaultFarClip).subscribe(() => {
+			this.refresh();
+		});
+	}
+
 	refresh() {
 		this.script
 			.rpc<number>("Performance.performancePreset")
@@ -188,6 +202,9 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			});
 		this.script.rpc<number>("Render.fieldOfView").subscribe(fieldOfView => {
 			this.fieldOfView = fieldOfView;
+		});
+		this.script.rpc<number>("Render.farClip").subscribe(farClip => {
+			this.farClip = farClip;
 		});
 	}
 

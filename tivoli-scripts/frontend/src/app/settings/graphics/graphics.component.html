@@ -180,3 +180,36 @@
 		<mat-icon>restore</mat-icon>
 	</button>
 </div>
+<div style="margin: 30px 0"></div>
+<div class="setting" style="max-height: 16px; height: 16px">
+	<p class="label">
+		<mat-icon>landscape</mat-icon>
+		Far clip ({{ farClip }})
+	</p>
+	<mat-slider
+		thumbLabel
+		min="1"
+		max="128"
+		step="1"
+		(input)="onFarClipChange($event)"
+		[value]="farClip"
+		style="max-width: 300px; width: 300px; margin-right: 12px"
+	></mat-slider>
+	<mat-form-field class="slim" appearance="outline" style="width: 70px">
+		<input
+			matInput
+			type="number"
+			(input)="onFarClipChange($event)"
+			[value]="farClip"
+		/>
+	</mat-form-field>
+	<button
+		mat-icon-button
+		*ngIf="farClip != defaultFarClip"
+		color="primary"
+		(click)="restoreFarClip()"
+		style="margin-left: 8px"
+	>
+		<mat-icon>restore</mat-icon>
+	</button>
+</div>

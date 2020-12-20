@@ -43,6 +43,7 @@ void RenderScriptingInterface::loadSettings() {
     forceNametagsEnabled(_nametagsEnabled);
     forceMaximumTextureMemory(_maximumTextureMemorySetting.get());
     forceFieldOfView(_fieldOfView);
+    forceFarClip(_farClip);
 }
 
 RenderScriptingInterface::RenderMethod RenderScriptingInterface::getRenderMethod() const {
@@ -320,8 +321,6 @@ void RenderScriptingInterface::forceFieldOfView(float fieldOfView) {
     _fieldOfViewSetting.set(fieldOfView);
     qApp->setFieldOfView(fieldOfView);
 }
-
-
 
 float RenderScriptingInterface::getFarClip() const {
     return _farClip;
