@@ -32,15 +32,27 @@ namespace baker {
 
         void run(const BakeContextPointer& context, const Input& input, Output& output) {
             const auto& hfmModelIn = input;
-            output.edit0() = hfmModelIn->meshes.toStdVector();
+            output.edit0() = std::vector<hfm::Mesh>(
+                hfmModelIn->meshes.begin(),
+                hfmModelIn->meshes.end()
+            );
             output.edit1() = hfmModelIn->originalURL;
             output.edit2() = hfmModelIn->meshIndicesToModelNames;
             auto& blendshapesPerMesh = output.edit3();
             blendshapesPerMesh.reserve(hfmModelIn->meshes.size());
             for (int i = 0; i < hfmModelIn->meshes.size(); i++) {
-                blendshapesPerMesh.push_back(hfmModelIn->meshes[i].blendshapes.toStdVector());
+                blendshapesPerMesh.push_back(
+                    std::vector<hfm::Blendshape>(
+                        hfmModelIn->meshes[i].blendshapes.begin(),
+                        hfmModelIn->meshes[i].blendshapes.end()
+                    )    
+                );
+
             }
-            output.edit4() = hfmModelIn->joints.toStdVector();
+            output.edit4() = std::vector<hfm::Joint>(
+                hfmModelIn->joints.begin(),
+                hfmModelIn->joints.end()
+            );
         }
     };
 

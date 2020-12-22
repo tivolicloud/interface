@@ -27,6 +27,8 @@
 #include <qfile.h>
 #include <qfileinfo.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <shared/NsightHelpers.h>
 #include <NetworkAccessManager.h>
 #include <ResourceManager.h>
@@ -546,8 +548,7 @@ bool GLTFSerializer::addMesh(const QJsonObject& object) {
                 }
 
                 QJsonArray jsTargets;
-                if (getObjectArrayVal(jsPrimitive, "targets", jsTargets, primitive.defined))
-                {
+                if (getObjectArrayVal(jsPrimitive, "targets", jsTargets, primitive.defined)) {
                     foreach(const QJsonValue & tar, jsTargets) {
                         if (tar.isObject()) {
                             QJsonObject jsTarget = tar.toObject();
@@ -785,36 +786,26 @@ bool GLTFSerializer::parseGLTF(const hifi::ByteArray& data) {
 }
 
 glm::mat4 GLTFSerializer::getModelTransform(const GLTFNode& node) {
-    glm::mat4 tmat = glm::mat4(1.0);
+    glm::mat4 transform = glm::mat4(1.0);
 
     if (node.defined["matrix"] && node.matrix.size() == 16) {
-        tmat = glm::mat4(node.matrix[0], node.matrix[1], node.matrix[2], node.matrix[3],
-            node.matrix[4], node.matrix[5], node.matrix[6], node.matrix[7],
-            node.matrix[8], node.matrix[9], node.matrix[10], node.matrix[11],
-            node.matrix[12], node.matrix[13], node.matrix[14], node.matrix[15]);
+        transform = glm::make_mat4(node.matrix.constData());
     } else {
-
         if (node.defined["scale"] && node.scale.size() == 3) {
-            glm::vec3 scale = glm::vec3(node.scale[0], node.scale[1], node.scale[2]);
-            glm::mat4 s = glm::mat4(1.0);
-            s = glm::scale(s, scale);
-            tmat = s * tmat;
+            glm::vec3 scaleVec = glm::make_vec3(node.scale.data());
+            transform = glm::scale(transform, scaleVec);
         }
-        
         if (node.defined["rotation"] && node.rotation.size() == 4) {
-            //quat(x,y,z,w) to quat(w,x,y,z)
-            glm::quat rotquat = glm::quat(node.rotation[3], node.rotation[0], node.rotation[1], node.rotation[2]);
-            tmat = glm::mat4_cast(rotquat) * tmat;
+            glm::quat rotQ = glm::make_quat(node.rotation.data());
+            transform = glm::mat4_cast(rotQ) * transform;
         }
-        
         if (node.defined["translation"] && node.translation.size() == 3) {
-            glm::vec3 trans = glm::vec3(node.translation[0], node.translation[1], node.translation[2]);
-            glm::mat4 t = glm::mat4(1.0);
-            t = glm::translate(t, trans);
-            tmat = t * tmat;
+            glm::vec3 transV = glm::make_vec3(node.translation.data());
+            transform = glm::translate(glm::mat4(1.0), transV) * transform;
         }
     }
-    return tmat;
+
+    return transform;
 }
 
 void GLTFSerializer::getSkinInverseBindMatrices(std::vector<std::vector<float>>& inverseBindMatrixValues) {
@@ -838,6 +829,8 @@ void GLTFSerializer::generateTargetData(int index, float weight, QVector<glm::ve
 }
 
 bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& mapping, const hifi::URL& url) {
+    hfmModel.originalURL = url.toString();
+
     int numNodes = _file.nodes.size();
 
     //Build dependencies
@@ -1030,6 +1023,8 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 
             hfmModel.meshes.append(HFMMesh());
             HFMMesh& mesh = hfmModel.meshes[hfmModel.meshes.size() - 1];
+            mesh.modelTransform = globalTransforms[nodeIndex];
+
             if (!hfmModel.hasSkeletonJoints) { 
                 HFMCluster cluster;
                 cluster.jointIndex = nodecount;
@@ -1066,6 +1061,12 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 
                 int indicesAccessorIdx = primitive.indices;
 
+                if (indicesAccessorIdx < 0 || indicesAccessorIdx > _file.accessors.size() - 1) {
+                    qWarning(modelformat) << "Indices accessor index is out of bounds for model " << _url;
+                    continue;
+                    return false;
+                }
+                
                 GLTFAccessor& indicesAccessor = _file.accessors[indicesAccessorIdx];
 
                 // Buffers
@@ -1103,6 +1104,11 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 
                 foreach(auto &key, keys) {
                     int accessorIdx = primitive.attributes.values[key];
+
+                    if (accessorIdx > _file.accessors.size()) {
+                        qWarning(modelformat) << "Accessor index is out of bounds for model " << _url;
+                        continue;
+                    }
 
                     GLTFAccessor& accessor = _file.accessors[accessorIdx];
 
@@ -1250,6 +1256,11 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
                         int v2_index = (indices[n + 1] * 3);
                         int v3_index = (indices[n + 2] * 3);
 
+                        if (v1_index + 2 >= vertices.size() || v2_index + 2 >= vertices.size() || v3_index + 2 >= vertices.size()) {
+                            qWarning(modelformat) << "Indices out of range for model " << _url;
+                            break;
+                        }
+
                         glm::vec3 v1 = glm::vec3(vertices[v1_index], vertices[v1_index + 1], vertices[v1_index + 2]);
                         glm::vec3 v2 = glm::vec3(vertices[v2_index], vertices[v2_index + 1], vertices[v2_index + 2]);
                         glm::vec3 v3 = glm::vec3(vertices[v3_index], vertices[v3_index + 1], vertices[v3_index + 2]);
@@ -1344,7 +1355,7 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
                 }
 
                 if (validatedIndices.size() == 0) {
-                    qWarning(modelformat) << "Indices out of range for model " << _url;
+                    qWarning(modelformat) << "No valid indices for model " << _url;
                     continue;
                 }
 
@@ -1532,62 +1543,69 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 
                 // populate the texture coordinates if they don't exist
                 if (mesh.texCoords.size() == 0 && !hfmModel.hasSkeletonJoints) {
-                    for (int i = 0; i < part.triangleIndices.size(); ++i) { mesh.texCoords.push_back(glm::vec2(0.0, 1.0)); }
+                    for (int i = 0; i < part.triangleIndices.size(); ++i) {
+                        mesh.texCoords.push_back(glm::vec2(0.0, 1.0));
+                    }
                 }
 
                 // Build morph targets (blend shapes)
                 if (!primitive.targets.isEmpty()) {
 
-                    // Build list of blendshapes from FST
+                    // Build list of blendshapes from FST and model.
                     typedef QPair<int, float> WeightedIndex;
                     hifi::VariantHash blendshapeMappings = mapping.value("bs").toHash();
                     QMultiHash<QString, WeightedIndex> blendshapeIndices;
 
                     for (int i = 0;; ++i) {
-                        hifi::ByteArray blendshapeName = FACESHIFT_BLENDSHAPES[i];
+                        auto blendshapeName = QString(BLENDSHAPE_NAMES[i]);
                         if (blendshapeName.isEmpty()) {
                             break;
                         }
-                        QList<QVariant> mappings = blendshapeMappings.values(blendshapeName);
-                        foreach (const QVariant& mapping, mappings) {
-                            QVariantList blendshapeMapping = mapping.toList();
-                            blendshapeIndices.insert(blendshapeMapping.at(0).toByteArray(), WeightedIndex(i, blendshapeMapping.at(1).toFloat()));
+                        auto mappings = blendshapeMappings.values(blendshapeName);
+                        if (mappings.count() > 0) {
+                            // Use blendshape from mapping.
+                            foreach(const QVariant& mapping, mappings) {
+                                auto blendshapeMapping = mapping.toList();
+                                blendshapeIndices.insert(blendshapeMapping.at(0).toString(), 
+                                    WeightedIndex(i, blendshapeMapping.at(1).toFloat()));
+                            }
+                        } else {
+                            // Use blendshape from model.
+                            if (_file.meshes[node.mesh].extras.targetNames.contains(blendshapeName)) {
+                                blendshapeIndices.insert(blendshapeName, WeightedIndex(i, 1.0f));
+                            }
                         }
                     }
 
-                    // glTF morph targets may or may not have names. if they are labeled, add them based on
-                    // the corresponding names from the FST. otherwise, just add them in the order they are given
-                    mesh.blendshapes.resize(blendshapeMappings.size());
-                    auto values = blendshapeIndices.values();
+                    // Create blendshapes.
+                    if (!blendshapeIndices.isEmpty()) {
+                        mesh.blendshapes.resize((int)Blendshapes::BlendshapeCount);
+                    }
                     auto keys = blendshapeIndices.keys();
+                    auto values = blendshapeIndices.values();
                     auto names = _file.meshes[node.mesh].extras.targetNames;
-                    QVector<double> weights = _file.meshes[node.mesh].weights;
 
-                    for (int weightedIndex = 0; weightedIndex < values.size(); ++weightedIndex) {
-                        float weight = 0.1f;
+                    for (int weightedIndex = 0; weightedIndex < keys.size(); ++weightedIndex) {
+                        float weight = 1.0f;
                         int indexFromMapping = weightedIndex;
                         int targetIndex = weightedIndex;
                         hfmModel.blendshapeChannelNames.push_back("target_" + QString::number(weightedIndex));
 
                         if (!names.isEmpty()) {
                             targetIndex = names.indexOf(keys[weightedIndex]);
+                            if (targetIndex == -1) {
+                                continue;  // Ignore blendshape targets not present in glTF file.
+                            }
                             indexFromMapping = values[weightedIndex].first;
-                            weight = weight * values[weightedIndex].second;
+                            weight = values[weightedIndex].second;
                             hfmModel.blendshapeChannelNames[weightedIndex] = keys[weightedIndex];
                         }
+
                         HFMBlendshape& blendshape = mesh.blendshapes[indexFromMapping];
-                        blendshape.indices = part.triangleIndices;
                         auto target = primitive.targets[targetIndex];
 
                         QVector<glm::vec3> normals;
                         QVector<glm::vec3> vertices;
-
-                        if (weights.size() == primitive.targets.size()) {
-                            int targetWeight = weights[targetIndex];
-                            if (targetWeight != 0) {
-                                weight = weight * targetWeight;
-                            }
-                        }
 
                         if (target.values.contains((QString) "NORMAL")) {
                             generateTargetData(target.values.value((QString) "NORMAL"), weight, normals);
@@ -1595,17 +1613,16 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
                         if (target.values.contains((QString) "POSITION")) {
                             generateTargetData(target.values.value((QString) "POSITION"), weight, vertices);
                         }
-                        bool isNewBlendshape = blendshape.vertices.size() < vertices.size();
-                        int count = 0;
-                        for (int i : blendshape.indices) {
-                            if (isNewBlendshape) {
-                                blendshape.vertices.push_back(vertices[i]);
-                                blendshape.normals.push_back(normals[i]);
-                            } else {
-                                blendshape.vertices[count] = blendshape.vertices[count] + vertices[i];
-                                blendshape.normals[count] = blendshape.normals[count] + normals[i];
-                                ++count;
+
+                        if (blendshape.indices.size() < prevMeshVerticesCount + vertices.size()) {
+                            blendshape.indices.resize(prevMeshVerticesCount + vertices.size());
+                            blendshape.vertices.resize(prevMeshVerticesCount + vertices.size());
+                            blendshape.normals.resize(prevMeshVerticesCount + vertices.size());
                             }
+                        for (int i = 0; i < vertices.size(); i++) {
+                            blendshape.indices[prevMeshVerticesCount + i] = prevMeshVerticesCount + i;
+                            blendshape.vertices[prevMeshVerticesCount + i] += vertices.value(i);
+                            blendshape.normals[prevMeshVerticesCount + i] += normals.value(i);
                         }
                     }
                 }
@@ -1617,11 +1634,13 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
                 }               
             }
 
-            // Add epsilon to mesh extents to compensate for planar meshes
-            mesh.meshExtents.minimum -= glm::vec3(EPSILON, EPSILON, EPSILON);
-            mesh.meshExtents.maximum += glm::vec3(EPSILON, EPSILON, EPSILON);
-            hfmModel.meshExtents.minimum -= glm::vec3(EPSILON, EPSILON, EPSILON);
-            hfmModel.meshExtents.maximum += glm::vec3(EPSILON, EPSILON, EPSILON);
+            // Mesh extents must be at least a minimum size, in particular for blendshapes to work on planar meshes.
+            const float MODEL_MIN_DIMENSION = 0.001f;
+            auto delta = glm::max(glm::vec3(MODEL_MIN_DIMENSION) - mesh.meshExtents.size(), glm::vec3(0.0f)) / 2.0f;
+            mesh.meshExtents.minimum -= delta;
+            mesh.meshExtents.maximum += delta;
+            hfmModel.meshExtents.minimum -= delta;
+            hfmModel.meshExtents.maximum += delta;
            
             mesh.meshIndex = hfmModel.meshes.size();
         }
@@ -2038,30 +2057,22 @@ void GLTFSerializer::glTFDebugDump() {
     qCDebug(modelformat) << "---------------- Nodes ----------------";
     for (GLTFNode node : _file.nodes) {
         if (node.defined["mesh"]) {
-            qCDebug(modelformat) << "\n";
             qCDebug(modelformat) << "    node_transforms" << node.transforms;
-            qCDebug(modelformat) << "\n";
         }
     }
 
     qCDebug(modelformat) << "---------------- Accessors ----------------";
     for (GLTFAccessor accessor : _file.accessors) {
-        qCDebug(modelformat) << "\n";
         qCDebug(modelformat) << "count: " << accessor.count;
         qCDebug(modelformat) << "byteOffset: " << accessor.byteOffset;
-        qCDebug(modelformat) << "\n";
     }
 
     qCDebug(modelformat) << "---------------- Textures ----------------";
     for (GLTFTexture texture : _file.textures) {
         if (texture.defined["source"]) {
-            qCDebug(modelformat) << "\n";
             QString url = _file.images[texture.source].uri;
             QString fname = hifi::URL(url).fileName();
             qCDebug(modelformat) << "fname: " << fname;
-            qCDebug(modelformat) << "\n";
         }
     }
-
-    qCDebug(modelformat) << "\n";
 }

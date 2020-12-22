@@ -541,6 +541,38 @@ void ModelMeshPartPayload::render(RenderArgs* args) {
     args->_details._trianglesRendered += _drawPart._numIndices / INDICES_PER_TRIANGLE;
 }
 
+void ModelMeshPartPayload::computeAdjustedLocalBound(const std::vector<glm::mat4>& clusterMatrices) {
+    _adjustedLocalBound = _localBound;
+    if (clusterMatrices.size() > 0) {
+        _adjustedLocalBound.transform(clusterMatrices.back());
+
+        for (int i = 0; i < (int)clusterMatrices.size() - 1; ++i) {
+            AABox clusterBound = _localBound;
+            clusterBound.transform(clusterMatrices[i]);
+            _adjustedLocalBound += clusterBound;
+        }
+    }
+}
+
+void ModelMeshPartPayload::computeAdjustedLocalBound(const std::vector<Model::TransformDualQuaternion>& clusterDualQuaternions) {
+    _adjustedLocalBound = _localBound;
+    if (clusterDualQuaternions.size() > 0) {
+        Transform rootTransform(clusterDualQuaternions.back().getRotation(),
+                                clusterDualQuaternions.back().getScale(),
+                                clusterDualQuaternions.back().getTranslation());
+        _adjustedLocalBound.transform(rootTransform);
+
+        for (int i = 0; i < (int)clusterDualQuaternions.size() - 1; ++i) {
+            AABox clusterBound = _localBound;
+            Transform transform(clusterDualQuaternions[i].getRotation(),
+                                clusterDualQuaternions[i].getScale(),
+                                clusterDualQuaternions[i].getTranslation());
+            clusterBound.transform(transform);
+            _adjustedLocalBound += clusterBound;
+        }
+    }
+}
+
 void ModelMeshPartPayload::setBlendshapeBuffer(const std::unordered_map<int, gpu::BufferPointer>& blendshapeBuffers,
                                                const QVector<int>& blendedMeshSizes) {
     if (_meshIndex < blendedMeshSizes.length() && blendedMeshSizes.at(_meshIndex) == _meshNumVertices) {
