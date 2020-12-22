@@ -76,7 +76,7 @@ void TTSScriptingInterface::updateLastSoundAudioInjector() {
     }
 }
 
-#if defined(WIN32) || defined(Q_OS_LINUX)
+#if defined(WIN32) || defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
 void TTSScriptingInterface::speakText(const QString& textToSpeak) {
 #ifdef WIN32
     WAVEFORMATEX fmt;
@@ -150,7 +150,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     auto samples = reinterpret_cast<AudioData::AudioSample*>(_lastSoundByteArray.data());
     auto newAudioData = AudioData::make(numSamples, numChannels, samples);
     
-#elif defined(Q_OS_LINUX)    
+#elif defined(Q_OS_LINUX)
     QString filePath = QDir::tempPath() + QDir::separator() + "tivoli-tts.wav";
 
     // -- piping espeak to sox 
@@ -194,6 +194,20 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     QProcess process;
     process.start("festival", args);
 
+#elif defined(Q_OS_MACOS)
+    QString filePath = QDir::tempPath() + QDir::separator() + "tivoli-tts.wav";
+
+    QStringList args;
+    args << "-o";
+    args << filePath;
+    args << "--data-format=LEI16@44100";
+    args << textToSpeak;
+
+    QProcess process;
+    process.start("say", args);
+
+#endif
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
     if (!process.waitForFinished(5000)) {
         process.kill();
         return;
@@ -227,7 +241,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
     _lastSoundAudioInjector = DependencyManager::get<AudioInjectorManager>()->playSound(newAudioData, options, true);
     _lastSoundAudioInjectorUpdateTimer.start(INJECTOR_INTERVAL_MS);
        
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
         });
        
         QThreadPool::globalInstance()->start(soundProcessor);
@@ -238,7 +252,7 @@ void TTSScriptingInterface::speakText(const QString& textToSpeak) {
 }
 #else
 void TTSScriptingInterface::speakText(const QString& textToSpeak) {
-    qDebug() << "Text to speech only works on Windows and Linux";
+    qDebug() << "Text to speech only works on Windows, macOS and Linux";
 }
 #endif
 
