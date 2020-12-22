@@ -41,8 +41,7 @@ public:
     virtual void updateMeshPart(const std::shared_ptr<const graphics::Mesh>& drawMesh, int partIndex);
 
     virtual void notifyLocationChanged() {}
-    void updateTransform(const Transform& transform);
-    void updateTransformAndBound(const Transform& transform);
+    void updateTransform(const Transform& transform, const Transform& offsetTransform);
 
     // Render Item interface
     virtual render::ItemKey getKey() const;
@@ -56,11 +55,13 @@ public:
     virtual void bindTransform(gpu::Batch& batch, RenderArgs::RenderMode renderMode) const;
 
     // Payload resource cached values
-    Transform _worldFromLocalTransform;
+    Transform _drawTransform;
+    Transform _transform;
     int _partIndex = 0;
     bool _hasColorAttrib{ false };
 
     graphics::Box _localBound;
+    graphics::Box _adjustedLocalBound;
     mutable graphics::Box _worldBound;
     std::shared_ptr<const graphics::Mesh> _drawMesh;
 
@@ -120,6 +121,7 @@ public:
 
     // dual quaternion skinning
     void updateClusterBuffer(const std::vector<Model::TransformDualQuaternion>& clusterDualQuaternions);
+    void updateTransformForSkinnedMesh(const Transform& renderTransform, const Transform& boundTransform);
 
     // Render Item interface
     render::ShapeKey getShapeKey() const override;
@@ -132,6 +134,12 @@ public:
     void bindMesh(gpu::Batch& batch) override;
     void bindTransform(gpu::Batch& batch, RenderArgs::RenderMode renderMode) const override;
 
+    // matrix palette skinning
+    void computeAdjustedLocalBound(const std::vector<glm::mat4>& clusterMatrices);
+
+    // dual quaternion skinning
+    void computeAdjustedLocalBound(const std::vector<Model::TransformDualQuaternion>& clusterDualQuaternions);
+
     gpu::BufferPointer _clusterBuffer;
 
     enum class ClusterBufferType
@@ -143,7 +151,6 @@ public:
 
     int _meshIndex;
     int _shapeID;
-    uint32_t _deformerIndex;
 
     bool _isSkinned{ false };
     bool _isBlendShaped{ false };
