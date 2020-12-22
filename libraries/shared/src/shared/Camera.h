@@ -47,12 +47,11 @@ class Camera : public QObject {
 
 public:
     Camera();
+    virtual ~Camera() {}
 
-    void initialize(); // instantly put the camera at the ideal position and orientation.
+    virtual void update();
 
-    void update();
-
-    CameraMode getMode() const { return _mode; }
+    virtual CameraMode getMode() const { return _mode; }
     void setMode(CameraMode m);
 
     void loadViewFrustum(ViewFrustum& frustum) const;

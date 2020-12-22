@@ -11,18 +11,29 @@
 #include "FancyCamera.h"
 
 #include "Application.h"
+#include "avatar/AvatarManager.h"
+
+FancyCamera::FancyCamera() : Camera() {
+  QObject::connect(this, &FancyCamera::parentIDChanged, this, [this]{
+    bool success;
+    _parent = SpatiallyNestable::findByID(parentID, success);
+  });
+}
 
 PickRay FancyCamera::computePickRay(float x, float y) const {
     return qApp->computePickRay(x, y);
 }
 
-QUuid FancyCamera::getCameraEntity() const {
-    if (_cameraEntity != nullptr) {
-        return _cameraEntity->getID();
+CameraMode FancyCamera::getMode() const {
+  auto mode = Camera::getMode();
+  auto avatarManager = DependencyManager::get<AvatarManager>();
+  auto myAvatar = avatarManager ? avatarManager->getMyAvatar() : nullptr;
+  if (myAvatar && myAvatar->hasParent()) {
+      if (mode == CameraMode::CAMERA_MODE_FIRST_PERSON_LOOK_AT) {
+          return CameraMode::CAMERA_MODE_FIRST_PERSON;
+      } else if (mode == CameraMode::CAMERA_MODE_LOOK_AT) {
+          return CameraMode::CAMERA_MODE_THIRD_PERSON;
     }
-    return QUuid();
-};
-
-void FancyCamera::setCameraEntity(QUuid entityID) {
-    _cameraEntity = qApp->getEntities()->getTree()->findEntityByID(entityID);
+  }
+  return mode;
 }
