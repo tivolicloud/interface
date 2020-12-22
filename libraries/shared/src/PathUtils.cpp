@@ -31,6 +31,9 @@
 #include "shared/GlobalAppProperties.h"
 #include "SharedUtil.h"
 
+#ifdef DEV_BUILD
+#include "BuildInfo.h"
+#endif
 
 // Format: AppName-PID-Timestamp
 // Example: ...
