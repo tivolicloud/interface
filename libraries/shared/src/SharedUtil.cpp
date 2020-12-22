@@ -24,6 +24,7 @@
 
 #include <QtCore/QOperatingSystemVersion>
 #include <glm/glm.hpp>
+#include "BuildInfo.h"
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -1128,6 +1129,12 @@ void watchParentProcess(int parentPID) {
     timer->start();
 }
 #endif
+
+// TODO: maybe this should live as qApp->property(hifi::properties::USER_AGENT)? (see GlobalAppProperties.h)
+const QByteArray TIVOLI_CLOUD_VR_USER_AGENT = QString(
+    "TivoliCloudVR/" +
+    (BuildInfo::BUILD_TYPE == BuildInfo::BuildType::Stable ? BuildInfo::VERSION : "dev")
+).toLocal8Bit();
 
 void setupHifiApplication(QString applicationName) {
     disableQtBearerPoll(); // Fixes wifi ping spikes

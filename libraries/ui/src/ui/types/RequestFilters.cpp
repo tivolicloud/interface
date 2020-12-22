@@ -20,6 +20,7 @@
 #include <AccountManager.h>
 
 #include "ContextAwareProfile.h"
+#include <BuildInfo.h>
 
 #if !defined(Q_OS_ANDROID)
 
