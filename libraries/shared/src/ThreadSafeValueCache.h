@@ -67,4 +67,23 @@ private:
     ThreadSafeValueCache& operator=(const ThreadSafeValueCache&) = delete;
 };
 
+
+template <typename T>
+struct ThreadSafeJSValue : public ThreadSafeValueCache<T> {
+  ThreadSafeJSValue(T const& other) : ThreadSafeValueCache<T>(other) {}
+  ThreadSafeJSValue& operator=(T const& other) { ThreadSafeValueCache<T>::set(other); return *this; }
+  operator T() const { return ThreadSafeValueCache<T>::get(); }
+  bool operator !=(T const& other) const { return ThreadSafeValueCache<T>::get() != other; }
+};
+
+// instrument a thread-safe member variable that is then accessible from both JS and C++
+#define HIFIJS_Q_PROPERTY(Type, name, defaultValue, nameChanged) \
+    Q_PROPERTY(Type name READ get_##name WRITE set_##name NOTIFY nameChanged) \
+    Q_SIGNALS: void nameChanged(Type); \
+  public: \
+    ThreadSafeJSValue<Type> name{ defaultValue }; \
+    Type get_##name() const { return name.get(); } \
+    void set_##name(Type nv) { if (get_##name() != nv) { name.set(nv); nameChanged(nv); } }
+
+
 #endif // #define hifi_ThreadSafeValueCache_h
