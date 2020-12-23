@@ -10,6 +10,8 @@
 		"
 		[style.fontStyle]="message.extras.me ? 'italic' : ''"
 		@message
+		[matTooltip]="message.date | date: 'HH:mm:ss, MMM d'"
+		matTooltipPosition="above"
 	>
 		<div
 			class="avatar"
@@ -22,12 +24,7 @@
 				'/image), url(./assets/default-user-icon.jpg)'
 			"
 		></div>
-		<div
-			class="username"
-			*ngIf="!message.extras.me"
-			[matTooltip]="message.date | date: 'HH:mm:ss, MMM d'"
-			matTooltipPosition="above"
-		>
+		<div class="username" *ngIf="!message.extras.me">
 			<span class="badge" *ngIf="message.extras.tts">TTS</span>
 			{{ message.type == "message" ? message.username + ":" : "" }}
 		</div>

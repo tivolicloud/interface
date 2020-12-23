@@ -1,5 +1,11 @@
-::ng-deep .mat-tooltip-handset {
-	margin: 8px !important;
+::ng-deep {
+	.mat-tooltip-handset {
+		margin: 8px !important;
+		margin-bottom: 4px !important;
+	}
+	.mat-tooltip-panel {
+		left: 0 !important;
+	}
 }
 
 .messages {

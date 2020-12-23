@@ -8,7 +8,6 @@ import {
 } from "@angular/core";
 import { ScriptService } from "../../script.service";
 import { ChatService } from "../chat.service";
-import { Message } from "@angular/compiler/src/i18n/i18n_ast";
 
 @Component({
 	selector: "app-messages",
