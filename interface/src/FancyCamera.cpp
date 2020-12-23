@@ -23,17 +23,3 @@ FancyCamera::FancyCamera() : Camera() {
 PickRay FancyCamera::computePickRay(float x, float y) const {
     return qApp->computePickRay(x, y);
 }
-
-CameraMode FancyCamera::getMode() const {
-  auto mode = Camera::getMode();
-  auto avatarManager = DependencyManager::get<AvatarManager>();
-  auto myAvatar = avatarManager ? avatarManager->getMyAvatar() : nullptr;
-  if (myAvatar && myAvatar->hasParent()) {
-      if (mode == CameraMode::CAMERA_MODE_FIRST_PERSON_LOOK_AT) {
-          return CameraMode::CAMERA_MODE_FIRST_PERSON;
-      } else if (mode == CameraMode::CAMERA_MODE_LOOK_AT) {
-          return CameraMode::CAMERA_MODE_THIRD_PERSON;
-    }
-  }
-  return mode;
-}

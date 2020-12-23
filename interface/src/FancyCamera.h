@@ -51,8 +51,6 @@ class FancyCamera : public Camera {
 public:
     FancyCamera();
 
-    virtual CameraMode getMode() const override;
-
     SpatiallyNestablePointer getParentPointer() const { return _parent.lock(); }
     PickRay computePickRay(float x, float y) const override;
 

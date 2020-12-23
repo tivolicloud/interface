@@ -51,7 +51,7 @@ public:
 
     virtual void update();
 
-    virtual CameraMode getMode() const { return _mode; }
+    CameraMode getMode() const { return _mode; }
     void setMode(CameraMode m);
 
     void loadViewFrustum(ViewFrustum& frustum) const;
