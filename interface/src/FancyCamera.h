@@ -12,9 +12,11 @@
 #define hifi_FancyCamera_h
 
 #include <shared/Camera.h>
+#include <ThreadSafeValueCache.h>
 
 #include <EntityTypes.h>
 
+#include <SpatiallyNestable.h>
 class FancyCamera : public Camera {
     Q_OBJECT
 
@@ -33,14 +35,23 @@ class FancyCamera : public Camera {
      * @property {Camera.Mode} mode - The camera mode.
      * @property {ViewFrustum} frustum - The camera frustum.
      * @property {boolean} disableLookAt - If "look at" is disabled, the camera will rotate with the avatar's orientation.
-     * @property {Uuid} cameraEntity - The ID of the entity that is used for the camera position and orientation when the camera is in entity mode.
+     * @deprecated @property {Uuid} cameraEntity - The ID of the entity that is used for the camera position and orientation when the camera is in entity mode.
+     * @property {Uuid} parentID - The ID of the entity or avatar that is used for the camera position and orientation when the camera is in entity mode.
+     * @property {Number} parentJointIndex - The joint index to use when in entity mode.
+     * @property {Vec3} localPosition - Relative translation offset applied when in entity mode.
+     * @property {Quat} localRotation - Relative rotation applied when in entity mode.
      */
     Q_PROPERTY(QUuid cameraEntity READ getCameraEntity WRITE setCameraEntity)
 
-public:
-    FancyCamera() : Camera() {}
+    HIFIJS_Q_PROPERTY(QUuid, parentID, QUuid(), parentIDChanged)
+    HIFIJS_Q_PROPERTY(int, parentJointIndex, -1, parentJointIndexChanged)
+    HIFIJS_Q_PROPERTY(glm::vec3, localPosition, glm::vec3(), localPositionChanged)
+    HIFIJS_Q_PROPERTY(glm::quat, localRotation, glm::quat(), localRotationChanged)
 
-    EntityItemPointer getCameraEntityPointer() const { return _cameraEntity; }
+public:
+    FancyCamera();
+
+    SpatiallyNestablePointer getParentPointer() const { return _parent.lock(); }
     PickRay computePickRay(float x, float y) const override;
 
 
@@ -51,8 +62,9 @@ public slots:
      * @function Camera.getCameraEntity
      * @returns {Uuid} The ID of the entity that the camera is set to follow when in entity mode; <code>null</code> if no 
      *     camera entity has been set.
+     * @deprecated
      */
-    QUuid getCameraEntity() const;
+    Q_DECL_DEPRECATED QUuid getCameraEntity() const { return parentID; }
 
     /**jsdoc
      * Sets the entity that the camera should follow (i.e., use the position and orientation from) when it's in entity mode. 
@@ -63,11 +75,12 @@ public slots:
      * Camera.setModeString("entity");
      * var entity = Entities.findClosestEntity(MyAvatar.position, 100.0);
      * Camera.setCameraEntity(entity);
+     * @deprecated
      */
-    void setCameraEntity(QUuid entityID);
+    Q_DECL_DEPRECATED void setCameraEntity(QUuid entityID) { set_parentID(entityID); }
 
 private:
-    EntityItemPointer _cameraEntity;
+    SpatiallyNestableWeakPointer _parent;
 };
 
 #endif // hifi_FancyCamera_h

@@ -3790,16 +3790,21 @@ void Application::updateCamera(RenderArgs& renderArgs, float deltaTime) {
         renderArgs._renderMode = RenderArgs::MIRROR_RENDER_MODE;
     } else if (mode == CAMERA_MODE_ENTITY) {
         _thirdPersonHMDCameraBoomValid= false;
-        EntityItemPointer cameraEntity = _myCamera.getCameraEntityPointer();
-        if (cameraEntity != nullptr) {
+        if (auto cameraEntity = _myCamera.getParentPointer()) {
+            bool success;
+            Transform entityTransform = _myCamera.parentJointIndex != -1 ?
+              cameraEntity->getJointTransform(_myCamera.parentJointIndex, success) :
+              cameraEntity->getTransform();
+            Transform localTransform = { _myCamera.localRotation, glm::vec3(), _myCamera.localPosition };
+            Transform worldTransform = entityTransform.worldTransform(localTransform);
             if (isHMDMode()) {
                 glm::quat hmdRotation = extractRotation(myAvatar->getHMDSensorMatrix());
-                _myCamera.setOrientation(cameraEntity->getWorldOrientation() * hmdRotation);
+                _myCamera.setOrientation(worldTransform.getRotation() * hmdRotation);
                 glm::vec3 hmdOffset = extractTranslation(myAvatar->getHMDSensorMatrix());
-                _myCamera.setPosition(cameraEntity->getWorldPosition() + (hmdRotation * hmdOffset));
+                _myCamera.setPosition(worldTransform.getTranslation() + (hmdRotation * hmdOffset));
             } else {
-                _myCamera.setOrientation(cameraEntity->getWorldOrientation());
-                _myCamera.setPosition(cameraEntity->getWorldPosition());
+                _myCamera.setOrientation(worldTransform.getRotation());
+                _myCamera.setPosition(worldTransform.getTranslation());
             }
         }
     }
