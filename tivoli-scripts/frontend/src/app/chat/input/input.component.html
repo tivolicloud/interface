@@ -1,7 +1,7 @@
 <div
 	class="fast-transition"
-	style="position: relative;"
-	[style.opacity]="chatService.focused ? '1' : '0'"
+	style="position: relative"
+	[style.opacity]="chatService.focused$.value ? '1' : '0'"
 >
 	<div
 		#input

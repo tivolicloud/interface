@@ -34,7 +34,7 @@ export class InputComponent implements OnInit {
 			this.scriptService.event$.subscribe(data => {
 				switch (data.key) {
 					case "focus":
-						this.chatService.focused = true;
+						this.chatService.focused$.next(true);
 						if (
 							typeof data.value == "object" &&
 							data.value.command == true
@@ -54,7 +54,7 @@ export class InputComponent implements OnInit {
 
 						break;
 					case "unfocus":
-						this.chatService.focused = false;
+						this.chatService.focused$.next(false);
 						this.input.nativeElement.blur();
 						break;
 				}
@@ -63,7 +63,7 @@ export class InputComponent implements OnInit {
 	}
 
 	unfocus() {
-		this.chatService.focused = false;
+		this.chatService.focused$.next(false);
 		this.input.nativeElement.blur();
 		this.scriptService.emitEvent("chat", "unfocus");
 	}

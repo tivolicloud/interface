@@ -6,7 +6,7 @@
 			(chatService.messages.length - 1 - i) * 10 + 'ms'
 		"
 		[style.opacity]="
-			chatService.focused || message.shouldBeShowing ? '1' : '0'
+			chatService.focused$.value || message.shouldBeShowing ? '1' : '0'
 		"
 		[style.fontStyle]="message.extras.me ? 'italic' : ''"
 		@message

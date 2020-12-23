@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { filter } from "rxjs/operators";
 import { EmojiService } from "../emoji.service";
 import { ScriptService } from "../script.service";
@@ -244,9 +245,53 @@ export class ChatService {
 	messages: Message[] = [];
 	messageHistory: string[] = [];
 
-	focused = false;
+	focused$ = new BehaviorSubject<boolean>(false);
 
 	readonly messageShownTime = 1000 * 20; // how long till messages fade out
+
+	addMessage(message: Message) {
+		// TODO: virtual scroll bar instead?
+		if (this.messages.length >= 100) {
+			this.messages.shift();
+		}
+		this.messages.push(message);
+	}
+
+	handleData(data: { key: string; value: any }) {
+		if (data.key == "sendMessage") {
+			if (data.value && data.value.message && data.value.username)
+				this.addMessage(
+					new Message(
+						this,
+						"message",
+						data.value.message,
+						data.value.username,
+						data.value,
+					),
+				);
+		} else if (data.key == "showMessage") {
+			if (data.value && data.value.message)
+				this.addMessage(
+					new Message(this, "announcement", data.value.message),
+				);
+		} else if (data.key == "join" || data.key == "leave") {
+			if (data.value)
+				this.addMessage(
+					new Message(
+						this,
+						"announcement",
+						data.value +
+							" " +
+							(data.key == "join" ? "joined" : "left"),
+						data.value,
+						{},
+						true,
+					),
+				);
+		} else if (data.key == "clear") {
+			this.messages = [];
+		}
+	}
 
 	constructor(
 		public readonly scriptService: ScriptService,
@@ -254,49 +299,7 @@ export class ChatService {
 		public readonly http: HttpClient,
 	) {
 		this.scriptService.event$.subscribe(data => {
-			switch (data.key) {
-				case "sendMessage":
-					if (data.value && data.value.message && data.value.username)
-						this.messages.push(
-							new Message(
-								this,
-								"message",
-								data.value.message,
-								data.value.username,
-								data.value,
-							),
-						);
-					break;
-				case "showMessage":
-					if (data.value && data.value.message)
-						this.messages.push(
-							new Message(
-								this,
-								"announcement",
-								data.value.message,
-							),
-						);
-					break;
-				case "join":
-				case "leave":
-					if (data.value)
-						this.messages.push(
-							new Message(
-								this,
-								"announcement",
-								data.value +
-									" " +
-									(data.key == "join" ? "joined" : "left"),
-								data.value,
-								{},
-								true,
-							),
-						);
-					break;
-				case "clear":
-					this.messages = [];
-					break;
-			}
+			this.handleData(data);
 		});
 	}
 

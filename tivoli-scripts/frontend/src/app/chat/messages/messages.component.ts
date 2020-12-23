@@ -1,11 +1,13 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 import {
-	AfterViewChecked,
+	AfterViewInit,
 	Component,
 	ElementRef,
+	OnDestroy,
 	OnInit,
 	ViewChild,
 } from "@angular/core";
+import { Subscription } from "rxjs";
 import { ScriptService } from "../../script.service";
 import { ChatService } from "../chat.service";
 
@@ -33,20 +35,54 @@ import { ChatService } from "../chat.service";
 		]),
 	],
 })
-export class MessagesComponent implements OnInit, AfterViewChecked {
+export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
 	constructor(
 		public readonly chatService: ChatService,
 		public readonly scriptService: ScriptService,
+		private readonly elRef: ElementRef,
 	) {}
 
 	@ViewChild("messages") private messages: ElementRef<HTMLDivElement>;
 
+	observer: MutationObserver;
+	subs: Subscription[] = [];
+
 	ngOnInit() {
 		this.scrollToBottom();
+		this.subs.push(
+			this.chatService.focused$.subscribe(() => {
+				// waits till next tick?
+				setTimeout(() => {
+					this.scrollToBottom();
+				}, 0);
+			}),
+		);
 	}
 
-	ngAfterViewChecked() {
-		this.scrollToBottom();
+	ngAfterViewInit() {
+		this.observer = new MutationObserver(mutations => {
+			let scrolled = false;
+			mutations.forEach(m => {
+				if (scrolled) return;
+				m.addedNodes.forEach((el: HTMLElement) => {
+					if (!scrolled && el.className.includes("message")) {
+						this.scrollToBottom();
+						scrolled = true;
+					}
+				});
+			});
+		});
+		this.observer.observe(
+			this.elRef.nativeElement.querySelector(".messages"),
+			{ childList: true },
+		);
+	}
+
+	ngOnDestroy() {
+		this.observer.disconnect();
+		for (const sub of this.subs) {
+			sub.unsubscribe();
+		}
 	}
 
 	scrollToBottom() {
