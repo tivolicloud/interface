@@ -22,6 +22,7 @@
 #include <AddressManager.h>
 #include <DependencyManager.h>
 #include <SettingHandle.h>
+#include <BuildInfo.h>
 
 ACClientApp::ACClientApp(int argc, char* argv[]) :
     QCoreApplication(argc, argv)
