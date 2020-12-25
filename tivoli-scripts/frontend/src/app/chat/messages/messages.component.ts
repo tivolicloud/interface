@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 import {
-	AfterViewInit,
+	AfterViewChecked,
 	Component,
 	ElementRef,
 	OnDestroy,
@@ -35,7 +35,7 @@ import { ChatService } from "../chat.service";
 		]),
 	],
 })
-export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MessagesComponent implements OnInit, AfterViewChecked, OnDestroy {
 	constructor(
 		public readonly chatService: ChatService,
 		public readonly scriptService: ScriptService,
@@ -44,42 +44,39 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	@ViewChild("messages") private messages: ElementRef<HTMLDivElement>;
 
-	observer: MutationObserver;
+	scrollEl: HTMLElement;
+	scrolling = false;
 	subs: Subscription[] = [];
 
 	ngOnInit() {
 		this.scrollToBottom();
+
 		this.subs.push(
 			this.chatService.focused$.subscribe(() => {
 				// waits till next tick?
 				setTimeout(() => {
+					this.scrolling = false;
 					this.scrollToBottom();
 				}, 0);
 			}),
 		);
+
+		this.scrollEl = this.elRef.nativeElement.parentElement;
+		this.scrollEl.addEventListener("wheel", this.onWheel);
 	}
 
-	ngAfterViewInit() {
-		this.observer = new MutationObserver(mutations => {
-			let scrolled = false;
-			mutations.forEach(m => {
-				if (scrolled) return;
-				m.addedNodes.forEach((el: HTMLElement) => {
-					if (!scrolled && el.className.includes("message")) {
-						this.scrollToBottom();
-						scrolled = true;
-					}
-				});
-			});
-		});
-		this.observer.observe(
-			this.elRef.nativeElement.querySelector(".messages"),
-			{ childList: true },
-		);
+	onWheel = (e: WheelEvent) => {
+		// when scrolling up
+		if (e.deltaY < 0) this.scrolling = true;
+	};
+
+	ngAfterViewChecked() {
+		if (this.scrolling) return;
+		this.scrollToBottom();
 	}
 
 	ngOnDestroy() {
-		this.observer.disconnect();
+		this.scrollEl.removeEventListener("wheel", this.onWheel);
 		for (const sub of this.subs) {
 			sub.unsubscribe();
 		}
