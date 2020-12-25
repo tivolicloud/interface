@@ -10,9 +10,12 @@
 		"
 		[style.fontStyle]="message.extras.me ? 'italic' : ''"
 		@message
-		[matTooltip]="message.date | date: 'HH:mm:ss, MMM d'"
-		matTooltipPosition="above"
 	>
+		<div
+			class="tooltip"
+			[matTooltip]="message.date | date: 'HH:mm:ss, MMM d'"
+			matTooltipPosition="above"
+		></div>
 		<div
 			class="avatar"
 			*ngIf="message.username"
