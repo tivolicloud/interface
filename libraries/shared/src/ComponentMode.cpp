@@ -40,7 +40,7 @@ QString ComponentModeHelpers::getNameForComponentMode(ComponentMode mode) {
 
 
 /**jsdoc
- * <p>How Zone Culling is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
+ * <p>How zone culling is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
  * <table>
  *   <thead>
  *     <tr><th>Value</th><th>Description</th></tr>
@@ -65,7 +65,7 @@ QString ZoneCullingModeHelpers::getNameForZoneCullingComponentMode(ZoneCullingCo
 }
 
 /**jsdoc
- * <p>How Tone Mapping is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
+ * <p>How tone mapping is applied in a {@link Entities.EntityProperties-Zone|Zone} entity.</p>
  * <table>
  *   <thead>
  *     <tr><th>Value</th><th>Description</th></tr>
@@ -92,7 +92,7 @@ QString ToneMappingModeHelpers::getNameForToneMappingComponentMode(ToneMappingCo
     return ToneMappingModeNames[(int)mode];
 }
 
-    /**jsdoc
+/**jsdoc
  * <p>The priority of updates from avatars in a zone to other clients.</p>
  * <table>
  *   <thead>

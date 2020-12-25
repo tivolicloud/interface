@@ -24,10 +24,6 @@ class OctreePacketData;
 class EntityTreeElementExtraEncodeData;
 class ReadBitstreamToTreeParams;
 
-/**jsdoc
- * Zone Culling is defined by the following properties:
- * @typedef {object} Entities.ZoneCulling
- */
 class ZoneCullingPropertyGroup : public PropertyGroup {
 public:
     // EntityItemProperty related helpers
