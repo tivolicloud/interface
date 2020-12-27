@@ -15,9 +15,7 @@
 #include <QVector>
 
 #include <NumericalConstants.h>
-#include <FBXSerializer.h>
-#include <OBJSerializer.h>
-#include <GLTFSerializer.h>
+#include <hfm/ModelFormatRegistry.h>
 
 
 // FBXSerializer jumbles the order of the meshes by reading them back out of a hashtable.  This will put
@@ -47,16 +45,14 @@ bool vhacd::VHACDUtil::loadFBX(const QString filename, HFMModel& result) {
         HFMModel::Pointer hfmModel;
         hifi::VariantHash mapping;
         mapping["deduplicateIndices"] = true;
-        if (filename.toLower().endsWith(".obj")) {
-            hfmModel = OBJSerializer().read(fbxContents, mapping, filename);
-        } else if (filename.toLower().endsWith(".fbx")) {
-            hfmModel = FBXSerializer().read(fbxContents, mapping, filename);
-        } else if (filename.toLower().endsWith(".gltf") || filename.toLower().endsWith(".glb")) {
-            hfmModel = GLTFSerializer().read(fbxContents, mapping, filename);
-        } else {
+
+        auto serializer = DependencyManager::get<ModelFormatRegistry>()->getSerializerForMediaType(fbxContents, filename, "");
+        if (!serializer) {
             qWarning() << "file has unknown extension" << filename;
             return false;
         }
+
+        hfmModel = serializer->read(fbxContents, mapping, filename);
         result = *hfmModel;
 
         reSortHFMModelMeshes(result);

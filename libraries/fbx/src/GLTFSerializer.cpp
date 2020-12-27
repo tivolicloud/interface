@@ -1596,6 +1596,7 @@ bool GLTFSerializer::buildGeometry(HFMModel& hfmModel, const hifi::VariantHash& 
 }
 
 MediaType GLTFSerializer::getMediaType() const {
+#if 0
     MediaType mediaType("gltf");
     mediaType.extensions.push_back("gltf");
     mediaType.webMediaTypes.push_back("model/gltf+json");
@@ -1604,6 +1605,9 @@ MediaType GLTFSerializer::getMediaType() const {
     mediaType.webMediaTypes.push_back("model/gltf-binary");
 
     return mediaType;
+#else
+    return MediaType("oldgltf");
+#endif
 }
 
 std::unique_ptr<hfm::Serializer::Factory> GLTFSerializer::getFactory() const {

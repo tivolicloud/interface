@@ -26,7 +26,8 @@
 #include <hfm/ModelFormatRegistry.h>
 #include <FBXSerializer.h>
 #include <OBJSerializer.h>
-#include <GLTFSerializer.h>
+// #include <GLTFSerializer.h>
+#include <AssimpSerializer.h>
 #include <model-baker/Baker.h>
 
 Q_LOGGING_CATEGORY(trace_resource_parse_geometry, "trace.resource.parse.geometry")
@@ -364,7 +365,8 @@ ModelCache::ModelCache() {
     auto modelFormatRegistry = DependencyManager::get<ModelFormatRegistry>();
     modelFormatRegistry->addFormat(FBXSerializer());
     modelFormatRegistry->addFormat(OBJSerializer());
-    modelFormatRegistry->addFormat(GLTFSerializer());
+    // modelFormatRegistry->addFormat(GLTFSerializer());
+    modelFormatRegistry->addFormat(AssimpSerializer());
 }
 
 QSharedPointer<Resource> ModelCache::createResource(const QUrl& url) {
