@@ -326,7 +326,17 @@ void AssimpSerializer::processMaterials() {
     }
 }
 
-void AssimpSerializer::processMeshes() {
+aiAnimMesh* AssimpSerializer::getBlendshapeByName(QString name, aiMesh* mMesh) {
+    for (unsigned int i = 0; i < mMesh->mNumAnimMeshes; i++) {
+        auto animMesh = mMesh->mAnimMeshes[i];
+        if (QString(animMesh->mName.C_Str()) == name) {
+            return animMesh;
+        }
+    }
+    return nullptr;
+}
+
+void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
     for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
         aiMesh* mMesh = scene->mMeshes[meshIndex];
 
@@ -375,60 +385,66 @@ void AssimpSerializer::processMeshes() {
             }
         }
 
+        hifi::VariantHash blendshapeMappings = mapping.value("bs").toHash();
+
         if (mMesh->mNumAnimMeshes > 0) {
             bool isBlendshapeChannelNamesEmpty = hfmModel->blendshapeChannelNames.size() == 0;
+
             for (int i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
-                meshPtr->blendshapes.push_back(hfm::Blendshape());
+                const QString fromName = BLENDSHAPE_NAMES[i];
+                
                 if (isBlendshapeChannelNamesEmpty) {
-                    hfmModel->blendshapeChannelNames.push_back(BLENDSHAPE_NAMES[i]);
+                    hfmModel->blendshapeChannelNames.push_back(fromName);
                 }
-            }
-        }
 
-        for (unsigned int blendshapeIndex = 0; blendshapeIndex < mMesh->mNumAnimMeshes; blendshapeIndex++) {
-            aiAnimMesh* animMesh = mMesh->mAnimMeshes[blendshapeIndex];
+                meshPtr->blendshapes.push_back(hfm::Blendshape());
+                hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes.back();
 
-            QString name = animMesh->mName.C_Str();
-            if (!BLENDSHAPE_LOOKUP_MAP.contains(name)) {
-                continue;
-            }
-            
-            int globalBlendshapeIndex = BLENDSHAPE_LOOKUP_MAP[name];
-            hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes[globalBlendshapeIndex];
+                QString toName;
+                float weight = 1.0f;
 
-            int indexCount = 0;
-            for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
-                aiFace face = mMesh->mFaces[faceIndex];
-                if (face.mNumIndices != 3) continue; // must be a triangle
-
-                for (unsigned int i = 0; i < face.mNumIndices; i++) {
-                    auto vertexIndex = face.mIndices[i];
-
-                    auto v = (
-                        asVec3(animMesh->mVertices[vertexIndex]) -
-                        asVec3(mMesh->mVertices[vertexIndex])
-                    );
-                    auto n = (
-                        asVec3(animMesh->mNormals[vertexIndex]) -
-                        asVec3(mMesh->mNormals[vertexIndex])
-                    );
-                    auto t = animMesh->HasTangentsAndBitangents() ? (
-                        asVec3(animMesh->mTangents[vertexIndex]) -
-                        asVec3(mMesh->mTangents[vertexIndex])
-                    ) : vec3(0.0f);
-                    
-                    if (isEmptyVec3(v) && isEmptyVec3(n) && isEmptyVec3(t)) {
-                        indexCount++;
-                        continue;
+                if (blendshapeMappings.contains(fromName)) {
+                    auto mapping = blendshapeMappings[fromName].toList();
+                    if (mapping.count() >= 2) {
+                        toName = mapping.at(0).toString();
+                        weight = mapping.at(1).toFloat();
                     }
+                } else {
+                    toName = fromName;
+                }
 
-                    blendshapePtr->indices.push_back(indexCount);
-                    indexCount++;
-                    
-                    blendshapePtr->vertices.push_back(v);
-                    blendshapePtr->normals.push_back(n);
-                    if (animMesh->HasTangentsAndBitangents()) {
-                        blendshapePtr->tangents.push_back(t);
+                aiAnimMesh* animMesh = getBlendshapeByName(toName, mMesh);
+                if (animMesh == nullptr) {
+                    continue;
+                }
+
+                int indexCount = 0;
+                for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
+                    aiFace face = mMesh->mFaces[faceIndex];
+                    if (face.mNumIndices != 3) continue; // must be a triangle
+
+                    for (unsigned int i = 0; i < face.mNumIndices; i++) {
+                        auto vertexIndex = face.mIndices[i];
+
+                        auto v = (asVec3(animMesh->mVertices[vertexIndex]) - asVec3(mMesh->mVertices[vertexIndex])) * weight;
+                        auto n = (asVec3(animMesh->mNormals[vertexIndex]) - asVec3(mMesh->mNormals[vertexIndex])) * weight;
+                        auto t = animMesh->HasTangentsAndBitangents() ?
+                            (asVec3(animMesh->mTangents[vertexIndex]) - asVec3(mMesh->mTangents[vertexIndex])) * weight :
+                            vec3(0.0f);
+                        
+                        if (isEmptyVec3(v) && isEmptyVec3(n) && isEmptyVec3(t)) {
+                            indexCount++;
+                            continue;
+                        }
+
+                        blendshapePtr->indices.push_back(indexCount);
+                        indexCount++;
+                        
+                        blendshapePtr->vertices.push_back(v);
+                        blendshapePtr->normals.push_back(n);
+                        if (animMesh->HasTangentsAndBitangents()) {
+                            blendshapePtr->tangents.push_back(t);
+                        }
                     }
                 }
             }
@@ -489,12 +505,12 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     }
 }
 
-void AssimpSerializer::processScene() {
+void AssimpSerializer::processScene(const hifi::VariantHash& mapping) {
     hfmModel = std::make_shared<HFMModel>();
     hfmModel->originalURL = url.toString();
 
     processMaterials();
-    processMeshes();
+    processMeshes(mapping);
 
     hfmModel->jointIndices["x"] = 0;
     processNode(scene->mRootNode);
@@ -536,7 +552,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         return nullptr;
     }
 
-    processScene();
+    processScene(mapping);
 
     // hfmModel->debugDump();
 

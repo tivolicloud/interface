@@ -25,11 +25,13 @@ private:
     HFMTexture getHfmTexture(aiString path);
 
     void processMaterials();
-    void processMeshes();
+
+    aiAnimMesh* getBlendshapeByName(QString name, aiMesh* mesh);
+    void processMeshes(const hifi::VariantHash& mapping);
 
     void processNode(const aiNode* aiNode, int parentIndex = -1);
 
-    void processScene();
+    void processScene(const hifi::VariantHash& mapping);
 
 };
 
