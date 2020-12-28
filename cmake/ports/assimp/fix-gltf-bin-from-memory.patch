@@ -1,0 +1,85 @@
+From ca653e0c6acc7f27151a22e79628a9255d4ef78b Mon Sep 17 00:00:00 2001
+From: Maki <mxmcube@gmail.com>
+Date: Mon, 28 Dec 2020 07:18:50 +0000
+Subject: [PATCH] Fix glTF from memory loading .bin with a custom IOHandler
+
+---
+ code/AssetLib/glTF/glTFAsset.inl   | 10 ++++++++--
+ code/AssetLib/glTF2/glTF2Asset.inl | 12 +++++++++---
+ 2 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/code/AssetLib/glTF/glTFAsset.inl b/code/AssetLib/glTF/glTFAsset.inl
+index acda572c..18c4784d 100644
+--- a/code/AssetLib/glTF/glTFAsset.inl
++++ b/code/AssetLib/glTF/glTFAsset.inl
+@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ 
+ #include <assimp/StringUtils.h>
++#include <assimp/MemoryIOWrapper.h>
+ #include <iomanip>
+ 
+ // Header files, Assimp
+@@ -331,7 +332,10 @@ inline void Buffer::Read(Value &obj, Asset &r) {
+         }
+     } else { // Local file
+         if (byteLength > 0) {
+-            std::string dir = !r.mCurrentAssetDir.empty() ? (r.mCurrentAssetDir) : "";
++            std::string dir = !r.mCurrentAssetDir.empty() ? (
++                r.mCurrentAssetDir.back() == '/' ?
++                   r.mCurrentAssetDir : r.mCurrentAssetDir + '/'
++            ) : "";
+ 
+             IOStream *file = r.OpenFile(dir + uri, "rb");
+             if (file) {
+@@ -1276,7 +1280,9 @@ inline void Asset::Load(const std::string &pFile, bool isBinary) {
+ 
+     /*int pos = std::max(int(pFile.rfind('/')), int(pFile.rfind('\\')));
+     if (pos != int(std::string::npos)) mCurrentAssetDir = pFile.substr(0, pos + 1);*/
+-    mCurrentAssetDir = getCurrentAssetDir(pFile);
++    if (0 != strncmp(pFile.c_str(), AI_MEMORYIO_MAGIC_FILENAME, AI_MEMORYIO_MAGIC_FILENAME_LENGTH)) {
++        mCurrentAssetDir = getCurrentAssetDir(pFile);
++    }
+ 
+     shared_ptr<IOStream> stream(OpenFile(pFile.c_str(), "rb", true));
+     if (!stream) {
+diff --git a/code/AssetLib/glTF2/glTF2Asset.inl b/code/AssetLib/glTF2/glTF2Asset.inl
+index 8fc8bf24..c1b4df17 100644
+--- a/code/AssetLib/glTF2/glTF2Asset.inl
++++ b/code/AssetLib/glTF2/glTF2Asset.inl
+@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ #include <assimp/StringUtils.h>
+ #include <assimp/DefaultLogger.hpp>
++#include <assimp/MemoryIOWrapper.h>
+ 
+ using namespace Assimp;
+ 
+@@ -400,7 +401,10 @@ inline void Buffer::Read(Value &obj, Asset &r) {
+         }
+     } else { // Local file
+         if (byteLength > 0) {
+-            std::string dir = !r.mCurrentAssetDir.empty() ? (r.mCurrentAssetDir) : "";
++            std::string dir = !r.mCurrentAssetDir.empty() ? (
++                r.mCurrentAssetDir.back() == '/' ?
++                   r.mCurrentAssetDir : r.mCurrentAssetDir + '/'
++            ) : "";
+ 
+             IOStream *file = r.OpenFile(dir + uri, "rb");
+             if (file) {
+@@ -1590,8 +1594,10 @@ inline void Asset::Load(const std::string &pFile, bool isBinary) {
+     /*int pos = std::max(int(pFile.rfind('/')), int(pFile.rfind('\\')));
+     if (pos != int(std::string::npos)) */
+ 
+-    mCurrentAssetDir = glTFCommon::getCurrentAssetDir(pFile);
+-
++    if (0 != strncmp(pFile.c_str(), AI_MEMORYIO_MAGIC_FILENAME, AI_MEMORYIO_MAGIC_FILENAME_LENGTH)) {
++        mCurrentAssetDir = glTFCommon::getCurrentAssetDir(pFile);
++    }
++    
+     shared_ptr<IOStream> stream(OpenFile(pFile.c_str(), "rb", true));
+     if (!stream) {
+         throw DeadlyImportError("GLTF: Could not open file for reading");
+-- 
+2.29.2
+

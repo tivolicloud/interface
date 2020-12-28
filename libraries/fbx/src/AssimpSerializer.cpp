@@ -11,6 +11,7 @@
 
 #include "AssimpSerializer.h"
 
+#include <BlendshapeConstants.h>
 #include <ResourceManager.h>
 #include <PathUtils.h>
 #include <hfm/ModelFormatLogging.h>
@@ -371,21 +372,56 @@ void AssimpSerializer::processMeshes() {
             }
         }
 
+        // if (mMesh->mNumAnimMeshes > 0) {
+        //     bool isBlendshapeChannelNamesEmpty = hfmModel->blendshapeChannelNames.size() == 0;
+        //     for (int i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
+        //         meshPtr->blendshapes.push_back(hfm::Blendshape());
+        //         if (isBlendshapeChannelNamesEmpty) {
+        //             hfmModel->blendshapeChannelNames.push_back(BLENDSHAPE_NAMES[i]);
+        //         }
+        //     }
+        // }
+
         // for (unsigned int blendshapeIndex = 0; blendshapeIndex < mMesh->mNumAnimMeshes; blendshapeIndex++) {
         //     aiAnimMesh* animMesh = mMesh->mAnimMeshes[blendshapeIndex];
 
+        //     qDebug() << "mesh"<<meshIndex<<"blendshape"<<blendshapeIndex<<"name"<<animMesh->mName.C_Str();
 
-        //     meshPtr->blendshapes.push_back(hfm::Blendshape());
-        //     hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes.back();
+            // // animMesh->
 
-        //     // animMesh.
+            // QString name = QString(animMesh->mName.C_Str());
 
-        //     // blendshapePtr->indices
-        //     // blendshapePtr->vertices
-        //     // blendshapePtr->normals
-        //     // blendshapePtr->tangens
+            // qDebug() << "BS name"<<name;
+            // if (!BLENDSHAPE_LOOKUP_MAP.contains(name)) {
+            //     continue;
+            // }
+            
+            // int globalBlendshapeIndex = BLENDSHAPE_LOOKUP_MAP[name];
+            // hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes[globalBlendshapeIndex];
 
-        //     // hfmModel->blendshapeChannelNames    
+            // qDebug() << "Adding bs"<<name<<globalBlendshapeIndex;
+
+            // for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {  
+            //     aiFace face = mMesh->mFaces[faceIndex];
+            //     if (face.mNumIndices != 3) continue; // must be a triangle
+
+            //     for (unsigned int i = 0; i < face.mNumIndices; i++) {   
+            //         auto vertexIndex = face.mIndices[i];
+
+            //         blendshapePtr->indices.push_back(vertexIndex);
+
+            //         auto v = animMesh->mVertices[vertexIndex];
+            //         blendshapePtr->vertices.push_back(glm::vec3(v.x, v.y, v.z));
+
+            //         auto n = animMesh->mNormals[vertexIndex];
+            //         blendshapePtr->normals.push_back(glm::vec3(n.x, n.y, n.z));
+
+            //         if (animMesh->HasTangentsAndBitangents()) {
+            //             auto t = animMesh->mTangents[vertexIndex];
+            //             blendshapePtr->tangents.push_back(glm::vec3(t.x, t.y, t.z));
+            //         }
+            //     }
+            // }
         // }
     }
 }
@@ -399,7 +435,7 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     // set up node (joint)
     nodePtr->name = aiNode->mName.C_Str();
     nodePtr->parentIndex = parentIndex;
-    nodePtr->isSkeletonJoint = false;  
+    nodePtr->isSkeletonJoint = false;
 
     nodePtr->transform = asMat4(aiNode->mTransformation);
     nodePtr->translation = extractTranslation(nodePtr->transform);
