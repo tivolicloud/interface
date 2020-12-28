@@ -38,6 +38,7 @@ MediaType AssimpSerializer::getMediaType() const {
         QString ext = anyExt.replace("*.", "");
         if (ext == "fbx" || ext == "obj") continue;
 
+        // qDebug(modelformat) << "Available format:" << ext; 
         mediaType.extensions.push_back(ext.toStdString());
         // mediaType.webMediaTypes.push_back("");
     }
@@ -523,8 +524,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         aiProcess_Triangulate |
         aiProcess_GenNormals | 
         // aiProcess_SplitLargeMeshes |
-        aiProcess_RemoveRedundantMaterials |
-        // aiProcess_GenUVCoords | 
+        // aiProcess_RemoveRedundantMaterials | // ends up removing necessary materials...
         // aiProcess_OptimizeMeshes |
         // aiProcess_OptimizeGraph,
         aiProcess_FlipUVs,
