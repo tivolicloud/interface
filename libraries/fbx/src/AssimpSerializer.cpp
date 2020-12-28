@@ -196,6 +196,11 @@ void AssimpSerializer::processMaterials() {
         materialPtr->_material = std::make_shared<graphics::Material>();
         auto modelMaterial = materialPtr->_material;
 
+        bool isGltf = ext == "gltf" || ext == "glb";
+        if (isGltf) {
+            materialPtr->isPBSMaterial = true;
+        }
+
         // colors
 
         aiColor3D diffuse;
@@ -208,15 +213,27 @@ void AssimpSerializer::processMaterials() {
             modelMaterial->setOpacity(opacity);
         }
 
+        aiColor3D emissive;
+        if (mMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, emissive) == AI_SUCCESS) {
+            modelMaterial->setEmissive(asVec3(emissive));
+        }
+
         aiColor4D baseColor;
         if (mMaterial->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_FACTOR, baseColor) == AI_SUCCESS) {
             modelMaterial->setAlbedo(glm::vec3(baseColor.r, baseColor.g, baseColor.b));
             modelMaterial->setOpacity(baseColor.a);
         }
 
-        aiColor3D emissive;
-        if (mMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, emissive) == AI_SUCCESS) {
-            modelMaterial->setEmissive(asVec3(emissive));
+        float roughnessFactor;
+        if (mMaterial->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_ROUGHNESS_FACTOR, roughnessFactor) == AI_SUCCESS) {
+            materialPtr->roughness = roughnessFactor;
+            modelMaterial->setRoughness(roughnessFactor);
+        }
+
+        float metallicFactor;
+        if (mMaterial->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS) {
+            materialPtr->metallic = metallicFactor;
+            modelMaterial->setMetallic(metallicFactor);
         }
 
         // TODO: scattering!
@@ -226,7 +243,7 @@ void AssimpSerializer::processMaterials() {
         aiString diffuseTexture;
         if (mMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &diffuseTexture) == AI_SUCCESS) {
             materialPtr->albedoTexture = getHfmTexture(diffuseTexture);
-            materialPtr->opacityTexture = materialPtr->albedoTexture;
+            materialPtr->opacityTexture = getHfmTexture(diffuseTexture);
             materialPtr->useAlbedoMap = true;
         }
 
@@ -242,6 +259,17 @@ void AssimpSerializer::processMaterials() {
             materialPtr->useOcclusionMap = true;
         }
 
+        // assimp maps occlusion as lightmap for gltf
+        aiString lightmapTexture;
+        if (mMaterial->GetTexture(aiTextureType_LIGHTMAP, 0, &lightmapTexture) == AI_SUCCESS) {
+            // materialPtr->lightmapTexture = getHfmTexture(lightmapTexture); // probably should be avoided anyway as it breaks pbr
+            materialPtr->occlusionTexture = getHfmTexture(lightmapTexture);
+            materialPtr->useOcclusionMap = true;
+            if (isGltf) {
+                materialPtr->occlusionTexture.sourceChannel = image::ColorChannel::RED;
+            }
+        }
+
         aiString normalTexture;
         if (mMaterial->GetTexture(aiTextureType_NORMALS, 0, &normalTexture) == AI_SUCCESS) {
             materialPtr->normalTexture = getHfmTexture(normalTexture);
@@ -253,11 +281,6 @@ void AssimpSerializer::processMaterials() {
             materialPtr->metallicTexture = getHfmTexture(metallicTexture);
             materialPtr->useMetallicMap = true;
         }
-
-        aiString lightmapTexture;
-        if (mMaterial->GetTexture(aiTextureType_LIGHTMAP, 0, &lightmapTexture) == AI_SUCCESS) {
-            materialPtr->lightmapTexture = getHfmTexture(lightmapTexture);
-        }
         
         aiString metallicRoughnessTexture;
         if (mMaterial->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &metallicRoughnessTexture) == AI_SUCCESS) {          
@@ -265,7 +288,7 @@ void AssimpSerializer::processMaterials() {
             materialPtr->roughnessTexture.sourceChannel = image::ColorChannel::GREEN;
             materialPtr->useRoughnessMap = true;
 
-            materialPtr->metallicTexture = materialPtr->roughnessTexture;
+            materialPtr->metallicTexture = getHfmTexture(metallicRoughnessTexture);
             materialPtr->metallicTexture.sourceChannel = image::ColorChannel::BLUE;
             materialPtr->useMetallicMap = true;
         }
@@ -330,6 +353,7 @@ void AssimpSerializer::processMeshes() {
                     meshPtr->tangents.push_back(glm::vec3(t.x, t.y, t.z));
                 }
 
+                // TODO: fix https://github.com/assimp/assimp/issues/1702
                 if (mMesh->HasVertexColors(0)) {
                     auto c = mMesh->mColors[0][vertexIndex];
                     meshPtr->colors.push_back(glm::vec3(c.r, c.g, c.b));
@@ -347,19 +371,22 @@ void AssimpSerializer::processMeshes() {
             }
         }
 
-        // for (unsigned int blendshapeIndex = 0; blendshape < mMesh->mNumAnimMeshes; blendshapeIndex++) {
+        // for (unsigned int blendshapeIndex = 0; blendshapeIndex < mMesh->mNumAnimMeshes; blendshapeIndex++) {
         //     aiAnimMesh* animMesh = mMesh->mAnimMeshes[blendshapeIndex];
 
-        //     meshPtr->blendshapes.emplace_back();
+
+        //     meshPtr->blendshapes.push_back(hfm::Blendshape());
         //     hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes.back();
+
+        //     // animMesh.
 
         //     // blendshapePtr->indices
         //     // blendshapePtr->vertices
         //     // blendshapePtr->normals
-        //     // blendshapePtr->tangens            
-        // }
+        //     // blendshapePtr->tangens
 
-        
+        //     // hfmModel->blendshapeChannelNames    
+        // }
     }
 }
 
@@ -446,7 +473,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     
     scene = importer.ReadFileFromMemory(
         data.constData(), data.size(),
-        aiProcess_CalcTangentSpace |
+        // aiProcess_CalcTangentSpace |
         aiProcess_JoinIdenticalVertices | 
         aiProcess_Triangulate |
         aiProcess_GenNormals | 
