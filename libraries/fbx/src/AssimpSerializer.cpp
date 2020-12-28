@@ -117,6 +117,8 @@ public:
     }
 };
 
+bool isEmptyVec3(glm::vec3 v) { return v.x == 0 && v.y == 0 && v.z == 0; }
+
 glm::vec3 asVec3(aiColor3D c) { return glm::vec3(c.r, c.g, c.b); }
 glm::vec3 asVec3(aiVector3D v) { return glm::vec3(v.x, v.y, v.z); }
 glm::mat4 asMat4(aiMatrix4x4 from) {
@@ -339,19 +341,19 @@ void AssimpSerializer::processMeshes() {
             aiFace face = mMesh->mFaces[faceIndex];
             if (face.mNumIndices != 3) continue; // must be a triangle
 
-            for (unsigned int i = 0; i < face.mNumIndices; i++) {   
+            for (unsigned int i = 0; i < face.mNumIndices; i++) {
                 auto vertexIndex = face.mIndices[i];
 
                 auto v = mMesh->mVertices[vertexIndex];
                 meshPartPtr->triangleIndices.push_back(meshPtr->vertices.count());
-                meshPtr->vertices.push_back(glm::vec3(v.x, v.y, v.z));
+                meshPtr->vertices.push_back(asVec3(v));
 
                 auto n = mMesh->mNormals[vertexIndex];
-                meshPtr->normals.push_back(glm::vec3(n.x, n.y, n.z));
+                meshPtr->normals.push_back(asVec3(n));
 
                 if (mMesh->HasTangentsAndBitangents()) {
                     auto t = mMesh->mTangents[vertexIndex];
-                    meshPtr->tangents.push_back(glm::vec3(t.x, t.y, t.z));
+                    meshPtr->tangents.push_back(asVec3(t));
                 }
 
                 // TODO: fix https://github.com/assimp/assimp/issues/1702
@@ -372,57 +374,64 @@ void AssimpSerializer::processMeshes() {
             }
         }
 
-        // if (mMesh->mNumAnimMeshes > 0) {
-        //     bool isBlendshapeChannelNamesEmpty = hfmModel->blendshapeChannelNames.size() == 0;
-        //     for (int i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
-        //         meshPtr->blendshapes.push_back(hfm::Blendshape());
-        //         if (isBlendshapeChannelNamesEmpty) {
-        //             hfmModel->blendshapeChannelNames.push_back(BLENDSHAPE_NAMES[i]);
-        //         }
-        //     }
-        // }
+        if (mMesh->mNumAnimMeshes > 0) {
+            bool isBlendshapeChannelNamesEmpty = hfmModel->blendshapeChannelNames.size() == 0;
+            for (int i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
+                meshPtr->blendshapes.push_back(hfm::Blendshape());
+                if (isBlendshapeChannelNamesEmpty) {
+                    hfmModel->blendshapeChannelNames.push_back(BLENDSHAPE_NAMES[i]);
+                }
+            }
+        }
 
-        // for (unsigned int blendshapeIndex = 0; blendshapeIndex < mMesh->mNumAnimMeshes; blendshapeIndex++) {
-        //     aiAnimMesh* animMesh = mMesh->mAnimMeshes[blendshapeIndex];
+        for (unsigned int blendshapeIndex = 0; blendshapeIndex < mMesh->mNumAnimMeshes; blendshapeIndex++) {
+            aiAnimMesh* animMesh = mMesh->mAnimMeshes[blendshapeIndex];
 
-        //     qDebug() << "mesh"<<meshIndex<<"blendshape"<<blendshapeIndex<<"name"<<animMesh->mName.C_Str();
-
-            // // animMesh->
-
-            // QString name = QString(animMesh->mName.C_Str());
-
-            // qDebug() << "BS name"<<name;
-            // if (!BLENDSHAPE_LOOKUP_MAP.contains(name)) {
-            //     continue;
-            // }
+            QString name = animMesh->mName.C_Str();
+            if (!BLENDSHAPE_LOOKUP_MAP.contains(name)) {
+                continue;
+            }
             
-            // int globalBlendshapeIndex = BLENDSHAPE_LOOKUP_MAP[name];
-            // hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes[globalBlendshapeIndex];
+            int globalBlendshapeIndex = BLENDSHAPE_LOOKUP_MAP[name];
+            hfm::Blendshape* blendshapePtr = &meshPtr->blendshapes[globalBlendshapeIndex];
 
-            // qDebug() << "Adding bs"<<name<<globalBlendshapeIndex;
+            int indexCount = 0;
+            for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
+                aiFace face = mMesh->mFaces[faceIndex];
+                if (face.mNumIndices != 3) continue; // must be a triangle
 
-            // for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {  
-            //     aiFace face = mMesh->mFaces[faceIndex];
-            //     if (face.mNumIndices != 3) continue; // must be a triangle
+                for (unsigned int i = 0; i < face.mNumIndices; i++) {
+                    auto vertexIndex = face.mIndices[i];
 
-            //     for (unsigned int i = 0; i < face.mNumIndices; i++) {   
-            //         auto vertexIndex = face.mIndices[i];
+                    auto v = (
+                        asVec3(animMesh->mVertices[vertexIndex]) -
+                        asVec3(mMesh->mVertices[vertexIndex])
+                    );
+                    auto n = (
+                        asVec3(animMesh->mNormals[vertexIndex]) -
+                        asVec3(mMesh->mNormals[vertexIndex])
+                    );
+                    auto t = animMesh->HasTangentsAndBitangents() ? (
+                        asVec3(animMesh->mTangents[vertexIndex]) -
+                        asVec3(mMesh->mTangents[vertexIndex])
+                    ) : vec3(0.0f);
+                    
+                    if (isEmptyVec3(v) && isEmptyVec3(n) && isEmptyVec3(t)) {
+                        indexCount++;
+                        continue;
+                    }
 
-            //         blendshapePtr->indices.push_back(vertexIndex);
-
-            //         auto v = animMesh->mVertices[vertexIndex];
-            //         blendshapePtr->vertices.push_back(glm::vec3(v.x, v.y, v.z));
-
-            //         auto n = animMesh->mNormals[vertexIndex];
-            //         blendshapePtr->normals.push_back(glm::vec3(n.x, n.y, n.z));
-
-            //         if (animMesh->HasTangentsAndBitangents()) {
-            //             auto t = animMesh->mTangents[vertexIndex];
-            //             blendshapePtr->tangents.push_back(glm::vec3(t.x, t.y, t.z));
-            //         }
-            //     }
-            // }
-        // }
+                    blendshapePtr->indices.push_back(indexCount);
+                    indexCount++;
+                    
+                    blendshapePtr->vertices.push_back(v);
+                    blendshapePtr->normals.push_back(n);
+                    if (animMesh->HasTangentsAndBitangents()) {
+                        blendshapePtr->tangents.push_back(t);
+                    }
+                }
+            }
+        }
     }
 }
 
