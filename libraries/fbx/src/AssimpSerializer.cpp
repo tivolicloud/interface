@@ -534,7 +534,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         aiProcess_JoinIdenticalVertices | 
         aiProcess_Triangulate |
         aiProcess_GenNormals | 
-        // aiProcess_SplitLargeMeshes |
+        aiProcess_SplitLargeMeshes |
         aiProcess_ImproveCacheLocality |
         // aiProcess_RemoveRedundantMaterials | // ends up removing necessary materials...
         // aiProcess_OptimizeMeshes |
