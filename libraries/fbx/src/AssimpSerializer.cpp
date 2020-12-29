@@ -413,6 +413,10 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
                     toName = fromName;
                 }
 
+                if (weight == 0.0f && fromName == toName) {
+                    continue;
+                }
+
                 aiAnimMesh* animMesh = getBlendshapeByName(toName, mMesh);
                 if (animMesh == nullptr) {
                     continue;
