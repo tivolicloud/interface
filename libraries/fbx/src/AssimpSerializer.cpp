@@ -141,12 +141,12 @@ HFMTexture AssimpSerializer::getHfmTexture(aiString aiPath) {
 
         QRegExp indexFinder = QRegExp("^\\*([0-9])+$");
         if (indexFinder.exactMatch(path)) {
-            unsigned int index = indexFinder.cap(1).toInt();
+            auto index = indexFinder.cap(1).toUInt();
 
             if (index < scene->mNumTextures) {
                 auto aiTexture = scene->mTextures[index];
-                unsigned int width = aiTexture->mWidth;
-                unsigned int height = aiTexture->mHeight;
+                auto width = aiTexture->mWidth;
+                auto height = aiTexture->mHeight;
 
                 texture.name = aiTexture->mFilename.C_Str();
                 // texture.filename = url.toEncoded().append(index);
@@ -158,7 +158,7 @@ HFMTexture AssimpSerializer::getHfmTexture(aiString aiPath) {
                     QImage image = QImage(width, height, QImage::Format::Format_RGBA8888);
                     auto aiTexel = aiTexture->pcData;
                     
-                    for (unsigned int i = 0; i < width * height; i++) {
+                    for (size_t i = 0; i < width * height; i++) {
                         auto pixel = aiTexel[i];
                         image.setPixelColor(i % width, i / width, QColor(
                             pixel.r, pixel.g, pixel.b, pixel.a
@@ -185,10 +185,10 @@ HFMTexture AssimpSerializer::getHfmTexture(aiString aiPath) {
 }
 
 void AssimpSerializer::processMaterials() {
-    for(unsigned int materialIndex = 0; materialIndex < scene->mNumMaterials; materialIndex++) {
+    for(size_t materialIndex = 0; materialIndex < scene->mNumMaterials; materialIndex++) {
         aiMaterial* mMaterial = scene->mMaterials[materialIndex];
 
-        // for(unsigned int propIndex = 0; propIndex < mMaterial->mNumProperties; propIndex++) {
+        // for(size_t propIndex = 0; propIndex < mMaterial->mNumProperties; propIndex++) {
         //     auto prop = mMaterial->mProperties[propIndex];
         //     qCDebug(modelformat)<<materialIndex<<prop->mKey.C_Str();
         // }
@@ -327,7 +327,7 @@ void AssimpSerializer::processMaterials() {
 }
 
 aiAnimMesh* AssimpSerializer::getBlendshapeByName(QString name, aiMesh* mMesh) {
-    for (unsigned int i = 0; i < mMesh->mNumAnimMeshes; i++) {
+    for (size_t i = 0; i < mMesh->mNumAnimMeshes; i++) {
         auto animMesh = mMesh->mAnimMeshes[i];
         if (QString(animMesh->mName.C_Str()) == name) {
             return animMesh;
@@ -337,7 +337,7 @@ aiAnimMesh* AssimpSerializer::getBlendshapeByName(QString name, aiMesh* mMesh) {
 }
 
 void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
-    for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
+    for (size_t meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
         aiMesh* mMesh = scene->mMeshes[meshIndex];
 
         hfmModel->meshes.emplace_back();
@@ -348,40 +348,40 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
 
         meshPtr->meshIndex = meshIndex;
 
-        for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
+        for (size_t vertexIndex = 0; vertexIndex < mMesh->mNumVertices; vertexIndex++) {
+            auto v = mMesh->mVertices[vertexIndex];
+            meshPtr->vertices.push_back(asVec3(v));
+
+            auto n = mMesh->mNormals[vertexIndex];
+            meshPtr->normals.push_back(asVec3(n));
+
+            if (mMesh->HasTangentsAndBitangents()) {
+                auto t = mMesh->mTangents[vertexIndex];
+                meshPtr->tangents.push_back(asVec3(t));
+            }
+
+            // TODO: fix https://github.com/assimp/assimp/issues/1702
+            if (mMesh->HasVertexColors(0)) {
+                auto c = mMesh->mColors[0][vertexIndex];
+                meshPtr->colors.push_back(glm::vec3(c.r, c.g, c.b));
+            }
+
+            for (size_t uvI = 0; uvI <= 1; uvI++) {
+                if (!mMesh->HasTextureCoords(uvI)) break;
+                auto uv = mMesh->mTextureCoords[uvI][vertexIndex];
+                if (uvI == 0) {
+                    meshPtr->texCoords.push_back(glm::vec2(uv.x, uv.y));
+                } else {
+                    meshPtr->texCoords1.push_back(glm::vec2(uv.x, uv.y));
+                }
+            }
+        }
+
+        for (size_t faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
             aiFace face = mMesh->mFaces[faceIndex];
             if (face.mNumIndices != 3) continue; // must be a triangle
-
-            for (unsigned int i = 0; i < face.mNumIndices; i++) {
-                auto vertexIndex = face.mIndices[i];
-
-                auto v = mMesh->mVertices[vertexIndex];
-                meshPartPtr->triangleIndices.push_back(meshPtr->vertices.count());
-                meshPtr->vertices.push_back(asVec3(v));
-
-                auto n = mMesh->mNormals[vertexIndex];
-                meshPtr->normals.push_back(asVec3(n));
-
-                if (mMesh->HasTangentsAndBitangents()) {
-                    auto t = mMesh->mTangents[vertexIndex];
-                    meshPtr->tangents.push_back(asVec3(t));
-                }
-
-                // TODO: fix https://github.com/assimp/assimp/issues/1702
-                if (mMesh->HasVertexColors(0)) {
-                    auto c = mMesh->mColors[0][vertexIndex];
-                    meshPtr->colors.push_back(glm::vec3(c.r, c.g, c.b));
-                }
-
-                for (unsigned int uvI = 0; uvI <= 1; uvI++) {
-                    if (!mMesh->HasTextureCoords(uvI)) break;
-                    auto uv = mMesh->mTextureCoords[uvI][vertexIndex];
-                    if (uvI == 0) {
-                        meshPtr->texCoords.push_back(glm::vec2(uv.x, uv.y));
-                    } else {
-                        meshPtr->texCoords1.push_back(glm::vec2(uv.x, uv.y));
-                    }
-                }
+            for (size_t i = 0; i < face.mNumIndices; i++) {
+                meshPartPtr->triangleIndices.push_back(face.mIndices[i]);
             }
         }
 
@@ -390,7 +390,7 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
         if (mMesh->mNumAnimMeshes > 0) {
             bool isBlendshapeChannelNamesEmpty = hfmModel->blendshapeChannelNames.size() == 0;
 
-            for (int i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
+            for (size_t i = 0; i < (int)Blendshapes::BlendshapeCount; i++) {
                 const QString fromName = BLENDSHAPE_NAMES[i];
                 
                 if (isBlendshapeChannelNamesEmpty) {
@@ -421,39 +421,30 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
                 if (animMesh == nullptr) {
                     continue;
                 }
+                
+                for (size_t vertexIndex = 0; vertexIndex < animMesh->mNumVertices; vertexIndex++) {
+                    auto v = (asVec3(animMesh->mVertices[vertexIndex]) - asVec3(mMesh->mVertices[vertexIndex])) * weight;
+                    auto n = (asVec3(animMesh->mNormals[vertexIndex]) - asVec3(mMesh->mNormals[vertexIndex])) * weight;
+                    auto t = animMesh->HasTangentsAndBitangents() ?
+                        (asVec3(animMesh->mTangents[vertexIndex]) - asVec3(mMesh->mTangents[vertexIndex])) * weight :
+                        vec3(0.0f);
+                    
+                    if (isEmptyVec3(v) && isEmptyVec3(n) && isEmptyVec3(t)) {
+                        continue;
+                    }
 
-                int indexCount = 0;
-                for (unsigned int faceIndex = 0; faceIndex < mMesh->mNumFaces; faceIndex++) {
-                    aiFace face = mMesh->mFaces[faceIndex];
-                    if (face.mNumIndices != 3) continue; // must be a triangle
-
-                    for (unsigned int i = 0; i < face.mNumIndices; i++) {
-                        auto vertexIndex = face.mIndices[i];
-
-                        auto v = (asVec3(animMesh->mVertices[vertexIndex]) - asVec3(mMesh->mVertices[vertexIndex])) * weight;
-                        auto n = (asVec3(animMesh->mNormals[vertexIndex]) - asVec3(mMesh->mNormals[vertexIndex])) * weight;
-                        auto t = animMesh->HasTangentsAndBitangents() ?
-                            (asVec3(animMesh->mTangents[vertexIndex]) - asVec3(mMesh->mTangents[vertexIndex])) * weight :
-                            vec3(0.0f);
-                        
-                        if (isEmptyVec3(v) && isEmptyVec3(n) && isEmptyVec3(t)) {
-                            indexCount++;
-                            continue;
-                        }
-
-                        blendshapePtr->indices.push_back(indexCount);
-                        indexCount++;
-                        
-                        blendshapePtr->vertices.push_back(v);
-                        blendshapePtr->normals.push_back(n);
-                        if (animMesh->HasTangentsAndBitangents()) {
-                            blendshapePtr->tangents.push_back(t);
-                        }
+                    blendshapePtr->indices.push_back(vertexIndex);
+                    
+                    blendshapePtr->vertices.push_back(v);
+                    blendshapePtr->normals.push_back(n);
+                    if (animMesh->HasTangentsAndBitangents()) {
+                        blendshapePtr->tangents.push_back(t);
                     }
                 }
             }
         }
     }
+}
 }
 
 void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
@@ -484,7 +475,7 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     }
 
     // for all meshes in node, create shape
-    for (unsigned int i = 0; i < aiNode->mNumMeshes; i++) {
+    for (size_t i = 0; i < aiNode->mNumMeshes; i++) {
         auto meshIndex = aiNode->mMeshes[i];
 
         hfmModel->shapes.emplace_back();
@@ -497,14 +488,14 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
         // TODO: fixes bounding box? seems not for https://files.tivolicloud.com/caitlyn/fun/cu-cat/cu-cat.glb
         hfmModel->meshes[meshIndex].modelTransform = nodePtr->globalTransform;
 
-        unsigned int materialIndex = scene->mMeshes[meshIndex]->mMaterialIndex;
+        auto materialIndex = scene->mMeshes[meshIndex]->mMaterialIndex;
         if (materialIndex < hfmModel->materials.size()) {
             shapePtr->material = materialIndex;
         }
     }
 
     // process children
-    for (unsigned int i = 0; i < aiNode->mNumChildren; i++) {
+    for (size_t i = 0; i < aiNode->mNumChildren; i++) {
         processNode(aiNode->mChildren[i], nodeIndex);
     }
 }
@@ -544,6 +535,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         aiProcess_Triangulate |
         aiProcess_GenNormals | 
         // aiProcess_SplitLargeMeshes |
+        aiProcess_ImproveCacheLocality |
         // aiProcess_RemoveRedundantMaterials | // ends up removing necessary materials...
         // aiProcess_OptimizeMeshes |
         // aiProcess_OptimizeGraph,
