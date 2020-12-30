@@ -139,7 +139,7 @@ HFMTexture AssimpSerializer::getHfmTexture(aiString aiPath) {
     } else {
         HFMTexture texture = HFMTexture();
 
-        QRegExp indexFinder = QRegExp("^\\*([0-9])+$");
+        QRegExp indexFinder = QRegExp("^\\*([0-9]+)$");
         if (indexFinder.exactMatch(path)) {
             auto index = indexFinder.cap(1).toUInt();
 
