@@ -13,29 +13,6 @@ stages:
     only:
         - merge_requests
 
-push main to master:
-    stage: prepare
-    image: alpine
-
-    only:
-        refs:
-            - main@tivolicloud/interface
-
-    script:
-        - apk add git openssh
-
-        - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY_PUSH_MAIN_TO_MASTER" | tr -d '\r' | ssh-add - > /dev/null
-
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - ssh-keyscan git.tivolicloud.com >> ~/.ssh/known_hosts
-        - chmod 644 ~/.ssh/known_hosts
-
-        - git remote set-url origin git@git.tivolicloud.com:tivolicloud/interface.git
-        - git fetch origin master
-        - git push origin HEAD:master --force
-
 include:
     - local: .gitlab/build/linux.gitlab-ci.yml
     - local: .gitlab/build/windows.gitlab-ci.yml
