@@ -180,6 +180,40 @@ class ChatHandler extends WebEventHandler {
 			Chat.showMessage("You cleared the chat for yourself.");
 		});
 		this.commands.push(clearCommand);
+
+		const tpCommand = Chat.addCommand(
+			"tp",
+			"teleports to someone in world",
+		);
+		this.signalManager.connect(tpCommand.running, params => {
+			const username = params.split(" ").shift().trim().toLowerCase();
+			if (username == "") {
+				Chat.showMessage("No username specified!");
+				return;
+			}
+
+			let foundAvatar: ScriptAvatar = null;
+			for (const id of AvatarList.getAvatarIdentifiers()) {
+				const avatar = AvatarList.getAvatar(id);
+				if (avatar.displayName.toLowerCase().indexOf(username) > -1) {
+					foundAvatar = avatar;
+					break;
+				}
+			}
+
+			if (foundAvatar == null) {
+				Chat.showMessage("User not found!");
+			} else {
+				Chat.showMessage("Teleporing to " + foundAvatar.displayName);
+				MyAvatar.goToLocation(
+					foundAvatar.position,
+					true,
+					foundAvatar.orientation,
+					true,
+				);
+			}
+		});
+		this.commands.push(tpCommand);
 	}
 
 	getMetaTags(url: string, callback: (headContent: string) => any) {

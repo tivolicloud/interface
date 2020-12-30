@@ -31,6 +31,7 @@ void RenderScriptingInterface::loadSettings() {
         _antialiasingMethod = (_antialiasingMethodSetting.get());
         _viewportResolutionScale = (_viewportResolutionScaleSetting.get());
         _nametagsEnabled = (_nametagsEnabledSetting.get());
+        _nametagsShowSelf = (_nametagsShowSelfSetting.get());
         // _maximumTextureMemory = (_maximumTextureMemorySetting.get()); // handled by gpu::Texture
         _fieldOfView = (_fieldOfViewSetting.get());
         _farClip = (_farClipSetting.get());
@@ -41,6 +42,7 @@ void RenderScriptingInterface::loadSettings() {
     forceAntialiasingMethod((AntialiasingMethod)_antialiasingMethod);
     forceViewportResolutionScale(_viewportResolutionScale);
     forceNametagsEnabled(_nametagsEnabled);
+    forceNametagsShowSelf(_nametagsShowSelf);
     forceMaximumTextureMemory(_maximumTextureMemorySetting.get());
     forceFieldOfView(_fieldOfView);
     forceFarClip(_farClip);
@@ -260,6 +262,25 @@ void RenderScriptingInterface::setNametagsEnabled(bool enabled) {
 void RenderScriptingInterface::forceNametagsEnabled(bool enabled) {
     _nametagsEnabled = (enabled);
     _nametagsEnabledSetting.set(enabled);
+
+    // put nametags logic here when implementing in cpp
+    // code is in javascript right now and uses these functions
+}
+
+bool RenderScriptingInterface::getNametagsShowSelf() const {
+    return _nametagsShowSelf;
+}
+
+void RenderScriptingInterface::setNametagsShowSelf(bool enabled) {
+    if (_nametagsShowSelf != enabled) {
+        forceNametagsShowSelf(enabled);
+        emit settingsChanged();
+    }
+}
+
+void RenderScriptingInterface::forceNametagsShowSelf(bool enabled) {
+    _nametagsShowSelf = (enabled);
+    _nametagsShowSelfSetting.set(enabled);
 
     // put nametags logic here when implementing in cpp
     // code is in javascript right now and uses these functions

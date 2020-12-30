@@ -8,12 +8,14 @@ declare namespace Render {
 	let antialiasingMethod: AntialiasingMethod;
 	let viewportResolutionScale: number;
 	let nametagsEnabled: boolean;
+	let nametagsShowSelf: boolean;
 
 	function getAmbientOcclusionEnabled(): boolean;
 	function getAntialiasingMethod(): AntialiasingMethod;
 	function getAntialiasingMethodNames(): string[];
 	function getConfig(name: string): any;
 	function getNametagsEnabled(): boolean;
+	function getNametagsShowSelf(): boolean;
 	function getRenderMethod(): RenderMethod;
 	function getRenderMethodNames(): string[];
 	function getShadowsEnabled(): boolean;
@@ -23,6 +25,7 @@ declare namespace Render {
 		antialiasingMethod: AntialiasingMethod,
 	): void;
 	function setNametagsEnabled(enabled: boolean): void;
+	function setNametagsShowSelf(enabled: boolean): void;
 	function setRenderMethod(renderMethod: RenderMethod): void;
 	function setShadowsEnabled(enabled: boolean): void;
 	function setViewportResolutionScale(resolutionScale: number): void;

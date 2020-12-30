@@ -30,6 +30,7 @@
  * @property {Render.AntialiasingMethod} antialiasingMethod - The anti-aliasing method being used.
  * @property {number} viewportResolutionScale - The view port resolution scale, <code>&gt; 0.0</code>.
  * @property {boolean} nametagsEnabled - <code>true</code> if nametags are enabled, <code>false</code> if they're disabled.
+ * @property {boolean} nametagsShowSelf - <code>true</code> if your nametag should appear above you, <code>false</code> if not.
  * @property {number} maximumTextureMemory - The maximum texture memory in MB.
  * @property {number} farClip - The far clip distance.
  */
@@ -41,6 +42,7 @@ class RenderScriptingInterface : public QObject {
     Q_PROPERTY(AntialiasingMethod antialiasingMethod READ getAntialiasingMethod WRITE setAntialiasingMethod NOTIFY settingsChanged)
     Q_PROPERTY(float viewportResolutionScale READ getViewportResolutionScale WRITE setViewportResolutionScale NOTIFY settingsChanged)
     Q_PROPERTY(bool nametagsEnabled READ getNametagsEnabled WRITE setNametagsEnabled NOTIFY settingsChanged)
+    Q_PROPERTY(bool nametagsShowSelf READ getNametagsShowSelf WRITE setNametagsShowSelf NOTIFY settingsChanged)
     Q_PROPERTY(int maximumTextureMemory READ getMaximumTextureMemory WRITE setMaximumTextureMemory NOTIFY settingsChanged)
     Q_PROPERTY(float fieldOfView READ getFieldOfView WRITE setFieldOfView NOTIFY settingsChanged)
     Q_PROPERTY(float farClip READ getFarClip WRITE setFarClip NOTIFY settingsChanged)
@@ -257,6 +259,20 @@ public slots:
      */
     void setNametagsEnabled(bool enabled);
 
+    /**jsdoc
+     * Gets whether your nametag should appear above you.
+     * @function Render.getNametagsShowSelf
+     * @returns {boolean} <code>true</code> if your nametag should appear above you, <code>false</code> if not.
+     */
+    bool getNametagsShowSelf() const;
+
+    /**jsdoc
+     * Sets whether your nametag should appear above you.
+     * @function Render.setNametagsShowSelf
+     * @param {boolean} enabled - <code>true</code> if your nametag should appear above you, <code>false</code> if not.
+     */
+    void setNametagsShowSelf(bool enabled);
+
     // /**jsdoc
     //  * Sets a tonemapping curve and exposure to be used in a given zone.
     //  * @function Render.setTonemappingMode
@@ -336,6 +352,7 @@ private:
     int _antialiasingMethod{ AntialiasingMethod::NONE };
     float _viewportResolutionScale{ 1.0f };
     bool _nametagsEnabled{ true };
+    bool _nametagsShowSelf{ false };
     // int _maximumTextureMemory{ 8192 }; // handled by gpu::Texture
     float _fieldOfView{ DEFAULT_FIELD_OF_VIEW_DEGREES };
     float _farClip { DEFAULT_FAR_CLIP };
@@ -347,6 +364,7 @@ private:
     Setting::Handle<int> _antialiasingMethodSetting{ "antialiasingMethod", _antialiasingMethod };
     Setting::Handle<float> _viewportResolutionScaleSetting{ "viewportResolutionScale", _viewportResolutionScale };
     Setting::Handle<bool> _nametagsEnabledSetting{ "nametagsEnabled", _nametagsEnabled };
+    Setting::Handle<bool> _nametagsShowSelfSetting{ "nametagsShowSelf", _nametagsShowSelf };
     Setting::Handle<int> _maximumTextureMemorySetting{ "maximumTextureMemory", 8192 };
     Setting::Handle<float> _fieldOfViewSetting{ "fieldOfView", _fieldOfView };
     Setting::Handle<float> _farClipSetting{ "farClip", _farClip };
@@ -358,6 +376,7 @@ private:
     void forceAntialiasingMethod(AntialiasingMethod antialiasingMethod);
     void forceViewportResolutionScale(float scale);
     void forceNametagsEnabled(bool enabled);
+    void forceNametagsShowSelf(bool enabled);
     void forceMaximumTextureMemory(int maximumTextureMemory);
     void forceFieldOfView(float fieldOfView);
     void forceFarClip(float farClip);

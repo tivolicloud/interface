@@ -115,9 +115,16 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	nametags: boolean;
-	onNametagsChange(e: MatSlideToggleChange) {
+	nametagsEnabled: boolean;
+	onNametagsEnabledChange(e: MatSlideToggleChange) {
 		this.script.rpc("Render.nametagsEnabled", e.checked).subscribe(() => {
+			this.refresh();
+		});
+	}
+
+	nametagsShowSelf: boolean;
+	onNametagsShowSelfChange(e: MatSlideToggleChange) {
+		this.script.rpc("Render.nametagsShowSelf", e.checked).subscribe(() => {
 			this.refresh();
 		});
 	}
@@ -197,8 +204,13 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 			});
 		this.script
 			.rpc<boolean>("Render.nametagsEnabled")
-			.subscribe(nametags => {
-				this.nametags = nametags;
+			.subscribe(nametagsEnabled => {
+				this.nametagsEnabled = nametagsEnabled;
+			});
+		this.script
+			.rpc<boolean>("Render.nametagsShowSelf")
+			.subscribe(nametagsShowSelf => {
+				this.nametagsShowSelf = nametagsShowSelf;
 			});
 		this.script.rpc<number>("Render.fieldOfView").subscribe(fieldOfView => {
 			this.fieldOfView = fieldOfView;
