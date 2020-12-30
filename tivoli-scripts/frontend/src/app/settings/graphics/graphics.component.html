@@ -108,6 +108,28 @@
 </div>
 <div class="setting">
 	<p class="label">
+		<mat-icon>label</mat-icon>
+		Nametags
+	</p>
+	<mat-slide-toggle
+		*ngIf="nametagsEnabled != null"
+		(change)="onNametagsEnabledChange($event)"
+		[checked]="nametagsEnabled"
+	></mat-slide-toggle>
+	<div style="margin: 0 12px"></div>
+	<p class="label" [style.opacity]="nametagsEnabled ? '1' : '0.5'">
+		<mat-icon>person</mat-icon>
+		Show self
+	</p>
+	<mat-slide-toggle
+		*ngIf="nametagsShowSelf != null"
+		(change)="onNametagsShowSelfChange($event)"
+		[checked]="nametagsShowSelf"
+		[disabled]="!nametagsEnabled"
+	></mat-slide-toggle>
+</div>
+<div class="setting">
+	<p class="label">
 		<mat-icon>filter</mat-icon>
 		Render effects
 	</p>
@@ -117,18 +139,6 @@
 		[checked]="deferred"
 	></mat-slide-toggle>
 	<p style="margin-left: 24px; opacity: 0.5">(deferred rendering)</p>
-</div>
-<div class="setting">
-	<p class="label">
-		<mat-icon>label</mat-icon>
-		Nametags
-	</p>
-	<mat-slide-toggle
-		*ngIf="nametags != null"
-		(change)="onNametagsChange($event)"
-		[checked]="nametags"
-	></mat-slide-toggle>
-	<!-- <p style="margin-left: 24px; opacity: 0.5">(doesn't include yourself)</p> -->
 </div>
 <div class="setting">
 	<p class="label" *ngIf="resolutionScale != null">

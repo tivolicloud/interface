@@ -1,4 +1,4 @@
-export function initNametags() {
+export function initNametags(showSelf) {
 	var nametags = {};
 
 	function getUsers(resolve) {
@@ -134,6 +134,10 @@ export function initNametags() {
 			if (id==null) return;
 			updateUserLocal(id);
 		});
+
+		if (showSelf) {
+			updateUserLocal(MyAvatar.sessionUUID);
+		}
 	}
 
 	function updateUsersAPI() {

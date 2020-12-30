@@ -6,9 +6,13 @@ import { initNametags } from "./nametags";
 import { Optimize } from "./optimize";
 import { Overview } from "./overview";
 
-const tryInit = <T>(func: () => T) => {
+const tryInit = <T>(func: (a?: any) => T, a?: any) => {
 	try {
-		return func();
+		if (a) {
+			return func(a);
+		} else {
+			return func();
+		}
 	} catch (err) {
 		console.error(err);
 	}
@@ -27,6 +31,7 @@ class Tivoli {
 
 	nametags: { cleanup: () => any } = null;
 	nametagsEnabled = Render.getNametagsEnabled();
+	nametagsShowSelf = Render.getNametagsShowSelf();
 
 	private forceRemoveScript(scriptFilename: string) {
 		const runningScripts = ScriptDiscoveryService.getRunning();
@@ -47,16 +52,30 @@ class Tivoli {
 		);
 
 		// TODO: finish rewriting nametags to typescript with qml for tags
-		if (this.nametagsEnabled) this.nametags = tryInit(initNametags);
+		if (this.nametagsEnabled)
+			this.nametags = tryInit(initNametags, this.nametagsShowSelf);
 		this.signals.connect(Render.settingsChanged, () => {
 			if (Render.getNametagsEnabled()) {
 				if (!this.nametagsEnabled) {
-					this.nametags = tryInit(initNametags);
+					this.nametags = tryInit(
+						initNametags,
+						this.nametagsShowSelf,
+					);
 					this.nametagsEnabled = true;
+				} else {
+					if (Render.getNametagsShowSelf() != this.nametagsShowSelf) {
+						this.nametagsShowSelf = Render.getNametagsShowSelf();
+						if (this.nametags) this.nametags.cleanup();
+						this.nametags = tryInit(
+							initNametags,
+							this.nametagsShowSelf,
+						);
+					}
 				}
 			} else {
 				if (this.nametagsEnabled) {
-					this.nametags.cleanup();
+					if (this.nametags) this.nametags.cleanup();
+					this.nametags = null;
 					this.nametagsEnabled = false;
 				}
 			}
@@ -73,6 +92,8 @@ class Tivoli {
 
 		if (this.chat) this.chat.cleanup();
 		if (this.overview) this.overview.cleanup();
+
+		if (this.nametags) this.nametags.cleanup();
 
 		this.signals.cleanup();
 	};
