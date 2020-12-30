@@ -352,8 +352,10 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
             auto v = mMesh->mVertices[vertexIndex];
             meshPtr->vertices.push_back(asVec3(v));
 
-            auto n = mMesh->mNormals[vertexIndex];
-            meshPtr->normals.push_back(asVec3(n));
+            if (mMesh->HasNormals()) {
+                auto n = mMesh->mNormals[vertexIndex];
+                meshPtr->normals.push_back(asVec3(n));
+            }
 
             if (mMesh->HasTangentsAndBitangents()) {
                 auto t = mMesh->mTangents[vertexIndex];
@@ -424,7 +426,11 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
                 
                 for (size_t vertexIndex = 0; vertexIndex < animMesh->mNumVertices; vertexIndex++) {
                     auto v = (asVec3(animMesh->mVertices[vertexIndex]) - asVec3(mMesh->mVertices[vertexIndex])) * weight;
-                    auto n = (asVec3(animMesh->mNormals[vertexIndex]) - asVec3(mMesh->mNormals[vertexIndex])) * weight;
+
+                    auto n = animMesh->HasNormals() ?
+                        (asVec3(animMesh->mNormals[vertexIndex]) - asVec3(mMesh->mNormals[vertexIndex])) * weight :
+                        vec3(0.0f);
+
                     auto t = animMesh->HasTangentsAndBitangents() ?
                         (asVec3(animMesh->mTangents[vertexIndex]) - asVec3(mMesh->mTangents[vertexIndex])) * weight :
                         vec3(0.0f);
@@ -436,15 +442,12 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
                     blendshapePtr->indices.push_back(vertexIndex);
                     
                     blendshapePtr->vertices.push_back(v);
-                    blendshapePtr->normals.push_back(n);
-                    if (animMesh->HasTangentsAndBitangents()) {
-                        blendshapePtr->tangents.push_back(t);
-                    }
+                    if (animMesh->HasNormals()) blendshapePtr->normals.push_back(n);
+                    if (animMesh->HasTangentsAndBitangents()) blendshapePtr->tangents.push_back(t);
                 }
             }
         }
     }
-}
 }
 
 void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
@@ -477,6 +480,18 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     // for all meshes in node, create shape
     for (size_t i = 0; i < aiNode->mNumMeshes; i++) {
         auto meshIndex = aiNode->mMeshes[i];
+        hfm::Mesh* mesh = &hfmModel->meshes[meshIndex];
+
+        // no verticies and indices causes segfault
+        if (mesh->vertices.size() == 0) continue;
+        bool hasIndicies = false;
+        for (auto part : mesh->parts) {
+            if (part.triangleIndices.size() > 0) {
+                hasIndicies = true;
+                break;
+            }
+        }
+        if (!hasIndicies) continue;
 
         hfmModel->shapes.emplace_back();
         hfm::Shape* shapePtr = &hfmModel->shapes.back();
@@ -486,7 +501,7 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
         shapePtr->meshPart = 0;
 
         // TODO: fixes bounding box? seems not for https://files.tivolicloud.com/caitlyn/fun/cu-cat/cu-cat.glb
-        hfmModel->meshes[meshIndex].modelTransform = nodePtr->globalTransform;
+        mesh->modelTransform = nodePtr->globalTransform;
 
         auto materialIndex = scene->mMeshes[meshIndex]->mMaterialIndex;
         if (materialIndex < hfmModel->materials.size()) {
@@ -545,6 +560,10 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     
     if (!scene) {
         qCDebug(modelformat) << "AssimpSerializer::read Error parsing model file"<<importer.GetErrorString();
+        return nullptr;
+    }
+    if (scene->mNumMeshes == 0) {
+        qCDebug(modelformat) << "AssimpSerializer::read No meshes in model"<<importer.GetErrorString();
         return nullptr;
     }
 
