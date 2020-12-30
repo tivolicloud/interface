@@ -96,6 +96,13 @@ declare namespace MyAvatar {
 		orientation?: Quat,
 		shouldFaceLocation?: boolean,
 	): void;
+	function goToLocation(
+		position: Vec3,
+		hasOrientation?: boolean,
+		orientation?: Quat,
+		shouldFaceLocation?: boolean,
+		withSafeLanding?: boolean,
+	): void;
 	function overrideAnimation(
 		url: string,
 		fps: number,
