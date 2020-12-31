@@ -19,6 +19,7 @@
 #include <QThreadPool>
 #include <QDataStream>
 #include <QtCore/QDebug>
+#include <QtCore/QFileInfo>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <qendian.h>
@@ -30,6 +31,7 @@
 #include "AudioRingBuffer.h"
 #include "AudioLogging.h"
 #include "AudioSRC.h"
+#include "SndfileConverter.h"
 
 #include "flump3dec.h"
 
@@ -115,34 +117,36 @@ void SoundProcessor::run() {
     QString fileName = url.fileName().toLower();
     qCDebug(audio) << "Processing sound file" << fileName;
 
-    static const QString WAV_EXTENSION = ".wav";
-    static const QString MP3_EXTENSION = ".mp3";
-    static const QString RAW_EXTENSION = ".raw";
-    static const QString STEREO_RAW_EXTENSION = ".stereo.raw";
-    QString fileType;
-
     QByteArray outputAudioByteArray;
     AudioProperties properties;
 
-    if (fileName.endsWith(WAV_EXTENSION)) {
-        fileType = "WAV";
+    QString ext = QFileInfo(fileName).suffix();
+    if (fileName.endsWith(".stereo.raw")) {
+        ext = "stereo.raw";
+    }
+
+    SndfileConverter converter;
+    auto converterExts = converter.getAvailableExtensions();
+
+    if (ext == "wav") {
         properties = interpretAsWav(_data, outputAudioByteArray);
-    } else if (fileName.endsWith(MP3_EXTENSION)) {
-        fileType = "MP3";
+    } else if (ext == "mp3") {
         properties = interpretAsMP3(_data, outputAudioByteArray);
-    } else if (fileName.endsWith(STEREO_RAW_EXTENSION)) {
-        // check if this was a stereo raw file
-        // since it's raw the only way for us to know that is if the file was called .stereo.raw
+    } else if (ext == "stereo.raw") {
         qCDebug(audio) << "Processing sound of" << _data.size() << "bytes from" << fileName << "as stereo audio file.";
-        // Process as 48khz RAW file
         properties.numChannels = 2;
         properties.sampleRate = 48000;
         outputAudioByteArray = _data;
-    } else if (fileName.endsWith(RAW_EXTENSION)) {
-        // Process as 48khz RAW file
+    } else if (ext == "raw") {
         properties.numChannels = 1;
         properties.sampleRate = 48000;
         outputAudioByteArray = _data;
+    } else if (converterExts.contains(ext)) {
+        auto output = converter.convertToPcm(_data);
+        if (!output.first.isEmpty()) {
+            outputAudioByteArray = output.first;
+            properties = output.second;
+        }
     } else {
         qCWarning(audio) << "Unknown sound file type";
         emit onError(300, "Failed to load sound file, reason: unknown sound file type");
@@ -150,8 +154,8 @@ void SoundProcessor::run() {
     }
 
     if (properties.sampleRate == 0) {
-        qCWarning(audio) << "Unsupported" << fileType << "file type";
-        emit onError(300, "Failed to load sound file, reason: unsupported " + fileType + " file type");
+        qCWarning(audio) << "Unsupported" << ext.toUpper() << "file type";
+        emit onError(300, "Failed to load sound file, reason: unsupported " + ext.toUpper() + " file type");
         return;
     }
 

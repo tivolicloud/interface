@@ -126,7 +126,8 @@ typedef QSharedPointer<Sound> SharedSoundPointer;
  * <ul>
  *   <li>WAV: 16-bit uncompressed at any sample rate, with 1 (mono), 2 (stereo), or 4 (ambisonic) channels.</li>
  *   <li>MP3: Mono or stereo, at any sample rate.</li>
- *   <li>RAW: 48khz 16-bit mono or stereo. File name must include <code>".stereo"</code> to be interpreted as stereo.</li>
+ *   <li>RAW: 48khz 16-bit mono or stereo. File name must end with <code>".stereo.raw"</code> to be interpreted as stereo.</li>
+ *   <li>OGG, FLAC, AIFF and any available from https://github.com/libsndfile/libsndfile/blob/v1.0.30/src/command.c#L122</li>
  * </ul>
  *
  * @class SoundObject
