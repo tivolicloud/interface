@@ -1,11 +1,9 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO assimp/assimp
-    REF 404bedd8beeb14e3f1efee036b4d029c56dd3dc9
-    SHA512 c5f80dd0c0efebd18719885f10213ded8f993f76ed6657105e276a4ab4b18d8ad8afc05cc850fe6be10832df5d6631efc45b2ca5d4e169e85ac481012faca8af
+    REF 88e5f3416e5604bd3f1841c064c3b9d87f01e1cd
+    SHA512 485f7d200041bc330de1fe377f562796c399342ba6a17a97e5e77adbf754d97b60dc8488f1beefe1ba3b3d424421cf8c609ed103916b36f5567e81f66e1cd717
     HEAD_REF master
-    PATCHES
-        fix-gltf-bin-from-memory.patch
 )
 
 set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
@@ -23,6 +21,7 @@ vcpkg_configure_cmake(
             -DASSIMP_BUILD_ZLIB=ON
             -DASSIMP_INSTALL_PDB=OFF
             -DASSIMP_IGNORE_GIT_HASH=ON
+            -DASSIMP_NO_EXPORT=ON
 )
 
 vcpkg_install_cmake()

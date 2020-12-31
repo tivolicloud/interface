@@ -1,5 +1,5 @@
 Source: assimp
-Version: 2020-12-25
+Version: 88e5f3416e5604bd3f1841c064c3b9d87f01e1cd
 Port-Version: 1
 Homepage: https://github.com/assimp/assimp
 Description: The Open Asset import library
