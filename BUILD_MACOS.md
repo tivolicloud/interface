@@ -4,9 +4,21 @@
 
 Download and install these programs:
 
--   **Xcode**
+-   **Xcode 11.4 or higher**
 
-    You can find Xcode on the **App Store**.
+    You can try to use the **latest Xcode** from the **App Store** but internally we use **Xcode 11.4**
+
+    -   Visit https://developer.apple.com/xcode/resources
+    -   Scroll down to **Additional Downloads** and click **Older Versions of Xcode**
+    -   Sign in with your Apple account
+    -   Scroll down to **Xcode 11.4**, download and extract it
+    -   Move to **Xcode** to **Applications** and remove the .xip
+
+    When installed, run `xcode-select`:
+
+    ```bash
+    sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+    ```
 
 -   **MacOSX 10.13 SDK**
 
