@@ -17,7 +17,7 @@
 #include <stdint.h>
 
 namespace AudioConstants {
-    const int SAMPLE_RATE = 24000;
+    const int SAMPLE_RATE = 44100;
     const int MONO = 1;
     const int STEREO = 2;
     const int AMBISONIC = 4;
