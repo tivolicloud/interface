@@ -106,8 +106,6 @@ public:
                           AudioProperties properties);
     AudioProperties interpretAsWav(const QByteArray& inputAudioByteArray,
                                    QByteArray& outputAudioByteArray);
-    AudioProperties interpretAsMP3(const QByteArray& inputAudioByteArray,
-                                   QByteArray& outputAudioByteArray);
 
 signals:
     void onSuccess(AudioDataPointer audioData);

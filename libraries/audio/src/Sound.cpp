@@ -33,8 +33,6 @@
 #include "AudioSRC.h"
 #include "SndfileConverter.h"
 
-#include "flump3dec.h"
-
 int audioDataPointerMetaTypeID = qRegisterMetaType<AudioDataPointer>("AudioDataPointer");
 
 using AudioConstants::AudioSample;
@@ -130,8 +128,6 @@ void SoundProcessor::run() {
 
     if (ext == "wav") {
         properties = interpretAsWav(_data, outputAudioByteArray);
-    } else if (ext == "mp3") {
-        properties = interpretAsMP3(_data, outputAudioByteArray);
     } else if (ext == "stereo.raw") {
         qCDebug(audio) << "Processing sound of" << _data.size() << "bytes from" << fileName << "as stereo audio file.";
         properties.numChannels = 2;
@@ -336,95 +332,6 @@ SoundProcessor::AudioProperties SoundProcessor::interpretAsWav(const QByteArray&
     properties.sampleRate = wave.sampleRate;
     return properties;
 }
-
-// returns MP3 sample rate, used for resampling
-SoundProcessor::AudioProperties SoundProcessor::interpretAsMP3(const QByteArray& inputAudioByteArray,
-                                                               QByteArray& outputAudioByteArray) {
-    AudioProperties properties;
-
-    using namespace flump3dec;
-
-    static const int MP3_SAMPLES_MAX = 1152;
-    static const int MP3_CHANNELS_MAX = 2;
-    static const int MP3_BUFFER_SIZE = MP3_SAMPLES_MAX * MP3_CHANNELS_MAX * sizeof(int16_t);
-    uint8_t mp3Buffer[MP3_BUFFER_SIZE];
-
-    // create bitstream
-    Bit_stream_struc *bitstream = bs_new();
-    if (bitstream == nullptr) {
-        return AudioProperties();
-    }
-
-    // create decoder
-    mp3tl *decoder = mp3tl_new(bitstream, MP3TL_MODE_16BIT);
-    if (decoder == nullptr) {
-        bs_free(bitstream);
-        return AudioProperties();
-    }
-
-    // initialize
-    bs_set_data(bitstream, (uint8_t*)inputAudioByteArray.data(), inputAudioByteArray.size());
-    int frameCount = 0;
-
-    // skip ID3 tag, if present
-    Mp3TlRetcode result = mp3tl_skip_id3(decoder);
-
-    while (!(result == MP3TL_ERR_NO_SYNC || result == MP3TL_ERR_NEED_DATA)) {
-
-        mp3tl_sync(decoder);
-
-        // find MP3 header
-        const fr_header *header = nullptr;
-        result = mp3tl_decode_header(decoder, &header);
-
-        if (result == MP3TL_ERR_OK) {
-
-            if (frameCount++ == 0) {
-
-                qCDebug(audio) << "Decoding MP3 with bitrate =" << header->bitrate
-                               << "sample rate =" << header->sample_rate
-                               << "channels =" << header->channels;
-
-                // save header info
-                properties.sampleRate = header->sample_rate;
-                properties.numChannels = header->channels;
-
-                // skip Xing header, if present
-                result = mp3tl_skip_xing(decoder, header);
-            }
-
-            // decode MP3 frame
-            if (result == MP3TL_ERR_OK) {
-
-                result = mp3tl_decode_frame(decoder, mp3Buffer, MP3_BUFFER_SIZE);
-
-                // fill bad frames with silence
-                int len = header->frame_samples * header->channels * sizeof(int16_t);
-                if (result == MP3TL_ERR_BAD_FRAME) {
-                    memset(mp3Buffer, 0, len);
-                }
-
-                if (result == MP3TL_ERR_OK || result == MP3TL_ERR_BAD_FRAME) {
-                    outputAudioByteArray.append((char*)mp3Buffer, len);
-                }
-            }
-        }
-    }
-
-    // free decoder
-    mp3tl_free(decoder);
-
-    // free bitstream
-    bs_free(bitstream);
-
-    if (outputAudioByteArray.isEmpty()) {
-        qCWarning(audio) << "Error decoding MP3 file";
-        return AudioProperties();
-    }
-
-    return properties;
-}
-
 
 QScriptValue soundSharedPointerToScriptValue(QScriptEngine* engine, const SharedSoundPointer& in) {
     return engine->newQObject(new SoundScriptingInterface(in), QScriptEngine::ScriptOwnership);

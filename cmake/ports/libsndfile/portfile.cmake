@@ -1,11 +1,13 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libsndfile/libsndfile
-    REF 68958f9c9199dad97dcd10700df3746b2cd9b8a3 # v1.0.30
-    SHA512 4f2af061af5d5b26106ed11e33f04930a57c79ca0e18ef5fe32255c3f555bfa7b9192db7ff0f34f782d85b2ee40662182073e1abf4a73f448c47b67c26bb5b53
+    REF d03045b014c12ac0ea4187462d75edced1dfc0b3
+    SHA512 59156dd0dab6047a4476536b1d81ed1a531ba165a77ddb6d25339cad024697db1ea90440792b9b076bc0452667ca5f1068c414682101cefb2268e2893bdf8486
     HEAD_REF master
     PATCHES
         oga-to-ogg.patch
+        499.patch
+        add-mp3-to-major-formats.patch
 )
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
@@ -27,6 +29,10 @@ vcpkg_configure_cmake(
         -DBUILD_PROGRAMS=OFF
         -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON
         -DPYTHON_EXECUTABLE=${PYTHON3}
+        -DENABLE_MPEG=ON
+        -DLAME_ROOT:PATH=${CURRENT_INSTALLED_DIR}/include;${CURRENT_INSTALLED_DIR}/lib
+        -DMPG123_ROOT:PATH=${CURRENT_INSTALLED_DIR}/include;${CURRENT_INSTALLED_DIR}/lib
+        -DHAVE_MPEG:BOOL=ON
         ${FEATURE_OPTIONS}
 )
 
