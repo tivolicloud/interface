@@ -23,16 +23,20 @@ if (VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     set(MPG123_CONFIGURATION_SUFFIX _Dll)
 endif()
 
-vcpkg_from_sourceforge(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO mpg123/mpg123
-    REF ${MPG123_VERSION}
-    FILENAME "mpg123-${MPG123_VERSION}.tar.bz2"
-    SHA512 ${MPG123_HASH}
-    PATCHES
-        0001-fix-x86-build.patch
-)
+if (NOT VCPKG_TARGET_IS_WINDOWS)
+    vcpkg_from_sourceforge(
+        OUT_SOURCE_PATH SOURCE_PATH
+        REPO mpg123/mpg123
+        REF ${MPG123_VERSION}
+        FILENAME "mpg123-${MPG123_VERSION}.tar.bz2"
+        SHA512 ${MPG123_HASH}
+        PATCHES
+            0001-fix-x86-build.patch
+    )
+endif()
 
+# include(${CURRENT_INSTALLED_DIR}/share/yasm-tool-helper/yasm-tool-helper.cmake)
+# yasm_tool_helper(APPEND_TO_PATH)
 
 if(VCPKG_TARGET_IS_UWP)
     vcpkg_install_msbuild(
@@ -50,19 +54,38 @@ if(VCPKG_TARGET_IS_UWP)
         DESTINATION ${CURRENT_PACKAGES_DIR}/include
     )
 elseif(VCPKG_TARGET_IS_WINDOWS)
-    vcpkg_install_msbuild(
-        SOURCE_PATH ${SOURCE_PATH}
-        PROJECT_SUBPATH ports/MSVC++/2015/win32/libmpg123/libmpg123.vcxproj
-        OPTIONS /p:UseEnv=True
-        RELEASE_CONFIGURATION Release${MPG123_CONFIGURATION}${MPG123_CONFIGURATION_SUFFIX}
-        DEBUG_CONFIGURATION Debug${MPG123_CONFIGURATION}${MPG123_CONFIGURATION_SUFFIX}
+    # vcpkg_install_msbuild(
+    #     SOURCE_PATH ${SOURCE_PATH}
+    #     PROJECT_SUBPATH ports/MSVC++/2015/win32/libmpg123/libmpg123.vcxproj
+    #     OPTIONS /p:UseEnv=True
+    #     RELEASE_CONFIGURATION Release${MPG123_CONFIGURATION}${MPG123_CONFIGURATION_SUFFIX}
+    #     DEBUG_CONFIGURATION Debug${MPG123_CONFIGURATION}${MPG123_CONFIGURATION_SUFFIX}
+    # )
+    # file(INSTALL
+    #     ${SOURCE_PATH}/ports/MSVC++/mpg123.h
+    #     ${SOURCE_PATH}/src/libmpg123/fmt123.h
+    #     ${SOURCE_PATH}/src/libmpg123/mpg123.h.in
+    #     DESTINATION ${CURRENT_PACKAGES_DIR}/include
+    # )
+
+    vcpkg_download_distfile(
+		MPG123_ARCHIVE
+		URLS https://cdn.tivolicloud.com/dependencies/mpg123-${MPG123_VERSION}-windows.zip
+		SHA512 ef946260f4444713e8967635e76fcca7cb53c1ab645b38a0455e5cda6658a3a304622a037db2fe0d46d4e2c54d5dede28eaaec3441099078d0da80819535fec1
+		FILENAME mpg123-${MPG123_VERSION}-windows.zip
     )
-    file(INSTALL
-        ${SOURCE_PATH}/ports/MSVC++/mpg123.h
-        ${SOURCE_PATH}/src/libmpg123/fmt123.h
-        ${SOURCE_PATH}/src/libmpg123/mpg123.h.in
-        DESTINATION ${CURRENT_PACKAGES_DIR}/include
+    
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH MPG123_EXTRACTED
+        ARCHIVE ${MPG123_ARCHIVE}
     )
+
+    file(INSTALL ${MPG123_EXTRACTED}/bin/ DESTINATION ${CURRENT_PACKAGES_DIR}/bin)
+    file(INSTALL ${MPG123_EXTRACTED}/debug/ DESTINATION ${CURRENT_PACKAGES_DIR}/debug)
+    file(INSTALL ${MPG123_EXTRACTED}/include/ DESTINATION ${CURRENT_PACKAGES_DIR}/include)
+    file(INSTALL ${MPG123_EXTRACTED}/lib/ DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
+    file(INSTALL ${MPG123_EXTRACTED}/share/ DESTINATION ${CURRENT_PACKAGES_DIR}/share)
+
 elseif(VCPKG_TARGET_IS_OSX OR VCPKG_TARGET_IS_LINUX)
     set(MPG123_OPTIONS
         --disable-dependency-tracking
@@ -97,6 +120,8 @@ elseif(VCPKG_TARGET_IS_OSX OR VCPKG_TARGET_IS_LINUX)
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 endif()
 
-file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+if (NOT VCPKG_TARGET_IS_WINDOWS)
+    file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+endif()
 
 message(STATUS "Installing done")

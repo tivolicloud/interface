@@ -23,12 +23,12 @@ macro(TARGET_LIBSNDFILE)
     find_library(OPUS_LIBRARY_DEBUG opus PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
     select_library_configurations(OPUS)
 
-    find_library(MPG123_LIBRARY_RELEASE mpg123 PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
-    find_library(MPG123_LIBRARY_DEBUG mpg123 PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+    find_library(MPG123_LIBRARY_RELEASE mpg123 libmpg123 PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+    find_library(MPG123_LIBRARY_DEBUG mpg123 libmpg123 PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
     select_library_configurations(MPG123)
 
-    find_library(MP3LAME_LIBRARY_RELEASE mp3lame PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
-    find_library(MP3LAME_LIBRARY_DEBUG mp3lame PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
+    find_library(MP3LAME_LIBRARY_RELEASE mp3lame libmp3lame PATHS ${VCPKG_INSTALL_ROOT}/lib NO_DEFAULT_PATH)
+    find_library(MP3LAME_LIBRARY_DEBUG mp3lame libmp3lame PATHS ${VCPKG_INSTALL_ROOT}/debug/lib NO_DEFAULT_PATH)
     select_library_configurations(MP3LAME)
 
     target_link_libraries(${TARGET_NAME}

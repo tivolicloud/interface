@@ -10,6 +10,14 @@ vcpkg_from_github(
         add-mp3-to-major-formats.patch
 )
 
+if(VCPKG_TARGET_IS_WINDOWS)
+    vcpkg_apply_patches(
+        SOURCE_PATH ${SOURCE_PATH}
+        PATCHES
+            fix-unknown-char-0x40-mpeg-decode.patch
+    )
+endif()
+
 if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     vcpkg_find_acquire_program(PYTHON3)
 endif()
