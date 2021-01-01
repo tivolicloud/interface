@@ -104,10 +104,6 @@ public:
 
     QByteArray downSample(const QByteArray& rawAudioByteArray,
                           AudioProperties properties);
-    AudioProperties interpretAsWav(const QByteArray& inputAudioByteArray,
-                                   QByteArray& outputAudioByteArray);
-    AudioProperties interpretAsMP3(const QByteArray& inputAudioByteArray,
-                                   QByteArray& outputAudioByteArray);
 
 signals:
     void onSuccess(AudioDataPointer audioData);
@@ -122,11 +118,11 @@ typedef QSharedPointer<Sound> SharedSoundPointer;
 
 /**jsdoc
  * An audio resource, created by {@link SoundCache.getSound}, to be played back using {@link Audio.playSound}.
- * <p>Supported formats:</p>
+ * <p>Supported file formats:</p>
  * <ul>
- *   <li>WAV: 16-bit uncompressed at any sample rate, with 1 (mono), 2 (stereo), or 4 (ambisonic) channels.</li>
- *   <li>MP3: Mono or stereo, at any sample rate.</li>
- *   <li>RAW: 48khz 16-bit mono or stereo. File name must include <code>".stereo"</code> to be interpreted as stereo.</li>
+ *   <li><b><code>*.wav</code></b>, <b><code>*.mp3</code></b>, <b><code>*.ogg</code></b>, <b><code>*.flac</code></b>, <b><code>*.aiff</code></b> and <a target="_blank" href="https://github.com/libsndfile/libsndfile/blob/v1.0.30/src/command.c#L122">any available from here</a></li>
+ *   <li><b><code>*.raw</code></b> as 48 kHz 16-bit mono</li>
+ *   <li><b><code>*.stereo.raw</code></b> as 48 kHz 16-bit stereo</li>
  * </ul>
  *
  * @class SoundObject

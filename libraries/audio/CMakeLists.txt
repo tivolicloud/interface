@@ -6,3 +6,5 @@ if (ANDROID)
 endif ()
 
 link_hifi_libraries(networking shared plugins)
+
+target_libsndfile()

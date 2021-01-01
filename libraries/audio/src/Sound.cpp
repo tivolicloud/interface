@@ -19,6 +19,7 @@
 #include <QThreadPool>
 #include <QDataStream>
 #include <QtCore/QDebug>
+#include <QtCore/QFileInfo>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <qendian.h>
@@ -30,8 +31,7 @@
 #include "AudioRingBuffer.h"
 #include "AudioLogging.h"
 #include "AudioSRC.h"
-
-#include "flump3dec.h"
+#include "SndfileConverter.h"
 
 int audioDataPointerMetaTypeID = qRegisterMetaType<AudioDataPointer>("AudioDataPointer");
 
@@ -115,34 +115,32 @@ void SoundProcessor::run() {
     QString fileName = url.fileName().toLower();
     qCDebug(audio) << "Processing sound file" << fileName;
 
-    static const QString WAV_EXTENSION = ".wav";
-    static const QString MP3_EXTENSION = ".mp3";
-    static const QString RAW_EXTENSION = ".raw";
-    static const QString STEREO_RAW_EXTENSION = ".stereo.raw";
-    QString fileType;
-
     QByteArray outputAudioByteArray;
     AudioProperties properties;
 
-    if (fileName.endsWith(WAV_EXTENSION)) {
-        fileType = "WAV";
-        properties = interpretAsWav(_data, outputAudioByteArray);
-    } else if (fileName.endsWith(MP3_EXTENSION)) {
-        fileType = "MP3";
-        properties = interpretAsMP3(_data, outputAudioByteArray);
-    } else if (fileName.endsWith(STEREO_RAW_EXTENSION)) {
-        // check if this was a stereo raw file
-        // since it's raw the only way for us to know that is if the file was called .stereo.raw
+    QString ext = QFileInfo(fileName).suffix();
+    if (fileName.endsWith(".stereo.raw")) {
+        ext = "stereo.raw";
+    }
+
+    SndfileConverter converter;
+    auto converterExts = converter.getAvailableExtensions();
+
+    if (ext == "stereo.raw") {
         qCDebug(audio) << "Processing sound of" << _data.size() << "bytes from" << fileName << "as stereo audio file.";
-        // Process as 48khz RAW file
         properties.numChannels = 2;
         properties.sampleRate = 48000;
         outputAudioByteArray = _data;
-    } else if (fileName.endsWith(RAW_EXTENSION)) {
-        // Process as 48khz RAW file
+    } else if (ext == "raw") {
         properties.numChannels = 1;
         properties.sampleRate = 48000;
         outputAudioByteArray = _data;
+    } else if (converterExts.contains(ext)) {
+        auto output = converter.convertToPcm(_data);
+        if (!output.first.isEmpty()) {
+            outputAudioByteArray = output.first;
+            properties = output.second;
+        }
     } else {
         qCWarning(audio) << "Unknown sound file type";
         emit onError(300, "Failed to load sound file, reason: unknown sound file type");
@@ -150,8 +148,8 @@ void SoundProcessor::run() {
     }
 
     if (properties.sampleRate == 0) {
-        qCWarning(audio) << "Unsupported" << fileType << "file type";
-        emit onError(300, "Failed to load sound file, reason: unsupported " + fileType + " file type");
+        qCWarning(audio) << "Unsupported" << ext.toUpper() << "file type";
+        emit onError(300, "Failed to load sound file, reason: unsupported " + ext.toUpper() + " file type");
         return;
     }
 
@@ -193,234 +191,6 @@ QByteArray SoundProcessor::downSample(const QByteArray& rawAudioByteArray,
 
     return data;
 }
-
-//
-// Format description from https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
-//
-// The header for a WAV file looks like this:
-// Positions     Sample Value     Description
-//   00-03         "RIFF"       Marks the file as a riff file. Characters are each 1 byte long.
-//   04-07         File size (int) Size of the overall file - 8 bytes, in bytes (32-bit integer).
-//   08-11         "WAVE"       File Type Header. For our purposes, it always equals "WAVE".
-//   12-15         "fmt "       Format chunk marker.
-//   16-19         16           Length of format data as listed above
-//   20-21         1            Type of format: (1=PCM, 257=Mu-Law, 258=A-Law, 259=ADPCM) - 2 byte integer
-//   22-23         2            Number of Channels - 2 byte integer
-//   24-27         44100        Sample Rate - 32 byte integer. Sample Rate = Number of Samples per second, or Hertz.
-//   28-31         176400       (Sample Rate * BitsPerSample * Channels) / 8.
-//   32-33         4            (BitsPerSample * Channels) / 8 - 8 bit mono2 - 8 bit stereo/16 bit mono4 - 16 bit stereo
-//   34-35         16           Bits per sample
-//   36-39         "data"       Chunk header. Marks the beginning of the data section.
-//   40-43         File size (int) Size of the data section.
-//   44-??                      Actual sound data
-// Sample values are given above for a 16-bit stereo source.
-//
-
-struct chunk {
-    char        id[4];
-    quint32     size;
-};
-
-struct RIFFHeader {
-    chunk       descriptor;     // "RIFF"
-    char        type[4];        // "WAVE"
-};
-
-static const int WAVEFORMAT_PCM = 1;
-static const int WAVEFORMAT_EXTENSIBLE = 0xfffe;
-
-struct WAVEFormat {
-    quint16     audioFormat;    // Format type: 1=PCM, 257=Mu-Law, 258=A-Law, 259=ADPCM
-    quint16     numChannels;    // Number of channels: 1=mono, 2=stereo
-    quint32     sampleRate;
-    quint32     byteRate;       // Sample rate * Number of Channels * Bits per sample / 8
-    quint16     blockAlign;     // (Number of Channels * Bits per sample) / 8.1
-    quint16     bitsPerSample;
-};
-
-// returns wavfile sample rate, used for resampling
-SoundProcessor::AudioProperties SoundProcessor::interpretAsWav(const QByteArray& inputAudioByteArray,
-                                                               QByteArray& outputAudioByteArray) {
-    AudioProperties properties;
-
-    // Create a data stream to analyze the data
-    QDataStream waveStream(const_cast<QByteArray *>(&inputAudioByteArray), QIODevice::ReadOnly);
-
-    // Read the "RIFF" chunk
-    RIFFHeader riff;
-    if (waveStream.readRawData((char*)&riff, sizeof(RIFFHeader)) != sizeof(RIFFHeader)) {
-        qCWarning(audio) << "Not a valid WAVE file.";
-        return AudioProperties();
-    }
-
-    // Parse the "RIFF" chunk
-    if (strncmp(riff.descriptor.id, "RIFF", 4) == 0) {
-        waveStream.setByteOrder(QDataStream::LittleEndian);
-    } else {
-        qCWarning(audio) << "Currently not supporting big-endian audio files.";
-        return AudioProperties();
-    }
-    if (strncmp(riff.type, "WAVE", 4) != 0) {
-        qCWarning(audio) << "Not a valid WAVE file.";
-        return AudioProperties();
-    }
-
-    // Read chunks until the "fmt " chunk is found
-    chunk fmt;
-    while (true) {
-        if (waveStream.readRawData((char*)&fmt, sizeof(chunk)) != sizeof(chunk)) {
-            qCWarning(audio) << "Not a valid WAVE file.";
-            return AudioProperties();
-        }
-        if (strncmp(fmt.id, "fmt ", 4) == 0) {
-            break;
-        }
-        waveStream.skipRawData(qFromLittleEndian<quint32>(fmt.size));   // next chunk
-    }
-
-    // Read the "fmt " chunk
-    WAVEFormat wave;
-    if (waveStream.readRawData((char*)&wave, sizeof(WAVEFormat)) != sizeof(WAVEFormat)) {
-        qCWarning(audio) << "Not a valid WAVE file.";
-        return AudioProperties();
-    }
-
-    // Parse the "fmt " chunk
-    if (qFromLittleEndian<quint16>(wave.audioFormat) != WAVEFORMAT_PCM &&
-        qFromLittleEndian<quint16>(wave.audioFormat) != WAVEFORMAT_EXTENSIBLE) {
-        qCWarning(audio) << "Currently not supporting non PCM audio files.";
-        return AudioProperties();
-    }
-
-    properties.numChannels = qFromLittleEndian<quint16>(wave.numChannels);
-    if (properties.numChannels != 1 &&
-        properties.numChannels != 2 &&
-        properties.numChannels != 4) {
-        qCWarning(audio) << "Currently not supporting audio files with other than 1/2/4 channels.";
-        return AudioProperties();
-    }
-    if (qFromLittleEndian<quint16>(wave.bitsPerSample) != 16) {
-        qCWarning(audio) << "Currently not supporting non 16bit audio files.";
-        return AudioProperties();
-    }
-
-    // Skip any extra data in the "fmt " chunk
-    waveStream.skipRawData(qFromLittleEndian<quint32>(fmt.size) - sizeof(WAVEFormat));
-
-    // Read chunks until the "data" chunk is found
-    chunk data;
-    while (true) {
-        if (waveStream.readRawData((char*)&data, sizeof(chunk)) != sizeof(chunk)) {
-            qCWarning(audio) << "Not a valid WAVE file.";
-            return AudioProperties();
-        }
-        if (strncmp(data.id, "data", 4) == 0) {
-            break;
-        }
-        waveStream.skipRawData(qFromLittleEndian<quint32>(data.size));  // next chunk
-    }
-
-    // Read the "data" chunk
-    quint32 outputAudioByteArraySize = qFromLittleEndian<quint32>(data.size);
-    outputAudioByteArray.resize(outputAudioByteArraySize);
-    auto bytesRead = waveStream.readRawData(outputAudioByteArray.data(), outputAudioByteArraySize);
-    if (bytesRead != (int)outputAudioByteArraySize) {
-        qCWarning(audio) << "Error reading WAV file";
-        return AudioProperties();
-    }
-
-    properties.sampleRate = wave.sampleRate;
-    return properties;
-}
-
-// returns MP3 sample rate, used for resampling
-SoundProcessor::AudioProperties SoundProcessor::interpretAsMP3(const QByteArray& inputAudioByteArray,
-                                                               QByteArray& outputAudioByteArray) {
-    AudioProperties properties;
-
-    using namespace flump3dec;
-
-    static const int MP3_SAMPLES_MAX = 1152;
-    static const int MP3_CHANNELS_MAX = 2;
-    static const int MP3_BUFFER_SIZE = MP3_SAMPLES_MAX * MP3_CHANNELS_MAX * sizeof(int16_t);
-    uint8_t mp3Buffer[MP3_BUFFER_SIZE];
-
-    // create bitstream
-    Bit_stream_struc *bitstream = bs_new();
-    if (bitstream == nullptr) {
-        return AudioProperties();
-    }
-
-    // create decoder
-    mp3tl *decoder = mp3tl_new(bitstream, MP3TL_MODE_16BIT);
-    if (decoder == nullptr) {
-        bs_free(bitstream);
-        return AudioProperties();
-    }
-
-    // initialize
-    bs_set_data(bitstream, (uint8_t*)inputAudioByteArray.data(), inputAudioByteArray.size());
-    int frameCount = 0;
-
-    // skip ID3 tag, if present
-    Mp3TlRetcode result = mp3tl_skip_id3(decoder);
-
-    while (!(result == MP3TL_ERR_NO_SYNC || result == MP3TL_ERR_NEED_DATA)) {
-
-        mp3tl_sync(decoder);
-
-        // find MP3 header
-        const fr_header *header = nullptr;
-        result = mp3tl_decode_header(decoder, &header);
-
-        if (result == MP3TL_ERR_OK) {
-
-            if (frameCount++ == 0) {
-
-                qCDebug(audio) << "Decoding MP3 with bitrate =" << header->bitrate
-                               << "sample rate =" << header->sample_rate
-                               << "channels =" << header->channels;
-
-                // save header info
-                properties.sampleRate = header->sample_rate;
-                properties.numChannels = header->channels;
-
-                // skip Xing header, if present
-                result = mp3tl_skip_xing(decoder, header);
-            }
-
-            // decode MP3 frame
-            if (result == MP3TL_ERR_OK) {
-
-                result = mp3tl_decode_frame(decoder, mp3Buffer, MP3_BUFFER_SIZE);
-
-                // fill bad frames with silence
-                int len = header->frame_samples * header->channels * sizeof(int16_t);
-                if (result == MP3TL_ERR_BAD_FRAME) {
-                    memset(mp3Buffer, 0, len);
-                }
-
-                if (result == MP3TL_ERR_OK || result == MP3TL_ERR_BAD_FRAME) {
-                    outputAudioByteArray.append((char*)mp3Buffer, len);
-                }
-            }
-        }
-    }
-
-    // free decoder
-    mp3tl_free(decoder);
-
-    // free bitstream
-    bs_free(bitstream);
-
-    if (outputAudioByteArray.isEmpty()) {
-        qCWarning(audio) << "Error decoding MP3 file";
-        return AudioProperties();
-    }
-
-    return properties;
-}
-
 
 QScriptValue soundSharedPointerToScriptValue(QScriptEngine* engine, const SharedSoundPointer& in) {
     return engine->newQObject(new SoundScriptingInterface(in), QScriptEngine::ScriptOwnership);
