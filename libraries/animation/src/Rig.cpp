@@ -1063,18 +1063,18 @@ bool Rig::getRelativeDefaultJointTranslation(int index, glm::vec3& translationOu
     }
 }
 
-void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPosition, const glm::vec3& worldVelocity,
-                                      const glm::quat& worldRotation, CharacterControllerState ccState, float sensorToWorldScale) {
+void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& localPosition, const glm::vec3& localVelocity,
+                                      const glm::quat& localRotation, CharacterControllerState ccState, float sensorToWorldScale) {
 
-    glm::vec3 forward = worldRotation * IDENTITY_FORWARD;
-    glm::vec3 workingVelocity = worldVelocity;
-    _internalFlow.setTransform(sensorToWorldScale, worldPosition, worldRotation * Quaternions::Y_180);
-    _networkFlow.setTransform(sensorToWorldScale, worldPosition, worldRotation * Quaternions::Y_180);
+    glm::vec3 forward = localRotation * IDENTITY_FORWARD;
+    glm::vec3 workingVelocity = localVelocity;
+    _internalFlow.setTransform(sensorToWorldScale, localPosition, localRotation * Quaternions::Y_180);
+    _networkFlow.setTransform(sensorToWorldScale, localPosition, localRotation * Quaternions::Y_180);
     {
-        glm::vec3 localVel = glm::inverse(worldRotation) * workingVelocity;
+        glm::vec3 forwardVelocity = glm::inverse(localRotation) * workingVelocity;
 
-        float forwardSpeed = glm::dot(localVel, IDENTITY_FORWARD);
-        float lateralSpeed = glm::dot(localVel, IDENTITY_RIGHT);
+        float forwardSpeed = glm::dot(forwardVelocity, IDENTITY_FORWARD);
+        float lateralSpeed = glm::dot(forwardVelocity, IDENTITY_RIGHT);
         float turningSpeed = glm::orientedAngle(forward, _lastForward, IDENTITY_UP) / deltaTime;
 
         // filter speeds using a simple moving average.
@@ -1134,7 +1134,7 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
                 turnThresh = TURN_EXIT_SPEED_THRESHOLD;
             }
 
-            if (glm::length(localVel) > moveThresh) {
+            if (glm::length(forwardVelocity) > moveThresh) {
                 if (_desiredState != RigRole::Move) {
                     _desiredStateAge = 0.0f;
                 }
@@ -1179,7 +1179,7 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
 
 
         if (_state == RigRole::Move) {
-            glm::vec3 horizontalVel = localVel - glm::vec3(0.0f, localVel.y, 0.0f);
+            glm::vec3 horizontalVel = forwardVelocity - glm::vec3(0.0f, forwardVelocity.y, 0.0f);
             if (glm::length(horizontalVel) > MOVE_ENTER_SPEED_THRESHOLD) {
                 if (fabsf(forwardSpeed) > 0.5f * fabsf(lateralSpeed)) {
                     if (forwardSpeed > 0.0f) {
@@ -1579,7 +1579,7 @@ void Rig::computeMotionAnimationState(float deltaTime, const glm::vec3& worldPos
 
     }
     _lastForward = forward;
-    _lastPosition = worldPosition;
+    _lastPosition = localPosition;
     _lastVelocity = workingVelocity;
 }
 

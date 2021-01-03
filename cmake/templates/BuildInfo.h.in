@@ -25,7 +25,7 @@ namespace BuildInfo {
     const QString DOMAIN_SERVER_NAME = "domain-server";
     const QString AC_CLIENT_SERVER_NAME = "ac-client";
     const QString MODIFIED_ORGANIZATION = "@BUILD_ORGANIZATION@";
-    const QString ORGANIZATION_DOMAIN = "Tivoli Cloud VR";
+    const QString ORGANIZATION_DOMAIN = "@BUILD_ORGANIZATION@";
     const QString VERSION = "@BUILD_VERSION@";
     const QString BUILD_NUMBER = "@BUILD_NUMBER@";
     const QString BUILD_GLOBAL_SERVICES = "@BUILD_GLOBAL_SERVICES@";

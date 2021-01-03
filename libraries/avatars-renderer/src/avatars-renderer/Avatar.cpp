@@ -1698,7 +1698,7 @@ int Avatar::parseDataFromBuffer(const QByteArray& buffer) {
     int bytesRead = AvatarData::parseDataFromBuffer(buffer);
 
     const float MOVE_DISTANCE_THRESHOLD = 0.001f;
-    _moving = glm::distance(oldPosition, getWorldPosition()) > MOVE_DISTANCE_THRESHOLD;
+    _moving = hasParent() || hasChildren() || glm::distance(oldPosition, getWorldPosition()) > MOVE_DISTANCE_THRESHOLD;
     if (_moving || _hasNewJointData) {
         locationChanged();
     }
@@ -1886,38 +1886,25 @@ void Avatar::updatePalms() {
     _rightPalmPositionCache.set(getUncachedRightPalmPosition());
 }
 
-void Avatar::setParentID(const QUuid& parentID) {
+void Avatar::setProperties(const QVariantMap& props) {
     if (!isMyAvatar()) {
         return;
     }
     QUuid initialParentID = getParentID();
-    bool success;
-    Transform beforeChangeTransform = getTransform(success);
-    SpatiallyNestable::setParentID(parentID);
-    if (success) {
-        setTransform(beforeChangeTransform, success);
-        if (!success) {
-            qCDebug(avatars_renderer) << "Avatar::setParentID failed to reset avatar's location.";
-        }
-        if (initialParentID != parentID) {
-            _parentChanged = usecTimestampNow();
-        }
+    int initialJointIndex = getParentJointIndex();
+    AvatarData::setProperties(props);
+    if (initialParentID != getParentID() || initialJointIndex != getParentJointIndex()) {
+      _parentChanged = usecTimestampNow();
+      _needMeshVisibleSwitch = true;
     }
 }
 
+void Avatar::setParentID(const QUuid& parentID) {
+    setProperties({{ "parentID", parentID }});
+}
+
 void Avatar::setParentJointIndex(quint16 parentJointIndex) {
-    if (!isMyAvatar()) {
-        return;
-    }
-    bool success;
-    Transform beforeChangeTransform = getTransform(success);
-    SpatiallyNestable::setParentJointIndex(parentJointIndex);
-    if (success) {
-        setTransform(beforeChangeTransform, success);
-        if (!success) {
-            qCDebug(avatars_renderer) << "Avatar::setParentJointIndex failed to reset avatar's location.";
-        }
-    }
+    setProperties({{ "parentJointIndex", parentJointIndex }});
 }
 
 /**jsdoc
@@ -2046,6 +2033,14 @@ float Avatar::getUnscaledEyeHeightFromSkeleton() const {
 
 AvatarTransit::Status Avatar::updateTransit(float deltaTime, const glm::vec3& avatarPosition, float avatarScale, const AvatarTransit::TransitConfig& config) {
     std::lock_guard<std::mutex> lock(_transitLock);
+    if (hasParent() || hasDescendantOfType(NestableType::Avatar)) {
+      if (_transit.isActive()) {
+        getSkeletonModel()->getRig().triggerNetworkRole("idleAnim");
+        _transit.reset();
+        slamPosition(getWorldPosition());
+      }
+      return AvatarTransit::Status::IDLE;
+    }
     _transit.setScale(avatarScale);
     return _transit.update(deltaTime, avatarPosition, config);
 }

@@ -134,6 +134,11 @@ class Avatar : public AvatarData, public scriptable::ModelProvider, public MetaM
      * @property {Vec3} skeletonOffset - Can be used to apply a translation offset between the avatar's position and the
      *     registration point of the 3D model.
      */
+    Q_PROPERTY(glm::vec3 localPosition READ getLocalPosition)
+    Q_PROPERTY(glm::quat localRotation READ getLocalOrientation)
+    Q_PROPERTY(glm::vec3 localVelocity READ getLocalVelocity)
+    Q_PROPERTY(glm::vec3 localAngularVelocity READ getLocalAngularVelocity)
+    Q_PROPERTY(glm::mat4 localTransform READ get_localTransformAsMat4) glm::mat4 get_localTransformAsMat4() const { return getLocalTransform().getMatrix(); }
     Q_PROPERTY(glm::vec3 skeletonOffset READ getSkeletonOffset WRITE setSkeletonOffset)
 
 public:
@@ -440,6 +445,15 @@ public:
 
     void setPositionViaScript(const glm::vec3& position) override;
     void setOrientationViaScript(const glm::quat& orientation) override;
+
+    /**jsdoc
+     * Magic function that works like Entities.editEntity.
+     * currently supports: parentID, parentJointIndex, localPosition, localRotation, localVelocity, localAngularVelocity
+     * @function MyAvatar.setProperties
+     * @param {Entities.EntityProperties} properties - The new property values.
+     */
+    // This calls through to the AvatarData versions, but is here to expose these to JavaScript.
+    Q_INVOKABLE virtual void setProperties(const QVariantMap& props) override;
 
     /**jsdoc
      * Gets the ID of the entity of avatar that the avatar is parented to.

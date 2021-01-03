@@ -85,6 +85,34 @@ Q_DECLARE_METATYPE(AudioListenerMode);
 
 class MyAvatar : public Avatar {
     Q_OBJECT
+    /**jsdoc @var {Vec3} MyAvatar.localPosition */
+    /**jsdoc @var {Quat} MyAvatar.localRotation */
+    /**jsdoc @var {Vec3} MyAvatar.localVelocity */
+    /**jsdoc @var {Vec3} MyAvatar.localAngularVelocity */
+    /**jsdoc @var {Mat4} MyAvatar.localTransform */
+    /**jsdoc @var {Mat4} MyAvatar.sensorToParentMatrix */
+    Q_PROPERTY(glm::vec3 localPosition READ getLocalPosition WRITE setLocalPosition)
+    Q_PROPERTY(glm::quat localRotation READ getLocalOrientation WRITE setLocalOrientation)
+    Q_PROPERTY(glm::vec3 localVelocity READ getLocalVelocity WRITE setLocalVelocity)
+    Q_PROPERTY(glm::vec3 localAngularVelocity READ getLocalAngularVelocity WRITE setLocalAngularVelocity)
+    Q_PROPERTY(glm::mat4 localTransform READ get_localTransform WRITE set_localTransform)
+    glm::mat4 get_localTransform() const { return getLocalTransform().getMatrix(); }
+    void set_localTransform(glm::mat4 const& value) { setLocalTransform({ value }); }
+    HIFIJS_Q_PROPERTY(glm::mat4, sensorToParentMatrix, glm::mat4(), sensorToParentMatrixChanged)
+    /**jsdoc @var {Uuid} MyAvatar.parentID */
+    Q_PROPERTY(QUuid parentID READ getParentID WRITE setParentID)
+    Q_PROPERTY(quint16 parentJointIndex READ getParentJointIndex WRITE setParentJointIndex)
+    Q_SIGNALS: void parentChanged(const QUuid& parentID, quint16 parentJointIndex);
+public:
+    Q_INVOKABLE virtual void setProperties(const QVariantMap& props) override {
+      auto initialParentID = getParentID();
+      auto initialJointIndex = getParentJointIndex();
+      Avatar::setProperties(props);
+      if (initialParentID != getParentID() || initialJointIndex != getParentJointIndex()) {
+        emit parentChanged(getParentID(), getParentJointIndex());
+      }
+    }
+
     friend class AnimStats;
 
     /**jsdoc

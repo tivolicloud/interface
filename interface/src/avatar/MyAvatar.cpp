@@ -437,6 +437,7 @@ QVariant MyAvatar::getOrientationVar() const {
 }
 
 glm::quat MyAvatar::getOrientationOutbound() const {
+    if (hasParent()) return getLocalOrientation();
     // Allows MyAvatar to send out smoothed data to remote agents if required.
     if (_smoothOrientationTimer > SMOOTH_TIME_ORIENTATION) {
         return (getLocalOrientation());
@@ -1117,6 +1118,12 @@ void MyAvatar::updateSensorToWorldMatrix() {
     }
 
     _sensorToWorldMatrixCache.set(_sensorToWorldMatrix);
+    if (!hasParent()) {
+        _sensorToLocalMatrixCache.set(_sensorToWorldMatrix);
+    } else {
+        bool success;
+        _sensorToLocalMatrixCache.set(getParentTransform(success).relativeTransform({ _sensorToWorldMatrix }).getMatrix());
+    }
     updateJointFromController(controller::Action::LEFT_HAND, _controllerLeftHandMatrixCache);
     updateJointFromController(controller::Action::RIGHT_HAND, _controllerRightHandMatrixCache);
     
@@ -3478,8 +3485,8 @@ void MyAvatar::updateOrientation(float deltaTime) {
 
         // Turn with head roll.
         const float MIN_CONTROL_SPEED = 2.0f * getSensorToWorldScale();  // meters / sec
-        const glm::vec3 characterForward = getWorldOrientation() * Vectors::UNIT_NEG_Z;
-        float forwardSpeed = glm::dot(characterForward, getWorldVelocity());
+        const glm::vec3 characterForward = getLocalOrientation() * Vectors::UNIT_NEG_Z;
+        float forwardSpeed = glm::dot(characterForward, getLocalVelocity());
 
         // only enable roll-turns if we are moving forward or backward at greater then MIN_CONTROL_SPEED
         if (fabsf(forwardSpeed) >= MIN_CONTROL_SPEED) {
@@ -3516,10 +3523,10 @@ void MyAvatar::updateOrientation(float deltaTime) {
     bool isMovingSideways = getDriveKey(TRANSLATE_X) != 0.0f;
     bool isCameraYawing = getDriveKey(DELTA_YAW) + getDriveKey(STEP_YAW) + getDriveKey(YAW) != 0.0f;
     bool isRotatingWhileSeated = !isCameraYawing && isMovingSideways && _characterController.getSeated();
-    glm::quat previousOrientation = getWorldOrientation();
+    glm::quat previousOrientation = getLocalOrientation();
     glm::quat previousYaw = _lookAtYaw;
     if (!computeLookAt) {
-        setWorldOrientation(getWorldOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, totalBodyYaw, 0.0f))));
+        setLocalOrientation(getLocalOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, totalBodyYaw, 0.0f))));
         _lookAtCameraTarget = eyesPosition + getWorldOrientation() * Vectors::FRONT;
         _lookAtYaw = getWorldOrientation();
         _lookAtPitch = Quaternions::IDENTITY;
@@ -3576,7 +3583,7 @@ void MyAvatar::updateOrientation(float deltaTime) {
                     blend = 1.0f;
                 }
             }
-            setWorldOrientation(glm::slerp(getWorldOrientation(), faceRotation, blend));
+            setLocalOrientation(glm::slerp(getLocalOrientation(), faceRotation, blend));
         } else if (isRotatingWhileSeated) {
             float direction = -getDriveKey(TRANSLATE_X);
             float seatedTargetSpeed = direction * _yawSpeed * deltaTime;  //deg/renderframe
@@ -3599,7 +3606,7 @@ void MyAvatar::updateOrientation(float deltaTime) {
                 _seatedBodyYawDelta = blend * direction;
             }
 
-            setWorldOrientation(getWorldOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, _seatedBodyYawDelta, 0.0f))));
+            setLocalOrientation(getLocalOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, _seatedBodyYawDelta, 0.0f))));
 
         } else if (_seatedBodyYawDelta != 0.0f) {
             //decelerate from seated rotation
@@ -3615,7 +3622,7 @@ void MyAvatar::updateOrientation(float deltaTime) {
                 _seatedBodyYawDelta = 0.0f;
             }
 
-            setWorldOrientation(getWorldOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, _seatedBodyYawDelta, 0.0f))));
+            setLocalOrientation(getLocalOrientation() * glm::quat(glm::radians(glm::vec3(0.0f, _seatedBodyYawDelta, 0.0f))));
         } else {
             _seatedBodyYawDelta = 0.0f;
         }
@@ -3624,7 +3631,7 @@ void MyAvatar::updateOrientation(float deltaTime) {
     if (snapTurn) {
         // Whether or not there is an existing smoothing going on, just reset the smoothing timer and set the starting position as the avatar's current position, then smooth to the new position.
         _smoothOrientationInitial = initialOrientation;
-        _smoothOrientationTarget = getWorldOrientation();
+        _smoothOrientationTarget = getOrientationOutbound();
         _smoothOrientationTimer = 0.0f;
     }
 
@@ -3696,11 +3703,11 @@ void MyAvatar::updateOrientation(float deltaTime) {
                     _shouldTurnToFaceCamera = true;
                     _firstPersonSteadyHeadTimer = 0.0f;
                 } else {
-                    setWorldOrientation(previousOrientation);
+                    setLocalOrientation(previousOrientation);
                     _seatedBodyYawDelta = 0.0f;
                 }
             } else {
-                setWorldOrientation(previousOrientation);
+                setLocalOrientation(previousOrientation);
             }
         } else if (frontBackDot > glm::sin(glm::radians(reorientAngle))) {
             _shouldTurnToFaceCamera = false;
@@ -3953,11 +3960,15 @@ void MyAvatar::updatePosition(float deltaTime) {
         }
         float sensorToWorldScale = getSensorToWorldScale();
         float sensorToWorldScale2 = sensorToWorldScale * sensorToWorldScale;
-        vec3 velocity = getWorldVelocity();
+        vec3 velocity = getLocalVelocity();
         float speed2 = glm::length2(velocity);
         const float MOVING_SPEED_THRESHOLD_SQUARED = 0.0001f; // 0.01 m/s
         _moving = speed2 > sensorToWorldScale2 * MOVING_SPEED_THRESHOLD_SQUARED;
         if (_moving) {
+            if (hasParent()) {
+              _characterController.setStepUpEnabled(false);
+              return;
+            }
             // scan for walkability
             glm::vec3 position = getWorldPosition();
             MyCharacterController::RayShotgunResult result;
@@ -4220,6 +4231,10 @@ void MyAvatar::goToLocation(const glm::vec3& newPosition,
     qCDebug(interfaceapp).nospace() << "MyAvatar goToLocation - moving to " << newPosition.x << ", "
         << newPosition.y << ", " << newPosition.z;
 
+    if (hasParent()) {
+        qCDebug(interfaceapp) << "MyAvatar clearing parentID" << getParentID();
+        setParentID(QUuid());
+    }
     _goToPending = true;
     _goToPosition = newPosition;
     _goToSafe = withSafeLanding;
@@ -4284,6 +4299,9 @@ bool MyAvatar::safeLanding(const glm::vec3& position) {
 
 // If position is not reliably safe from being stuck by physics, answer true and place a candidate better position in betterPositionOut.
 bool MyAvatar::requiresSafeLanding(const glm::vec3& positionIn, glm::vec3& betterPositionOut) {
+    if (hasParent()) {
+        return false;
+    }
 
     // We begin with utilities and tests. The Algorithm in four parts is below.
     // NOTE: we use estimated avatar height here instead of the bullet capsule halfHeight, because
