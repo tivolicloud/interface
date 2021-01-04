@@ -21,7 +21,8 @@
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
 #include <assimp/pbrmaterial.h>
-// #include <assimp/Exporter.hpp>
+
+#include <glm/gtx/transform.hpp>
 
 #include <QtGui/QImage>
 #include <QtCore/QBuffer>
@@ -450,14 +451,119 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
     }
 }
 
+QList<hfm::Shape*> AssimpSerializer::getHfmShapesByMeshIndex(uint32_t meshIndex) {
+    QList<hfm::Shape*> shapes;
+    for (size_t i = 0; i < hfmModel->shapes.size(); i++) {
+        auto shape = &hfmModel->shapes.at(i);
+        if (shape->mesh == meshIndex) {
+            shapes.push_back(shape);
+        }
+    }
+    return shapes;
+}
+
+void AssimpSerializer::processBones() {
+    bool hasBones = false;
+    for (size_t meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
+        if (scene->mMeshes[meshIndex]->mNumBones > 0) {
+            hasBones = true;
+            break;
+        }
+    };
+    if (!hasBones) return;
+
+    // multiple skin deformers will affect other models unfortunately
+    uint32_t skinDeformerIndex = hfmModel->skinDeformers.size(); 
+    hfmModel->skinDeformers.emplace_back();
+    hfm::SkinDeformer* skinDeformer = &hfmModel->skinDeformers.back();
+
+    for (size_t meshIndex = 0; meshIndex < scene->mNumMeshes; meshIndex++) {
+        aiMesh* mMesh = scene->mMeshes[meshIndex];
+        if (mMesh->mNumBones == 0) continue;
+
+        hfm::Mesh* meshPtr = &hfmModel->meshes.at(meshIndex);
+        meshPtr->clusterWeightsPerVertex = 4;
+        hfmModel->hasSkeletonJoints = true;
+
+        // should put skin deformer here
+
+        QList<hfm::Shape*> shapes = getHfmShapesByMeshIndex(meshIndex);
+        for (auto shape : shapes) {
+            shape->skinDeformer = skinDeformerIndex;
+        }
+
+        QHash<size_t, // vertex index
+            QList<std::pair<
+                size_t, // cluster index (to joint)
+                float // weight
+            >>
+        > clusterMap;
+
+        for (size_t boneIndex = 0; boneIndex < mMesh->mNumBones; boneIndex++) {
+            aiBone* bone = mMesh->mBones[boneIndex];
+
+            int nodeIndex = hfmModel->jointIndices[bone->mName.C_Str()];
+            hfm::Joint* nodePtr = &hfmModel->joints[nodeIndex];
+            if (nodePtr == nullptr) continue;
+
+            glm::mat4 inverseBindMatrix = asMat4(bone->mOffsetMatrix);
+
+            glm::vec3 bindTranslation = extractTranslation(hfmModel->offset * inverseBindMatrix);
+            hfmModel->bindExtents.addPoint(bindTranslation);
+
+            nodePtr->isSkeletonJoint = true;
+            nodePtr->bindTransform = inverseBindMatrix;
+            nodePtr->bindTransformFoundInCluster = true;
+            nodePtr->inverseBindRotation = glmExtractRotation(inverseBindMatrix);
+            nodePtr->inverseDefaultRotation = glm::inverse(nodePtr->rotation);
+
+            size_t clusterIndex = skinDeformer->clusters.size();
+            skinDeformer->clusters.emplace_back();
+            hfm::Cluster* cluster = &skinDeformer->clusters.back();     
+
+            cluster->jointIndex = nodeIndex;
+            cluster->inverseBindMatrix = inverseBindMatrix;
+            cluster->inverseBindTransform = Transform(inverseBindMatrix);
+
+            for (size_t weightIndex = 0; weightIndex < bone->mNumWeights; weightIndex++) {
+                aiVertexWeight weight = bone->mWeights[weightIndex];
+                clusterMap[weight.mVertexId].push_back(
+                    std::pair<size_t, float>(clusterIndex, weight.mWeight)
+                );
+            }
+        }
+
+        // apply mesh cluster indices (to joints) and weights
+
+        for (size_t vertexIndex = 0; vertexIndex < mMesh->mNumVertices; vertexIndex++) {
+            auto cluster = clusterMap[vertexIndex];
+            int clusterSize = cluster.size() > 4 ? 4 : cluster.size();
+            int clusterEmptySize = 4 - clusterSize;
+            
+            for (int i = 0; i < clusterSize; i++) {
+                meshPtr->clusterIndices.push_back(cluster[i].first);
+                meshPtr->clusterWeights.push_back(
+                    std::round(cluster[i].second * 65535.0f)
+                );
+            }
+            for (int i = 0; i < clusterEmptySize; i++) {
+                meshPtr->clusterIndices.push_back(0);
+                meshPtr->clusterWeights.push_back(0);
+            }
+        }
+    }
+}
+
 void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
-    int nodeIndex = hfmModel->joints.size();
+    auto nodeIndex = hfmModel->joints.size();
     hfmModel->joints.emplace_back();
     hfmModel->jointIndices["x"]++;
     hfm::Joint* nodePtr = &hfmModel->joints.back();
 
     // set up node (joint)
     nodePtr->name = aiNode->mName.C_Str();
+    hfmModel->jointIndices[nodePtr->name] = nodeIndex;
+
     nodePtr->parentIndex = parentIndex;
     nodePtr->isSkeletonJoint = false;
 
@@ -519,11 +625,27 @@ void AssimpSerializer::processScene(const hifi::VariantHash& mapping) {
     hfmModel = std::make_shared<HFMModel>();
     hfmModel->originalURL = url.toString();
 
+    // apply fst offset
+    glm::vec3 offsetTranslation = glm::vec3(
+        mapping.value("tx").toFloat(), mapping.value("ty").toFloat(), mapping.value("tz").toFloat()
+    );
+    glm::quat offsetRotation = glm::quat(glm::radians(glm::vec3(
+        mapping.value("rx").toFloat(), mapping.value("ry").toFloat(), mapping.value("rz").toFloat()
+    )));
+    glm::vec3 offsetScale = glm::vec3(mapping.value("scale", 1.0f).toFloat());
+    hfmModel->offset = (
+        glm::translate(offsetTranslation) *
+        glm::mat4_cast(offsetRotation) *
+        glm::scale(offsetScale)
+    );
+
     processMaterials();
     processMeshes(mapping);
 
     hfmModel->jointIndices["x"] = 0;
     processNode(scene->mRootNode);
+
+    processBones();
 }
 
 HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi::VariantHash& mapping, const hifi::URL& inputUrl) {
@@ -550,8 +672,10 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         aiProcess_Triangulate |
         aiProcess_GenNormals | 
         aiProcess_SplitLargeMeshes |
+        aiProcess_LimitBoneWeights |
         aiProcess_ImproveCacheLocality |
         // aiProcess_RemoveRedundantMaterials | // ends up removing necessary materials...
+        aiProcess_PopulateArmatureData | 
         // aiProcess_OptimizeMeshes |
         // aiProcess_OptimizeGraph,
         aiProcess_FlipUVs,
@@ -568,25 +692,6 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     }
 
     processScene(mapping);
-
-    // hfmModel->debugDump();
-
-    // for (size_t i = 0; i < aiGetExportFormatCount(); i++) {
-    //     auto desc = aiGetExportFormatDescription(i);
-    //     qDebug() << desc->id<<desc->fileExtension<<desc->description;
-    // }
-
-    // QString fileName = QFileInfo(url.path()).fileName();
-    // aiExportScene(
-    //     scene, "assbin",
-    //     QString("/home/maki/assimp/"+fileName.replace("."+ext, ".assbin")).toLocal8Bit(),
-    //     0
-    // );
-    // aiExportScene(
-    //     scene, "json",
-    //     QString("/home/maki/assimp/"+fileName.replace("."+ext, ".json")).toLocal8Bit(),
-    //     0
-    // );
 
     return hfmModel;
 }

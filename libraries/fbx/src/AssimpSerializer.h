@@ -29,6 +29,9 @@ private:
     aiAnimMesh* getBlendshapeByName(QString name, aiMesh* mesh);
     void processMeshes(const hifi::VariantHash& mapping);
 
+    QList<hfm::Shape*> getHfmShapesByMeshIndex(uint32_t meshIndex);
+    void processBones();
+
     void processNode(const aiNode* aiNode, int parentIndex = -1);
 
     void processScene(const hifi::VariantHash& mapping);
