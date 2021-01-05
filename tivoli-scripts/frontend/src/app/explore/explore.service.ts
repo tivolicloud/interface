@@ -1,7 +1,6 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ScriptService } from "../script.service";
 import { Subject } from "rxjs";
+import { ScriptService } from "../script.service";
 
 export interface World {
 	id: string;
@@ -50,49 +49,38 @@ export class ExploreService {
 
 	friends$ = new Subject<Friend[]>();
 
-	constructor(
-		private scriptService: ScriptService,
-		private http: HttpClient,
-	) {
-		if ((window as any).qt != null) {
-			this.scriptService.event$.subscribe(({ key, value }) => {
-				switch (key) {
-					case "getCurrentProtocol":
-						this.protocol = value;
-						this.loadWorlds();
-						break;
-				}
-			});
+	constructor(private scriptService: ScriptService) {
+		if (this.scriptService.hasQt) {
+			this.scriptService
+				.rpc<string>("Window.protocolSignature()")
+				.subscribe(protocol => {
+					this.protocol = protocol;
+					this.loadWorlds();
+				});
 		} else {
 			this.loadWorlds();
 		}
 
-		this.scriptService.emitEvent("explore", "getCurrentProtocol");
 		this.loadFriends();
 	}
 
 	loadWorlds(reset = true) {
 		this.loading = true;
-
 		this.page = reset ? 1 : this.page + 1;
 
-		this.http
-			.get<World[]>(
-				this.scriptService.metaverseUrl +
-					(() => {
-						const t = this.type;
-						if (t == "popular") return "/api/domains";
-						if (t == "liked") return "/api/user/domains/liked";
-						if (t == "private") return "/api/user/domains/private";
-					})(),
-				{
-					params: new HttpParams()
-						.set("page", this.page + "")
-						.set("amount", 50 + "")
-						.set("search", this.search)
-						.set("protocol", this.protocol),
-				},
-			)
+		let fn = "Metaverse.";
+		if (this.type == "popular") fn += "getPopularWorlds()";
+		else if (this.type == "liked") fn += "getLikedWorlds()";
+		else if (this.type == "private") fn += "getPrivateWorlds()";
+		else return;
+
+		this.scriptService
+			.rpc<World[]>(fn, {
+				page: String(this.page),
+				amount: String(50),
+				search: this.search,
+				protocol: this.protocol,
+			})
 			.subscribe(
 				worlds => {
 					this.worlds = reset ? worlds : [...this.worlds, ...worlds];
@@ -106,25 +94,18 @@ export class ExploreService {
 	}
 
 	likeWorld(id: string, like = true) {
-		return this.http.post(
-			this.scriptService.metaverseUrl +
-				"/api/domains/" +
-				id +
-				"/" +
-				(like ? "like" : "unlike"),
-			null,
-		);
+		return this.scriptService.rpc<null>("Metaverse.likeWorld()", [
+			id,
+			like,
+		]);
 	}
 
 	loadFriends() {
-		return this.http
-			.get<Friend[]>(
-				this.scriptService.metaverseUrl + "/api/user/friends",
-			)
+		return this.scriptService
+			.rpc<Friend[]>("Metaverse.getFriends()")
 			.subscribe(
 				friends => {
 					this.friends$.next(friends);
-					console.log(friends);
 				},
 				err => {
 					this.friends$.next([]);

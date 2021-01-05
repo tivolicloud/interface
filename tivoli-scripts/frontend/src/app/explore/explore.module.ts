@@ -1,5 +1,4 @@
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { MaterialModule } from "../material.module";
@@ -24,11 +23,6 @@ const routes: Routes = [
 		WorldCardComponent,
 		FriendsComponent,
 	],
-	imports: [
-		CommonModule,
-		RouterModule.forChild(routes),
-		MaterialModule,
-		HttpClientModule,
-	],
+	imports: [CommonModule, RouterModule.forChild(routes), MaterialModule],
 })
 export class ExploreModule {}

@@ -10,6 +10,7 @@ export class ScriptService {
 	private readonly EventBridge =
 		this.qt == null ? null : (window as any).EventBridge;
 
+	hasQt = this.qt != null;
 	metaverseUrl = "";
 
 	constructor(private zone: NgZone) {

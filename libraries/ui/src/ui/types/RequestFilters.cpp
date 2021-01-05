@@ -26,24 +26,6 @@
 
 namespace {
 
-    bool isAuthableTivoliURL(const QUrl& url) {
-        auto metaverseServerURL = NetworkingConstants::METAVERSE_SERVER_URL();
-        static const QStringList TIVOLI_HOSTS = {
-            metaverseServerURL.toString(),
-            "tivolicloud.com",
-        };
-        const auto& scheme = url.scheme();
-        const auto& host = url.host();
-
-        return (
-            (scheme == "https" && TIVOLI_HOSTS.contains(host)) ||
-            (
-                scheme == metaverseServerURL.scheme() &&
-                host == metaverseServerURL.host()
-            )
-        );
-    }
-
     bool isScript(const QString filename) {
         return filename.endsWith(".js", Qt::CaseInsensitive);
     }
@@ -75,20 +57,6 @@ void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& i
         return;
     }
 
-    // check if this is a request to a Tivoli URL
-    bool isAuthable = isAuthableTivoliURL(info.requestUrl());
-    auto accountManager = DependencyManager::get<AccountManager>();
-    if (isAuthable) {
-        // if we have an access token, add it to the right HTTP header for authorization
-
-        if (accountManager->hasValidAccessToken()) {
-            static const QString OAUTH_AUTHORIZATION_HEADER = "Authorization";
-
-            QString bearerTokenString = "Bearer " + accountManager->getAccountInfo().getAccessToken().token;
-            info.setHttpHeader(OAUTH_AUTHORIZATION_HEADER.toLocal8Bit(), bearerTokenString.toLocal8Bit());
-        }
-    }
-    
     // line below causes crashes so i set it to what windows 10 would use
     // const QString defaultUserAgent = QWebEngineProfile::defaultProfile()->httpUserAgent();
     const QString defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.0 Chrome/80.0.3987.163 Safari/537.36";

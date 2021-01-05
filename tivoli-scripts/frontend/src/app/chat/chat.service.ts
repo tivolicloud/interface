@@ -1,6 +1,5 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, ReplaySubject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { filter } from "rxjs/operators";
 import { EmojiService } from "../emoji.service";
 import { ScriptService } from "../script.service";
@@ -296,7 +295,6 @@ export class ChatService {
 	constructor(
 		public readonly scriptService: ScriptService,
 		public readonly emojiService: EmojiService,
-		public readonly http: HttpClient,
 	) {
 		this.scriptService.event$.subscribe(data => {
 			this.handleData(data);
