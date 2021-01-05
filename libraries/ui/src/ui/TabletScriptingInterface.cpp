@@ -597,6 +597,11 @@ void TabletProxy::gotoMenuScreen(const QString& submenu) {
 }
 
 void TabletProxy::loadQMLOnTopImpl(const QVariant& path, bool localSafeContext) {
+    auto pathStr = path.toString().toLower();
+    if (pathStr.contains(":/") && !(pathStr.startsWith("file:/") || pathStr.startsWith("qrc:/"))) {
+        return;
+    }
+
      if (QThread::currentThread() != thread()) {
         qCWarning(uiLogging) << __FUNCTION__ << "may not be called directly by scripts";
         return;
@@ -683,6 +688,11 @@ void TabletProxy::loadQMLSource(const QVariant& path, bool resizable) {
 }
 
 void TabletProxy::loadQMLSourceImpl(const QVariant& path, bool resizable, bool localSafeContext) {
+    auto pathStr = path.toString().toLower();
+    if (pathStr.contains(":/") && !(pathStr.startsWith("file:/") || pathStr.startsWith("qrc:/"))) {
+        return;
+    }
+    
     if (QThread::currentThread() != thread()) {
         qCWarning(uiLogging) << __FUNCTION__ << "may not be called directly by scripts";
         return;

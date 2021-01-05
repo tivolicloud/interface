@@ -3269,18 +3269,16 @@ void Application::showLoginScreen() {
 #endif
 }
 
-static const QUrl AUTHORIZED_EXTERNAL_QML_SOURCE { "https://content.highfidelity.com/Experiences/Releases" };
-
 void Application::initializeUi() {
 
     // Allow remote QML content from trusted sources ONLY
     {
-        auto defaultUrlValidator = OffscreenQmlSurface::getUrlValidator();
         auto newValidator = [=](const QUrl& url)->bool {
-            if (AUTHORIZED_EXTERNAL_QML_SOURCE.isParentOf(url)) {
-                return true;
+            auto pathStr = url.toString().toLower();
+            if (pathStr.contains(":/") && !(pathStr.startsWith("file:/") || pathStr.startsWith("qrc:/"))) {
+                return false;
             }
-            return defaultUrlValidator(url);
+            return true;
         };
         OffscreenQmlSurface::setUrlValidator(newValidator);
     }
