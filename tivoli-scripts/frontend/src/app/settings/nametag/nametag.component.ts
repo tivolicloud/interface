@@ -1,4 +1,3 @@
-import { HttpClient } from "@angular/common/http";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ScriptService } from "../../script.service";
@@ -16,10 +15,7 @@ interface NametagDetails {
 export class NametagComponent implements OnInit, OnDestroy {
 	subs: Subscription[] = [];
 
-	constructor(
-		private readonly script: ScriptService,
-		private readonly http: HttpClient,
-	) {}
+	constructor(private readonly script: ScriptService) {}
 
 	loading = true;
 	username: string;
@@ -41,38 +37,27 @@ export class NametagComponent implements OnInit, OnDestroy {
 
 	getNametagDetails() {
 		this.nametagDetailsLoading = true;
-		return this.http
-			.get<NametagDetails>(
-				this.script.metaverseUrl + "/api/user/nametag-details",
-			)
-			.subscribe(nametagDetails => {
-				this.nametagDetails = nametagDetails;
+		this.script
+			.rpc<NametagDetails>("Metaverse.getNametagDetails()")
+			.subscribe(details => {
+				this.nametagDetails = details;
 				this.nametagDetailsLoading = false;
 			});
 	}
 
 	setNametagDetails(displayName: string, genderPronoun: string) {
 		this.nametagDetailsLoading = true;
-		return this.http
-			.post<NametagDetails>(
-				this.script.metaverseUrl + "/api/user/nametag-details",
-				{
-					displayName,
-					genderPronoun,
-				},
-			)
-			.subscribe(
-				nametagDetails => {
-					this.nametagDetails = nametagDetails;
-					this.nametagDetailsLoading = false;
-					this.reconnectRequired = true;
-					this.getNametagImage();
-				},
-				() => {
-					this.nametagDetailsLoading = false;
-					this.getNametagImage();
-				},
-			);
+		return this.script
+			.rpc<NametagDetails>("Metaverse.setNametagDetails()", {
+				displayName,
+				genderPronoun,
+			})
+			.subscribe(details => {
+				this.nametagDetails = details;
+				this.nametagDetailsLoading = false;
+				this.reconnectRequired = true;
+				this.getNametagImage();
+			});
 	}
 
 	getNametagImage() {

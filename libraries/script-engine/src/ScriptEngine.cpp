@@ -398,6 +398,7 @@ void ScriptEngine::runInThread() {
     // the thread cannot have this as a parent.
     QThread* workerThread = new QThread();
     workerThread->setObjectName(QString("js:") + getFilename().replace("about:",""));
+    workerThread->setProperty("scriptUrl", _fileNameString);
     moveToThread(workerThread);
 
     if (QProcessEnvironment::systemEnvironment().contains("TIVOLI_SCRIPT_DEBUG")) {

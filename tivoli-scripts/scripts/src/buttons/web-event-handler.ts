@@ -90,7 +90,9 @@ export class WebEventHandler {
 		} catch (err) {
 			return;
 		}
-		if (data.uuid != this.uuid) return;
+
+		if (typeof data.uuid != "string") return;
+		if (this.uuid.indexOf(data.uuid) != 0) return;
 
 		switch (data.key) {
 			case "close":
