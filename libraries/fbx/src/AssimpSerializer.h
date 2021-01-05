@@ -32,6 +32,8 @@ private:
     QList<hfm::Shape*> getHfmShapesByMeshIndex(uint32_t meshIndex);
     void processBones();
 
+    void processAnimations();
+
     void processNode(const aiNode* aiNode, int parentIndex = -1);
 
     void processScene(const hifi::VariantHash& mapping);

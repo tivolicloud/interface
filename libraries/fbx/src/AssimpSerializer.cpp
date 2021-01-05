@@ -123,6 +123,7 @@ bool isEmptyVec3(glm::vec3 v) { return v.x == 0 && v.y == 0 && v.z == 0; }
 
 glm::vec3 asVec3(aiColor3D c) { return glm::vec3(c.r, c.g, c.b); }
 glm::vec3 asVec3(aiVector3D v) { return glm::vec3(v.x, v.y, v.z); }
+glm::quat asQuat(aiQuaternion q) { return glm::quat(q.w, q.x, q.y, q.z); }
 glm::mat4 asMat4(aiMatrix4x4 from) {
     glm::mat4 to;
     to[0][0] = from.a1; to[0][1] = from.b1; to[0][2] = from.c1; to[0][3] = from.d1;
@@ -554,6 +555,53 @@ void AssimpSerializer::processBones() {
     }
 }
 
+void AssimpSerializer::processAnimations() {
+    if (scene->mNumAnimations == 0) return;
+    
+    // TODO: finish adding translation
+
+    aiAnimation* animation = scene->mAnimations[0];
+    size_t totalFrames = 0;
+
+    for (size_t jointIndex = 0; jointIndex < animation->mNumChannels; jointIndex++) {
+        auto animJoint = animation->mChannels[jointIndex];
+        // if (animJoint->mNumPositionKeys > totalFrames) totalFrames = animJoint->mNumPositionKeys;
+        if (animJoint->mNumRotationKeys > totalFrames) totalFrames = animJoint->mNumRotationKeys;
+    }
+
+    for (size_t frame = 0; frame < totalFrames; frame++) {
+        hfmModel->animationFrames.append(HFMAnimationFrame());
+        auto animationFrame = &hfmModel->animationFrames.back();
+
+        // fill up the frame first
+        for (size_t jointIndex = 0; jointIndex < hfmModel->joints.size(); jointIndex++) {
+            auto joint = &hfmModel->joints[jointIndex];
+            animationFrame->translations.push_back(joint->translation);
+            animationFrame->rotations.push_back(joint->rotation);
+        }
+
+        for (size_t channelIndex = 0; channelIndex < animation->mNumChannels; channelIndex++) {
+            auto channel = animation->mChannels[channelIndex];
+
+            QString jointName = channel->mNodeName.C_Str(); 
+            if (!hfmModel->jointIndices.contains(jointName)) {
+                continue;
+            }
+
+            auto jointIndex = hfmModel->jointIndices[jointName];
+            // auto joint = &hfmModel->joints[jointIndex];
+
+            // auto positionKey = channel->mPositionKeys[frame];
+            // animationFrame->translations[jointIndex] = 
+            //     extractTranslation(joint->globalTransform) -
+            //     asVec3(positionKey.mValue);
+            
+            auto rotationKey = channel->mRotationKeys[frame];
+            animationFrame->rotations[jointIndex] = asQuat(rotationKey.mValue);            
+        }
+    }
+}
+
 void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     auto nodeIndex = hfmModel->joints.size();
     hfmModel->joints.emplace_back();
@@ -646,6 +694,8 @@ void AssimpSerializer::processScene(const hifi::VariantHash& mapping) {
     processNode(scene->mRootNode);
 
     processBones();
+
+    processAnimations();
 }
 
 HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi::VariantHash& mapping, const hifi::URL& inputUrl) {
@@ -684,10 +734,6 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     
     if (!scene) {
         qCDebug(modelformat) << "AssimpSerializer::read Error parsing model file"<<importer.GetErrorString();
-        return nullptr;
-    }
-    if (scene->mNumMeshes == 0) {
-        qCDebug(modelformat) << "AssimpSerializer::read No meshes in model"<<importer.GetErrorString();
         return nullptr;
     }
 
