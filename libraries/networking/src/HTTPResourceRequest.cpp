@@ -18,6 +18,8 @@
 
 #include <SharedUtil.h>
 #include <StatTracker.h>
+#include <Gzip.h>
+#include <Brotli.h>
 
 #include "NetworkAccessManager.h"
 #include "NetworkLogging.h"
@@ -74,6 +76,9 @@ void HTTPResourceRequest::doSend() {
         networkRequest.setRawHeader("Range", byteRange.toLatin1());
     }
     networkRequest.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, false);
+
+    // when overriding Accept-Encoding, qt disables auto decompress
+    networkRequest.setRawHeader("Accept-Encoding", "gzip, br");
 
     _reply = NetworkAccessManager::getInstance().get(networkRequest);
     
@@ -158,6 +163,31 @@ void HTTPResourceRequest::onRequestFinished() {
                 std::tie(success, mediaType) = parseMediaType(contentTypeHeader);
                 if (success) {
                     _webMediaType = mediaType;
+                }
+            }
+
+            {
+                auto contentEncoding = _reply->rawHeader("Content-Encoding");
+                if (contentEncoding.size() > 0) {
+                    QByteArray decompressedData;
+                    if (contentEncoding.compare("gzip", Qt::CaseInsensitive) == 0) {
+                        if (gunzip(_data, decompressedData)) {
+                            _data = decompressedData;
+                        } else {
+                            qWarning(networking) << "Failed to decompress gzip for: " << _url;
+                            _result = Error;
+                        }
+                    } else if (contentEncoding.compare("br", Qt::CaseInsensitive) == 0) {
+                        if (brotliDecompress(_data, decompressedData)) {
+                            _data = decompressedData;
+                        } else {
+                            qWarning(networking) << "Failed to decompress brotli for: " << _url;
+                            _result = Error;
+                        }
+                    } else {
+                        qWarning(networking) << "Unknown content-encoding: " << contentEncoding;
+                        _result = Error;
+                    }
                 }
             }
 
