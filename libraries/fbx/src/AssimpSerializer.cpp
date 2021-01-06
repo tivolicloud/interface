@@ -621,20 +621,26 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
     nodePtr->parentIndex = parentIndex;
     nodePtr->isSkeletonJoint = false;
 
-    nodePtr->transform = asMat4(aiNode->mTransformation);
-    nodePtr->translation = extractTranslation(nodePtr->transform);
-    nodePtr->rotation = glmExtractRotation(nodePtr->transform);
-    glm::vec3 scale = extractScale(nodePtr->transform);
+    nodePtr->localTransform = asMat4(aiNode->mTransformation);
+    nodePtr->translation = extractTranslation(nodePtr->localTransform);
+    nodePtr->rotation = glmExtractRotation(nodePtr->localTransform);
+    glm::vec3 scale = extractScale(nodePtr->localTransform);
     nodePtr->postTransform = glm::scale(glm::mat4(), scale);
 
-    nodePtr->globalTransform = nodePtr->transform;
-    if (nodePtr->parentIndex != -1) {
-        const auto& parentNode = hfmModel->joints[nodePtr->parentIndex];
-        nodePtr->transform = parentNode.transform * nodePtr->transform;
-        nodePtr->globalTransform = nodePtr->globalTransform * parentNode.globalTransform;
+    if (nodePtr->parentIndex == -1) {
+        nodePtr->transform = nodePtr->localTransform;
+        nodePtr->globalTransform = hfmModel->offset * nodePtr->localTransform;
+        nodePtr->inverseDefaultRotation = glm::inverse(nodePtr->rotation);
+        nodePtr->distanceToParent = 0.0f;
     } else {
-        // TODO: offset as in tx,y,z rx,y,z from fst?
-        // joint.globalTransform = hfmModel.offset * joint.globalTransform;
+        const auto& parentNode = hfmModel->joints[nodePtr->parentIndex];
+        nodePtr->transform = parentNode.transform * nodePtr->localTransform;
+        nodePtr->globalTransform = parentNode.globalTransform * nodePtr->localTransform;
+        nodePtr->inverseDefaultRotation = glm::inverse(nodePtr->rotation) * parentNode.inverseDefaultRotation;
+        nodePtr->distanceToParent = glm::distance(
+            extractTranslation(parentNode.transform),
+            extractTranslation(nodePtr->transform)
+        );
     }
 
     // for all meshes in node, create shape
@@ -661,7 +667,15 @@ void AssimpSerializer::processNode(const aiNode* aiNode, int parentIndex) {
         shapePtr->meshPart = 0;
 
         // TODO: fixes bounding box? seems not for https://files.tivolicloud.com/caitlyn/fun/cu-cat/cu-cat.glb
-        mesh->modelTransform = nodePtr->globalTransform;
+        // mesh->modelTransform = nodePtr->globalTransform;
+        hfmModel->meshIndicesToModelNames[meshIndex] = nodePtr->name;
+
+        for (auto vertex : mesh->vertices) {
+            glm::vec3 transformedVertex = glm::vec3(nodePtr->globalTransform * glm::vec4(vertex, 1.0f));
+            mesh->meshExtents.addPoint(transformedVertex);
+        }
+        shapePtr->transformedExtents = mesh->meshExtents;
+        hfmModel->meshExtents.addExtents(mesh->meshExtents);
 
         auto materialIndex = scene->mMeshes[meshIndex]->mMaterialIndex;
         if (materialIndex < hfmModel->materials.size()) {
@@ -721,19 +735,28 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     Assimp::Importer importer;
     importer.SetIOHandler(new TivoliIOSystem(url));
     
+    // we don't support lights and cameras over models
+    importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_LIGHTS | aiComponent_CAMERAS);
+
+    // vertex cache locality
+    // https://arbook.icg.tugraz.at/schmalstieg/Schmalstieg_351.pdf
+    importer.SetPropertyInteger(AI_CONFIG_PP_ICL_PTCACHE_SIZE, 64);
+
     scene = importer.ReadFileFromMemory(
         data.constData(), data.size(),
         // aiProcess_CalcTangentSpace |
         aiProcess_JoinIdenticalVertices | 
         aiProcess_Triangulate |
+        aiProcess_RemoveComponent |
         aiProcess_GenNormals | 
-        aiProcess_SplitLargeMeshes |
+        aiProcess_SplitLargeMeshes | // split large meshes every 1 million verticies and triangles
         aiProcess_LimitBoneWeights |
         aiProcess_ImproveCacheLocality |
         // aiProcess_RemoveRedundantMaterials | // ends up removing necessary materials...
         aiProcess_PopulateArmatureData | 
-        // aiProcess_OptimizeMeshes |
-        // aiProcess_OptimizeGraph,
+        aiProcess_FindInstances | // can be slow but instances duplicate meshes
+        aiProcess_OptimizeMeshes | // joins meshes together
+        // aiProcess_OptimizeGraph |
         aiProcess_FlipUVs,
         ext.toLocal8Bit()
     );
