@@ -17,6 +17,8 @@
 #include <hfm/ModelFormatLogging.h>
 
 #include <assimp/Importer.hpp>
+#include <assimp/LogStream.hpp>
+#include <assimp/DefaultLogger.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
@@ -718,6 +720,15 @@ void AssimpSerializer::processScene(const hifi::VariantHash& mapping) {
     processAnimations();
 }
 
+class TivoliLogStream : public Assimp::LogStream {
+public:
+    QString filename;
+    TivoliLogStream(QString filename) : filename(filename) {}
+    void write(const char* message) override {
+        qCDebug(modelformat) << filename << QString(message).trimmed().toLatin1().data();
+    }
+};
+
 HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi::VariantHash& mapping, const hifi::URL& inputUrl) {
 	url = inputUrl;
 
@@ -730,7 +741,20 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
 
     ext = QFileInfo(url.path()).completeSuffix();
 
-    qCDebug(modelformat) << "AssimpSerializer::read url"<<url<<ext;
+    // qCDebug(modelformat) << "AssimpSerializer::read url"<<url<<ext;
+
+    auto tivoliLogStream = new TivoliLogStream(url.fileName());
+    auto errorSeverity = 
+        // Assimp::Logger::ErrorSeverity::Debugging |
+        // Assimp::Logger::ErrorSeverity::Info |
+        Assimp::Logger::ErrorSeverity::Warn |
+        Assimp::Logger::ErrorSeverity::Err;
+
+    if (Assimp::DefaultLogger::isNullLogger()) {
+        Assimp::DefaultLogger::create("");
+    }
+
+    Assimp::DefaultLogger::get()->attachStream(tivoliLogStream, errorSeverity);
 
     Assimp::Importer importer;
     importer.SetIOHandler(new TivoliIOSystem(url));
@@ -767,6 +791,8 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     }
 
     processScene(mapping);
+
+    Assimp::DefaultLogger::get()->detachStream(tivoliLogStream, errorSeverity);
 
     return hfmModel;
 }
