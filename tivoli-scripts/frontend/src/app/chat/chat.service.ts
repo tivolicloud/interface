@@ -15,6 +15,8 @@ class Message {
 	public messageParts: MessagePart[] = [];
 
 	public imageUrl: string;
+	public videoUrl: string;
+
 	public metadata: {
 		url: string;
 		title: string;
@@ -26,13 +28,21 @@ class Message {
 
 	public date = new Date();
 
-	private getImageFromText() {
-		const urlMatches = this.message.match(
+	private getImageOrVideoFromText() {
+		const videoUrlMatches = this.message.match(
+			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:mp4|webm)/i,
+		);
+		if (videoUrlMatches && videoUrlMatches.length > 0) {
+			this.videoUrl = videoUrlMatches[0].trim();
+			// this.message = this.message.replace(this.videoUrl, "");
+			return;
+		}
+
+		const imageUrlMatches = this.message.match(
 			/https?:\/\/[^]+?\.[^]+?\/[^]+?\.(?:jpg|jpeg|png|gif|webp|apng|svg)/i,
 		);
-
-		if (urlMatches && urlMatches.length > 0) {
-			this.imageUrl = urlMatches[0].trim();
+		if (imageUrlMatches && imageUrlMatches.length > 0) {
+			this.imageUrl = imageUrlMatches[0].trim();
 			this.message = this.message.replace(this.imageUrl, "");
 			return;
 		}
@@ -40,7 +50,6 @@ class Message {
 		const dataUriMatches = this.message.match(
 			/(data:image\/[^]+?;[^\s]+?)(?=$|\s)/i,
 		);
-
 		if (dataUriMatches && dataUriMatches.length > 0) {
 			this.imageUrl = dataUriMatches[0].trim();
 			this.message = this.message.replace(this.imageUrl, "");
@@ -190,7 +199,7 @@ class Message {
 		public extras: { me?: boolean; tts?: boolean } = {},
 		public forceEnableSound = false,
 	) {
-		this.getImageFromText();
+		this.getImageOrVideoFromText();
 		this.putSpacesBetweenEmojis();
 
 		const codeBlocks =

@@ -99,9 +99,10 @@
 			}
 		}
 
-		.image {
+		.image,
+		.video {
 			display: block;
-			height: 180px;
+			height: 200px;
 			border-radius: 4px;
 			margin-top: 4px;
 		}

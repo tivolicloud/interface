@@ -71,6 +71,9 @@
 				"
 			></div>
 		</div>
+		<video *ngIf="message.videoUrl" class="video" controls>
+			<source [src]="message.videoUrl" />
+		</video>
 		<img
 			*ngIf="message.imageUrl"
 			class="image"
