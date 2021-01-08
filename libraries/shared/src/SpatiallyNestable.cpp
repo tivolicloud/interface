@@ -14,6 +14,7 @@
 #include <queue>
 
 #include "DependencyManager.h"
+#include "RegisteredMetaTypes.h"
 #include "SharedUtil.h"
 #include "StreamUtils.h"
 #include "SharedLogging.h"
@@ -21,6 +22,43 @@
 const float defaultAACubeSize = 1.0f;
 const int MAX_PARENTING_CHAIN_SIZE = 30;
 
+void SpatiallyNestable::updateFromVariant(const QVariantMap& props) {
+    bool success;
+    auto parentID = props["parentID"].toUuid();
+    auto parentJointIndex = props.contains("parentJointIndex") ? props["parentJointIndex"].toInt() : -1;
+    Transform beforeWorld = getTransform(success);
+    glm::vec3 beforeWorldVelocity = getWorldVelocity();
+    glm::vec3 beforeWorldAngularVelocity = getWorldAngularVelocity();
+    Transform localTransform;
+    glm::vec3 localVelocity;
+    glm::vec3 localAngularVelocity;
+    if (success) {
+      localTransform.setTranslation(SpatiallyNestable::worldToLocal(beforeWorld.getTranslation(), parentID, parentJointIndex, false, success));
+      localTransform.setRotation(SpatiallyNestable::worldToLocal(beforeWorld.getRotation(), parentID, parentJointIndex, false, success));
+      localVelocity = SpatiallyNestable::worldToLocalVelocity(beforeWorldVelocity, parentID, parentJointIndex, false, success);
+      localAngularVelocity = SpatiallyNestable::worldToLocalAngularVelocity(beforeWorldAngularVelocity, parentID, parentJointIndex, false, success);
+    }
+    SpatiallyNestable::setParentID(parentID);
+    SpatiallyNestable::setParentJointIndex(parentID.isNull() ? -1 : parentJointIndex);
+
+    if (props.contains("localPosition")) localTransform.setTranslation(vec3FromVariant(props["localPosition"]));
+    if (props.contains("localRotation")) localTransform.setRotation(quatFromVariant(props["localRotation"]));
+    if (props.contains("localVelocity")) localVelocity = vec3FromVariant(props["localVelocity"]);
+    if (props.contains("localAngularVelocity")) localAngularVelocity = vec3FromVariant(props["localAngularVelocity"]);
+    setLocalTransformAndVelocities(localTransform, localVelocity, localAngularVelocity);
+}
+
+bool SpatiallyNestable::hasDescendantOfType(NestableType type) const {
+  bool found = false;
+  forEachDescendantTest([&](const SpatiallyNestablePointer& descendant) {
+    if (descendant->getNestableType() == type) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
+}
 SpatiallyNestable::SpatiallyNestable(NestableType nestableType, QUuid id) :
     _id(id),
     _nestableType(nestableType),
@@ -299,7 +337,8 @@ glm::vec3 SpatiallyNestable::worldToLocalAngularVelocity(const glm::vec3& angula
         parentTransform.setScale(parent->scaleForChildren());
     }
 
-    return glm::inverse(parentTransform.getRotation()) * angularVelocity;
+    glm::vec3 parentAngularVelocity = parent->getWorldAngularVelocity(success);
+    return glm::inverse(parentTransform.getRotation()) * (angularVelocity - parentAngularVelocity);
 }
 
 
@@ -450,7 +489,8 @@ glm::vec3 SpatiallyNestable::localToWorldAngularVelocity(const glm::vec3& angula
     if (scalesWithParent) {
         parentTransform.setScale(parent->scaleForChildren());
     }
-    return parentTransform.getRotation() * angularVelocity;
+    glm::vec3 parentAngularVelocity = parent->getWorldAngularVelocity(success);
+    return parentAngularVelocity + parentTransform.getRotation() * angularVelocity;
 }
 
 

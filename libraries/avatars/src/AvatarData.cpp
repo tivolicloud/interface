@@ -1038,7 +1038,10 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
         _serverPosition = glm::vec3(data->globalPosition[0], data->globalPosition[1], data->globalPosition[2]) + offset;
         if (_isClientAvatar) {
             auto oneStepDistance = glm::length(_globalPosition - _serverPosition);
-            if (oneStepDistance <= AVATAR_TRANSIT_MIN_TRIGGER_DISTANCE || oneStepDistance >= AVATAR_TRANSIT_MAX_TRIGGER_DISTANCE) {
+            if (hasParent()) {
+                _globalPosition = _serverPosition;
+                // intentionally not updating _globalPositionChanged
+            } else if (oneStepDistance <= AVATAR_TRANSIT_MIN_TRIGGER_DISTANCE || oneStepDistance >= AVATAR_TRANSIT_MAX_TRIGGER_DISTANCE) {
                 _globalPosition = _serverPosition;
                 // if we don't have a parent, make sure to also set our local position
                 if (!hasParent()) {
@@ -1296,6 +1299,8 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
         }
         if (hasParent()) {
             setLocalPosition(position);
+            _globalPosition = getWorldPosition();
+            _globalPositionChanged = now;
         } else {
             qCWarning(avatars) << "received localPosition for avatar with no parent";
         }
@@ -1303,6 +1308,15 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
         int numBytesRead = sourceBuffer - startSection;
         _localPositionRate.increment(numBytesRead);
         _localPositionUpdateRate.increment();
+    }
+
+    if (_sensorToWorldMatrixChanged == now || _parentChanged == now || _globalPositionChanged == now) {
+        if (!hasParent()) {
+          _sensorToLocalMatrixCache.set(_sensorToWorldMatrixCache.get());
+        } else {
+          bool success;
+          _sensorToLocalMatrixCache.set(getParentTransform(success).relativeTransform({ _sensorToWorldMatrixCache.get() }).getMatrix());
+        }
     }
 
     if (hasHandControllers) {
@@ -3104,6 +3118,11 @@ AvatarEntityIDs AvatarData::getAndClearRecentlyRemovedIDs() {
 // thread-safe
 glm::mat4 AvatarData::getSensorToWorldMatrix() const {
     return _sensorToWorldMatrixCache.get();
+}
+
+// thread-safe
+glm::mat4 AvatarData::getSensorToLocalMatrix() const {
+    return _sensorToLocalMatrixCache.get();
 }
 
 // thread-safe

@@ -43,6 +43,7 @@ public:
 
     virtual QString getName() const { return "SpatiallyNestable"; }
 
+    virtual void updateFromVariant(const QVariantMap& props);
     virtual const QUuid getParentID() const;
     virtual void setParentID(const QUuid& parentID);
 
@@ -159,6 +160,8 @@ public:
 
     QList<SpatiallyNestablePointer> getChildren() const;
     bool hasChildren() const;
+    bool hasParent() const { return !!_parent.lock(); }
+    bool hasDescendantOfType(NestableType type) const;
 
     NestableType getNestableType() const { return _nestableType; }
 
@@ -196,13 +199,14 @@ public:
     bool hasAncestorOfType(NestableType nestableType, int depth = 0) const;
     const QUuid findAncestorOfType(NestableType nestableType, int depth = 0) const;
     SpatiallyNestablePointer getParentPointer(bool& success) const;
+    SpatiallyNestablePointer getImmediateParent() const { return _parent.lock(); }
     static SpatiallyNestablePointer findByID(QUuid id, bool& success);
 
     void getLocalTransformAndVelocities(Transform& localTransform,
                                         glm::vec3& localVelocity,
                                         glm::vec3& localAngularVelocity) const;
 
-    void setLocalTransformAndVelocities(
+    virtual void setLocalTransformAndVelocities(
             const Transform& localTransform,
             const glm::vec3& localVelocity,
             const glm::vec3& localAngularVelocity);

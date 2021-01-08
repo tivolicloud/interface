@@ -582,6 +582,7 @@ class AvatarData : public QObject, public SpatiallyNestable {
     Q_PROPERTY(QUuid sessionUUID READ getSessionUUID NOTIFY sessionUUIDChanged)
 
     Q_PROPERTY(glm::mat4 sensorToWorldMatrix READ getSensorToWorldMatrix)
+    Q_PROPERTY(glm::mat4 sensorToLocalMatrix READ getSensorToLocalMatrix)
     Q_PROPERTY(glm::mat4 controllerLeftHandMatrix READ getControllerLeftHandMatrix)
     Q_PROPERTY(glm::mat4 controllerRightHandMatrix READ getControllerRightHandMatrix)
 
@@ -1423,6 +1424,24 @@ public:
     Q_INVOKABLE glm::mat4 getSensorToWorldMatrix() const;
 
     /**jsdoc
+     * Gets the transform from the user's real world to the avatar's size, orientation, and position relative to virtual parent.
+     * When not parented, identical to getSensorToWorldMatrix
+     * @function Avatar.getSensorToLocalMatrix
+     * @returns {Mat4} The scale, rotation, and translation transform from the user's real world to the avatar's size, 
+     *     orientation, and position in their current parented local space.
+     * @example <caption>Report the sensor to local matrix.</caption>
+     * var sensorToLocalMatrix = MyAvatar.getSensorToLocalMatrix();
+     * print("Sensor to local matrix: " + JSON.stringify(sensorToLocalMatrix));
+     * print("Rotation: " + JSON.stringify(Mat4.extractRotation(sensorToLocalMatrix)));
+     * print("Translation: " + JSON.stringify(Mat4.extractTranslation(sensorToLocalMatrix)));
+     * print("Scale: " + JSON.stringify(Mat4.extractScale(sensorToLocalMatrix)));
+     *
+     * // Note: If using from the Avatar API, replace "MyAvatar" with "Avatar".
+     */
+    // thread safe
+    Q_INVOKABLE glm::mat4 getSensorToLocalMatrix() const;
+
+    /**jsdoc
      * Gets the scale that transforms dimensions in the user's real world to the avatar's size in the virtual world.
      * @function Avatar.getSensorToWorldScale
      * @returns {number} The scale that transforms dimensions in the user's real world to the avatar's size in the virtual 
@@ -1673,6 +1692,13 @@ public slots:
      */
     void resetLastSent() { _lastToByteArray = 0; }
 
+    /**jsdoc
+     * Magic function that works like Entities.editEntity.
+     * currently supports: parentID, parentJointIndex, localPosition, localRotation, localVelocity, localAngularVelocity
+     * @function Avatar.setProperties
+     * @param {Entities.EntityProperties} properties - The new property values.
+     */
+    Q_INVOKABLE virtual void setProperties(const QVariantMap& props) { SpatiallyNestable::updateFromVariant(props); }
 protected:
     void insertRemovedEntityID(const QUuid entityID);
     void lazyInitHeadData() const;
@@ -1688,7 +1714,6 @@ protected:
     bool parentInfoChangedSince(quint64 time) const { return _parentChanged >= time; }
     bool faceTrackerInfoChangedSince(quint64 time) const { return true; } // FIXME
 
-    bool hasParent() const { return !getParentID().isNull(); }
 
     QByteArray packSkeletonData() const;
     QByteArray packAvatarEntityTraitInstance(AvatarTraits::TraitInstanceID traitInstanceID);
@@ -1818,6 +1843,7 @@ protected:
     std::vector<AvatarSkeletonTrait::UnpackedJointData> _avatarSkeletonData;
 
     // used to transform any sensor into world space, including the _hmdSensorMat, or hand controllers.
+    ThreadSafeValueCache<glm::mat4> _sensorToLocalMatrixCache { glm::mat4() };
     ThreadSafeValueCache<glm::mat4> _sensorToWorldMatrixCache { glm::mat4() };
     ThreadSafeValueCache<glm::mat4> _controllerLeftHandMatrixCache { glm::mat4() };
     ThreadSafeValueCache<glm::mat4> _controllerRightHandMatrixCache { glm::mat4() };

@@ -102,6 +102,12 @@ macro(SET_PACKAGING_PARAMETERS)
     set(BUILD_NUMBER ${RELEASE_NUMBER})
   endif ()
 
+  # allow overriding values via same-named environment variables
+  override_from_env(BUILD_ORGANIZATION BUILD_ORGANIZATION "${BUILD_ORGANIZATION}")
+  override_from_env(BUILD_VERSION BUILD_VERSION "${BUILD_VERSION}")
+  override_from_env(BUILD_TIME BUILD_TIME "${BUILD_TIME}")
+  override_from_env(INTERFACE_ICON_PREFIX INTERFACE_ICON_PREFIX "${INTERFACE_ICON_PREFIX}")
+
   if (DEPLOY_PACKAGE)
     # For deployed packages we do not grab the serverless content any longer.
     # Instead, we deploy just the serverless content that is in the interface/resources/serverless
