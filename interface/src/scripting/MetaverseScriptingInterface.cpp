@@ -152,3 +152,11 @@ QVariant MetaverseScriptingInterface::setNametagDetails(QVariantMap details) {
 		details
 	);
 }
+
+QVariant MetaverseScriptingInterface::readyPlayerMe(const QString& name, const QString& avatarUrl) {
+	return metaverseRequest(
+		"/api/user/files/ready-player-me",
+		QNetworkAccessManager::Operation::PostOperation,
+		{{"name", name}, {"avatarUrl", avatarUrl}}
+	);
+}

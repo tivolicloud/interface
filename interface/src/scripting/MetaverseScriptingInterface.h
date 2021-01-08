@@ -78,6 +78,14 @@ public slots:
 	 * @returns {Object}
      */
     QVariant setNametagDetails(QVariantMap details);
+
+    /**jsdoc
+     * @function Metaverse.readyPlayerMe
+     * @param {string} name
+     * @param {string} avatarUrl
+	 * @returns {Object}
+     */
+    QVariant readyPlayerMe(const QString& name, const QString& avatarUrl);
 };
 
 #endif // hifi_MetaverseScriptingInterface_h
