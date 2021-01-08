@@ -43,7 +43,7 @@ SndfileConverter::SndfileConverter() {
 }
 
 QList<QString> SndfileConverter::getAvailableExtensions() {
-	QList<QString> extensions;
+	QList<QString> exts { "ogg", "opus" };
 
 	int count;
 	sf_command(nullptr, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof(int));
@@ -52,10 +52,11 @@ QList<QString> SndfileConverter::getAvailableExtensions() {
 		SF_FORMAT_INFO info;
 		info.format = i;
         sf_command(nullptr, SFC_GET_FORMAT_MAJOR, &info, sizeof(info));
-		extensions.push_back(QString(info.extension).toLower());
+		QString ext = QString(info.extension).toLower();
+		if (!exts.contains(ext)) exts.push_back(ext);
 	};
 
-	return extensions;
+	return exts;
 }
 
 std::pair<QByteArray, SoundProcessor::AudioProperties> SndfileConverter::convertToPcm(QByteArray input) {
@@ -64,7 +65,6 @@ std::pair<QByteArray, SoundProcessor::AudioProperties> SndfileConverter::convert
 	// create input file
 
 	SF_INFO inputInfo;
-    inputInfo.format = SF_FORMAT_OGG;
 
 	QBuffer inputBuffer(&input);
     inputBuffer.open(QIODevice::ReadOnly);
@@ -97,14 +97,30 @@ std::pair<QByteArray, SoundProcessor::AudioProperties> SndfileConverter::convert
 
 	// convert
 
-	short samples[2048];
+	// https://github.com/libsndfile/libsndfile/issues/194
+
+	int subformat = inputInfo.format & SF_FORMAT_SUBMASK;
+	bool normalize = (
+		subformat == SF_FORMAT_FLOAT || subformat == SF_FORMAT_DOUBLE ||
+		subformat == SF_FORMAT_VORBIS || subformat == SF_FORMAT_OPUS
+	);
+
+	double scale;
+	if (normalize) {
+		sf_command(inputFile, SFC_CALC_SIGNAL_MAX, &scale, sizeof(scale));
+		scale = scale > 1.0 ? 1.0 / scale : 1.0;
+	}
+
+	double samples[2048];
 	for (;;) {
-		int items = sf_read_short(inputFile, samples, 2048);
-		if (items > 0) {
-			sf_write_short(outputFile, samples, items);
-		} else {
-			break;
+		int items = sf_read_double(inputFile, samples, 2048);
+		if (items == 0) break;
+		if (normalize) {
+			for (size_t i = 0; i < 2048; i++) {
+				samples[i] *= scale;
+			}
 		}
+		sf_write_double(outputFile, samples, items);
 	}
 
 	// clean up and return
