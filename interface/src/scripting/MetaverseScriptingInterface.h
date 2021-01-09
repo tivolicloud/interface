@@ -9,8 +9,6 @@
  * The <code>Metaverse</code> API lets you interact with the metaverse.</br>
  * This is a very specific API for things like the explore, avatar or settings app.</br>
  * It's rolling and anything may change in any update.</br>
- * </br>
- * <b>Note: You can't use this API on scripts over http, tea, etc.</b>
  * 
  * @namespace Metaverse
  *
@@ -26,6 +24,7 @@ public:
 
 public slots:
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getPopularWorlds
      * @param {Object} details
 	 * @returns {Object[]}
@@ -33,6 +32,7 @@ public slots:
     QVariant getPopularWorlds(QVariantMap details);
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getLikedWorlds
      * @param {Object} details
 	 * @returns {Object[]}
@@ -40,6 +40,7 @@ public slots:
     QVariant getLikedWorlds(QVariantMap details);
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getPrivateWorlds
      * @param {Object} details
 	 * @returns {Object[]}
@@ -47,6 +48,7 @@ public slots:
     QVariant getPrivateWorlds(QVariantMap details);
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.likeWorld
      * @param {string} id
      * @param {boolean} [like=true]
@@ -55,24 +57,28 @@ public slots:
     QVariant likeWorld(const QString& id, const bool like = true);
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getFriends
 	 * @returns {Object[]}
      */
     QVariant getFriends();
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getAvatarsFromFiles
 	 * @returns {Object[]}
      */
     QVariant getAvatarsFromFiles();
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.getNametagDetails
 	 * @returns {Object}
      */
     QVariant getNametagDetails();
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.setNametagDetails
      * @param {Object} details
 	 * @returns {Object}
@@ -80,6 +86,7 @@ public slots:
     QVariant setNametagDetails(QVariantMap details);
 
     /**jsdoc
+     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.readyPlayerMe
      * @param {string} name
      * @param {string} avatarUrl
