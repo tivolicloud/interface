@@ -403,6 +403,7 @@ static AnimNode::Pointer loadClipNode(const QJsonObject& jsonObj, const QString&
     READ_OPTIONAL_STRING(loopFlagVar, jsonObj);
     READ_OPTIONAL_STRING(mirrorFlagVar, jsonObj);
 
+    if (jsonUrl.isEmpty()) return nullptr;
 
     // animation urls can be relative to the containing url document.
     auto tempUrl = QUrl(url);

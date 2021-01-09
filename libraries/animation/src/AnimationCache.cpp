@@ -74,12 +74,13 @@ void AnimationReader::run() {
             HFMModel::Pointer hfmModel;
 
             auto serializer = DependencyManager::get<ModelFormatRegistry>()->getSerializerForMediaType(_data, _url, "");
-            if (!serializer) {
-                QString errorStr("usupported format");
+            if (serializer) {
+                hfmModel = serializer->read(_data, QVariantHash(), _url.path());
+            } else {
+                QString errorStr("unsupported format " + _url.toString());
                 emit onError(299, errorStr);
             }
 
-            hfmModel = serializer->read(_data, QVariantHash(), _url.path());
             emit onSuccess(hfmModel);
         } else {
             throw QString("url is invalid");
