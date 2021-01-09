@@ -9,14 +9,18 @@
 #include <NetworkAccessManager.h>
 #include <ScriptEngine.h>
 
-bool isLocalScript() {
+bool isTrustedScript() {
 	auto thread = QThread::currentThread();
 	if (!thread->objectName().startsWith("js:")) return false;
 
 	auto scriptUrl = thread->property("scriptUrl").toString();
 	if (scriptUrl.isEmpty()) return false;
 
-	return scriptUrl.startsWith("file://") || scriptUrl.startsWith("about:");
+	return (
+		scriptUrl.startsWith("file://") ||
+		scriptUrl.startsWith("about:") ||
+		scriptUrl.startsWith("https://things.tivolicloud.com/")
+	);
 }
 
 QVariant metaverseRequest(
@@ -24,7 +28,7 @@ QVariant metaverseRequest(
 	QNetworkAccessManager::Operation method = QNetworkAccessManager::Operation::GetOperation,
 	QVariantMap body = QVariantMap() 
 ) {
-	if (!isLocalScript()) return QVariant();
+	if (!isTrustedScript()) return QVariant();
 
 	auto accountManager = DependencyManager::get<AccountManager>();
 
