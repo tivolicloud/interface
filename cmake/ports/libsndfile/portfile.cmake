@@ -1,12 +1,11 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO libsndfile/libsndfile
-    REF d03045b014c12ac0ea4187462d75edced1dfc0b3
-    SHA512 59156dd0dab6047a4476536b1d81ed1a531ba165a77ddb6d25339cad024697db1ea90440792b9b076bc0452667ca5f1068c414682101cefb2268e2893bdf8486
-    HEAD_REF master
+    REPO tivolicloud/libsndfile
+    REF b60f8215b012d13efadb36a8b456c2b7ab1a1cd8
+    SHA512 5f5bdfb573b08b569923268c81b6124444502fe8a4ef2c5b210c96168790d3dba9ea98e05c05518cf8a7cb2fcbe86195587047aaebccef5113556d0f219a1932
+    HEAD_REF mpeg-support
     PATCHES
         oga-to-ogg.patch
-        499.patch
         add-mp3-to-major-formats.patch
 )
 
