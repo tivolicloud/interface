@@ -1,8 +1,8 @@
 diff --git a/src/mpeg_decode.c b/src/mpeg_decode.c
-index 84de23b6..fe1f5856 100644
+index 1ab34c38..14db6eff 100644
 --- a/src/mpeg_decode.c
 +++ b/src/mpeg_decode.c
-@@ -547,9 +547,9 @@ mpeg_decoder_init (SF_PRIVATE *psf)
+@@ -571,9 +571,9 @@ mpeg_decoder_init (SF_PRIVATE *psf)
  
  	mpg123_param (pmp3d->pmh, MPG123_REMOVE_FLAGS, MPG123_AUTO_RESAMPLE, 1.0) ;
  	mpg123_param (pmp3d->pmh, MPG123_ADD_FLAGS, MPG123_FORCE_FLOAT | MPG123_GAPLESS, 1.0) ;
@@ -11,6 +11,6 @@ index 84de23b6..fe1f5856 100644
  	mpg123_param (pmp3d->pmh, MPG123_ADD_FLAGS, MPG123_NO_FRANKENSTEIN, 1.0) ;
 -#endif
 +// #endif
- 	//mpg123_param (pmp3d->pmh, MPG123_VERBOSE, 12, 1.0) ;
  
  	psf->dataoffset = 0 ;
+ 
