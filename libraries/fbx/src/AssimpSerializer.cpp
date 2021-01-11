@@ -209,11 +209,18 @@ void AssimpSerializer::processMaterials() {
             materialPtr->isPBSMaterial = true;
         }
 
+        // unlit colors arent srgb
+
+        bool unlit;
+        if (mMaterial->Get(AI_MATKEY_GLTF_UNLIT, unlit) == AI_SUCCESS && unlit) {
+            modelMaterial->setUnlit(true);
+        }
+
         // colors
 
         aiColor3D diffuse;
         if (mMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse) == AI_SUCCESS) {
-            modelMaterial->setAlbedo(asVec3(diffuse));
+            modelMaterial->setAlbedo(asVec3(diffuse), !unlit);
         }
 
         float opacity;
@@ -228,7 +235,7 @@ void AssimpSerializer::processMaterials() {
 
         aiColor4D baseColor;
         if (mMaterial->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_FACTOR, baseColor) == AI_SUCCESS) {
-            modelMaterial->setAlbedo(glm::vec3(baseColor.r, baseColor.g, baseColor.b));
+            modelMaterial->setAlbedo(glm::vec3(baseColor.r, baseColor.g, baseColor.b), !unlit);
             modelMaterial->setOpacity(baseColor.a);
         }
 
@@ -306,11 +313,6 @@ void AssimpSerializer::processMaterials() {
         int cullNone;
         if (mMaterial->Get(AI_MATKEY_TWOSIDED, cullNone) == AI_SUCCESS && cullNone) {
             modelMaterial->setCullFaceMode(graphics::MaterialKey::CullFaceMode::CULL_NONE);
-        }
-
-        int unlit;
-        if (mMaterial->Get(AI_MATKEY_GLTF_UNLIT, unlit) == AI_SUCCESS && unlit) {
-            modelMaterial->setUnlit(true);
         }
 
         aiString alphaMode;
