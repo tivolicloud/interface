@@ -745,7 +745,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
 
     // qCDebug(modelformat) << "AssimpSerializer::read url"<<url<<ext;
 
-    auto tivoliLogStream = new TivoliLogStream(url.fileName());
+    TivoliLogStream tivoliLogStream = TivoliLogStream(url.fileName());
     auto errorSeverity = 
         // Assimp::Logger::ErrorSeverity::Debugging |
         // Assimp::Logger::ErrorSeverity::Info |
@@ -756,7 +756,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
         Assimp::DefaultLogger::create("");
     }
 
-    Assimp::DefaultLogger::get()->attachStream(tivoliLogStream, errorSeverity);
+    Assimp::DefaultLogger::get()->attachStream(&tivoliLogStream, errorSeverity);
 
     Assimp::Importer importer;
     importer.SetIOHandler(new TivoliIOSystem(url));
@@ -794,7 +794,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
 
     processScene(mapping);
 
-    Assimp::DefaultLogger::get()->detachStream(tivoliLogStream, errorSeverity);
+    Assimp::DefaultLogger::get()->detachStream(&tivoliLogStream, errorSeverity);
 
     return hfmModel;
 }
