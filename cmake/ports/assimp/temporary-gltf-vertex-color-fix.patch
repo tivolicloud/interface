@@ -1,0 +1,80 @@
+diff --git a/code/AssetLib/glTF2/glTF2Asset.h b/code/AssetLib/glTF2/glTF2Asset.h
+index 94cbef2c..63ecd0f7 100644
+--- a/code/AssetLib/glTF2/glTF2Asset.h
++++ b/code/AssetLib/glTF2/glTF2Asset.h
+@@ -398,7 +398,7 @@ struct Accessor : public Object {
+     inline uint8_t *GetPointer();
+ 
+     template <class T>
+-    void ExtractData(T *&outData);
++    std::vector<aiColor4D> ExtractData(T *&outData, bool isVertexColors = false);
+ 
+     void WriteData(size_t count, const void *src_buffer, size_t src_stride);
+     void WriteSparseValues(size_t count, const void *src_data, size_t src_dataStride);
+diff --git a/code/AssetLib/glTF2/glTF2Asset.inl b/code/AssetLib/glTF2/glTF2Asset.inl
+index 0e265efe..113bef88 100644
+--- a/code/AssetLib/glTF2/glTF2Asset.inl
++++ b/code/AssetLib/glTF2/glTF2Asset.inl
+@@ -752,7 +752,7 @@ inline void CopyData(size_t count,
+ } // namespace
+ 
+ template <class T>
+-void Accessor::ExtractData(T *&outData) {
++std::vector<aiColor4D> Accessor::ExtractData(T *&outData, bool isVertexColors) {
+     uint8_t *data = GetPointer();
+     if (!data) {
+         throw DeadlyImportError("GLTF2: data is null when extracting data from ", getContextForErrorMessages(id, name));
+@@ -775,13 +775,32 @@ void Accessor::ExtractData(T *&outData) {
+     }
+ 
+     outData = new T[count];
++
++    std::vector<aiColor4D> vertexColors;
++    bool doVertexColorsSeparate = (
++        isVertexColors &&
++        type == glTF2::AttribType::VEC4 && 
++        componentType == glTF2::ComponentType_UNSIGNED_SHORT
++    );
++
+     if (stride == elemSize && targetElemSize == elemSize) {
+         memcpy(outData, data, totalSize);
+     } else {
+         for (size_t i = 0; i < count; ++i) {
+-            memcpy(outData + i, data + i * stride, elemSize);
++            if (doVertexColorsSeparate) {
++                vertexColors.push_back(aiColor4D(
++                    data[i * stride + 0] / 255.0f,
++                    data[i * stride + 2] / 255.0f,
++                    data[i * stride + 4] / 255.0f,
++                    data[i * stride + 6] / 255.0f
++                ));
++            } else {
++                memcpy(outData + i, data + i * stride, elemSize);
++            }
+         }
+     }
++
++    return vertexColors;
+ }
+ 
+ inline void Accessor::WriteData(size_t _count, const void *src_buffer, size_t src_stride) {
+diff --git a/code/AssetLib/glTF2/glTF2Importer.cpp b/code/AssetLib/glTF2/glTF2Importer.cpp
+index ac3b7144..ebaeeaaf 100644
+--- a/code/AssetLib/glTF2/glTF2Importer.cpp
++++ b/code/AssetLib/glTF2/glTF2Importer.cpp
+@@ -463,7 +463,14 @@ void glTF2Importer::ImportMeshes(glTF2::Asset &r) {
+                                                "\" does not match the vertex count");
+                     continue;
+                 }
+-                attr.color[c]->ExtractData(aim->mColors[c]);
++                auto vertexColors = attr.color[c]->ExtractData(aim->mColors[c], true);
++                if (vertexColors.size() > 0) {
++                    for (size_t i = 0; i < vertexColors.size(); i++) {
++                        aim->mColors[c][i] = vertexColors[i];
++                    }
++                } else {
++                    DefaultLogger::get()->warn("Vertex color hack not used so they may be broken.");
++                }
+             }
+             for (size_t tc = 0; tc < attr.texcoord.size() && tc < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++tc) {
+                 if (!attr.texcoord[tc]) {

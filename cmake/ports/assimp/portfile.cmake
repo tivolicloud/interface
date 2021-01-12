@@ -4,6 +4,8 @@ vcpkg_from_github(
     REF 88e5f3416e5604bd3f1841c064c3b9d87f01e1cd
     SHA512 485f7d200041bc330de1fe377f562796c399342ba6a17a97e5e77adbf754d97b60dc8488f1beefe1ba3b3d424421cf8c609ed103916b36f5567e81f66e1cd717
     HEAD_REF master
+    PATCHES
+        temporary-gltf-vertex-color-fix.patch
 )
 
 set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
