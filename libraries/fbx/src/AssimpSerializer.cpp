@@ -354,13 +354,6 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
 
         meshPtr->meshIndex = meshIndex;
 
-        // TODO: fix https://github.com/assimp/assimp/issues/1702
-        bool isVertexColorsBorked = false;
-        if (mMesh->HasVertexColors(0) && mMesh->mNumVertices > 0) {
-            auto c = mMesh->mColors[0][0];
-            isVertexColorsBorked = isnan(c.r) || isnan(c.g) || isnan(c.b) || isnan(c.a);
-        }
-
         for (size_t vertexIndex = 0; vertexIndex < mMesh->mNumVertices; vertexIndex++) {
             auto v = mMesh->mVertices[vertexIndex];
             meshPtr->vertices.push_back(asVec3(v));
@@ -375,7 +368,7 @@ void AssimpSerializer::processMeshes(const hifi::VariantHash& mapping) {
                 meshPtr->tangents.push_back(asVec3(t));
             }
 
-            if (!isVertexColorsBorked && mMesh->HasVertexColors(0)) {
+            if (mMesh->HasVertexColors(0)) {
                 auto c = mMesh->mColors[0][vertexIndex];
                 meshPtr->colors.push_back(glm::vec3(c.r, c.g, c.b));
             }

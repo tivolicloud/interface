@@ -1,11 +1,12 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO assimp/assimp
-    REF 88e5f3416e5604bd3f1841c064c3b9d87f01e1cd
-    SHA512 485f7d200041bc330de1fe377f562796c399342ba6a17a97e5e77adbf754d97b60dc8488f1beefe1ba3b3d424421cf8c609ed103916b36f5567e81f66e1cd717
+    REF 20873cb142597dec540552accfe47ba122f9d6fb
+    SHA512 9685c8ca21c2395e27020106978f47bd8ccb583e1fbbf5a3027a03b77a8ea64c8a3f342b43494810ebcc98d2720c7731b38df9b98b373d84f2e1ef347d65c800
     HEAD_REF master
     PATCHES
-        temporary-gltf-vertex-color-fix.patch
+        install-zlib.patch
+        fix-gltf-vertex-colors.patch
 )
 
 set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
