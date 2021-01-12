@@ -288,7 +288,7 @@ EntityRenderer::Pointer EntityRenderer::addToScene(EntityTreeRenderer& renderer,
 
 
 bool EntityRenderer::addToScene(const ScenePointer& scene, Transaction& transaction) {
-    _renderItemID = scene->allocateID();  // CPM investigate
+    _renderItemID = scene->allocateID();
     // Complicated series of trusses
     auto renderPayload = std::make_shared<PayloadProxyInterface::ProxyPayload>(shared_from_this());
     Item::Status::Getters statusGetters;
@@ -399,7 +399,7 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
     DETAILED_PROFILE_RANGE(simulation_physics, __FUNCTION__);
     withWriteLock([&] {
         auto transparent = isTransparent();
-        auto fading = isFading(); // CPM
+        auto fading = isFading();
         if (fading || _prevIsTransparent != transparent || !entity->isVisuallyReady()) {
             emit requestRenderUpdate();
         }
@@ -417,16 +417,16 @@ void EntityRenderer::doRenderUpdateSynchronous(const ScenePointer& scene,
 
         _visible = entity->getVisible();
 
-        if (_visible) {  // TIVOLI Zone Culling logic. Goes in doRenderUpdateSynchronous     
+        if (_visible) {   
             EntityTypes::EntityType checkType = entity->getType();
             if (checkType == EntityTypes::Zone) return;
             if (checkType == EntityTypes::Gizmo) return;
             if (checkType == EntityTypes::Grid) return;
             if (checkType == EntityTypes::Material) return;
-            // if (checkType == EntityTypes::Shape) return;
         }
 
-        const bool hasChanged = evaluateEntityZoneCullState(entity); // must be called even if bool not used
+        bool hasChanged = evaluateEntityZoneCullState(entity);  // Run local zone culling logic 
+        if ( entity->getLocallyVisible() == false ) {_visible = false; hasChanged = true;}
         setIsVisibleInSecondaryCamera(entity->isVisibleInSecondaryCamera());
         setRenderLayer(entity->getRenderLayer());
         setPrimitiveMode(entity->getPrimitiveMode());

@@ -48,7 +48,7 @@ const quint32 ENTITY_ITEM_DEFAULT_STATIC_CERTIFICATE_VERSION = 0;
 const glm::u8vec3 ENTITY_ITEM_DEFAULT_COLOR = { 255, 255, 255 };
 const float ENTITY_ITEM_DEFAULT_ALPHA = 1.0f;
 const bool ENTITY_ITEM_DEFAULT_VISIBLE = true;
-const bool ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE = false;   // set to false since this is currently only used in culling.
+const bool ENTITY_ITEM_DEFAULT_LOCALLY_VISIBLE = true; 
 const bool ENTITY_ITEM_DEFAULT_VISIBLE_IN_SECONDARY_CAMERA = true;
 const bool ENTITY_ITEM_DEFAULT_CAN_CAST_SHADOW { true };
 
