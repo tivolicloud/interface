@@ -1300,14 +1300,14 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
 
     const DomainHandler& domainHandler = nodeList->getDomainHandler();
 
-    connect(&domainHandler, SIGNAL(domainURLChanged(QUrl)), SLOT(domainURLChanged(QUrl)));
-    connect(&domainHandler, SIGNAL(redirectToErrorDomainURL(QUrl)), SLOT(goToErrorDomainURL(QUrl)));
+    connect(&domainHandler, &DomainHandler::domainURLChanged, this, &Application::domainURLChanged);
+    connect(&domainHandler, &DomainHandler::redirectToErrorDomainURL, this, &Application::goToErrorDomainURL);
     connect(&domainHandler, &DomainHandler::domainURLChanged, [](QUrl domainURL){
         setCrashAnnotation("domain", domainURL.toString().toStdString());
     });
-    connect(&domainHandler, SIGNAL(resetting()), SLOT(resettingDomain()));
-    connect(&domainHandler, SIGNAL(connectedToDomain(QUrl)), SLOT(updateWindowTitle()));
-    connect(&domainHandler, SIGNAL(disconnectedFromDomain()), SLOT(updateWindowTitle()));
+    connect(&domainHandler, &DomainHandler::resetting, this, &Application::resettingDomain);
+    connect(&domainHandler, &DomainHandler::connectedToDomain, this, &Application::updateWindowTitle);
+    connect(&domainHandler, &DomainHandler::disconnectedFromDomain, this, &Application::updateWindowTitle);
     connect(&domainHandler, &DomainHandler::disconnectedFromDomain, this, [this]() {
         auto entityScriptingInterface = DependencyManager::get<EntityScriptingInterface>();
         entityScriptingInterface->deleteEntity(getTabletScreenID());
