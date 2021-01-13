@@ -1058,6 +1058,10 @@ Application::Application(int& argc, char** argv, QElapsedTimer& startupTimer, bo
     _snapshotSound(nullptr),
     _sampleSound(nullptr)
 {
+    
+#if defined(Q_OS_LINUX)
+    _window->setWindowIcon(QIcon(PathUtils::resourcesPath() + "images/tivoli-logo.svg"));
+#endif
 
     auto steamClient = PluginManager::getInstance()->getSteamClientPlugin();
     setProperty(hifi::properties::STEAM, (steamClient && steamClient->isRunning()));

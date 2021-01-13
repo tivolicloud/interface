@@ -390,9 +390,6 @@ int main(int argc, const char* argv[]) {
         Application app(argcExtended, const_cast<char**>(argvExtended.data()), startupTime, runningMarkerExisted);
         PROFILE_SYNC_END(startup, "app full ctor", "");
 
-#if defined(Q_OS_LINUX)
-        app.setWindowIcon(QIcon(PathUtils::resourcesPath() + "images/tivoli-logo.svg"));
-#endif
         startCrashHookMonitor(&app);
 
         QTimer exitTimer;
