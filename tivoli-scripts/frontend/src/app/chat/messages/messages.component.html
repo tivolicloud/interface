@@ -74,6 +74,12 @@
 		<video *ngIf="message.videoUrl" class="video" controls>
 			<source [src]="message.videoUrl" />
 		</video>
+		<iframe
+			*ngIf="message.videoEmbedUrl"
+			class="video widescreen"
+			[src]="message.videoEmbedUrl"
+			frameborder="0"
+		></iframe>
 		<img
 			*ngIf="message.imageUrl"
 			class="image"

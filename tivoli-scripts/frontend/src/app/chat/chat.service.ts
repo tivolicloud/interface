@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { BehaviorSubject } from "rxjs";
 import { filter } from "rxjs/operators";
 import { EmojiService } from "../emoji.service";
@@ -16,6 +17,7 @@ class Message {
 
 	public imageUrl: string;
 	public videoUrl: string;
+	public videoEmbedUrl: SafeUrl;
 
 	public metadata: {
 		url: string;
@@ -36,6 +38,27 @@ class Message {
 			this.videoUrl = videoUrlMatches[0].trim();
 			// this.message = this.message.replace(this.videoUrl, "");
 			return;
+		}
+
+		const youtubeUrlMatches = this.message.match(
+			/https?:\/\/(?:www\.)?(?:youtu\.be|youtube\.com)\/\S*/i,
+		);
+		if (youtubeUrlMatches && youtubeUrlMatches.length > 0) {
+			const youtubeUrl = youtubeUrlMatches[0].trim();
+
+			const matches = youtubeUrl.match(/(?:^|\/|v=)([a-z0-9_-]{11})/i);
+			if (matches && matches[1] != null) {
+				let videoEmbedUrl = "https://youtube.com/embed/" + matches[1];
+
+				const timeMatches = youtubeUrl.match(/t=([0-9]+)(?:s|&|$)/i);
+				if (timeMatches && timeMatches[1] != null) {
+					videoEmbedUrl += "?start=" + timeMatches[1];
+				}
+
+				this.videoEmbedUrl = this.chatService.sanitizer.bypassSecurityTrustResourceUrl(
+					videoEmbedUrl,
+				);
+			}
 		}
 
 		const imageUrlMatches = this.message.match(
@@ -225,7 +248,11 @@ class Message {
 					};
 				} else {
 					const link = /https?:\/\/[^]+/i.test(content);
-					if (link && this.metadata == null) {
+					if (
+						link &&
+						this.metadata == null &&
+						this.videoEmbedUrl == null
+					) {
 						this.getMetadata(content);
 					}
 					return { content, html: false, link, code: false };
@@ -304,6 +331,7 @@ export class ChatService {
 	constructor(
 		public readonly scriptService: ScriptService,
 		public readonly emojiService: EmojiService,
+		public readonly sanitizer: DomSanitizer,
 	) {
 		this.scriptService.event$.subscribe(data => {
 			this.handleData(data);

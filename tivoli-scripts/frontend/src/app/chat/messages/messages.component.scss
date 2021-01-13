@@ -102,9 +102,13 @@
 		.image,
 		.video {
 			display: block;
-			height: 200px;
+			$height: 200px;
+			height: $height;
 			border-radius: 4px;
 			margin-top: 4px;
+			&.widescreen {
+				width: $height * 16/9;
+			}
 		}
 
 		.code {
