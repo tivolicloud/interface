@@ -91,6 +91,12 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
     std::string cpuVendor;
     if (cpu.count(keys::cpu::numCores)) {
         numCores = cpu[keys::cpu::numCores].get<int>();
+        
+        if (numCores <= 2) {
+            tier = Profiler::Tier::POTATO;
+            return true;
+        }
+
         if (numCores <= 4) {
             tier = Profiler::Tier::LOW;
             return true;
@@ -128,7 +134,7 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
         else if (gpuVendor.find(keys::gpu::vendor_NVIDIA) != std::string::npos) {
             // TODO: Filter base on the model of NV
             // go high because GPU
-            tier = Profiler::Tier::POTATO;
+            tier = Profiler::Tier::HIGH;
             return true;
         }
     }
