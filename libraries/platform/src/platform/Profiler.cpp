@@ -121,14 +121,14 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
             }
             
             // go high because GPU
-            tier = Profiler::Tier::HIGH;
+            tier = Profiler::Tier::MID;
             return true;
         }
         // NVIDIA gpu
         else if (gpuVendor.find(keys::gpu::vendor_NVIDIA) != std::string::npos) {
             // TODO: Filter base on the model of NV
             // go high because GPU
-            tier = Profiler::Tier::HIGH;
+            tier = Profiler::Tier::POTATO;
             return true;
         }
     }
