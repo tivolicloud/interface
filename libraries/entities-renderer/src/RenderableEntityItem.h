@@ -152,7 +152,6 @@ protected:
     bool _isFading { EntityTreeRenderer::getEntitiesShouldFadeFunction()() };
     bool _prevIsTransparent { false };
     bool _visible{ false };
-    bool _locallyVisible{ false };
     bool _previouslyVisible{ false };
     bool _isVisibleInSecondaryCamera { false };
     bool _canCastShadow { false };
