@@ -1,5 +1,15 @@
-::ng-deep
-	.mat-button-toggle-appearance-standard
-	.mat-button-toggle-label-content {
-	line-height: 36px;
+::ng-deep {
+	.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+		line-height: 36px;
+	}
+
+	*::-webkit-scrollbar {
+		// usually 12
+		width: 8px;
+		height: 8px;
+	}
+
+	.mat-dialog-container {
+		padding: 16px;
+	}
 }

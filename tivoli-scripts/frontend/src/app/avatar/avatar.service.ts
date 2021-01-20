@@ -3,8 +3,9 @@ import { ScriptService } from "../script.service";
 
 export interface TivoliFile {
 	key: string;
-	updated: string;
 	size: number;
+	tea: boolean;
+	updated: string;
 }
 
 @Injectable({
