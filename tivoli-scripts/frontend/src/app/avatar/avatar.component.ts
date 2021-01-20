@@ -32,6 +32,7 @@ export class AvatarComponent implements OnInit, OnDestroy {
 	avatarURL = "";
 	avatarName = "";
 	avatarIsTea = false;
+	avatarPreviewImageURL = "";
 
 	avatarScale = 1;
 	avatarCollisions = true;
@@ -50,6 +51,28 @@ export class AvatarComponent implements OnInit, OnDestroy {
 		private readonly sanitizer: DomSanitizer,
 		private readonly avatarService: AvatarService,
 	) {}
+
+	updateAvatarPreviewImageURL() {
+		this.scriptService
+			.rpc<string>("MyAvatar.getAvatarPreviewImageURL()")
+			.subscribe(previewImageURL => {
+				previewImageURL = encodeURI(previewImageURL.trim());
+				if (previewImageURL == "") {
+					this.avatarPreviewImageURL =
+						"./assets/default-user-icon.jpg";
+				} else {
+					if (/^tea:\/\//i.test(previewImageURL)) {
+						// TODO: remove when tea works in qt webengine
+						this.avatarPreviewImageURL = previewImageURL.replace(
+							/^tea:\/\//i,
+							"https://files.tivolicloud.com/",
+						);
+					} else {
+						this.avatarPreviewImageURL = previewImageURL;
+					}
+				}
+			});
+	}
 
 	ngOnInit() {
 		this.iconRegistry.addSvgIconLiteral(
@@ -79,6 +102,7 @@ export class AvatarComponent implements OnInit, OnDestroy {
 						name.pop();
 						return name.join(".");
 					})();
+					this.updateAvatarPreviewImageURL();
 					break;
 				case "getAvatarScale":
 					this.avatarScale = data.value;

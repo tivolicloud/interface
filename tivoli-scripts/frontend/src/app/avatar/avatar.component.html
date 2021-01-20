@@ -14,10 +14,14 @@
 		<table>
 			<tr>
 				<td>
-					<img
+					<div
 						class="avatar-image"
-						src="https://tivolicloud.com/api/user/_/image"
-					/>
+						[style.backgroundImage]="
+							'url(' +
+							avatarPreviewImageURL +
+							'), url(./assets/default-user-icon.jpg)'
+						"
+					></div>
 				</td>
 				<td style="padding-left: 16px">
 					<h2
