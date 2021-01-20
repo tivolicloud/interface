@@ -757,6 +757,7 @@ EntityPropertyFlags EntityItemProperties::getChangedProperties() const {
  * @property {boolean} locked=false - <code>true</code> if properties other than <code>locked</code> cannot be changed and the 
  *     entity cannot be deleted, <code>false</code> if all properties can be changed and the entity can be deleted.
  * @property {boolean} visible=true - <code>true</code> if the entity is rendered, <code>false</code> if it isn't.
+ * @property {boolean} locallyVisible=true - <code>true</code> if the entity is locally rendered, <code>false</code> if it isn't.
  * @property {Entities.EntityPriority} entityPriority="automatic" - The priority with which the entity receives updates from the CPU.
  * @property {boolean} canCastShadow=true - <code>true</code> if the entity can cast a shadow, <code>false</code> if it can't. 
  *     Currently applicable only to {@link Entities.EntityProperties-Model|Model} and 
