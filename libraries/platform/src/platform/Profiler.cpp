@@ -72,7 +72,8 @@ bool filterOnComputerMACOS(const platform::json& computer, Profiler::Tier& tier)
             tier = Profiler::Tier::LOW;
             return true;
         } else {
-            // else go mid
+            // else go mid because it must be an AMD GPU which never works well
+            // TODO: shadows and ao doesnt look right and kills the fps
             tier = Profiler::Tier::MID;
             return true;
         }
@@ -90,6 +91,7 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
     int numCores = 0;
     std::string cpuVendor;
     if (cpu.count(keys::cpu::numCores)) {
+        // physical and logical cores typically 8 or 12 on high end cpu
         numCores = cpu[keys::cpu::numCores].get<int>();
         
         if (numCores <= 2) {
@@ -126,7 +128,8 @@ bool filterOnProcessors(const platform::json& computer, const platform::json& cp
                 return true;
             }
             
-            // go high because GPU
+            // go high because GPU, but mid because AMD never works well
+            // TODO: shadows and ao doesnt look right and kills the fps
             tier = Profiler::Tier::MID;
             return true;
         }
