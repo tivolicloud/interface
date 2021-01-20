@@ -265,6 +265,11 @@ void ModelResource::downloadFinished(const QByteArray& data) {
                 _animGraphOverrideUrl = QUrl();
             }
 
+            QString preview = _mapping.value(PREVIEW_FIELD).toString();
+            if (!preview.isNull()) {
+                _previewURL = url.resolved(preview);
+            }
+
             auto modelCache = DependencyManager::get<ModelCache>();
             GeometryExtra extra { GeometryMappingPair(base, _mapping), _textureBaseURL, false };
 

@@ -2027,6 +2027,13 @@ public:
      */
     Q_INVOKABLE bool getFlowEnabled() { return _enableFlow; }
 
+    /**jsdoc
+     * Gets preview image url for current avatar if it's available.
+     * @function MyAvatar.getAvatarPreviewImageURL
+     * @returns {string} url
+     */
+    Q_INVOKABLE QUrl getAvatarPreviewImageURL();
+
     int getOverrideJointCount() const;
     bool getFlowActive() const;
     bool getNetworkGraphActive() const;

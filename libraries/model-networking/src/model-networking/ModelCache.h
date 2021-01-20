@@ -89,6 +89,8 @@ public:
 
     virtual bool areTexturesLoaded() const override { return isLoaded() && NetworkModel::areTexturesLoaded(); }
 
+    QUrl getPreviewImageURL() const { return _previewURL; }
+
 private slots:
     void onGeometryMappingLoaded(bool success);
 
@@ -109,6 +111,7 @@ private:
     ModelLoader _modelLoader;
     GeometryMappingPair _mappingPair;
     QUrl _textureBaseURL;
+    QUrl _previewURL;
     bool _combineParts;
 
     ModelResource::Pointer _modelResource;
@@ -130,6 +133,8 @@ public:
     QUrl getURL() const { return (bool)_resource ? _resource->getURL() : QUrl(); }
     int getResourceDownloadAttempts() { return _resource ? _resource->getDownloadAttempts() : 0; }
     int getResourceDownloadAttemptsRemaining() { return _resource ? _resource->getDownloadAttemptsRemaining() : 0; }
+
+    QUrl getPreviewImageURL() const { return _resource->getPreviewImageURL(); }
 
 private:
     void startWatching();

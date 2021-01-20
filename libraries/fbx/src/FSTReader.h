@@ -20,6 +20,7 @@ static const QString FST_VERSION_FIELD = "version";
 static const QString NAME_FIELD = "name";
 static const QString TYPE_FIELD = "type";
 static const QString FILENAME_FIELD = "filename";
+static const QString PREVIEW_FIELD = "preview";
 static const QString MARKETPLACE_ID_FIELD = "marketplaceID";
 static const QString TEXDIR_FIELD = "texdir";
 static const QString LOD_FIELD = "lod";

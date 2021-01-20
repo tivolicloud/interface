@@ -6664,6 +6664,10 @@ void MyAvatar::endSit(const glm::vec3& position, const glm::quat& rotation) {
     }
 }
 
+QUrl MyAvatar::getAvatarPreviewImageURL() {
+    return _skeletonModel->getPreviewImageURL();
+}
+
 bool MyAvatar::getIsJointOverridden(int jointIndex) const {
     // has this joint been set by a script?
     return _skeletonModel->getIsJointOverridden(jointIndex);

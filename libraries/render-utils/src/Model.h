@@ -349,6 +349,7 @@ public:
 
     int getResourceDownloadAttempts() { return _renderWatcher.getResourceDownloadAttempts(); }
     int getResourceDownloadAttemptsRemaining() { return _renderWatcher.getResourceDownloadAttemptsRemaining(); }
+    QUrl getPreviewImageURL() { return _renderWatcher.getPreviewImageURL(); }
 
     Q_INVOKABLE MeshProxyList getMeshes() const;
     virtual scriptable::ScriptableModelBase getScriptableModel() override;
