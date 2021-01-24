@@ -1,12 +1,9 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO tivolicloud/libsndfile
-    REF b60f8215b012d13efadb36a8b456c2b7ab1a1cd8
-    SHA512 5f5bdfb573b08b569923268c81b6124444502fe8a4ef2c5b210c96168790d3dba9ea98e05c05518cf8a7cb2fcbe86195587047aaebccef5113556d0f219a1932
+    REF 831136e2874336dac644f868ca009d227bbb7b85
+    SHA512 bc6ded23e53c1e2c1191ee32c6a48de3048ab225cc539c87d9fe9250a629b4946fa36ab3719c5d28b485987f372cb5adef768e1e82177d9d6cbfec7ae8c1fcb6
     HEAD_REF mpeg-support
-    PATCHES
-        oga-to-ogg.patch
-        add-mp3-to-major-formats.patch
 )
 
 if(VCPKG_TARGET_IS_WINDOWS)

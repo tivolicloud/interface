@@ -43,7 +43,7 @@ SndfileConverter::SndfileConverter() {
 }
 
 QList<QString> SndfileConverter::getAvailableExtensions() {
-	QList<QString> exts { "ogg", "opus" };
+	QList<QString> exts { "ogg", "opus", "mp3" };
 
 	int count;
 	sf_command(nullptr, SFC_GET_FORMAT_MAJOR_COUNT, &count, sizeof(int));
