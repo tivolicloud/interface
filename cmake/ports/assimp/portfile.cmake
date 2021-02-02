@@ -29,8 +29,8 @@ vcpkg_configure_cmake(
             -DASSIMP_INSTALL_PDB=OFF
             -DASSIMP_IGNORE_GIT_HASH=ON
             -DASSIMP_NO_EXPORT=ON
-            -Ddraco_INCLUDE_DIRS="${CURRENT_INSTALLED_DIR}/include"
-            -Ddraco_LIBRARIES="${DRACO_LIBRARY}"
+            -Ddraco_INCLUDE_DIRS=${CURRENT_INSTALLED_DIR}/include
+            -Ddraco_LIBRARIES=${DRACO_LIBRARY}
 )
 
 vcpkg_install_cmake()
