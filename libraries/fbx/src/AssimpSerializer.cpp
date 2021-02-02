@@ -29,6 +29,9 @@
 #include <QtGui/QImage>
 #include <QtCore/QBuffer>
 
+// disabled because it causes crashes with Assimp::DefaultLogger::WriteToStreams
+// #define ENABLE_ASSIMP_LOGGING
+
 MediaType AssimpSerializer::getMediaType() const {
     MediaType mediaType;
 
@@ -715,6 +718,7 @@ void AssimpSerializer::processScene(const hifi::VariantHash& mapping) {
     processAnimations();
 }
 
+#ifdef ENABLE_ASSIMP_LOGGING
 class TivoliLogStream : public Assimp::LogStream {
 public:
     QString filename;
@@ -723,6 +727,7 @@ public:
         qCDebug(modelformat) << filename << QString(message).trimmed().toLatin1().data();
     }
 };
+#endif
 
 HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi::VariantHash& mapping, const hifi::URL& inputUrl) {
 	url = inputUrl;
@@ -738,6 +743,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
 
     // qCDebug(modelformat) << "AssimpSerializer::read url"<<url<<ext;
 
+#ifdef ENABLE_ASSIMP_LOGGING
     TivoliLogStream tivoliLogStream = TivoliLogStream(url.fileName());
     auto errorSeverity = 
         // Assimp::Logger::ErrorSeverity::Debugging |
@@ -750,6 +756,7 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
     }
 
     Assimp::DefaultLogger::get()->attachStream(&tivoliLogStream, errorSeverity);
+#endif
 
     Assimp::Importer importer;
     importer.SetIOHandler(new TivoliIOSystem(url));
@@ -787,7 +794,9 @@ HFMModel::Pointer AssimpSerializer::read(const hifi::ByteArray& data, const hifi
 
     processScene(mapping);
 
+#ifdef ENABLE_ASSIMP_LOGGING
     Assimp::DefaultLogger::get()->detachStream(&tivoliLogStream, errorSeverity);
+#endif
 
     return hfmModel;
 }
