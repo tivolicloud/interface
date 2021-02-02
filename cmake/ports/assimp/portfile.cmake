@@ -1,18 +1,22 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO assimp/assimp
-    REF 20873cb142597dec540552accfe47ba122f9d6fb
-    SHA512 9685c8ca21c2395e27020106978f47bd8ccb583e1fbbf5a3027a03b77a8ea64c8a3f342b43494810ebcc98d2720c7731b38df9b98b373d84f2e1ef347d65c800
+    REF 754b2ba43467a0c199b081e31197d270099c2e41
+    SHA512 4dc2acdf74df6cb619b966d77fdc9cbc7f9680135588086fba9c75a64b3c7233fa258bf53c9861b57735346276feb3245a8ffae3ba7a3498aa735123864a0133
     HEAD_REF master
     PATCHES
-        install-zlib.patch
-        fix-gltf-vertex-colors.patch
+        3614-without-contrib.patch # draco for gltf
+        draco-with-vcpkg.patch
 )
+
+file(REMOVE_RECURSE ${SOURCE_PATH}/contrib/draco)
 
 set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
 set(VCPKG_CXX_FLAGS "${VCPKG_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" ASSIMP_BUILD_SHARED_LIBS)
+
+find_library(DRACO_LIBRARY draco PATHS ${CURRENT_INSTALLED_DIR}/lib NO_DEFAULT_PATH)
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
@@ -25,6 +29,8 @@ vcpkg_configure_cmake(
             -DASSIMP_INSTALL_PDB=OFF
             -DASSIMP_IGNORE_GIT_HASH=ON
             -DASSIMP_NO_EXPORT=ON
+            -Ddraco_INCLUDE_DIRS="${CURRENT_INSTALLED_DIR}/include"
+            -Ddraco_LIBRARIES="${DRACO_LIBRARY}"
 )
 
 vcpkg_install_cmake()

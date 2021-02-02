@@ -1,0 +1,86 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4d1617e..8e619b2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -584,65 +584,23 @@ ELSE()
+     set(DRACO_UNITY_PLUGIN OFF CACHE BOOL "" FORCE)
+     set(DRACO_TESTS OFF CACHE BOOL "" FORCE)
+ 
+-    IF(ASSIMP_HUNTER_ENABLED)
+-      hunter_add_package(draco)
+-      find_package(draco CONFIG REQUIRED)
+-      set(draco_LIBRARIES draco::draco)
++    # Draco 1.4.1 has many warnings and will not build with /WX or -Werror
++    # See https://github.com/google/draco/issues/672
++    # and https://github.com/google/draco/issues/673
++    IF(MSVC)
++      set(DRACO_CXX_FLAGS "/W0")
+     ELSE()
+-      # Draco 1.4.1 has many warnings and will not build with /WX or -Werror
+-      # See https://github.com/google/draco/issues/672
+-      # and https://github.com/google/draco/issues/673
+-      IF(MSVC)
+-        set(DRACO_CXX_FLAGS "/W0")
+-      ELSE()
+-        list(APPEND DRACO_CXX_FLAGS
+-          "-Wno-bool-compare"
+-          "-Wno-comment"
+-          "-Wno-maybe-uninitialized"
+-          "-Wno-sign-compare"
+-          "-Wno-unused-local-typedefs"
+-        )
+-        # Draco 1.4.1 does not explicitly export any symbols under GCC/clang
+-        list(APPEND DRACO_CXX_FLAGS
+-          "-fvisibility=default"
+-        )
+-      ENDIF()
+-
+-      ADD_SUBDIRECTORY( "contrib/draco" )
+-
+-      if(MSVC OR WIN32)
+-        set(draco_LIBRARIES "draco")
+-      else()
+-        if(BUILD_SHARED_LIBS)
+-          set(draco_LIBRARIES "draco_shared")
+-        else()
+-          set(draco_LIBRARIES "draco_static")
+-        endif()
+-      endif()
+-
+-      # Don't build the draco command-line tools by default
+-      set_target_properties(draco_encoder draco_decoder PROPERTIES
+-        EXCLUDE_FROM_ALL TRUE
+-        EXCLUDE_FROM_DEFAULT_BUILD TRUE
+-        )
+-
+-      TARGET_USE_COMMON_OUTPUT_DIRECTORY(${draco_LIBRARIES})
+-      TARGET_USE_COMMON_OUTPUT_DIRECTORY(draco_encoder)
+-      TARGET_USE_COMMON_OUTPUT_DIRECTORY(draco_decoder)
+-
+-      set(draco_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/draco/src")
+-
+-      # This is probably wrong
+-      INSTALL( TARGETS ${draco_LIBRARIES}
+-        EXPORT "${TARGETS_EXPORT_NAME}"
+-        LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+-        ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+-        RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
+-        FRAMEWORK DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+-        COMPONENT ${LIBASSIMP_COMPONENT}
+-        INCLUDES DESTINATION include
+-    )
+-
++      list(APPEND DRACO_CXX_FLAGS
++        "-Wno-bool-compare"
++        "-Wno-comment"
++        "-Wno-maybe-uninitialized"
++        "-Wno-sign-compare"
++        "-Wno-unused-local-typedefs"
++      )
++      # Draco 1.4.1 does not explicitly export any symbols under GCC/clang
++      list(APPEND DRACO_CXX_FLAGS
++        "-fvisibility=default"
++      )
+     ENDIF()
+   ENDIF()
+ ENDIF()
