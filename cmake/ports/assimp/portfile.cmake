@@ -1,11 +1,10 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO assimp/assimp
-    REF 754b2ba43467a0c199b081e31197d270099c2e41
-    SHA512 4dc2acdf74df6cb619b966d77fdc9cbc7f9680135588086fba9c75a64b3c7233fa258bf53c9861b57735346276feb3245a8ffae3ba7a3498aa735123864a0133
+    REF 3c79b12e02d31a500e5f899d89d4d6f39e6ec178
+    SHA512 ec3ccd8c1cd2aa2485fafa70cc561432e8f4161d08b0f03024cd63da67d68b704794a0911e28f05336345a0f29a0ec2bf584e9c8909500634d107132974ecb6d
     HEAD_REF master
     PATCHES
-        3614-without-contrib.patch # draco for gltf
         draco-with-vcpkg.patch
 )
 

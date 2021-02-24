@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 4d1617e..8e619b2 100644
+index 834f41a2..195ea834 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -584,65 +584,23 @@ ELSE()
+@@ -590,72 +590,23 @@ ELSE()
      set(DRACO_UNITY_PLUGIN OFF CACHE BOOL "" FORCE)
      set(DRACO_TESTS OFF CACHE BOOL "" FORCE)
  
@@ -35,7 +35,8 @@ index 4d1617e..8e619b2 100644
 -        )
 -      ENDIF()
 -
--      ADD_SUBDIRECTORY( "contrib/draco" )
+-      # Don't build or install all of Draco by default
+-      ADD_SUBDIRECTORY( "contrib/draco" EXCLUDE_FROM_ALL )
 -
 -      if(MSVC OR WIN32)
 -        set(draco_LIBRARIES "draco")
@@ -51,6 +52,12 @@ index 4d1617e..8e619b2 100644
 -      set_target_properties(draco_encoder draco_decoder PROPERTIES
 -        EXCLUDE_FROM_ALL TRUE
 -        EXCLUDE_FROM_DEFAULT_BUILD TRUE
+-        )
+-
+-      # Do build the draco shared library
+-      set_target_properties(${draco_LIBRARIES} PROPERTIES
+-        EXCLUDE_FROM_ALL FALSE
+-        EXCLUDE_FROM_DEFAULT_BUILD FALSE
 -        )
 -
 -      TARGET_USE_COMMON_OUTPUT_DIRECTORY(${draco_LIBRARIES})
