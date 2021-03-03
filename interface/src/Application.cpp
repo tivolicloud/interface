@@ -3010,9 +3010,17 @@ Application::~Application() {
 
     _window->deleteLater();
 
-    // Quit immediately
-    qApp->quit();
+    // make sure that the quit event has finished sending before we take the application down
+    auto closeEventSender = DependencyManager::get<CloseEventSender>();
+    while (!closeEventSender->hasFinishedQuitEvent() && !closeEventSender->hasTimedOutQuitEvent()) {
+        // sleep a little so we're not spinning at 100%
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    // quit the thread used by the closure event sender
+    closeEventSender->thread()->quit();
 
+    // Can't log to file past this point, FileLogger about to be deleted
+    qInstallMessageHandler(LogHandler::verboseMessageHandler);
 
 #ifdef Q_OS_MACOS
     // 10/16/2019 - Disabling this call. This causes known crashes (A), and it is not
