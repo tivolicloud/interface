@@ -83,7 +83,7 @@ void CloseEventSender::handleQuitEventFinished() {
 }
 
 bool CloseEventSender::hasTimedOutQuitEvent() {
-    const int CLOSURE_EVENT_TIMEOUT_MS = 5000;
+    const int CLOSURE_EVENT_TIMEOUT_MS = 500;
     return _quitEventStartTimestamp != 0
         && QDateTime::currentMSecsSinceEpoch() - _quitEventStartTimestamp > CLOSURE_EVENT_TIMEOUT_MS;
 }
