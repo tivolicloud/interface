@@ -340,6 +340,10 @@ void WebEntityRenderer::doRender(RenderArgs* args) {
 }
 
 void WebEntityRenderer::buildWebSurface(const EntityItemPointer& entity, const QString& newSourceURL) {
+    
+    auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
+    if (entityTreeRenderer->getDisableWebEntities()) return;
+
     if (_currentWebCount >= MAX_CONCURRENT_WEB_VIEWS) {
         qWarning() << "Too many concurrent web views to create new view";
         return;

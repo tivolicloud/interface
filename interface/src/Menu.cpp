@@ -332,6 +332,14 @@ Menu::Menu() {
         
     });
 
+
+    // Settings > Disable Web Entities
+    action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::DisableWebEntities, 0, false);
+    connect(action, &QAction::triggered, [action] {
+        auto entityTreeRenderer = DependencyManager::get<EntityTreeRenderer>();
+        entityTreeRenderer->setDisableWebEntities(action->isChecked());
+    });
+
     // Settings > Use Avatar Placeholders
     action = addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::UseAvatarPlaceholders, 0, false);
     connect(action, &QAction::triggered, [action] {
@@ -343,7 +351,6 @@ Menu::Menu() {
 
     // Settings > Ask to Reset Settings
     addCheckableActionToQMenuAndActionHash(settingsMenu, MenuOption::AskToResetSettings, 0, false);
-
 
 
     // Developer menu ----------------------------------

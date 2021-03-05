@@ -63,6 +63,7 @@ public:
     bool _updateStaticEntities = false;
     bool _isEditMode = false;
     bool _ghostingAllowed = true;
+    bool _disableWebEntities = false;
 
     void setCurrentlySelectedItems(QList<EntityItemID>& value) { _currentlySelectedEntities = value;}
     bool checkIfEntityIsSelected(const EntityItemID& value) { return _currentlySelectedEntities.contains(value); }
@@ -73,6 +74,9 @@ public:
     void setSceneIsReady(bool value) { _sceneIsReady = value; }
     bool getSceneIsReady() { return _sceneIsReady; }
 
+    void setDisableWebEntities(bool value) { _disableWebEntities = value; }
+    bool getDisableWebEntities() { return _disableWebEntities; }
+    
     void setIsEditMode(bool modeState) { _isEditMode = modeState; }
     bool getGhostingAllowed() { return _ghostingAllowed; }
 
