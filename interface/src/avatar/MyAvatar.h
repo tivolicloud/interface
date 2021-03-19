@@ -1418,8 +1418,18 @@ public:
 
     void clearScriptableSettings();
 
-    float getBoomLength() const { return _boomLength; }
-    void setBoomLength(float boomLength) { _boomLength = boomLength; }
+    /**jsdoc
+     * Gets the avatar's camera's boom length.
+     * @function MyAvatar.getBoomLength
+     * @returns {number} Boom length of the avatar's camera.
+     */
+    Q_INVOKABLE float getBoomLength() const { return _boomLength; }
+    /**jsdoc
+     * Sets the avatar's camera's boom length.
+     * @function MyAvatar.setBoomLength
+     * @param {number} boomLength - Boom length of the avatar's camera.
+     */
+    Q_INVOKABLE void setBoomLength(float boomLength) { _boomLength = boomLength; }
 
     float getPitchSpeed() const { return _pitchSpeed; }
     void setPitchSpeed(float speed) { _pitchSpeed = speed; }
