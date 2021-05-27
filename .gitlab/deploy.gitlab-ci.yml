@@ -19,57 +19,57 @@
 #         - sentry-cli releases new -p interface $CI_COMMIT_TAG
 #         - sentry-cli releases set-commits --auto $CI_COMMIT_TAG
 
-# pages:
+pages:
+    stage: deploy
+    image: node:latest
+
+    # extends: .deploy
+
+    needs: []
+
+    script:
+        - cd tools/jsdoc
+        - npm install
+        - BUILD_VERSION=$CI_COMMIT_TAG npm run build
+        - mv out ../../public
+
+    artifacts:
+        paths:
+            - public
+
+# apidocs:
 #     stage: deploy
-#     image: node:latest
+#     image: alpine:latest
 
 #     extends: .deploy
 
 #     needs: []
 
+#     variables:
+#         S3_BUCKET: apidocs.tivolicloud.com
+#         S3_REGION: us-east-1
+#         # AWS_ACCESS_KEY_ID
+#         # AWS_SECRET_ACCESS_KEY
+
 #     script:
+#         - apk add nodejs rclone
+
 #         - cd tools/jsdoc
 #         - npm install
 #         - BUILD_VERSION=$CI_COMMIT_TAG npm run build
-#         - mv out ../../public
 
-#     artifacts:
-#         paths:
-#             - public
+#         # init rclone config
+#         - mkdir -p ~/.config/rclone
+#         - echo "[s3]" > ~/.config/rclone/rclone.conf
+#         - echo "type = s3" >> ~/.config/rclone/rclone.conf
+#         - echo "provider = AWS" >> ~/.config/rclone/rclone.conf
+#         - echo "env_auth = true" >> ~/.config/rclone/rclone.conf
+#         - echo "region = $S3_REGION" >> ~/.config/rclone/rclone.conf
+#         - echo "acl = private" >> ~/.config/rclone/rclone.conf
 
-apidocs:
-    stage: deploy
-    image: alpine:latest
-
-    extends: .deploy
-
-    needs: []
-
-    variables:
-        S3_BUCKET: apidocs.tivolicloud.com
-        S3_REGION: us-east-1
-        # AWS_ACCESS_KEY_ID
-        # AWS_SECRET_ACCESS_KEY
-
-    script:
-        - apk add nodejs rclone
-
-        - cd tools/jsdoc
-        - npm install
-        - BUILD_VERSION=$CI_COMMIT_TAG npm run build
-
-        # init rclone config
-        - mkdir -p ~/.config/rclone
-        - echo "[s3]" > ~/.config/rclone/rclone.conf
-        - echo "type = s3" >> ~/.config/rclone/rclone.conf
-        - echo "provider = AWS" >> ~/.config/rclone/rclone.conf
-        - echo "env_auth = true" >> ~/.config/rclone/rclone.conf
-        - echo "region = $S3_REGION" >> ~/.config/rclone/rclone.conf
-        - echo "acl = private" >> ~/.config/rclone/rclone.conf
-
-        # upload content
-        - cd out
-        - rclone sync -P . s3:$S3_BUCKET
+#         # upload content
+#         - cd out
+#         - rclone sync -P . s3:$S3_BUCKET
 
 upload server:
     stage: deploy
