@@ -4,7 +4,11 @@ COPY dist/. /root
 
 RUN \
 apt-get update -y && \
-DEBIAN_FRONTEND=noninteractive apt-get install -y libopengl0 libglib2.0-0 libgl1-mesa-glx libharfbuzz0b && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y \
+# wont run without these...
+libopengl0 libglib2.0-0 libgl1-mesa-glx libharfbuzz0b \
+# curl (ca-certificates?) is necessary for tls
+curl && \
 # cleanup
 apt-get autoremove -y && \
 apt-get clean -y && \
