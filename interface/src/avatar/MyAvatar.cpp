@@ -3583,7 +3583,7 @@ void MyAvatar::updateOrientation(float deltaTime) {
                     blend = 1.0f;
                 }
             }
-            setLocalOrientation(glm::slerp(getLocalOrientation(), faceRotation, blend));
+            if (!_characterController.getSeated()) setLocalOrientation(glm::slerp(getLocalOrientation(), faceRotation, blend));
         } else if (isRotatingWhileSeated) {
             float direction = -getDriveKey(TRANSLATE_X);
             float seatedTargetSpeed = direction * _yawSpeed * deltaTime;  //deg/renderframe
