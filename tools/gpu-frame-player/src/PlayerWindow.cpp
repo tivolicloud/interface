@@ -16,6 +16,9 @@
 #include <QtWidgets/QFileDialog>
 
 #include <gpu/FrameIO.h>
+#include <openxr/openxr.hpp>
+#include "OpenXrHelpers.hpp"
+
 
 PlayerWindow::PlayerWindow() {
     installEventFilter(this);
@@ -30,9 +33,12 @@ PlayerWindow::PlayerWindow() {
     setGeometry(QRect(QPoint(), QSize(800, 600)));
     create();
     show();
+
+
     // Ensure the window is visible and the GL context is valid
     QCoreApplication::processEvents();
     _renderThread.initialize(this);
+    loadFrame("E:\\hifiFrames\\20210807_2233.hfb");
 }
 
 PlayerWindow::~PlayerWindow() {

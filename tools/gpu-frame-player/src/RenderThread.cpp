@@ -9,6 +9,7 @@
 #include "RenderThread.h"
 #include <QtGui/QWindow>
 #include <gl/QOpenGLContextWrapper.h>
+#include <QtPlatformHeaders/QWGLNativeContext>
 
 void RenderThread::submitFrame(const gpu::FramePointer& frame) {
     std::unique_lock<std::mutex> lock(_frameLock);
@@ -30,19 +31,34 @@ void RenderThread::initialize(QWindow* window) {
     setObjectName("RenderThread");
     Parent::initialize();
 
+    _instanceManager.prepareInstance();
+    _instanceManager.prepareSystem();
+
     _window = window;
-#ifdef USE_GL
     _window->setFormat(getDefaultOpenGLSurfaceFormat());
     _context.setWindow(window);
     _context.create();
     if (!_context.makeCurrent()) {
         qFatal("Unable to make context current");
     }
-    QOpenGLContextWrapper(_context.qglContext()).makeCurrent(_window);
+
+    const auto& renderTargetSize = _instanceManager.getRenderTargetSize();
+
     glGenTextures(1, &_externalTexture);
     glBindTexture(GL_TEXTURE_2D, _externalTexture);
     static const glm::u8vec4 color{ 0 };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+
+    // Create a depth renderbuffer compatible with the Swapchain sample count and size
+    glGenRenderbuffers(1, &fbo.depthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, fbo.depthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, renderTargetSize.x, renderTargetSize.y);
+
+    // Create a framebuffer and attach the depth buffer to it
+    glCreateFramebuffers(1, &fbo.id);
+    glNamedFramebufferRenderbuffer(fbo.id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fbo.depthBuffer);
+
+
     gl::setSwapInterval(0);
     // GPU library init
     gpu::Context::init<gpu::gl::GLBackend>();
@@ -57,33 +73,6 @@ void RenderThread::initialize(QWindow* window) {
         gpu::StatePointer state = gpu::StatePointer(new gpu::State());
         _presentPipeline = gpu::Pipeline::create(program, state);
     }
-#else
-    auto size = window->size();
-    _extent = vk::Extent2D{ (uint32_t)size.width(), (uint32_t)size.height() };
-
-    _context.setValidationEnabled(true);
-    _context.requireExtensions({
-        std::string{ VK_KHR_SURFACE_EXTENSION_NAME },
-        std::string{ VK_KHR_WIN32_SURFACE_EXTENSION_NAME },
-    });
-    _context.requireDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME });
-    _context.createInstance();
-    _surface = _context.instance.createWin32SurfaceKHR({ {}, GetModuleHandle(NULL), (HWND)window->winId() });
-    _context.createDevice(_surface);
-    _swapchain.setSurface(_surface);
-    _swapchain.create(_extent, true);
-
-    setupRenderPass();
-    setupFramebuffers();
-
-    acquireComplete = _context.device.createSemaphore(vk::SemaphoreCreateInfo{});
-    renderComplete = _context.device.createSemaphore(vk::SemaphoreCreateInfo{});
-
-    // GPU library init
-    gpu::Context::init<gpu::vulkan::VKBackend>();
-    _gpuContext = std::make_shared<gpu::Context>();
-    _backend = _gpuContext->getBackend();
-#endif
 }
 
 void RenderThread::setup() {
@@ -91,12 +80,28 @@ void RenderThread::setup() {
     { std::unique_lock<std::mutex> lock(_frameLock); }
     _gpuContext->beginFrame();
     _gpuContext->endFrame();
-
-#ifdef USE_GL
     _context.makeCurrent();
-    glViewport(0, 0, 800, 600);
-    (void)CHECK_GL_ERROR();
-#endif
+
+    _instanceManager.prepareSession({ wglGetCurrentDC(), wglGetCurrentContext() });
+    _instanceManager.prepareSwapchain();
+
+    layersPointers.push_back(&projectionLayer);
+    projectionLayer.viewCount = 2;
+    projectionLayer.views = projectionLayerViews.data();
+    projectionLayer.space = _instanceManager.getSpace();
+    const auto& renderTargetSize = _instanceManager.getRenderTargetSize();
+    // Finish setting up the layer submission
+    xr::for_each_side_index([&](uint32_t eyeIndex) {
+        auto& layerView = projectionLayerViews[eyeIndex];
+        layerView.subImage.swapchain = _instanceManager.getSwapchain();
+        layerView.subImage.imageRect.extent = { (int32_t)renderTargetSize.x / 2, (int32_t)renderTargetSize.y };
+        if (eyeIndex == 1) {
+            layerView.subImage.imageRect.offset.x = layerView.subImage.imageRect.extent.width;
+        }
+    });
+
+    _instanceManager.prepareActions();
+    _instanceManager.pollEvents();
     _elapsed.start();
 }
 
@@ -110,116 +115,108 @@ void RenderThread::shutdown() {
     _gpuContext.reset();
 }
 
-#ifndef USE_GL
-extern vk::CommandBuffer currentCommandBuffer;
-#endif
 
-void RenderThread::renderFrame(gpu::FramePointer& frame) {
-    ++_presentCount;
-#ifdef USE_GL
-    _context.makeCurrent();
-#endif
-    if (_correction != glm::mat4()) {
-       std::unique_lock<std::mutex> lock(_frameLock);
-       if (_correction != glm::mat4()) {
-           _backend->setCameraCorrection(_correction, _activeFrame->view);
-           //_prevRenderView = _correction * _activeFrame->view;
-       }
+void RenderThread::renderFrame() {
+    //_context.makeCurrent();
+    _frameState = _instanceManager.waitFrame();
+    if (!_instanceManager.beginFrame() || !_frameState.shouldRender || !_activeFrame) {
+        _instanceManager.endFrame({ _frameState.predictedDisplayTime, xr::EnvironmentBlendMode::Opaque });
+        return;
     }
+
+    ++_presentCount;
+
+    const auto& eyeViewStates = _instanceManager.getUpdatedViewStates(_frameState.predictedDisplayTime);
+    auto& stereoState = _activeFrame->stereoState;
+    stereoState._enable = true;
+    stereoState._skybox = true;
+
+    xr::for_each_side_index([&](size_t eyeIndex) {
+        const auto& viewState = eyeViewStates[eyeIndex];
+        auto& layerView = projectionLayerViews[eyeIndex];
+        stereoState._eyeProjections[eyeIndex] = xrs::toGlm(viewState.fov);
+        //stereoState._eyeViews[eyeIndex] = glm::inverse(xrs::toGlm(viewState.pose));
+        layerView.fov = viewState.fov;
+        layerView.pose = viewState.pose;
+    });
+
+    auto hmdCorrection = _correction * xrs::toGlm(eyeViewStates[0].pose);
+    _backend->setStereoState(stereoState);
+    _backend->setCameraCorrection(glm::inverse(hmdCorrection), _activeFrame->view);
+    //_prevRenderView = _correction * _activeFrame->view;
     _backend->recycle();
     _backend->syncCache();
 
-    auto windowSize = _window->size();
-
-#ifndef USE_GL
-    auto windowExtent = vk::Extent2D{ (uint32_t)windowSize.width(), (uint32_t)windowSize.height() };
-    if (windowExtent != _extent) {
-        return;
-    }
-
-    if (_extent != _swapchain.extent) {
-        _swapchain.create(_extent);
-        setupFramebuffers();
-        return;
-    }
-
-    static const vk::Offset2D offset;
-    static const std::array<vk::ClearValue, 2> clearValues{
-        vk::ClearColorValue(std::array<float, 4Ui64>{ { 0.2f, 0.2f, 0.2f, 0.2f } }),
-        vk::ClearDepthStencilValue({ 1.0f, 0 }),
-    };
-
-    auto swapchainIndex = _swapchain.acquireNextImage(acquireComplete).value;
-    auto framebuffer = _framebuffers[swapchainIndex];
-    const auto& commandBuffer = currentCommandBuffer = _context.createCommandBuffer();
-
-    auto rect = vk::Rect2D{ offset, _extent };
-    vk::RenderPassBeginInfo beginInfo{ _renderPass, framebuffer, rect, (uint32_t)clearValues.size(), clearValues.data() };
-    commandBuffer.begin(vk::CommandBufferBeginInfo{ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
-
-    using namespace vks::debug::marker;
-    beginRegion(commandBuffer, "executeFrame", glm::vec4{ 1, 1, 1, 1 });
-#endif
     auto& glbackend = (gpu::gl::GLBackend&)(*_backend);
-    glm::uvec2 fboSize{ frame->framebuffer->getWidth(), frame->framebuffer->getHeight() };
-    auto fbo = glbackend.getFramebufferID(frame->framebuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    const auto& framebuffer = _activeFrame->framebuffer;
+    glm::uvec2 fboSize{ framebuffer->getWidth(), framebuffer->getHeight() };
+    auto gpu_fbo = glbackend.getFramebufferID(framebuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gpu_fbo);
     glClearColor(0, 0, 0, 1);
     glClearDepth(0);
     glClear(GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-    //_gpuContext->enableStereo(true);
-    if (frame && !frame->batches.empty()) {
-        _gpuContext->executeFrame(frame);
+    if (!_activeFrame->batches.empty()) {
+        _gpuContext->executeFrame(_activeFrame);
     }
 
-#ifdef USE_GL
-    static gpu::BatchPointer batch = nullptr;
-    if (!batch) {
-        batch = std::make_shared<gpu::Batch>();
-        batch->setPipeline(_presentPipeline);
-        batch->setFramebuffer(nullptr);
-        batch->setResourceTexture(0, frame->framebuffer->getRenderBuffer(0));
-        batch->setViewportTransform(ivec4(uvec2(0), ivec2(windowSize.width(), windowSize.height())));
-        batch->draw(gpu::TRIANGLE_STRIP, 4);
-    }
-    glDisable(GL_FRAMEBUFFER_SRGB);
-    _gpuContext->executeBatch(*batch);
-    
-    // Keep this raw gl code here for reference
-    //glDisable(GL_FRAMEBUFFER_SRGB);
-    //glClear(GL_COLOR_BUFFER_BIT);
-  /*  glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    glBlitFramebuffer(
-        0, 0, fboSize.x, fboSize.y, 
-        0, 0, windowSize.width(), windowSize.height(),
-        GL_COLOR_BUFFER_BIT, GL_NEAREST);
-*/
+    auto renderSize = _instanceManager.getRenderTargetSize();
+    uint32_t destImage = _instanceManager.getNextSwapchainImage();
+
+    glNamedFramebufferTexture(fbo.id, GL_COLOR_ATTACHMENT0, destImage, 0);
     (void)CHECK_GL_ERROR();
-    _context.swapBuffers();
-    _context.doneCurrent();
-#else
-    endRegion(commandBuffer);
-    beginRegion(commandBuffer, "renderpass:testClear", glm::vec4{ 0, 1, 1, 1 });
-    commandBuffer.beginRenderPass(beginInfo, vk::SubpassContents::eInline);
-    commandBuffer.endRenderPass();
-    endRegion(commandBuffer);
-    commandBuffer.end();
+    glBlitNamedFramebuffer(
+        gpu_fbo, fbo.id, 
+        0, 0,  fboSize.x, fboSize.y, 
+        0, renderSize.y, renderSize.x,  0,
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glNamedFramebufferTexture(fbo.id, GL_COLOR_ATTACHMENT0, 0, 0);
 
-    static const vk::PipelineStageFlags waitFlags{ vk::PipelineStageFlagBits::eBottomOfPipe };
-    vk::SubmitInfo submitInfo{ 1, &acquireComplete, &waitFlags, 1, &commandBuffer, 1, &renderComplete };
-    vk::Fence frameFence = _context.device.createFence(vk::FenceCreateInfo{});
-    _context.queue.submit(submitInfo, frameFence);
-    _swapchain.queuePresent(renderComplete);
-    _context.trashCommandBuffers({ commandBuffer });
-    _context.emptyDumpster(frameFence);
-    _context.recycle();
-#endif
+
+
+    _instanceManager.commitSwapchainImage();
+    _instanceManager.endFrame(_frameState.predictedDisplayTime, layersPointers);
+
+    //static gpu::BatchPointer batch = nullptr;
+    //if (!batch) {
+    //    batch = std::make_shared<gpu::Batch>();
+    //    batch->setPipeline(_presentPipeline);
+    //    batch->setFramebuffer(nullptr);
+    //    batch->setResourceTexture(0, framebuffer->getRenderBuffer(0));
+    //    batch->setViewportTransform(ivec4(uvec2(0), ivec2(windowSize.width(), windowSize.height())));
+    //    batch->draw(gpu::TRIANGLE_STRIP, 4);
+    //}
+    //glDisable(GL_FRAMEBUFFER_SRGB);
+    //_gpuContext->executeBatch(*batch);
+    //_context.swapBuffers();
+    //_context.doneCurrent();
 }
 
 bool RenderThread::process() {
+    _instanceManager.pollEvents();
+
+    auto sessionState = _instanceManager.getSessionState();
+    _frameState = {};
+    switch (sessionState) {
+        case xr::SessionState::Stopping:
+            //_instanceManager.endSession();
+            break;
+
+        case xr::SessionState::Ready:
+            _instanceManager.beginSession();
+            // fallthrough
+
+        case xr::SessionState::Focused:
+        case xr::SessionState::Synchronized:
+        case xr::SessionState::Visible:
+            _instanceManager.pollActions();
+            break;
+
+        default:
+            break;
+    }
+
     std::queue<gpu::FramePointer> pendingFrames;
     std::queue<QSize> pendingSize;
 
@@ -228,89 +225,20 @@ bool RenderThread::process() {
         pendingFrames.swap(_pendingFrames);
         pendingSize.swap(_pendingSize);
     }
-    
+
     while (!pendingFrames.empty()) {
         _activeFrame = pendingFrames.front();
         pendingFrames.pop();
         _gpuContext->consumeFrameUpdates(_activeFrame);
     }
-
     while (!pendingSize.empty()) {
-#ifndef USE_GL
-        const auto& size = pendingSize.front();
-        _extent = { (uint32_t)size.width(), (uint32_t)size.height() };
-#endif
         pendingSize.pop();
     }
 
-    if (!_activeFrame) {
-        QThread::msleep(1);
-        return true;
+    if (_instanceManager.isSessionActive()) {
+        renderFrame();
     }
 
-    renderFrame(_activeFrame);
     return true;
 }
 
-#ifndef USE_GL
-
-void RenderThread::setupFramebuffers() {
-    // Recreate the frame buffers
-    _context.trashAll<vk::Framebuffer>(_framebuffers, [this](const std::vector<vk::Framebuffer>& framebuffers) {
-        for (const auto& framebuffer : framebuffers) {
-            _device.destroy(framebuffer);
-        }
-    });
-
-    vk::ImageView attachment;
-    vk::FramebufferCreateInfo framebufferCreateInfo;
-    framebufferCreateInfo.renderPass = _renderPass;
-    framebufferCreateInfo.attachmentCount = 1;
-    framebufferCreateInfo.pAttachments = &attachment;
-    framebufferCreateInfo.width = _extent.width;
-    framebufferCreateInfo.height = _extent.height;
-    framebufferCreateInfo.layers = 1;
-
-    // Create frame buffers for every swap chain image
-    _framebuffers = _swapchain.createFramebuffers(framebufferCreateInfo);
-}
-
-void RenderThread::setupRenderPass() {
-    if (_renderPass) {
-        _device.destroy(_renderPass);
-    }
-
-    vk::AttachmentDescription attachment;
-    // Color attachment
-    attachment.format = _swapchain.colorFormat;
-    attachment.loadOp = vk::AttachmentLoadOp::eClear;
-    attachment.storeOp = vk::AttachmentStoreOp::eStore;
-    attachment.initialLayout = vk::ImageLayout::eUndefined;
-    attachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
-
-    vk::AttachmentReference colorAttachmentReference;
-    colorAttachmentReference.attachment = 0;
-    colorAttachmentReference.layout = vk::ImageLayout::eColorAttachmentOptimal;
-
-    vk::SubpassDescription subpass;
-    subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
-    subpass.colorAttachmentCount = 1;
-    subpass.pColorAttachments = &colorAttachmentReference;
-    vk::SubpassDependency subpassDependency;
-    subpassDependency.srcSubpass = 0;
-    subpassDependency.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
-    subpassDependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-    subpassDependency.dstSubpass = VK_SUBPASS_EXTERNAL;
-    subpassDependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead;
-    subpassDependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-
-    vk::RenderPassCreateInfo renderPassInfo;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &attachment;
-    renderPassInfo.subpassCount = 1;
-    renderPassInfo.pSubpasses = &subpass;
-    renderPassInfo.dependencyCount = 1;
-    renderPassInfo.pDependencies = &subpassDependency;
-    _renderPass = _device.createRenderPass(renderPassInfo);
-}
-#endif

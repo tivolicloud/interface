@@ -12,13 +12,11 @@ list(REMOVE_ITEM PLUGIN_SUBDIRS "CMakeFiles")
 
 # client-side plugins
 if (NOT SERVER_ONLY AND NOT ANDROID)
+  set(DIR "openxr-plugin")
+  add_subdirectory(${DIR})
   set(DIR "oculus-plugin")
   add_subdirectory(${DIR})
   set(DIR "sdl2-plugin")
-  add_subdirectory(${DIR})
-  set(DIR "openvr-plugin")
-  add_subdirectory(${DIR})
-  set(DIR "oculus-legacy-plugin")
   add_subdirectory(${DIR})
 
   if (USE_SIXENSE)

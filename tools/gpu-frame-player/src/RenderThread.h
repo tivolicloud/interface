@@ -12,37 +12,18 @@
 
 #include <GenericThread.h>
 #include <shared/RateCounter.h>
+#include "OpenXrHelpers.hpp"
 
-#ifdef USE_GL
 #include <gl/Config.h>
 #include <gl/Context.h>
 #include <gpu/gl/GLBackend.h>
-#else
-#include <vk/VKWindow.h>
-#include <gpu/vk/VKBackend.h>
-#endif
 
 class RenderThread : public GenericThread {
     using Parent = GenericThread;
 public:
     QWindow* _window{ nullptr };
 
-#ifdef USE_GL
-    gl::Context _context;
-#else
-    vks::Context& _context{ vks::Context::get() };
-    const vk::Device& _device{ _context.device };
-
-    vk::SurfaceKHR _surface;
-    vk::RenderPass _renderPass;
-    vks::Swapchain _swapchain;
-    vk::Semaphore acquireComplete, renderComplete;
-    std::vector<vk::Framebuffer> _framebuffers;
-    vk::Extent2D _extent;
-
-    void setupFramebuffers();
-    void setupRenderPass();
-#endif
+    gl::OffscreenContext _context;
 
     std::mutex _mutex;
     gpu::ContextPointer _gpuContext;  // initialized during window creation
@@ -59,6 +40,18 @@ public:
     glm::mat4 _correction;
     gpu::PipelinePointer _presentPipeline;
 
+    // OpenXR
+    xr::FrameState _frameState;
+    xrs::InstanceManager _instanceManager;
+    std::array<xr::CompositionLayerProjectionView, 2> projectionLayerViews;
+    xr::CompositionLayerProjection projectionLayer{ {}, {}, 2, projectionLayerViews.data() };
+    std::vector<xr::CompositionLayerBaseHeader*> layersPointers;
+
+    struct GLFBO {
+        GLuint id{ 0 };
+        GLuint depthBuffer{ 0 };
+    } fbo;
+
     void resize(const QSize& newSize);
     void setup() override;
     bool process() override;
@@ -66,5 +59,5 @@ public:
 
     void submitFrame(const gpu::FramePointer& frame);
     void initialize(QWindow* window);
-    void renderFrame(gpu::FramePointer& frame);
+    void renderFrame();
 };

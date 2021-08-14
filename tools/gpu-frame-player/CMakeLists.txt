@@ -23,10 +23,12 @@ link_hifi_libraries(
 target_compile_definitions(${TARGET_NAME} PRIVATE USE_GL)
 target_opengl()
 #target_vulkan()
+target_openxr()
 
 package_libraries_for_deployment()
 
 if (BUILD_GPU_FRAME_PLAYER_ONLY)
+
 
 # setup install of executable and things copied by fixup/windeployqt
 install(

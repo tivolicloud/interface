@@ -12,6 +12,7 @@
 
 #include <gpu/Forward.h>
 #include "RenderThread.h"
+#include "OpenXrHelpers.hpp"
 
 // Create a simple OpenGL window that renders text in various ways
 class PlayerWindow : public QWindow {

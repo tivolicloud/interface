@@ -363,7 +363,7 @@ namespace gl {
         // Disabling error checking macro on Android debug builds for now, 
         // as it throws off performance testing, which must be done on 
         // Debug builds
-#if defined(DEBUG) && !defined(Q_OS_ANDROID)
+#if 1 || (defined(DEBUG) && !defined(Q_OS_ANDROID))
         return checkGLError(name);
 #else
         Q_UNUSED(name);
