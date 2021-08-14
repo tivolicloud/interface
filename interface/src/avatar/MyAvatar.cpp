@@ -4235,6 +4235,9 @@ void MyAvatar::goToLocation(const glm::vec3& newPosition,
         qCDebug(interfaceapp) << "MyAvatar clearing parentID" << getParentID();
         setParentID(QUuid());
     }
+
+    if (isSeated())
+        endSit(getLocalPosition(), getLocalOrientation());
     _goToPending = true;
     _goToPosition = newPosition;
     _goToSafe = withSafeLanding;
