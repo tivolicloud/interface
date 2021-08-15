@@ -32,13 +32,13 @@ Messenger InstanceManager::createMessenger(const MessageSeverityFlags& severityF
 void InstanceManager::prepareInstance() {
 
     std::unordered_map<std::string, xr::ApiLayerProperties> discoveredLayers;
-    for (const auto& layerProperties : xr::enumerateApiLayerProperties()) {
+    for (const auto& layerProperties : xr::enumerateApiLayerPropertiesToVector()) {
         qDebug(xr_logging, "Layer found: %s", layerProperties.layerName);
         discoveredLayers.insert({ layerProperties.layerName, layerProperties });
     }
 
     std::unordered_map<std::string, xr::ExtensionProperties> discoveredExtensions;
-    for (const auto& extensionProperties : xr::enumerateInstanceExtensionProperties(nullptr)) {
+    for (const auto& extensionProperties : xr::enumerateInstanceExtensionPropertiesToVector(nullptr)) {
         qDebug(xr_logging, "Extension found: %s", extensionProperties.extensionName);
         discoveredExtensions.insert({ extensionProperties.extensionName, extensionProperties });
     }
@@ -112,7 +112,7 @@ void InstanceManager::prepareSystem() {
 
     // Find out what view configurations we have available
     {
-        auto viewConfigTypes = instance.enumerateViewConfigurations(systemId);
+        auto viewConfigTypes = instance.enumerateViewConfigurationsToVector(systemId);
         auto viewConfigType = viewConfigTypes[0];
         if (viewConfigType != xr::ViewConfigurationType::PrimaryStereo) {
             throw std::runtime_error("Example only supports stereo-based HMD rendering");
@@ -123,7 +123,7 @@ void InstanceManager::prepareSystem() {
     }
 
     std::vector<xr::ViewConfigurationView> viewConfigViews =
-        instance.enumerateViewConfigurationViews(systemId, xr::ViewConfigurationType::PrimaryStereo);
+        instance.enumerateViewConfigurationViewsToVector(systemId, xr::ViewConfigurationType::PrimaryStereo);
 
     // Instead of createing a swapchain per-eye, we create a single swapchain of double width.
     // Even preferable would be to create a swapchain texture array with one layer per eye, so that we could use the
@@ -148,10 +148,9 @@ void InstanceManager::prepareSession(xr::GraphicsBindingOpenGLWin32KHR graphicsB
     sci.next = &graphicsBinding;
     session = instance.createSession(sci);
 
-    auto referenceSpaces = session.enumerateReferenceSpaces();
-    space = session.createReferenceSpace(xr::ReferenceSpaceCreateInfo{ xr::ReferenceSpaceType::Local });
-
-    auto swapchainFormats = session.enumerateSwapchainFormats();
+    auto referenceSpaces = session.enumerateReferenceSpacesToVector();
+    space = session.createReferenceSpace({ xr::ReferenceSpaceType::Local, {} });
+    auto swapchainFormats = session.enumerateSwapchainFormatsToVector();
 }
 
 void InstanceManager::prepareSwapchain() {
@@ -164,45 +163,45 @@ void InstanceManager::prepareSwapchain() {
     swapchainCreateInfo.width = renderTargetSize.x;
     swapchainCreateInfo.height = renderTargetSize.y;
     swapchain = session.createSwapchain(swapchainCreateInfo);
-    swapchainImages = swapchain.enumerateSwapchainImages<xr::SwapchainImageOpenGLKHR>();
+    swapchainImages = swapchain.enumerateSwapchainImagesToVector<xr::SwapchainImageOpenGLKHR>();
 }
 
 void InstanceManager::prepareActions() {
-    // Create an action set.
-    actionSet = instance.createActionSet({ "gameplay", "gameplay", 0 });
-    actionState.handSubactionPath[xr::Side::Left] = instance.stringToPath("/user/hand/left");
-    actionState.handSubactionPath[xr::Side::Right] = instance.stringToPath("/user/hand/right");
+    //// Create an action set.
+    //actionSet = instance.createActionSet({ "gameplay", "gameplay", 0 });
+    //actionState.handSubactionPath[xr::Side::Left] = instance.stringToPath("/user/hand/left");
+    //actionState.handSubactionPath[xr::Side::Right] = instance.stringToPath("/user/hand/right");
 
-    // Create actions.
-    {
-        XrActionCreateInfo actionInfo{ XR_TYPE_ACTION_CREATE_INFO };
-        // Create an input action for grabbing objects with the left and right hands.
-        //actionInfo.actionType = XR_ACTION_TYPE_FLOAT_INPUT;
-        //strcpy_s(actionInfo.actionName, "grab_object");
-        //strcpy_s(actionInfo.localizedActionName, "Grab Object");
-        //actionInfo.countSubactionPaths = uint32_t(m_input.handSubactionPath.size());
-        //actionInfo.subactionPaths = m_input.handSubactionPath.data();
-        //CHECK_XRCMD(xrCreateAction(m_input.actionSet, &actionInfo, &m_input.grabAction));
+    //// Create actions.
+    //{
+    //    XrActionCreateInfo actionInfo{ XR_TYPE_ACTION_CREATE_INFO };
+    //    // Create an input action for grabbing objects with the left and right hands.
+    //    //actionInfo.actionType = XR_ACTION_TYPE_FLOAT_INPUT;
+    //    //strcpy_s(actionInfo.actionName, "grab_object");
+    //    //strcpy_s(actionInfo.localizedActionName, "Grab Object");
+    //    //actionInfo.countSubactionPaths = uint32_t(m_input.handSubactionPath.size());
+    //    //actionInfo.subactionPaths = m_input.handSubactionPath.data();
+    //    //CHECK_XRCMD(xrCreateAction(m_input.actionSet, &actionInfo, &m_input.grabAction));
 
-        // Create an input action getting the left and right hand poses.
-        actionState.poseAction = actionSet.createAction(
-            { "hand_pose", xr::ActionType::PoseInput, 2, actionState.handSubactionPath.data(), "Hand Pose" });
+    //    // Create an input action getting the left and right hand poses.
+    //    actionState.poseAction = actionSet.createAction(
+    //        { "hand_pose", xr::ActionType::PoseInput, 2, actionState.handSubactionPath.data(), "Hand Pose" });
 
-        xr::for_each_side_index([&](uint32_t eyeIndex) {
-            actionState.handSpace[eyeIndex] =
-                session.createActionSpace({ actionState.poseAction, actionState.handSubactionPath[eyeIndex] });
-        });
+    //    xr::for_each_side_index([&](uint32_t eyeIndex) {
+    //        actionState.handSpace[eyeIndex] =
+    //            session.createActionSpace({ actionState.poseAction, actionState.handSubactionPath[eyeIndex] });
+    //    });
 
-        // Create output actions for vibrating the left and right controller.
-        actionState.vibrateAction = actionSet.createAction(
-            { "vibrate_hand", xr::ActionType::VibrationOutput, 2, actionState.handSubactionPath.data(), "Vibrate Hand" });
+    //    // Create output actions for vibrating the left and right controller.
+    //    actionState.vibrateAction = actionSet.createAction(
+    //        { "vibrate_hand", xr::ActionType::VibrationOutput, 2, actionState.handSubactionPath.data(), "Vibrate Hand" });
 
-        // Create input actions for quitting the session using the left and right controller.
-        // Since it doesn't matter which hand did this, we do not specify subaction paths for it.
-        // We will just suggest bindings for both hands, where possible.
-        actionState.quitAction = actionSet.createAction(
-            { "quit_session", xr::ActionType::BooleanInput, 0, nullptr, "Quit Session" });
-    }
+    //    // Create input actions for quitting the session using the left and right controller.
+    //    // Since it doesn't matter which hand did this, we do not specify subaction paths for it.
+    //    // We will just suggest bindings for both hands, where possible.
+    //    actionState.quitAction = actionSet.createAction(
+    //        { "quit_session", xr::ActionType::BooleanInput, 0, nullptr, "Quit Session" });
+    //}
 
     //std::array<XrPath, Side::COUNT> selectPath;
     //std::array<XrPath, Side::COUNT> squeezeValuePath;
@@ -328,13 +327,13 @@ void InstanceManager::prepareActions() {
     //    suggestedBindings.countSuggestedBindings = (uint32_t)bindings.size();
     //    CHECK_XRCMD(xrSuggestInteractionProfileBindings(m_instance, &suggestedBindings));
     //}
-    session.attachSessionActionSets({ 1, &actionSet });
+    //session.attachSessionActionSets({ 1, &actionSet });
 }
 
 void InstanceManager::pollActions() {
-    // Sync actions
-    const xr::ActiveActionSet activeActionSet{ actionSet };
-    auto result = session.syncActions({ 1, &activeActionSet });
+    //// Sync actions
+    //const xr::ActiveActionSet activeActionSet{ actionSet };
+    //auto result = session.syncActions({ 1, &activeActionSet });
 }
 
 void InstanceManager::beginSession() {
@@ -369,7 +368,7 @@ void InstanceManager::endFrame(xr::Time predictedDisplayTime,
 const std::vector<xr::View>& InstanceManager::getUpdatedViewStates(xr::Time displayTime) {
     xr::ViewState vs;
     xr::ViewLocateInfo vi{ xr::ViewConfigurationType::PrimaryStereo, displayTime, space };
-    eyeViewStates = session.locateViews(vi, &(vs.operator XrViewState&()));
+    eyeViewStates = session.locateViewsToVector(vi, &(vs.operator XrViewState&()));
     return eyeViewStates;
 }
 

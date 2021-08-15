@@ -7,7 +7,7 @@
 #
 macro(TARGET_OPENXR)
     find_package(OpenXR CONFIG REQUIRED)
-    target_link_libraries(${TARGET_NAME} OpenXR::headers OpenXR::openxr_loader OpenXR::openxr-all-supported)
+    target_link_libraries(${TARGET_NAME} OpenXR::headers OpenXR::openxr_loader)
     target_compile_definitions(${TARGET_NAME} PRIVATE XR_KHR_opengl_enable XR_USE_GRAPHICS_API_OPENGL)
     if(WIN32)
         target_compile_definitions(${TARGET_NAME} PRIVATE XR_USE_PLATFORM_WIN32)

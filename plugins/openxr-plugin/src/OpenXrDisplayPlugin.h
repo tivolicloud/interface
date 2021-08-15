@@ -30,29 +30,11 @@ public:
     bool hasAsyncReprojection() const override { return true; }
 
     void customizeContext() override;
-    void uncustomizeContext() override;
 
     // Stereo specific methods
     void resetSensors() override;
     bool beginFrameRender(uint32_t frameIndex) override;
     void cycleDebugOutput() override { _lockCurrentTexture = !_lockCurrentTexture; }
-
-    bool suppressKeyboard() override;
-    void unsuppressKeyboard() override;
-    bool isKeyboardVisible() override;
-
-    QString getPreferredAudioInDevice() const override;
-    QString getPreferredAudioOutDevice() const override;
-
-    QRectF getPlayAreaRect() override;
-
-    virtual StencilMaskMode getStencilMaskMode() const override { return StencilMaskMode::MESH; }
-    virtual StencilMaskMeshOperator getStencilMaskMeshOperator() override;
-
-    virtual void updateParameters(float visionSqueezeX, float visionSqueezeY, float visionSqueezeTransition,
-                                  int visionSqueezePerEye, float visionSqueezeGroundPlaneY,
-                                  float visionSqueezeSpotlightSize) override;
-
     glm::mat4 getSensorResetMatrix() const { return _sensorResetMat; }
 
 protected:
@@ -60,10 +42,11 @@ protected:
     void internalDeactivate() override;
     void updatePresentPose() override;
 
-    void compositeLayers() override;
     void hmdPresent() override;
     bool isHmdMounted() const override;
     void postPreview() override;
+
+    void beginSession();
 
 private:
     xrs::Manager& _xrManager{ xrs::Manager::get() };
@@ -73,9 +56,35 @@ private:
     std::vector<xr::View> _eyeViewStates;
     xr::Swapchain _swapchain;
     std::vector<xr::SwapchainImageOpenGLKHR> _swapchainImages;
-    //xr::SwapchainCreateInfo _swapchainCreateInfo;
+    xr::Time _startTime{ 0 };
 
     mat4 _sensorResetMat;
     size_t _renderingIndex { 0 };
-    bool _hmdMounted { false };
+
+    struct XrFrameData {
+        uint32_t frameIndex{ 0 };
+        xr::FrameState frameState;
+        xr::ViewState viewState;
+        std::vector<xr::View> views;
+
+        static XrFrameData nextRender(const xr::Session& session, const xr::Space& space, uint32_t frameIndex = 0) {
+            XrFrameData result;
+            result.frameState = session.waitFrame({});
+            xr::ViewLocateInfo vi{ xr::ViewConfigurationType::PrimaryStereo, result.frameState.predictedDisplayTime, space };
+            result.views = session.locateViewsToVector(vi, &(result.viewState.operator XrViewState&()));
+            return result;
+        }
+
+        XrFrameData next(const xr::Session& session, const xr::Space& space) const {
+            XrFrameData result;
+            result.frameIndex = frameIndex + 1;
+            xr::ViewLocateInfo vi{ xr::ViewConfigurationType::PrimaryStereo, frameState.predictedDisplayTime + frameState.predictedDisplayPeriod, space };
+            result.views = session.locateViewsToVector(vi, &(result.viewState.operator XrViewState&()));
+            return result;
+        }
+    };
+
+    XrFrameData _nextRenderPoseData, _nextSimPoseData;
+
+
 };

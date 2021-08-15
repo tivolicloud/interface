@@ -8,10 +8,12 @@
 using IUnknown = void;
 #include <Windows.h>
 #endif
-
+#include <openxr/openxr_platform.h>
 #include <openxr/openxr.hpp>
 
 namespace xrs {
+
+constexpr uint32_t SIDE_COUNT = 2;
 
 namespace DebugUtilsEXT {
 
@@ -79,6 +81,11 @@ inline glm::mat4 toGlm(const XrPosef& p) {
     return translation * orientation;
 }
 
+inline void for_each_side_index(const std::function<void(size_t)>& f) {
+    f(0);
+    f(1);
+}
+
 class InstanceManager {
 public:
     DebugUtilsEXT::Messenger createMessenger(
@@ -118,18 +125,18 @@ public:
     const glm::uvec2& getRenderTargetSize() const { return renderTargetSize; }
 
 private:
-    xr::ActionSet actionSet;
-    struct ActionState {
-        xr::Action grabAction{ XR_NULL_HANDLE };
-        xr::Action poseAction{ XR_NULL_HANDLE };
-        xr::Action vibrateAction{ XR_NULL_HANDLE };
-        xr::Action quitAction{ XR_NULL_HANDLE };
-        std::array<xr::Path, xr::SIDE_COUNT> handSubactionPath;
-        std::array<xr::Space, xr::SIDE_COUNT> handSpace;
-        std::array<float, xr::SIDE_COUNT> handScale = { { 1.0f, 1.0f } };
-        std::array<xr::Bool32, xr::SIDE_COUNT> handActive;
-    };
-    ActionState actionState;
+    //xr::ActionSet actionSet;
+    //struct ActionState {
+    //    xr::Action grabAction{ XR_NULL_HANDLE };
+    //    xr::Action poseAction{ XR_NULL_HANDLE };
+    //    xr::Action vibrateAction{ XR_NULL_HANDLE };
+    //    xr::Action quitAction{ XR_NULL_HANDLE };
+    //    std::array<xr::Path, SIDE_COUNT> handSubactionPath;
+    //    std::array<xr::Space, SIDE_COUNT> handSpace;
+    //    std::array<float, SIDE_COUNT> handScale = { { 1.0f, 1.0f } };
+    //    std::array<xr::Bool32, SIDE_COUNT> handActive;
+    //};
+    //ActionState actionState;
 
     std::vector<xr::View> eyeViewStates;
     bool shutdown{ false };

@@ -8,6 +8,9 @@
 
 #include <mutex>
 
+#include <WinSock2.h>
+
+#include "OpenXrHelpers.h"
 #include <QtCore/QObject>
 #include <QtCore/QtPlugin>
 #include <QtCore/QStringList>
@@ -15,15 +18,12 @@
 #include <plugins/RuntimePlugin.h>
 
 #include "OpenXrDisplayPlugin.h"
-//#include "ViveControllerManager.h"
 
-class OpenVrProvider : public QObject, public DisplayProvider, InputProvider
+class OpenVrProvider : public QObject, public DisplayProvider
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID DisplayProvider_iid FILE "plugin.json")
     Q_INTERFACES(DisplayProvider)
-    Q_PLUGIN_METADATA(IID InputProvider_iid FILE "plugin.json")
-    Q_INTERFACES(InputProvider)
 
 public:
     OpenVrProvider(QObject* parent = nullptr) : QObject(parent) {}
@@ -38,21 +38,6 @@ public:
             }
         });
         return _displayPlugins;
-    }
-
-    virtual InputPluginList getInputPlugins() override {
-        //static std::once_flag once;
-        //std::call_once(once, [&] {
-        //    InputPluginPointer plugin(new ViveControllerManager());
-        //    if (plugin->isSupported()) {
-        //        _inputPlugins.push_back(plugin);
-        //    }
-        //});
-        return _inputPlugins;
-    }
-
-    virtual void destroyInputPlugins() override {
-        _inputPlugins.clear();
     }
 
     virtual void destroyDisplayPlugins() override {

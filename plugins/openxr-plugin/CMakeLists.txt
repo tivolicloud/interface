@@ -24,4 +24,7 @@ if (
     include_hifi_library_headers(octree)
 
     target_openxr()
+    target_webrtc()
+    target_link_libraries(${TARGET_NAME} Winmm.lib)
+
 endif()

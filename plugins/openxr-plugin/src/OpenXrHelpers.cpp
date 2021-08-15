@@ -23,22 +23,28 @@
 
 Q_LOGGING_CATEGORY(xr_logging, "hifi.xr")
 
-
-XrBool32 __stdcall xrDebugCallback(XrDebugUtilsMessageSeverityFlagsEXT messageSeverity,
-                                 XrDebugUtilsMessageTypeFlagsEXT messageTypes,
-                                 const XrDebugUtilsMessengerCallbackDataEXT* callbackData,
-                                 void* userData) {
-
-
-}
-
-
 using namespace xrs;
 using namespace xrs::DebugUtilsEXT;
 
 Manager& Manager::get() {
     static Manager instance;
     return instance;
+}
+
+XrBool32 __stdcall xrDebugCallback(XrDebugUtilsMessageSeverityFlagsEXT messageSeverity,
+                                 XrDebugUtilsMessageTypeFlagsEXT messageTypes,
+                                 const XrDebugUtilsMessengerCallbackDataEXT* callbackData,
+                                 void* userData) {
+    auto manager = reinterpret_cast<Manager*>(userData);
+    const auto sev = xrs::DebugUtilsEXT::MessageSeverityFlags{ messageSeverity };
+    const auto type = xrs::DebugUtilsEXT::MessageTypeFlags{ messageSeverity };
+    return manager->debugCallback(sev, type, callbackData);
+}
+
+XrBool32 Manager::debugCallback(const MessageSeverity& messageSeverity,
+                              const MessageType& messageType,
+                              const CallbackData& callbackData) {
+    return XR_TRUE;
 }
 
 Messenger Manager::createMessenger(const MessageSeverityFlags& severityFlags, const MessageTypeFlags& typeFlags) {
@@ -48,13 +54,13 @@ Messenger Manager::createMessenger(const MessageSeverityFlags& severityFlags, co
 
 void Manager::init() {
     std::unordered_map<std::string, xr::ApiLayerProperties> discoveredLayers;
-    for (const auto& layerProperties : xr::enumerateApiLayerProperties()) {
+    for (const auto& layerProperties : xr::enumerateApiLayerPropertiesToVector()) {
         qDebug(xr_logging, "Layer found: %s", layerProperties.layerName);
         discoveredLayers.insert({ layerProperties.layerName, layerProperties });
     }
 
     std::unordered_map<std::string, xr::ExtensionProperties> discoveredExtensions;
-    for (const auto& extensionProperties : xr::enumerateInstanceExtensionProperties(nullptr)) {
+    for (const auto& extensionProperties : xr::enumerateInstanceExtensionPropertiesToVector(nullptr)) {
         qDebug(xr_logging, "Extension found: %s", extensionProperties.extensionName);
         discoveredExtensions.insert({ extensionProperties.extensionName, extensionProperties });
     }
@@ -113,7 +119,7 @@ void Manager::init() {
     // and get a response in the form of a systemId
     try {
         systemId = instance.getSystem({ xr::FormFactor::HeadMountedDisplay });
-    } catch (const xr::exceptions::SystemError& err) {
+    } catch (const xr::exceptions::SystemError&) {
         return;
     }
 
@@ -128,18 +134,17 @@ void Manager::init() {
 
     // Find out what view configurations we have available
     {
-        auto viewConfigTypes = instance.enumerateViewConfigurations(systemId);
+        auto viewConfigTypes = instance.enumerateViewConfigurationsToVector(systemId);
         auto viewConfigType = viewConfigTypes[0];
         if (viewConfigType != xr::ViewConfigurationType::PrimaryStereo) {
             qDebug(xr_logging, "OpenXR runtime doens't support primary stereo rendering");
-            instance.destroy(systemId);
             systemId = {};
             return;
         }
     }
 
     std::vector<xr::ViewConfigurationView> viewConfigViews =
-        instance.enumerateViewConfigurationViews(systemId, xr::ViewConfigurationType::PrimaryStereo);
+        instance.enumerateViewConfigurationViewsToVector(systemId, xr::ViewConfigurationType::PrimaryStereo);
 
     // Instead of createing a swapchain per-eye, we create a single swapchain of double width.
     // Even preferable would be to create a swapchain texture array with one layer per eye, so that we could use the
@@ -148,7 +153,6 @@ void Manager::init() {
     if (viewConfigViews.size() != 2 ||
         viewConfigViews[0].recommendedImageRectHeight != viewConfigViews[1].recommendedImageRectHeight) {
         qDebug(xr_logging, "Unable to parse OpenXR view configurations");
-        instance.destroy(systemId);
         systemId = {};
         return;
     }
@@ -158,3 +162,22 @@ void Manager::init() {
 }
 
 
+void Manager::pollEvents() {
+    while (true) {
+        xr::EventDataBuffer eventBuffer;
+        auto pollResult = instance.pollEvent(eventBuffer);
+        if (pollResult == xr::Result::EventUnavailable) {
+            break;
+        }
+
+        switch (eventBuffer.type) {
+            case xr::StructureType::EventDataSessionStateChanged: {
+                const auto& e = reinterpret_cast<xr::EventDataSessionStateChanged&>(eventBuffer);
+                sessionState = e.state;
+            } break;
+
+            default:
+                break;
+        }
+    }
+}

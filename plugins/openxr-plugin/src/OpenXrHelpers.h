@@ -7,6 +7,7 @@
 //
 #pragma once
 
+#include <WinSock2.h>
 #include <QtCore/QLoggingCategory>
 
 #include <GLMHelpers.h>
@@ -14,9 +15,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <plugins/Forward.h>
-#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-using IUnknown = void;
+#include <combaseapi.h>
+#include <openxr/openxr_platform.h>
 #include <openxr/openxr.hpp>
 
 Q_DECLARE_LOGGING_CATEGORY(xr_logging)
@@ -91,6 +92,20 @@ inline glm::mat4 toGlm(const XrPosef& p) {
 }
 
 class Manager {
+#if defined(Q_OS_WIN)
+    using GraphicsBinding = xr::GraphicsBindingOpenGLWin32KHR;
+#else
+#error "Unknown OS for OpenXR"
+#endif
+
+    using GraphicsRequirements = xr::GraphicsRequirementsOpenGLKHR;
+    using DispatchLoaderDynamic = xr::DispatchLoaderDynamic;
+    using Messenger = xrs::DebugUtilsEXT::Messenger;
+    using MessageSeverity= xrs::DebugUtilsEXT::MessageSeverityFlags;
+    using MessageType = xrs::DebugUtilsEXT::MessageTypeFlags;
+    using CallbackData = xrs::DebugUtilsEXT::CallbackData;
+    using Instance = xr::Instance;
+    using SystemId = xr::SystemId;
 public:
     DebugUtilsEXT::Messenger createMessenger(
         const DebugUtilsEXT::MessageSeverityFlags& severityFlags = DebugUtilsEXT::MessageSeverityFlagBits::AllBits,
@@ -99,61 +114,26 @@ public:
     static Manager& get();
     void init();
 
-    //void prepareInstance();
-    //void prepareSystem();
-    //void prepareSession(xr::GraphicsBindingOpenGLWin32KHR graphicsBinding);
-    //void prepareSwapchain();
-    //void prepareActions();
-    //void pollEvents();
-    //void pollActions();
-    //void beginSession();
-    //void endSession();
-    //bool beginFrame();
-    //bool isSessionActive() const { return sessionActive; }
-    //void endFrame(const xr::FrameEndInfo& end);
-    //void endFrame(xr::Time predictedDisplayTime,
-    //              const std::vector<xr::CompositionLayerBaseHeader*>& layers,
-    //              xr::EnvironmentBlendMode blendMode = xr::EnvironmentBlendMode::Opaque);
-    //xr::SessionState getSessionState() const { return sessionState; }
-    //const std::vector<xr::View>& getUpdatedViewStates(xr::Time displayTime);
-    //uint32_t getNextSwapchainImage();
-    //void commitSwapchainImage();
+public:
+    XrBool32 debugCallback(const MessageSeverity& messageSeverity,
+                             const MessageType& messageType,
+                             const CallbackData& callbackData);
 
-    //const xr::Space& getSpace() const { return space; }
-    //const xr::Swapchain& getSwapchain() const { return swapchain; };
+    void pollEvents();
 
-    //xr::FrameState waitFrame() const {
-    //    xr::FrameState frameState;
-    //    auto result = session.waitFrame(xr::FrameWaitInfo{}, frameState);
-    //    return frameState;
-    //}
-    //const glm::uvec2& getRenderTargetSize() const { return renderTargetSize; }
-
-
-    xr::Instance instance;
-    xr::SystemId systemId;
-    xrs::DebugUtilsEXT::Messenger messenger;
+public:
     bool enableDebug{ true };
-    xr::DispatchLoaderDynamic dispatch;
-    xr::GraphicsRequirementsOpenGLKHR graphicsRequirements;
+    Instance instance;
+    SystemId systemId;
+    Messenger messenger;
+    DispatchLoaderDynamic dispatch;
     glm::uvec2 renderTargetSize;
-    
-    //xr::ActionSet actionSet;
-    //struct ActionState {
-    //    xr::Action grabAction{ XR_NULL_HANDLE };
-    //    xr::Action poseAction{ XR_NULL_HANDLE };
-    //    xr::Action vibrateAction{ XR_NULL_HANDLE };
-    //    xr::Action quitAction{ XR_NULL_HANDLE };
-    //    std::array<xr::Path, xr::SIDE_COUNT> handSubactionPath;
-    //    std::array<xr::Space, xr::SIDE_COUNT> handSpace;
-    //    std::array<float, xr::SIDE_COUNT> handScale = { { 1.0f, 1.0f } };
-    //    std::array<xr::Bool32, xr::SIDE_COUNT> handActive;
-    //};
-    //ActionState actionState;
-    //bool shutdown{ false };
-    //xr::SessionState sessionState{ xr::SessionState::Unknown };
-    //bool sessionActive{ false };
+    GraphicsRequirements graphicsRequirements;
+    GraphicsBinding graphicsBinding;
+    xr::SessionState sessionState{ xr::SessionState::Unknown };
+    bool quitRequested{ false };
 };
+
 
 }  // namespace xrs
 

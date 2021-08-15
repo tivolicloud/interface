@@ -91,10 +91,10 @@ void RenderThread::setup() {
     projectionLayer.space = _instanceManager.getSpace();
     const auto& renderTargetSize = _instanceManager.getRenderTargetSize();
     // Finish setting up the layer submission
-    xr::for_each_side_index([&](uint32_t eyeIndex) {
+    xrs::for_each_side_index([&](uint32_t eyeIndex) {
         auto& layerView = projectionLayerViews[eyeIndex];
         layerView.subImage.swapchain = _instanceManager.getSwapchain();
-        layerView.subImage.imageRect.extent = { (int32_t)renderTargetSize.x / 2, (int32_t)renderTargetSize.y };
+        layerView.subImage.imageRect.extent = xr::Extent2Di{ (int32_t)renderTargetSize.x / 2, (int32_t)renderTargetSize.y };
         if (eyeIndex == 1) {
             layerView.subImage.imageRect.offset.x = layerView.subImage.imageRect.extent.width;
         }
@@ -120,7 +120,7 @@ void RenderThread::renderFrame() {
     //_context.makeCurrent();
     _frameState = _instanceManager.waitFrame();
     if (!_instanceManager.beginFrame() || !_frameState.shouldRender || !_activeFrame) {
-        _instanceManager.endFrame({ _frameState.predictedDisplayTime, xr::EnvironmentBlendMode::Opaque });
+        _instanceManager.endFrame({ _frameState.predictedDisplayTime, xr::EnvironmentBlendMode::Opaque, 0, nullptr });
         return;
     }
 
@@ -131,7 +131,7 @@ void RenderThread::renderFrame() {
     stereoState._enable = true;
     stereoState._skybox = true;
 
-    xr::for_each_side_index([&](size_t eyeIndex) {
+    xrs::for_each_side_index([&](size_t eyeIndex) {
         const auto& viewState = eyeViewStates[eyeIndex];
         auto& layerView = projectionLayerViews[eyeIndex];
         stereoState._eyeProjections[eyeIndex] = xrs::toGlm(viewState.fov);
@@ -197,7 +197,7 @@ bool RenderThread::process() {
     _instanceManager.pollEvents();
 
     auto sessionState = _instanceManager.getSessionState();
-    _frameState = {};
+    _frameState = xr::FrameState{};
     switch (sessionState) {
         case xr::SessionState::Stopping:
             //_instanceManager.endSession();
