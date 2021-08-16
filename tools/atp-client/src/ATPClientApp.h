@@ -21,6 +21,7 @@
 #include <NodeList.h>
 #include <AssetRequest.h>
 #include <MappingRequest.h>
+#include <BuildInfo.h>
 
 
 class ATPClientApp : public QCoreApplication {
