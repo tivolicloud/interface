@@ -120,6 +120,7 @@ protected:
 
     // Plugin specific functionality to send the composed scene to the output window or device
     virtual void internalPresent();
+    virtual bool shouldRender() { return true; }
 
     void renderFromTexture(gpu::Batch& batch,
                            const gpu::TexturePointer& texture,

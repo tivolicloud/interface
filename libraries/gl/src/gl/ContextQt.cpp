@@ -75,7 +75,12 @@ void Context::setupDebugLogging(QOpenGLContext *context) {
         Context::debugMessageHandler(message);
     });
     if (logger->initialize()) {
-        logger->enableMessages();
+        // Holy crap you get too many messages if you just turn this on without filtering the messages.
+        QOpenGLDebugMessage::Severities severity = QOpenGLDebugMessage::HighSeverity | QOpenGLDebugMessage::MediumSeverity;
+        QOpenGLDebugMessage::Severities inverseSeverity =
+            QOpenGLDebugMessage::AnySeverity & (QOpenGLDebugMessage::AnySeverity ^ severity);
+        logger->disableMessages(QOpenGLDebugMessage::AnySource, QOpenGLDebugMessage::AnyType, inverseSeverity);
+        logger->enableMessages(QOpenGLDebugMessage::AnySource, QOpenGLDebugMessage::AnyType, severity);
         logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
     } else {
         qCWarning(glLogging) <<  "OpenGL context does not support debugging";

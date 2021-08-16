@@ -14,8 +14,11 @@ list(REMOVE_ITEM PLUGIN_SUBDIRS "CMakeFiles")
 if (NOT SERVER_ONLY AND NOT ANDROID)
   set(DIR "openxr-plugin")
   add_subdirectory(${DIR})
-  set(DIR "oculus-plugin")
-  add_subdirectory(${DIR})
+  # We can't use the oculus plugin and the openxr plugin at the 
+  # same time or one of them will spew version mismatch errors
+  # This might also be true for OpenVR
+  # set(DIR "oculus-plugin")
+  # add_subdirectory(${DIR})
   set(DIR "sdl2-plugin")
   add_subdirectory(${DIR})
 

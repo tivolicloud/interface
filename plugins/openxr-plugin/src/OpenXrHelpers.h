@@ -40,42 +40,42 @@ inline XrFovf toTanFovf(const XrFovf& fov) {
     return { tanf(fov.angleLeft), tanf(fov.angleRight), tanf(fov.angleUp), tanf(fov.angleDown) };
 }
 
-inline glm::mat4 toGlm(const XrFovf& fov, float nearZ = 0.01f, float farZ = 10000.0f) {
+inline glm::mat4 toGlm(const XrFovf fov, const float nearZ = 0.01f, const float farZ = 10000.0f) {
     auto tanFov = toTanFovf(fov);
-    const auto& tanAngleRight = tanFov.angleRight;
-    const auto& tanAngleLeft = tanFov.angleLeft;
     const auto& tanAngleUp = tanFov.angleUp;
     const auto& tanAngleDown = tanFov.angleDown;
+    const auto& tanAngleLeft = tanFov.angleLeft;
+    const auto& tanAngleRight = tanFov.angleRight;
 
     const float tanAngleWidth = tanAngleRight - tanAngleLeft;
-    const float tanAngleHeight = (tanAngleDown - tanAngleUp);
-    const float offsetZ = 0;
+    // Set to tanAngleUp - tanAngleDown for a clip space with positive Y up (OpenGL / D3D / Metal).
+    const float tanAngleHeight = (tanAngleUp - tanAngleDown);
+    // Set to nearZ for a [-1,1] Z clip space (OpenGL / OpenGL ES).
+    const float offsetZ = nearZ;
 
-    glm::mat4 resultm{};
-    float* result = &resultm[0][0];
+    glm::mat4 result;
+    float* m = &(result[0][0]);
+
     // normal projection
-    result[0] = 2 / tanAngleWidth;
-    result[4] = 0;
-    result[8] = (tanAngleRight + tanAngleLeft) / tanAngleWidth;
-    result[12] = 0;
-
-    result[1] = 0;
-    result[5] = 2 / tanAngleHeight;
-    result[9] = (tanAngleUp + tanAngleDown) / tanAngleHeight;
-    result[13] = 0;
-
-    result[2] = 0;
-    result[6] = 0;
-    result[10] = -(farZ + offsetZ) / (farZ - nearZ);
-    result[14] = -(farZ * (nearZ + offsetZ)) / (farZ - nearZ);
-
-    result[3] = 0;
-    result[7] = 0;
-    result[11] = -1;
-    result[15] = 0;
-
-    return resultm;
+    m[0] = 2.0f / tanAngleWidth;
+    m[4] = 0.0f;
+    m[8] = (tanAngleRight + tanAngleLeft) / tanAngleWidth;
+    m[12] = 0.0f;
+    m[1] = 0.0f;
+    m[5] = 2.0f / tanAngleHeight;
+    m[9] = (tanAngleUp + tanAngleDown) / tanAngleHeight;
+    m[13] = 0.0f;
+    m[2] = 0.0f;
+    m[6] = 0.0f;
+    m[10] = -(farZ + offsetZ) / (farZ - nearZ);
+    m[14] = -(farZ * (nearZ + offsetZ)) / (farZ - nearZ);
+    m[3] = 0.0f;
+    m[7] = 0.0f;
+    m[11] = -1.0f;
+    m[15] = 0.0f;
+    return result;
 }
+
 
 inline glm::quat toGlm(const XrQuaternionf& q) {
     return glm::make_quat(&q.x);
@@ -91,12 +91,13 @@ inline glm::mat4 toGlm(const XrPosef& p) {
     return translation * orientation;
 }
 
+inline void for_each_side_index(const std::function < void(size_t)>& f) {
+    f(0);
+    f(1);
+}
+
+
 class Manager {
-#if defined(Q_OS_WIN)
-    using GraphicsBinding = xr::GraphicsBindingOpenGLWin32KHR;
-#else
-#error "Unknown OS for OpenXR"
-#endif
 
     using GraphicsRequirements = xr::GraphicsRequirementsOpenGLKHR;
     using DispatchLoaderDynamic = xr::DispatchLoaderDynamic;
@@ -115,8 +116,8 @@ public:
     void init();
 
 public:
-    XrBool32 debugCallback(const MessageSeverity& messageSeverity,
-                             const MessageType& messageType,
+    XrBool32 debugCallback(const XrDebugUtilsMessageSeverityFlagsEXT& messageSeverity,
+                           const XrDebugUtilsMessageTypeFlagsEXT& messageType,
                              const CallbackData& callbackData);
 
     void pollEvents();
@@ -129,11 +130,114 @@ public:
     DispatchLoaderDynamic dispatch;
     glm::uvec2 renderTargetSize;
     GraphicsRequirements graphicsRequirements;
-    GraphicsBinding graphicsBinding;
-    xr::SessionState sessionState{ xr::SessionState::Unknown };
     bool quitRequested{ false };
 };
 
+
+struct FrameData {
+    static xr::Session SESSION;
+    static xr::Space SPACE;
+    static XrTime START_TIME;
+
+    xr::FrameState frameState;
+    xr::ViewState viewState;
+    std::vector<xr::View> views;
+
+    void updateViews() {
+        XrViewState* viewStatePtr = &(viewState.operator XrViewState&());
+        views =
+            SESSION.locateViewsToVector({ xr::ViewConfigurationType::PrimaryStereo, frameState.predictedDisplayTime, SPACE },
+                                        viewStatePtr);
+    }
+
+    static FrameData wait() {
+        FrameData result;
+        result.frameState = SESSION.waitFrame({});
+        if (0 == START_TIME) {
+            START_TIME = result.frameState.predictedDisplayTime.get();
+        }
+        result.updateViews();
+        return result;
+    }
+
+    static double toSeconds(xr::Time xrtime) { 
+        auto time = xrtime.get() - START_TIME;
+        time /= 1000;
+        double result = time;
+        result /= 1000.0;
+        return result;
+    }
+
+    FrameData next() const {
+        FrameData result;
+        result.frameState = frameState;
+        result.frameState.predictedDisplayTime += frameState.predictedDisplayPeriod;
+        result.updateViews();
+        return result;
+    }
+};
+
+class SessionManager {
+public:
+    static xr::SessionState STATE;
+    using Ptr = std::shared_ptr<SessionManager>;
+#if defined(Q_OS_WIN)
+    using GraphicsBinding = xr::GraphicsBindingOpenGLWin32KHR;
+#else
+#error "Unknown OS for OpenXR"
+#endif
+
+    SessionManager(const GraphicsBinding& graphicsBinding);
+    virtual ~SessionManager();
+    bool shouldRender();
+    void buildSwapchain();
+    void emptyFrame();
+
+    void endFrame(bool render = true) {
+        Q_ASSERT(_frameStarted);
+
+        if (!render) {
+            _session.endFrame({ _frameState.predictedDisplayTime, xr::EnvironmentBlendMode::Opaque, 0, nullptr });
+        } else {
+            _session.endFrame(_frameEndInfo);
+        }
+        _frameStarted = false;
+    }
+
+    void beginFrame() {
+        Q_ASSERT(!_frameStarted);
+        _session.beginFrame(xr::FrameBeginInfo{});
+        _frameStarted = true;
+    }
+
+    uint32_t acquireSwapchainImage();
+    void releaseSwapchainImage();
+
+    const FrameData& getNextFrame() const { return _nextFrame;}
+
+private:
+    bool _sessionStarted{ false };
+    bool _sessionEnded{ false };
+    bool _frameStarted{ false };
+    xrs::Manager& _instance{ xrs::Manager::get() };
+    xr::Session _session;
+    xr::Swapchain _swapchain;
+    std::vector<xr::SwapchainImageOpenGLKHR> _swapchainImages;
+
+    std::array<xr::CompositionLayerProjectionView, 2> _projectionLayerViews;
+    xr::CompositionLayerProjection _projectionLayer{ {}, {}, 2, _projectionLayerViews.data() };
+    std::vector<xr::CompositionLayerBaseHeader*> _layersPointers{ &_projectionLayer };
+    xr::Space& _space{ _projectionLayer.space };
+
+    FrameData _nextFrame;
+    const xr::FrameState& _frameState{ _nextFrame.frameState };
+    const xr::ViewState& _viewState{ _nextFrame.viewState };
+
+    xr::FrameEndInfo _frameEndInfo{ xr::Time{}, xr::EnvironmentBlendMode::Opaque, (uint32_t)_layersPointers.size(),
+                                    _layersPointers.data() };
+
+    QThread* _sessionThread{ nullptr };
+};
 
 }  // namespace xrs
 

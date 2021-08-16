@@ -688,6 +688,12 @@ void OpenGLDisplayPlugin::internalPresent() {
 }
 
 void OpenGLDisplayPlugin::present(const std::shared_ptr<RefreshRateController>& refreshRateController) {
+    // If the display plugin says not to do any GPU work, then we're going to respect that, but we 
+    // need to continue to increment the frame counter or the app won't send us a new frame.
+    if (!shouldRender()) {
+        incrementPresentCount();
+        return;
+    }
     auto frameId = (uint64_t)presentCount();
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xffffff00, frameId)
     uint64_t startPresent = usecTimestampNow();

@@ -30,6 +30,7 @@ public:
     bool hasAsyncReprojection() const override { return true; }
 
     void customizeContext() override;
+    void uncustomizeContext() override;
 
     // Stereo specific methods
     void resetSensors() override;
@@ -45,46 +46,14 @@ protected:
     void hmdPresent() override;
     bool isHmdMounted() const override;
     void postPreview() override;
+    void updateFrameData() override;
+    bool shouldRender() override;
 
-    void beginSession();
 
 private:
     xrs::Manager& _xrManager{ xrs::Manager::get() };
-
-    xr::Session _session;
-    xr::Space _space;
-    std::vector<xr::View> _eyeViewStates;
-    xr::Swapchain _swapchain;
-    std::vector<xr::SwapchainImageOpenGLKHR> _swapchainImages;
-    xr::Time _startTime{ 0 };
-
+    std::shared_ptr<xrs::SessionManager> _xrSessionManager;
+    gpu::FramebufferPointer _outputFramebuffer;
     mat4 _sensorResetMat;
-    size_t _renderingIndex { 0 };
-
-    struct XrFrameData {
-        uint32_t frameIndex{ 0 };
-        xr::FrameState frameState;
-        xr::ViewState viewState;
-        std::vector<xr::View> views;
-
-        static XrFrameData nextRender(const xr::Session& session, const xr::Space& space, uint32_t frameIndex = 0) {
-            XrFrameData result;
-            result.frameState = session.waitFrame({});
-            xr::ViewLocateInfo vi{ xr::ViewConfigurationType::PrimaryStereo, result.frameState.predictedDisplayTime, space };
-            result.views = session.locateViewsToVector(vi, &(result.viewState.operator XrViewState&()));
-            return result;
-        }
-
-        XrFrameData next(const xr::Session& session, const xr::Space& space) const {
-            XrFrameData result;
-            result.frameIndex = frameIndex + 1;
-            xr::ViewLocateInfo vi{ xr::ViewConfigurationType::PrimaryStereo, frameState.predictedDisplayTime + frameState.predictedDisplayPeriod, space };
-            result.views = session.locateViewsToVector(vi, &(result.viewState.operator XrViewState&()));
-            return result;
-        }
-    };
-
-    XrFrameData _nextRenderPoseData, _nextSimPoseData;
-
-
+    xrs::FrameData _nextFrame;
 };

@@ -26,24 +26,34 @@ Q_LOGGING_CATEGORY(xr_logging, "hifi.xr")
 using namespace xrs;
 using namespace xrs::DebugUtilsEXT;
 
+XrTime FrameData::START_TIME{ 0 };
+xr::Session FrameData::SESSION{};
+xr::Space FrameData::SPACE{};
+xr::SessionState SessionManager::STATE{ xr::SessionState::Unknown };
+
 Manager& Manager::get() {
     static Manager instance;
     return instance;
 }
 
 XrBool32 __stdcall xrDebugCallback(XrDebugUtilsMessageSeverityFlagsEXT messageSeverity,
-                                 XrDebugUtilsMessageTypeFlagsEXT messageTypes,
-                                 const XrDebugUtilsMessengerCallbackDataEXT* callbackData,
-                                 void* userData) {
+                                   XrDebugUtilsMessageTypeFlagsEXT messageTypes,
+                                   const XrDebugUtilsMessengerCallbackDataEXT* callbackData,
+                                   void* userData) {
     auto manager = reinterpret_cast<Manager*>(userData);
-    const auto sev = xrs::DebugUtilsEXT::MessageSeverityFlags{ messageSeverity };
-    const auto type = xrs::DebugUtilsEXT::MessageTypeFlags{ messageSeverity };
-    return manager->debugCallback(sev, type, callbackData);
+    return manager->debugCallback(messageSeverity, messageTypes, *callbackData);
 }
 
-XrBool32 Manager::debugCallback(const MessageSeverity& messageSeverity,
-                              const MessageType& messageType,
+XrBool32 Manager::debugCallback(const XrDebugUtilsMessageSeverityFlagsEXT& messageSeverity,
+                                const XrDebugUtilsMessageTypeFlagsEXT& messageType,
                               const CallbackData& callbackData) {
+    constexpr auto WARN_BITS = XR_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | XR_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+    if (0 != (WARN_BITS & messageSeverity)) {
+        qWarning() << "QQQ " << callbackData.message;
+    } else {
+        qDebug() << "ZZZ " << callbackData.message;
+    }
     return XR_TRUE;
 }
 
@@ -78,12 +88,15 @@ void Manager::init() {
     if (enableDebug) {
         // Try to add validation layer if found
         requestedExtensions.push_back(XR_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        if (discoveredLayers.count("XR_APILAYER_LUNARG_core_validation") != 0) {
+            requestedLayers.push_back("XR_APILAYER_LUNARG_core_validation");
+        }
     }
 
     xr::InstanceCreateInfo ici{ {},
                                 { "interface", 0, "cakewalk", 0, xr::Version::current() },
-                                0,
-                                nullptr,
+                                (uint32_t)requestedLayers.size(),
+                                requestedLayers.data(),
                                 (uint32_t)requestedExtensions.size(),
                                 requestedExtensions.data() };
 
@@ -173,7 +186,7 @@ void Manager::pollEvents() {
         switch (eventBuffer.type) {
             case xr::StructureType::EventDataSessionStateChanged: {
                 const auto& e = reinterpret_cast<xr::EventDataSessionStateChanged&>(eventBuffer);
-                sessionState = e.state;
+                SessionManager::STATE = e.state;
             } break;
 
             default:
@@ -181,3 +194,106 @@ void Manager::pollEvents() {
         }
     }
 }
+
+
+SessionManager::SessionManager(const GraphicsBinding& graphicsBinding) {
+    //graphicsBinding = ;
+    _session = _instance.instance.createSession({ {}, _instance.systemId, &graphicsBinding });
+    // FIXME which reference space is best for Hifi?  Does it depend on state?
+    // auto referenceSpaces = _session.enumerateReferenceSpacesToVector();
+    _space = _session.createReferenceSpace(xr::ReferenceSpaceCreateInfo{ xr::ReferenceSpaceType::Local, {} });
+    //glCreateFramebuffers(1, &_copyFbo);
+    buildSwapchain();
+    FrameData::SESSION = _session;
+    FrameData::SPACE = _space;
+}
+
+SessionManager::~SessionManager() {
+    FrameData::SESSION = xr::Session{};
+    FrameData::SPACE = xr::Space{};
+    _swapchainImages.clear();
+    _swapchain.destroy();
+    _session.destroy();
+}
+
+void SessionManager::buildSwapchain() {
+    auto swapchainFormats = _session.enumerateSwapchainFormatsToVector();
+    const auto& renderTargetSize = _instance.renderTargetSize;
+    _swapchain = _session.createSwapchain(xr::SwapchainCreateInfo{
+        {}, xr::SwapchainUsageFlagBits::TransferDst, GL_SRGB8_ALPHA8, 1, renderTargetSize.x, renderTargetSize.y, 1, 1, 1 });
+    _swapchainImages = _swapchain.enumerateSwapchainImagesToVector<xr::SwapchainImageOpenGLKHR>();
+    // Finish setting up the layer submission
+    xrs::for_each_side_index([&](uint32_t eyeIndex) {
+        auto& layerView = _projectionLayerViews[eyeIndex];
+        layerView.subImage.swapchain = _swapchain;
+        layerView.subImage.imageRect.extent = xr::Extent2Di{ (int32_t)renderTargetSize.x / 2, (int32_t)renderTargetSize.y };
+        if (eyeIndex == 1) {
+            layerView.subImage.imageRect.offset.x = layerView.subImage.imageRect.extent.width;
+        }
+    });
+}
+
+void SessionManager::emptyFrame() {
+    beginFrame();
+    endFrame(false);
+}
+
+bool SessionManager::shouldRender() {
+    if (_sessionEnded) {
+        return false;
+    }
+    _instance.pollEvents();
+
+    if (STATE == xr::SessionState::Ready && !_sessionStarted) {
+        _session.beginSession(xr::SessionBeginInfo{ xr::ViewConfigurationType::PrimaryStereo });
+        // Force through an initial empty frame, or Oculus won't change to the focused state
+        _nextFrame = FrameData::wait();
+        emptyFrame();
+        _instance.pollEvents();
+        _sessionStarted = true;
+    } else if (STATE == xr::SessionState::Stopping && !_sessionEnded) {
+        _session.endSession();
+        _sessionStarted = false;
+    }
+
+    if (!_sessionStarted) {
+        return false;
+    }
+
+    switch (STATE) {
+        case xr::SessionState::Focused:
+        case xr::SessionState::Synchronized:
+        case xr::SessionState::Visible:
+            break;
+
+        default:
+            return false;
+    }
+
+    _nextFrame = FrameData::wait();
+    _frameEndInfo.displayTime = _frameState.predictedDisplayTime;
+    for_each_side_index([&](size_t eyeIndex) { 
+        const auto& frameView = _nextFrame.views[eyeIndex];
+        auto& layerView = _projectionLayerViews[eyeIndex];
+        layerView.fov = frameView.fov;
+        layerView.pose = frameView.pose;
+    });
+    if (!_frameState.shouldRender) {
+        emptyFrame();
+        return false;
+    }
+
+    return true;
+}
+
+uint32_t SessionManager::acquireSwapchainImage() {
+    uint32_t swapchainIndex;
+    _swapchain.acquireSwapchainImage(xr::SwapchainImageAcquireInfo{}, &swapchainIndex);
+    _swapchain.waitSwapchainImage(xr::SwapchainImageWaitInfo{ xr::Duration::infinite() });
+    return _swapchainImages[swapchainIndex].image;
+}
+
+void SessionManager::releaseSwapchainImage() {
+    _swapchain.releaseSwapchainImage(xr::SwapchainImageReleaseInfo{});
+}
+
