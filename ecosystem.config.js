@@ -3,17 +3,23 @@ const os = require("os");
 const fs = require("fs");
 
 const buildPath = path.join(__dirname, "build");
-const buildType = os.platform() == "linux" ? "" : "RelWithDebInfo";
+const buildType = "RelWithDebInfo";
 
-const getExePath = exe => {
-	const exePath = path.join(
+const getExePath = (exe, withBuildType = true) => {
+	let exePath;
+	exePath = path.join(
 		buildPath,
 		exe,
-		buildType,
+		...(withBuildType ? [buildType] : [""]),
 		exe + (os.platform() == "win32" ? ".exe" : ""),
 	);
-	if (fs.existsSync(exePath) == false)
-		throw new Error(`"${exePath}" not found`);
+	if (fs.existsSync(exePath) == false) {
+		if (withBuildType == false) {
+			throw new Error(`"${exePath}" not found`);
+		} else {
+			return getExePath(exe, false);
+		}
+	}
 	return exePath;
 };
 
