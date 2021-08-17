@@ -3306,8 +3306,8 @@ void DomainServer::processPathQueryPacket(QSharedPointer<ReceivedMessage> messag
             if (viewpoint.orientationChanged) {
                 viewpointStr.append(
                     QString("/%1,%2,%3,%4")
-                        .arg(viewpoint.orientation.w).arg(viewpoint.orientation.x)
-                        .arg(viewpoint.orientation.y).arg(viewpoint.orientation.z)
+                        .arg(viewpoint.orientation.x).arg(viewpoint.orientation.y)
+                        .arg(viewpoint.orientation.z).arg(viewpoint.orientation.w)
                 );
             }
 
