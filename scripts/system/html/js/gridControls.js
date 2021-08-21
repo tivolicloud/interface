@@ -81,7 +81,7 @@ function loaded() {
             }));
         });
 
-        var gridColor = { red: 255, green: 255, blue: 255 };
+        var gridColor = { red: 55, green: 55, blue: 55 };
         var elColor = document.getElementById("grid-color");
         elColor.style.backgroundColor = "rgb(" + gridColor.red + "," + gridColor.green + "," + gridColor.blue + ")";
 
