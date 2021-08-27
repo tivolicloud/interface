@@ -158,39 +158,9 @@ upload server arm64:
         - docker login $CI_REGISTRY --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker push $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
 
-# upload launcher:
-#     stage: deploy
-#     image: google/cloud-sdk:alpine
-
-#     extends: .deploy
-
-#     needs:
-#         - job: launcher windows
-#           artifacts: true
-#         - job: launcher macos
-#           artifacts: true
-#         - job: launcher linux
-#           artifacts: true
-
-#     script:
-#         - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON
-
-#         - cd launcher/dist
-#         - gsutil cp
-#           *.exe
-#           *.dmg *.zip
-#           *.AppImage *.deb *.pacman
-#           *.yml *.blockmap
-#           gs://tivolicloud-cdn/releases
-
-#         - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
-#           --path "/releases/*"
-
 upload launcher:
     stage: deploy
-    image:
-        name: banst/awscli
-        entrypoint: [""]
+    image: google/cloud-sdk:alpine
 
     extends: .deploy
 
@@ -202,23 +172,52 @@ upload launcher:
         - job: launcher linux
           artifacts: true
 
-    variables:
-        S3_BUCKET: tivolicloud
-        S3_REGION: us-east-1
-        CLOUDFRONT_ID: E14KDGO1BZG0J3
-        # AWS_ACCESS_KEY_ID
-        # AWS_SECRET_ACCESS_KEY
-
     script:
-        - aws configure set region $S3_REGION
+        - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON
 
         - cd launcher/dist
-        - aws s3 cp . s3://$S3_BUCKET/releases/ --recursive --exclude "*"
-          --include "*.exe"
-          --include "*.dmg" --include "*.zip"
-          --include "*.AppImage" --include "*.deb" --include "*.pacman"
-          --include "*.yml" --include "*.blockmap"
+        - gsutil cp
+          "*.exe"
+          "*.dmg" "*.zip"
+          "*.AppImage" "*.deb" "*.pacman"
+          "*.yml" "*.blockmap"
+          gs://tivolicloud-cdn/releases
 
-        - aws cloudfront create-invalidation
-          --distribution-id $CLOUDFRONT_ID
-          --paths "/releases/*"
+        - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
+          --path "/releases/*"
+# upload launcher:
+#     stage: deploy
+#     image:
+#         name: banst/awscli
+#         entrypoint: [""]
+
+#     extends: .deploy
+
+#     needs:
+#         - job: launcher windows
+#           artifacts: true
+#         - job: launcher macos
+#           artifacts: true
+#         - job: launcher linux
+#           artifacts: true
+
+#     variables:
+#         S3_BUCKET: tivolicloud
+#         S3_REGION: us-east-1
+#         CLOUDFRONT_ID: E14KDGO1BZG0J3
+#         # AWS_ACCESS_KEY_ID
+#         # AWS_SECRET_ACCESS_KEY
+
+#     script:
+#         - aws configure set region $S3_REGION
+
+#         - cd launcher/dist
+#         - aws s3 cp . s3://$S3_BUCKET/releases/ --recursive --exclude "*"
+#           --include "*.exe"
+#           --include "*.dmg" --include "*.zip"
+#           --include "*.AppImage" --include "*.deb" --include "*.pacman"
+#           --include "*.yml" --include "*.blockmap"
+
+#         - aws cloudfront create-invalidation
+#           --distribution-id $CLOUDFRONT_ID
+#           --paths "/releases/*"
