@@ -59,7 +59,7 @@ interface windows:
         # sign and zip up (with bsdtar from C:\Windows\System32\tar.exe)
         - node ..\..\..\.gitlab\signtool.js .
         - tar --exclude *.zip -acf interface-windows-$CI_COMMIT_TAG.zip *
-        - move /y interface-windows-$CI_COMMIT_TAG.zip ..\..\..
+        - Move-Item -Path interface-windows-$CI_COMMIT_TAG.zip -Destination ..\..\..
 
     artifacts:
         expire_in: 1 day
