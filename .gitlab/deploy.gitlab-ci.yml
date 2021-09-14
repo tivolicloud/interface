@@ -192,8 +192,9 @@ upload interface:
           interface-linux-$CI_COMMIT_TAG.zip
           gs://tivolicloud-cdn/releases/interface
 
-        - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
-          --path "/releases/interface/*"
+        # we're not using a cdn at the moment
+        # - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
+        #   --path "/releases/interface/*"
 # upload launcher:
 #     stage: deploy
 #     image:
