@@ -158,7 +158,7 @@ upload server arm64:
         - docker login $CI_REGISTRY --username gitlab-ci-token --password $CI_JOB_TOKEN
         - docker push $CI_REGISTRY_IMAGE/server:$CI_COMMIT_TAG-arm64
 
-upload launcher:
+upload interface:
     stage: deploy
     image: google/cloud-sdk:alpine
 
@@ -167,24 +167,33 @@ upload launcher:
     needs:
         - job: launcher windows
           artifacts: true
-        - job: launcher macos
-          artifacts: true
         - job: launcher linux
           artifacts: true
 
     script:
         - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON
 
-        - cd launcher/dist
+        # create latest.json file
+        - export WINDOWS_SHA256=$(sha256sum interface-windows-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export WINDOWS_SIZE=$(wc -c interface-windows-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+
+        - export LINUX_SHA256=$(sha256sum interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export LINUX_SIZE=$(wc -c interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+
+        - apk add jo
+        - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) \
+          windows=$(jo filename=interface-windows-$CI_COMMIT_TAG.zip sha256=$WINDOWS_SHA256 size=$WINDOWS_SIZE) \
+          linux=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE) > latest.json
+
+        # upload
         - gsutil cp
-          "*.exe"
-          "*.dmg" "*.zip"
-          "*.AppImage" "*.deb" "*.pacman"
-          "*.yml" "*.blockmap"
-          gs://tivolicloud-cdn/releases
+          latest.json
+          interface-windows-$CI_COMMIT_TAG.zip
+          interface-linux-$CI_COMMIT_TAG.zip
+          gs://tivolicloud-cdn/releases/interface
 
         - gcloud compute url-maps invalidate-cdn-cache tivolicloud-cdn
-          --path "/releases/*"
+          --path "/releases/interface/*"
 # upload launcher:
 #     stage: deploy
 #     image:

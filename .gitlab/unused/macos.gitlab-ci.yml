@@ -1,0 +1,130 @@
+# interface macos:
+#     stage: build
+#     tags:
+#         - macos
+
+#     extends: .production
+
+#     variables:
+#         BUILD_TYPE: Release
+#         RELEASE_TYPE: PRODUCTION
+#         STABLE_BUILD: 1
+#         RELEASE_NUMBER: $CI_COMMIT_TAG
+
+#         OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1i
+#         OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
+#         OSX_SDK: "10.13"
+
+#         CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+#         # SENTRY_AUTH_TOKEN
+#         SENTRY_ORG: tivolicloud
+
+#     script:
+#         - mkdir -p build
+#         - cd build
+
+#         # TODO: update cmake to use env vars
+#         - cmake
+#           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+#           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
+#           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
+#           -DCMAKE_C_COMPILER_LAUNCHER=ccache
+#           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+#           -G Ninja .. # -G Xcode ..
+
+#         # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
+#         - cmake --build . --target interface --config $BUILD_TYPE
+
+#         # TODO: source code doesn't show
+#         - sentry-cli upload-dif --include-sources -p interface interface
+
+#     artifacts:
+#         expire_in: 1 day
+#         paths:
+#             - build/interface/interface.app
+
+# interface macos merge request:
+#     stage: build
+#     tags:
+#         - macos
+
+#     extends: .merge_request
+
+#     variables:
+#         BUILD_TYPE: Release
+#         RELEASE_TYPE: PR
+#         RELEASE_NUMBER: $CI_COMMIT_SHORT_SHA
+
+#         OPENSSL_ROOT_DIR: /usr/local/Cellar/openssl@1.1/1.1.1i
+#         OPENSSL_INCLUDE_DIR: ${OPENSSL_ROOT_DIR}/include
+#         OSX_SDK: "10.13"
+
+#         # CMAKE_BACKTRACE_URL: https://o320671.ingest.sentry.io/api/5265062/minidump/?sentry_key=e4f9d26e25d94299b04d94bedcbf4633
+#         # SENTRY_AUTH_TOKEN
+#         # SENTRY_ORG: tivolicloud
+
+#     script:
+#         - mkdir -p build
+#         - cd build
+
+#         # TODO: update cmake to use env vars
+#         - cmake
+#           -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+#           -DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR
+#           -DOPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR
+#           -DCMAKE_C_COMPILER_LAUNCHER=ccache
+#           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+#           -G Ninja .. # -G Xcode ..
+
+#         # - cmake --build . --target interface --config $BUILD_TYPE | xcpretty
+#         - cmake --build . --target interface --config $BUILD_TYPE
+
+#         # TODO: source code doesn't show
+#         # - sentry-cli upload-dif --include-sources -p interface interface
+
+#         - cd ..
+#         - mv build/interface/interface.app interface-$CI_COMMIT_SHORT_SHA.app
+
+#     artifacts:
+#         expire_in: 7 days
+#         paths:
+#             - interface-$CI_COMMIT_SHORT_SHA.app
+
+# launcher macos:
+#     stage: package
+#     tags:
+#         - macos
+
+#     extends: .production
+
+#     needs:
+#         - job: interface macos
+#           artifacts: true
+
+#     # variables:
+#     # TODO: code signing
+#     # CSC_LINK: C:\Users\maki\tivoli-cloud-vr.p12
+
+#     script:
+#         - rm -rf launcher # just incase
+#         - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
+#         - mkdir -p launcher/interface
+#         - mv build/interface/interface.app launcher/interface # interface.app is a folder
+
+#         # TODO: this needs changing
+#         - cd launcher/.gitlab
+#         - yarn install
+#         - node prepare.js # needs CI_COMMIT_TAG
+#         - cd ..
+
+#         - yarn install
+#         - yarn build
+#         - yarn package
+
+#     artifacts:
+#         expire_in: 1 day
+#         paths:
+#             - launcher/dist/*.dmg
+#             - launcher/dist/*.blockmap
+#             - launcher/dist/*.zip
+#             - launcher/dist/*.yml

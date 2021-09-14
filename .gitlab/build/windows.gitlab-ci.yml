@@ -35,24 +35,32 @@ interface windows:
         - mkdir build
         - cd build
 
+        # build
         - cmake -DCMAKE_BUILD_TYPE=Release -A x64 ..
         - cmake --build . --parallel --config Release --target
           interface domain-server assignment-client
 
+        # upload to sentry
         - sentry-cli upload-dif --include-sources -p interface interface
 
+        # merge domain server and assignment client
         - cd interface\Release
         - xcopy /s /e /y ..\..\domain-server\Release\* .
         - xcopy /s /e /y ..\..\assignment-client\Release\* .
 
+        # remove build symbols
         - del *.exp
         - del *.lib
         - del *.pdb
 
+        # zip up (bsdtar from C:\Windows\System32\tar.exe)
+        - tar --exclude *.zip -acf interface-windows-$CI_COMMIT_TAG.zip *
+        - move /y interface-windows-$CI_COMMIT_TAG.zip cd ..\..\..
+
     artifacts:
         expire_in: 1 day
         paths:
-            - build/interface/Release
+            - interface-windows-$CI_COMMIT_TAG.zip
 
 interface windows merge request:
     stage: build
@@ -105,41 +113,3 @@ interface windows merge request:
         expire_in: 7 days
         paths:
             - interface-$CI_COMMIT_SHORT_SHA
-
-launcher windows:
-    stage: package
-    tags:
-        - windows
-
-    extends: .production
-
-    needs:
-        - job: interface windows
-          artifacts: true
-
-    variables:
-        CSC_LINK: C:\tivoli-cloud-vr.ci.pfx
-        # CSC_KEY_PASSWORD
-
-    script:
-        # - Remove-Item -Recurse -Force -ErrorAction Ignore launcher # just incase
-        - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@git.tivolicloud.com/tivolicloud/launcher
-        - mv build/interface/Release launcher/interface
-
-        # TODO: this needs changing
-        - cd launcher/.gitlab
-        - yarn install
-        # needs CI_COMMIT_TAG
-        - node prepare.js
-        - cd ..
-
-        - yarn install
-        - yarn build
-        - yarn package
-
-    artifacts:
-        expire_in: 1 day
-        paths:
-            - launcher/dist/*.exe
-            - launcher/dist/*.blockmap
-            - launcher/dist/*.yml
