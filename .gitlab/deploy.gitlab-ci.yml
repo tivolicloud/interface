@@ -165,9 +165,9 @@ upload interface:
     extends: .deploy
 
     needs:
-        - job: launcher windows
+        - job: interface windows
           artifacts: true
-        - job: launcher linux
+        - job: all linux
           artifacts: true
 
     script:
