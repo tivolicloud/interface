@@ -87,7 +87,7 @@ all linux:
         # zip up interface
         - cd interface/interface.AppDir
         - tar --exclude *.zip -acf interface-linux-$CI_COMMIT_TAG.zip *
-        - mv interface-linux-$CI_COMMIT_TAG.zip cd ../../..
+        - mv interface-linux-$CI_COMMIT_TAG.zip ../../..
 
     artifacts:
         expire_in: 1 day

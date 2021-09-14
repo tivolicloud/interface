@@ -25,6 +25,9 @@ interface windows:
         # SENTRY_AUTH_TOKEN
         SENTRY_ORG: tivolicloud
 
+        CSC_LINK: C:\tivoli-cloud-vr.ci.pfx
+        # CSC_KEY_PASSWORD
+
     # cache is intensly slow on windows ntfs
     # cache:
     #     paths:
@@ -53,9 +56,10 @@ interface windows:
         - del *.lib
         - del *.pdb
 
-        # zip up (bsdtar from C:\Windows\System32\tar.exe)
+        # sign and zip up (with bsdtar from C:\Windows\System32\tar.exe)
+        - node ..\..\..\.gitlab\signtool.js .
         - tar --exclude *.zip -acf interface-windows-$CI_COMMIT_TAG.zip *
-        - move /y interface-windows-$CI_COMMIT_TAG.zip cd ..\..\..
+        - move /y interface-windows-$CI_COMMIT_TAG.zip ..\..\..
 
     artifacts:
         expire_in: 1 day
