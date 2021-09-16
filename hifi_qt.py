@@ -86,6 +86,8 @@ endif()
                 issue = open("/etc/issue", "r").read()
                 if issue.startswith("Ubuntu 18.04"): 
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.2-ubuntu-18.04-arm64v8.tar.gz'
+                elif issue.startswith("Ubuntu 20.04"): 
+                    self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.2-ubuntu-20.04-arm64v8.tar.gz'
                 else:
                     raise Exception('Unsupported arm64 Linux version')
             else:

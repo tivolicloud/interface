@@ -6,10 +6,11 @@ Tivoli uses a custom version of Qt that needs to be compiled for a list of distr
 
 Currently we support building on:
 
--   Ubuntu 18.04 _(production builds use this)_
+-   Ubuntu 18.04 amd64 _(production builds use this)_
 -   Ubuntu 18.04 arm64v8 _(production builds use this)_
--   Ubuntu 20.04
--   Arch Linux
+-   Ubuntu 20.04 amd64
+-   Ubuntu 20.04 arm64v8
+-   Arch Linux amd64
 
 We're looking into ways to make this easier. Compiling Qt yourself takes a very long time, therefore it's not viable to put it in our build pipeline.
 
@@ -19,7 +20,7 @@ Make sure you have general build tools, `git`, `cmake`, `python` 3+ and `node` v
 
 We'll update this with the proper package lists for supported distros soon.
 
-A verbose list of packages used in our build system can be found here: https://git.tivolicloud.com/tivolicloud/interface/-/blob/main/.gitlab/build/linux.gitlab-ci.yml
+A verbose list of packages used in our build system can be found here: https://git.tivolicloud.com/tivolicloud/interface/-/blob/main/docker/linux.Dockerfile
 
 ## Step 2. Configuring environment variables
 

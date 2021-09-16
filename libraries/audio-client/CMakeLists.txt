@@ -9,7 +9,9 @@ include_hifi_library_headers(networking)
 
 if (ANDROID)
 else ()
-  target_webrtc()
+  if (NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+    target_webrtc()
+  endif ()
 endif ()
 
 # append audio includes to our list of includes to bubble

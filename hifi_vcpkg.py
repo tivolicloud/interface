@@ -77,7 +77,7 @@ endif()
         # A format version attached to the tag file... increment when you want to force the build systems to rebuild 
         # without the contents of the ports changing
         self.version = 1
-        self.vcpkgVersion = "2020.11-1"
+        self.vcpkgVersion = "2021.05.12"
         self.tagContents = "{}_{}".format(self.id, self.version)
         self.bootstrapEnv = os.environ.copy()
         self.buildEnv = os.environ.copy()

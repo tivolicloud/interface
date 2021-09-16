@@ -24,8 +24,10 @@
 // #  define WEBRTC_ENABLED 1
 // #  define WEBRTC_POSIX 1
 #elif defined(Q_OS_LINUX)
-#  define WEBRTC_ENABLED 1
-#  define WEBRTC_POSIX 1
+#  if defined(Q_PROCESSOR_X86_64)
+#    define WEBRTC_ENABLED 1
+#    define WEBRTC_POSIX 1
+#  endif
 #endif
 
 #if defined(WEBRTC_ENABLED)
