@@ -181,9 +181,9 @@ upload interface:
         - export LINUX_SIZE=$(wc -c interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
 
         - apk add jo
-        - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) \
-          windows=$(jo filename=interface-windows-$CI_COMMIT_TAG.zip sha256=$WINDOWS_SHA256 size=$WINDOWS_SIZE) \
-          linux=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE) > latest.json
+        - jo -p "version"=$CI_COMMIT_TAG "date"=$(date -Iseconds) \
+          "windows"=$(jo filename=interface-windows-$CI_COMMIT_TAG.zip sha256=$WINDOWS_SHA256 size=$WINDOWS_SIZE) \
+          "linux"=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE) > latest.json
 
         # upload
         - gsutil cp
