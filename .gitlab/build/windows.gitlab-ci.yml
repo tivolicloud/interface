@@ -51,6 +51,9 @@ interface windows:
         - xcopy /s /e /y ..\..\domain-server\Release\* .
         - xcopy /s /e /y ..\..\assignment-client\Release\* .
 
+        # add vc redist to interface
+        - python ..\..\..\.gitlab\vc-redist-unzip\vc-redist-unzip.py .
+
         # remove build symbols
         - del *.exp
         - del *.lib
