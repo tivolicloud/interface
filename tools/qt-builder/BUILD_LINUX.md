@@ -100,6 +100,14 @@ make install -j$(nproc)
 cd ..
 ```
 
+If it starts to crash near the end when building `qtwebengine`, set `NINJAJOBS` to half your core count (find with `nproc`) or lower until it doesn't crash.
+
+Building Chromium takes a lot of memory and it runs Ninja seperately from Make.
+
+```bash
+NINJAJOBS="-j4" make -j1
+```
+
 ### Fix installation:
 
 ```bash
