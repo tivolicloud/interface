@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 vcpkg_download_distfile(
 	OVR_ARCHIVE
 	URLS https://cdn.tivolicloud.com/dependencies/ovr_sdk_win_1.43.0.zip

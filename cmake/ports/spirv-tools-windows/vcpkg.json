@@ -1,0 +1,5 @@
+{
+  "name": "spirv-tools-windows",
+  "version-string": "2018.5-1",
+  "description": "API and commands for processing SPIR-V modules"
+}

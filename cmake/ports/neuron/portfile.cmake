@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 vcpkg_download_distfile(
 	NEURON_ARCHIVE
 	URLS https://cdn.tivolicloud.com/dependencies/neuron_datareader_b.12.2.zip

@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore" OR NOT VCPKG_CMAKE_SYSTEM_NAME)
     message(FATAL_ERROR "This port is only for openssl on Unix-like systems")
 endif()
@@ -64,5 +62,3 @@ file(INSTALL ${MASTER_COPY_SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_D
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/openssl)
 endif()
-
-vcpkg_test_cmake(PACKAGE_NAME OpenSSL MODULE)

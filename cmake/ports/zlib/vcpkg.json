@@ -1,0 +1,6 @@
+{
+  "name": "zlib",
+  "version-string": "1.2.11-6",
+  "description": "A compression library",
+  "homepage": "https://www.zlib.net/"
+}

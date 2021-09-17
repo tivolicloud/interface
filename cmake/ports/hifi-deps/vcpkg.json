@@ -1,0 +1,36 @@
+{
+  "name": "hifi-deps",
+  "version-string": "0.1.4-github-actions",
+  "description": "Collected dependencies for High Fidelity applications",
+  "dependencies": [
+    "assimp",
+    "brotli",
+    "bullet3",
+    "draco",
+    "etc2comp",
+    "glad",
+    "glm",
+    "hifi-audio-codec",
+    "libsndfile",
+    "nvtt",
+    {
+      "name": "openexr",
+      "platform": "!android"
+    },
+    {
+      "name": "openssl",
+      "platform": "windows"
+    },
+    "polyvox",
+    {
+      "name": "tbb",
+      "platform": "!android"
+    },
+    "vhacd",
+    {
+      "name": "webrtc",
+      "platform": "!android"
+    },
+    "zlib"
+  ]
+}

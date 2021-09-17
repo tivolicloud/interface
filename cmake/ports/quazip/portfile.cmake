@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 vcpkg_download_distfile(
     SOURCE_ARCHIVE
     URLS https://cdn.tivolicloud.com/dependencies/quazip-0.7.3.zip

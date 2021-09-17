@@ -1,0 +1,5 @@
+{
+  "name": "steamworks",
+  "version-string": "137",
+  "supports": "x64 & (windows | osx | linux)"
+}

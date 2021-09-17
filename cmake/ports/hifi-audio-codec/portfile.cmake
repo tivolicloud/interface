@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 if (VCPKG_TARGET_IS_WINDOWS)
 	vcpkg_download_distfile(
 		HIFIAUDIOCODEC_ARCHIVE

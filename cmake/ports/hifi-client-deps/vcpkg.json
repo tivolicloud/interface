@@ -1,0 +1,64 @@
+{
+  "name": "hifi-client-deps",
+  "version-string": "0.1",
+  "description": "Collected dependencies for High Fidelity applications",
+  "dependencies": [
+    {
+      "name": "aristo",
+      "platform": "windows"
+    },
+    {
+      "name": "crashpad",
+      "platform": "x64 & (osx | windows)"
+    },
+    "gif-h",
+    "glslang",
+    "hifi-deps",
+    {
+      "name": "leapmotion",
+      "platform": "!android"
+    },
+    {
+      "name": "liblo",
+      "platform": "windows"
+    },
+    {
+      "name": "libspnav",
+      "platform": "linux"
+    },
+    {
+      "name": "neuron",
+      "platform": "windows | osx"
+    },
+    "nlohmann-json",
+    {
+      "name": "openvr",
+      "platform": "x64 & (windows | linux)"
+    },
+    {
+      "name": "ovr",
+      "platform": "windows"
+    },
+    {
+      "name": "quazip",
+      "platform": "!android"
+    },
+    {
+      "name": "sdl2",
+      "platform": "!android"
+    },
+    {
+      "name": "spirv",
+      "platform": "!android"
+    },
+    {
+      "name": "sranipal",
+      "platform": "windows"
+    },
+    {
+      "name": "steamworks",
+      "platform": "!android"
+    },
+    "vulkan-memory-allocator"
+  ]
+}

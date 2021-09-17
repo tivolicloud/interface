@@ -1,4 +1,3 @@
-include(vcpkg_common_functions)
 set(WEBRTC_VERSION 20190626)
 set(MASTER_COPY_SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src)
 

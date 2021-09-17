@@ -1,0 +1,5 @@
+{
+  "name": "spirv-cross-windows",
+  "version-string": "2018-08-07-1",
+  "description": "SPIRV-Cross is a practical tool and library for performing reflection on SPIR-V and disassembling SPIR-V back to high level languages."
+}

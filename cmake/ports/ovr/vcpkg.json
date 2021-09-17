@@ -1,0 +1,5 @@
+{
+  "name": "ovr",
+  "version-string": "1.43.0",
+  "supports": "x64 & windows"
+}

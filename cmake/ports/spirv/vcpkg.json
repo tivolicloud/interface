@@ -1,0 +1,26 @@
+{
+  "name": "spirv",
+  "version-string": "0.1",
+  "dependencies": [
+    {
+      "name": "spirv-cross",
+      "platform": "osx | linux"
+    },
+    {
+      "name": "spirv-cross-windows",
+      "platform": "windows"
+    },
+    {
+      "name": "spirv-headers",
+      "platform": "osx | linux"
+    },
+    {
+      "name": "spirv-tools",
+      "platform": "osx | linux"
+    },
+    {
+      "name": "spirv-tools-windows",
+      "platform": "windows"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "quazip",
+  "version-string": "0.7.3",
+  "description": "Zip file manipulation for Qt",
+  "dependencies": [
+    "zlib"
+  ]
+}

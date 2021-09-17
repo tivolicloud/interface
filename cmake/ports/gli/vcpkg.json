@@ -1,0 +1,8 @@
+{
+  "name": "gli",
+  "version-string": "0.8.2-1",
+  "description": "OpenGL Image (GLI) https://gli.g-truc.net",
+  "dependencies": [
+    "glm"
+  ]
+}

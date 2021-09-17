@@ -1,0 +1,5 @@
+{
+  "name": "neuron",
+  "version-string": "b.12.2",
+  "supports": "x64 & (windows | osx)"
+}

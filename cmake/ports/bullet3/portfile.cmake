@@ -13,8 +13,6 @@
 #   VCPKG_TARGET_ARCHITECTURE = target architecture (x64, x86, arm)
 #
 
-include(vcpkg_common_functions)
-
 if (VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     message(WARNING "Dynamic not supported, building static")
     set(VCPKG_LIBRARY_LINKAGE static)

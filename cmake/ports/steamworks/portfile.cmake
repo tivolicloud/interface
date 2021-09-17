@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 vcpkg_download_distfile(
 	STEAMWORKS_ARCHIVE
 	URLS https://cdn.tivolicloud.com/dependencies/steamworks_sdk_137.zip

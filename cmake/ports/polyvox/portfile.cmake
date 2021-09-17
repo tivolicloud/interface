@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 vcpkg_download_distfile(
     SOURCE_ARCHIVE
     URLS https://cdn.tivolicloud.com/dependencies/polyvox-master-2015-7-15.zip

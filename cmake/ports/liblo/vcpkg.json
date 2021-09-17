@@ -1,0 +1,5 @@
+{
+  "name": "liblo",
+  "version-string": "0.30",
+  "description": "liblo is an implementation of the Open Sound Control protocol for POSIX systems"
+}

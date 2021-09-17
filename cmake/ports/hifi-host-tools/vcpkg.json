@@ -1,0 +1,10 @@
+{
+  "name": "hifi-host-tools",
+  "version-string": "0",
+  "description": "Host build system compatible tools for building High Fidelity applications",
+  "dependencies": [
+    "glslang",
+    "hifi-scribe",
+    "spirv"
+  ]
+}

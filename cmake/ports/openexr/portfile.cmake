@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 set(OPENEXR_VERSION 2.3.0)
 set(OPENEXR_HASH 268ae64b40d21d662f405fba97c307dad1456b7d996a447aadafd41b640ca736d4851d9544b4741a94e7b7c335fe6e9d3b16180e710671abfc0c8b2740b147b2)
 
