@@ -1,3 +1,5 @@
+# force rebuild 1
+
 FROM ubuntu:18.04
 
 # arch linux
@@ -32,7 +34,7 @@ rm -rf cmake-3.21.2 cmake-3.21.2.tar.gz && \
 # mv ninja /usr/bin/ninja && \
 # cd .. && \
 \
-# install nodejs 14
+# install nodejs 14 lts
 curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
 apt-get install -y nodejs
 # npm i -g @sentry/cli
