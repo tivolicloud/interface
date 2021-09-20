@@ -171,19 +171,19 @@ upload interface:
           artifacts: true
 
     script:
+        - apk add jo
         - gcloud auth activate-service-account --key-file $GCP_AUTH_JSON
 
         # create latest.json file
         - export WINDOWS_SHA256=$(sha256sum interface-windows-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
         - export WINDOWS_SIZE=$(wc -c interface-windows-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export WINDOWS=$(jo filename=interface-windows-$CI_COMMIT_TAG.zip sha256=$WINDOWS_SHA256 size=$WINDOWS_SIZE)
 
         - export LINUX_SHA256=$(sha256sum interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
         - export LINUX_SIZE=$(wc -c interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export LINUX=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE)
 
-        - apk add jo
-        - jo -p "version"=$CI_COMMIT_TAG "date"=$(date -Iseconds) \
-          "windows"=$(jo filename=interface-windows-$CI_COMMIT_TAG.zip sha256=$WINDOWS_SHA256 size=$WINDOWS_SIZE) \
-          "linux"=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE) > latest.json
+        - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) windows=$WINDOWS linux=$LINUX > latest.json
 
         # upload
         - gsutil cp
