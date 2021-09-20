@@ -185,11 +185,15 @@ upload interface:
 
         - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) windows=$WINDOWS linux=$LINUX > latest.json
 
-        # upload
+        # upload interface
         - gsutil cp
-          latest.json
           interface-windows-$CI_COMMIT_TAG.zip
           interface-linux-$CI_COMMIT_TAG.zip
+          gs://tivolicloud-cdn/releases/interface
+
+        # upload latest.json last to avoid bad updates
+        - gsutil cp
+          latest.json
           gs://tivolicloud-cdn/releases/interface
 
         # we're not using a cdn at the moment
