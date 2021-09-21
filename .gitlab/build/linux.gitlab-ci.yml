@@ -86,7 +86,7 @@ all linux:
 
         # zip up interface
         - cd interface/interface.AppDir
-        - tar --exclude *.zip -acf interface-linux-$CI_COMMIT_TAG.zip *
+        - zip --symlinks -r --exclude=*.zip interface-linux-$CI_COMMIT_TAG.zip *
         - mv interface-linux-$CI_COMMIT_TAG.zip ../../..
 
     artifacts:
