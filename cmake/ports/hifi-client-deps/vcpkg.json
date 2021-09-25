@@ -32,6 +32,11 @@
     },
     "nlohmann-json",
     {
+      "name": "openxr-loader",
+      "platform": "x64 & (windows | linux)"
+       
+    },
+    {
       "name": "openvr",
       "platform": "x64 & (windows | linux)"
     },

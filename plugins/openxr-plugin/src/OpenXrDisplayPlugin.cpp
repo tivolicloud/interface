@@ -67,15 +67,11 @@ glm::mat4 OpenXrDisplayPlugin::getCullingProjection(const glm::mat4& baseProject
     return baseProjection;
 }
 
-float OpenXrDisplayPlugin::getTargetFrameRate() const {
-    return 120;
-}
+// Main Thread
 
 void OpenXrDisplayPlugin::init() {
     Plugin::init();
     _xrManager.init();
-
-
     emit deviceConnected(getName());
 }
 
@@ -93,34 +89,24 @@ void OpenXrDisplayPlugin::internalDeactivate() {
     Parent::internalDeactivate();
 }
 
-void OpenXrDisplayPlugin::customizeContext() {
-    // Display plugins in DLLs must initialize GL locally
-    gl::initModuleGl();
-    Parent::customizeContext();
-    _xrSessionManager = std::make_shared<xrs::SessionManager>(xrs::SessionManager::GraphicsBinding{ wglGetCurrentDC(), wglGetCurrentContext() });
-    // We should really try to start using the extensions that let us do stereo rendering using multiple layers of a texture array.
-    _outputFramebuffer.reset(gpu::Framebuffer::create("OpenXR_Output", gpu::Element::COLOR_SRGBA_32, _renderTargetSize.x, _renderTargetSize.y));
+bool OpenXrDisplayPlugin::isHmdMounted() const {
+    return true;
 }
 
-void OpenXrDisplayPlugin::uncustomizeContext() {
-    _xrSessionManager.reset();
-    Parent::uncustomizeContext();
-}
- 
-void OpenXrDisplayPlugin::resetSensors() {
-    //glm::mat4 m;
-    //withNonPresentThreadLock([&] { m = toGlm(_nextSimPoseData.vrPoses[0].mDeviceToAbsoluteTracking); });
-    //_sensorResetMat = glm::inverse(cancelOutRollAndPitch(m));
+float OpenXrDisplayPlugin::getTargetFrameRate() const {
+    return 120;
 }
 
+//
+// Render thread functions
+//
 bool OpenXrDisplayPlugin::beginFrameRender(uint32_t frameIndex) {
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xff7fff00, frameIndex)
 
     static const auto requiredFlags = xr::ViewStateFlagBits::PositionTracked | xr::ViewStateFlagBits::OrientationTracked;
 
-
     withNonPresentThreadLock([&] {
-        xrs::FrameData frameData = _nextFrame; 
+        xrs::FrameData frameData = _nextFrame;
         if (frameData.viewState.viewStateFlags & requiredFlags) {
             _currentRenderFrameInfo.renderPose = xrs::toGlm(frameData.views[0].pose);
             _currentRenderFrameInfo.presentPose = _currentRenderFrameInfo.renderPose;
@@ -135,6 +121,31 @@ bool OpenXrDisplayPlugin::beginFrameRender(uint32_t frameIndex) {
     });
 
     return Parent::beginFrameRender(frameIndex);
+}
+
+
+//
+// Present thread functions
+//
+void OpenXrDisplayPlugin::customizeContext() {
+    // Display plugins in DLLs must initialize GL locally
+    gl::initModuleGl();
+    Parent::customizeContext();
+    _xrSessionManager = std::make_shared<xrs::SessionManager>(xrs::SessionManager::GraphicsBinding{ wglGetCurrentDC(), wglGetCurrentContext() });
+    // We should really try to start using the extensions that let us do stereo rendering using multiple layers of a texture array.
+    _outputFramebuffer.reset(gpu::Framebuffer::create("OpenXR_Output", gpu::Element::COLOR_SRGBA_32, _renderTargetSize.x, _renderTargetSize.y));
+}
+
+void OpenXrDisplayPlugin::uncustomizeContext() {
+    _outputFramebuffer.reset();
+    _xrSessionManager.reset();
+    Parent::uncustomizeContext();
+}
+ 
+void OpenXrDisplayPlugin::resetSensors() {
+    //glm::mat4 m;
+    //withNonPresentThreadLock([&] { m = toGlm(_nextSimPoseData.vrPoses[0].mDeviceToAbsoluteTracking); });
+    //_sensorResetMat = glm::inverse(cancelOutRollAndPitch(m));
 }
 
 bool OpenXrDisplayPlugin::shouldRender() {
@@ -156,7 +167,6 @@ void OpenXrDisplayPlugin::updateFrameData() {
 
 void OpenXrDisplayPlugin::hmdPresent() {
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
-
     {
         PROFILE_RANGE_EX(render, "OpenXR Blit", 0xff00ff00, (uint64_t)_currentFrame->frameIndex);
 
@@ -192,14 +202,9 @@ void OpenXrDisplayPlugin::postPreview() {
     PROFILE_RANGE_EX(render, __FUNCTION__, 0xff00ff00, (uint64_t)_currentFrame->frameIndex)
 }
 
-bool OpenXrDisplayPlugin::isHmdMounted() const {
-    return true;
-}
-
 void OpenXrDisplayPlugin::updatePresentPose() {
-    auto frameData = _xrSessionManager->getNextFrame();
-    if (frameData.viewState.viewStateFlags & xr::ViewStateFlagBits::OrientationValid) {
-        _currentPresentFrameInfo.presentPose = xrs::toGlm(_xrSessionManager->getNextFrame().views[0].pose);
+    if (_nextFrame.viewState.viewStateFlags & xr::ViewStateFlagBits::OrientationValid) {
+        _currentPresentFrameInfo.presentPose = xrs::toGlm(_nextFrame.views[0].pose);
     }
 }
 
