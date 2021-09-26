@@ -1,6 +1,5 @@
 //
-//  Created by Bradley Austin Davis on 2015/11/01
-//  Copyright 2015 High Fidelity, Inc.
+//  Created by Bradley Austin Davis on 2021/08/14
 //
 //  Distributed under the Apache License, Version 2.0.
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
@@ -17,6 +16,7 @@
 #include <QtCore/QProcessEnvironment>
 #include <QtGui/QInputMethodEvent>
 #include <QtQuick/QQuickWindow>
+#include <AvatarConstants.h>
 
 #include <unordered_map>
 
@@ -197,12 +197,12 @@ void Manager::pollEvents() {
 
 
 SessionManager::SessionManager(const GraphicsBinding& graphicsBinding) {
-    //graphicsBinding = ;
     _session = _instance.instance.createSession({ {}, _instance.systemId, &graphicsBinding });
-    // FIXME which reference space is best for Hifi?  Does it depend on state?
-    // auto referenceSpaces = _session.enumerateReferenceSpacesToVector();
-    _space = _session.createReferenceSpace(xr::ReferenceSpaceCreateInfo{ xr::ReferenceSpaceType::Local, {} });
-    //glCreateFramebuffers(1, &_copyFbo);
+    // Use local reference space with the avatar height (or avatar center eye position) as the reference pose so that incoming poses 
+    // come out with a reasonable height.  Do not use an identity pose of the camera will be stuck in the user's feet and do not use 
+    // the current OpenXR head because if the user is sitting that will be too low for a standing avatar.
+    const auto pose = xr::Posef{ xr::Quaternionf{}, xr::Vector3f{ 0, 0.0f - DEFAULT_AVATAR_EYE_HEIGHT, 0 } };
+    _space = _session.createReferenceSpace(xr::ReferenceSpaceCreateInfo{ xr::ReferenceSpaceType::Local, pose });
     buildSwapchain();
     FrameData::SESSION = _session;
     FrameData::SPACE = _space;

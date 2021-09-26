@@ -1,6 +1,5 @@
 //
-//  Created by Bradley Austin Davis on 2015/06/12
-//  Copyright 2015 High Fidelity, Inc.
+//  Created by Bradley Austin Davis on 2021/08/14
 //
 //  Distributed under the Apache License, Version 2.0.
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
@@ -22,6 +21,18 @@
 
 Q_DECLARE_LOGGING_CATEGORY(xr_logging)
 
+class GlmPose {
+public:
+    GlmPose() = default;
+    GlmPose(GlmPose&& o) = default;
+    GlmPose(const GlmPose& o) = default;
+    GlmPose(const glm::quat orientation_, const glm::vec3& position_) : orientation(orientation_), position(position_) {}
+
+    glm::quat orientation;
+    glm::vec3 position;
+
+    glm::mat4 getMatrix() const { return glm::translate(glm::mat4{ 1 }, position) * glm::mat4_cast(orientation); }
+};
 
 namespace xrs {
 
@@ -90,6 +101,11 @@ inline glm::mat4 toGlm(const XrPosef& p) {
     glm::mat4 translation = glm::translate(glm::mat4{ 1 }, toGlm(p.position));
     return translation * orientation;
 }
+
+inline GlmPose toGlmPose(const XrPosef& p) {
+    return GlmPose{ toGlm(p.orientation), toGlm(p.position) };
+}
+
 
 inline void for_each_side_index(const std::function < void(size_t)>& f) {
     f(0);

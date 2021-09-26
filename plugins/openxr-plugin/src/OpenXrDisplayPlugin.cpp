@@ -1,6 +1,5 @@
 //
-//  Created by Bradley Austin Davis on 2015/05/12
-//  Copyright 2015 High Fidelity, Inc.
+//  Created by Bradley Austin Davis on 2021/08/14
 //
 //  Distributed under the Apache License, Version 2.0.
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
@@ -108,13 +107,18 @@ bool OpenXrDisplayPlugin::beginFrameRender(uint32_t frameIndex) {
     withNonPresentThreadLock([&] {
         xrs::FrameData frameData = _nextFrame;
         if (frameData.viewState.viewStateFlags & requiredFlags) {
-            _currentRenderFrameInfo.renderPose = xrs::toGlm(frameData.views[0].pose);
+            const auto leftPose = xrs::toGlmPose(frameData.views[0].pose);
+            const auto rightPose = xrs::toGlmPose(frameData.views[1].pose);
+            const auto center = (leftPose.position + rightPose.position) / 2.0f;
+            const auto centerPose = GlmPose{ leftPose.orientation, center };
+            _ipd = glm::length(leftPose.position - rightPose.position);
+            _currentRenderFrameInfo.renderPose = centerPose.getMatrix(); 
             _currentRenderFrameInfo.presentPose = _currentRenderFrameInfo.renderPose;
             _currentRenderFrameInfo.sensorSampleTime = xrs::FrameData::toSeconds(frameData.frameState.predictedDisplayTime);
             _currentRenderFrameInfo.predictedDisplayTime = xrs::FrameData::toSeconds(frameData.frameState.predictedDisplayTime);
             xrs::for_each_side_index([&](size_t eye) {
                 _eyeProjections[eye] = xrs::toGlm(frameData.views[eye].fov);
-                //_eyeOffsets[eye] = glm::translate(mat4(), vec3{ _ipd * (eye == VRAPI_EYE_LEFT ? -0.5f : 0.5f), 0.0f, 0.0f });
+                _eyeOffsets[eye] = glm::translate(mat4(), vec3{ _ipd * (eye == 0 ? -0.5f : 0.5f), 0.0f, 0.0f });
             });
         }
         _frameInfos[frameIndex] = _currentRenderFrameInfo;
