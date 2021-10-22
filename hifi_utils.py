@@ -17,6 +17,11 @@ import math
 
 print = functools.partial(print, flush=True)
 
+# force user agent for urllib because cdn sometimes rejects python's default
+opener = urllib.request.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+urllib.request.install_opener(opener)
+
 def scriptRelative(*paths):
     scriptdir = os.path.dirname(os.path.realpath(sys.argv[0]))
     result = os.path.join(scriptdir, *paths)
