@@ -77,6 +77,7 @@ git clone --recursive git://code.qt.io/qt/qt5.git -b 5.15.2 --single-branch
 cd qt5
 
 git apply --ignore-space-change --ignore-whitespace ../patches/chromium-override-audio-output-permission.patch
+git apply --ignore-space-change --ignore-whitespace ../patches/fix-gcc11.patch
 
 cd ..
 ```
