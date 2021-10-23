@@ -1,12 +1,6 @@
 macro(TARGET_DRACO)
-    if (ANDROID)
-        set(LIBS draco dracodec dracoenc)
-    else()
-        set(LIBS draco)
-    endif()
-
+    set(LIBS draco dracodec dracoenc)
     find_library(LIBPATH ${LIB} PATHS )
-
     if (ANDROID)
         set(INSTALL_DIR ${HIFI_ANDROID_PRECOMPILED}/draco)
         set(DRACO_INCLUDE_DIRS "${INSTALL_DIR}/include" CACHE STRING INTERNAL)
