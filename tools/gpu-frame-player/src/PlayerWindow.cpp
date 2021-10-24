@@ -16,8 +16,6 @@
 #include <QtWidgets/QFileDialog>
 
 #include <gpu/FrameIO.h>
-#include <openxr/openxr.hpp>
-#include "OpenXrHelpers.hpp"
 
 
 PlayerWindow::PlayerWindow() {

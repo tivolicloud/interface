@@ -12,12 +12,12 @@ if (
             CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64" OR
             CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "AMD64"
         ))
-    ) AND 
+    ) AND
     NOT USE_GLES
 )
     set(TARGET_NAME openxr-plugin)
     setup_hifi_plugin(Gui Qml Multimedia)
-    link_hifi_libraries(shared task gl qml networking controllers ui 
+    link_hifi_libraries(shared task gl openxr qml networking controllers ui
        plugins display-plugins ui-plugins input-plugins script-engine
        audio-client render-utils graphics shaders gpu render material-networking model-networking model-baker hfm fbx ktx image procedural ${PLATFORM_GL_BACKEND})
     include_hifi_library_headers(octree)

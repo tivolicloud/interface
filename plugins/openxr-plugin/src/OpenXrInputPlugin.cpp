@@ -67,11 +67,11 @@ void OpenXrInputPlugin::pluginUpdate(float deltaTime, const controller::InputCal
     //}
 }
 
-void OpenXrInputPlugin::pluginFocusOutEvent() {
+//void OpenXrInputPlugin::pluginFocusOutEvent() {
     //if (_remote) {
     //    _remote->focusOutEvent();
     //}
-}
+//}
 
 
 

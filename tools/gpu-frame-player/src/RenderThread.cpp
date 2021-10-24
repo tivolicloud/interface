@@ -31,8 +31,10 @@ void RenderThread::initialize(QWindow* window) {
     setObjectName("RenderThread");
     Parent::initialize();
 
-    _instanceManager.prepareInstance();
-    _instanceManager.prepareSystem();
+    auto& xrManager = xrs::Manager::get();
+    xrManager.init();
+    // _instanceManager.prepareInstance();
+    // _instanceManager.prepareSystem();
 
     _window = window;
     _window->setFormat(getDefaultOpenGLSurfaceFormat());
@@ -42,7 +44,7 @@ void RenderThread::initialize(QWindow* window) {
         qFatal("Unable to make context current");
     }
 
-    const auto& renderTargetSize = _instanceManager.getRenderTargetSize();
+    glm::uvec2 renderTargetSize = xrManager.renderTargetSize;
 
     glGenTextures(1, &_externalTexture);
     glBindTexture(GL_TEXTURE_2D, _externalTexture);
@@ -67,7 +69,7 @@ void RenderThread::initialize(QWindow* window) {
     _backend = _gpuContext->getBackend();
     _context.doneCurrent();
     _context.moveToThread(_thread);
-    
+
     if (!_presentPipeline) {
         gpu::ShaderPointer program = gpu::Shader::createProgram(shader::gpu::program::DrawTexture);
         gpu::StatePointer state = gpu::StatePointer(new gpu::State());
@@ -82,26 +84,11 @@ void RenderThread::setup() {
     _gpuContext->endFrame();
     _context.makeCurrent();
 
-    _instanceManager.prepareSession({ wglGetCurrentDC(), wglGetCurrentContext() });
-    _instanceManager.prepareSwapchain();
-
-    layersPointers.push_back(&projectionLayer);
-    projectionLayer.viewCount = 2;
-    projectionLayer.views = projectionLayerViews.data();
-    projectionLayer.space = _instanceManager.getSpace();
-    const auto& renderTargetSize = _instanceManager.getRenderTargetSize();
-    // Finish setting up the layer submission
-    xrs::for_each_side_index([&](uint32_t eyeIndex) {
-        auto& layerView = projectionLayerViews[eyeIndex];
-        layerView.subImage.swapchain = _instanceManager.getSwapchain();
-        layerView.subImage.imageRect.extent = xr::Extent2Di{ (int32_t)renderTargetSize.x / 2, (int32_t)renderTargetSize.y };
-        if (eyeIndex == 1) {
-            layerView.subImage.imageRect.offset.x = layerView.subImage.imageRect.extent.width;
-        }
-    });
-
-    _instanceManager.prepareActions();
-    _instanceManager.pollEvents();
+    auto& xrManager = xrs::Manager::get();
+    _sessionManager = std::make_shared<xrs::SessionManager>(xrs::GraphicsBinding{ wglGetCurrentDC(), wglGetCurrentContext() });
+    _sessionManager->buildSwapchain();
+//    _instanceManager.prepareActions();
+    _sessionManager->shouldRender();
     _elapsed.start();
 }
 
@@ -118,26 +105,17 @@ void RenderThread::shutdown() {
 
 void RenderThread::renderFrame() {
     //_context.makeCurrent();
-    _frameState = _instanceManager.waitFrame();
-    if (!_instanceManager.beginFrame() || !_frameState.shouldRender || !_activeFrame) {
-        _instanceManager.endFrame({ _frameState.predictedDisplayTime, xr::EnvironmentBlendMode::Opaque, 0, nullptr });
-        return;
-    }
-
+    //_instanceManager.syncActions();
+    _sessionManager->beginFrame();
     ++_presentCount;
-
-    const auto& eyeViewStates = _instanceManager.getUpdatedViewStates(_frameState.predictedDisplayTime);
+    const auto& nextFrame = _sessionManager->getNextFrame();
+    const auto& eyeViewStates = nextFrame.views;
     auto& stereoState = _activeFrame->stereoState;
     stereoState._enable = true;
     stereoState._skybox = true;
-
     xrs::for_each_side_index([&](size_t eyeIndex) {
         const auto& viewState = eyeViewStates[eyeIndex];
-        auto& layerView = projectionLayerViews[eyeIndex];
         stereoState._eyeProjections[eyeIndex] = xrs::toGlm(viewState.fov);
-        //stereoState._eyeViews[eyeIndex] = glm::inverse(xrs::toGlm(viewState.pose));
-        layerView.fov = viewState.fov;
-        layerView.pose = viewState.pose;
     });
 
     auto hmdCorrection = _correction * xrs::toGlm(eyeViewStates[0].pose);
@@ -146,6 +124,9 @@ void RenderThread::renderFrame() {
     //_prevRenderView = _correction * _activeFrame->view;
     _backend->recycle();
     _backend->syncCache();
+
+
+    uint32_t destImage = _sessionManager->acquireSwapchainImage();
 
     auto& glbackend = (gpu::gl::GLBackend&)(*_backend);
     const auto& framebuffer = _activeFrame->framebuffer;
@@ -161,22 +142,19 @@ void RenderThread::renderFrame() {
         _gpuContext->executeFrame(_activeFrame);
     }
 
-    auto renderSize = _instanceManager.getRenderTargetSize();
-    uint32_t destImage = _instanceManager.getNextSwapchainImage();
+    glm::uvec2 renderSize = xrs::Manager::get().renderTargetSize;
 
     glNamedFramebufferTexture(fbo.id, GL_COLOR_ATTACHMENT0, destImage, 0);
     (void)CHECK_GL_ERROR();
     glBlitNamedFramebuffer(
-        gpu_fbo, fbo.id, 
-        0, 0,  fboSize.x, fboSize.y, 
-        0, renderSize.y, renderSize.x,  0,
+        gpu_fbo, fbo.id,
+        0, 0,  fboSize.x, fboSize.y,
+        0, 0, renderSize.x, renderSize.y,
         GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glNamedFramebufferTexture(fbo.id, GL_COLOR_ATTACHMENT0, 0, 0);
 
-
-
-    _instanceManager.commitSwapchainImage();
-    _instanceManager.endFrame(_frameState.predictedDisplayTime, layersPointers);
+    _sessionManager->releaseSwapchainImage();
+    _sessionManager->endFrame();
 
     //static gpu::BatchPointer batch = nullptr;
     //if (!batch) {
@@ -193,49 +171,28 @@ void RenderThread::renderFrame() {
     //_context.doneCurrent();
 }
 
+
 bool RenderThread::process() {
-    _instanceManager.pollEvents();
-
-    auto sessionState = _instanceManager.getSessionState();
-    _frameState = xr::FrameState{};
-    switch (sessionState) {
-        case xr::SessionState::Stopping:
-            //_instanceManager.endSession();
-            break;
-
-        case xr::SessionState::Ready:
-            _instanceManager.beginSession();
-            // fallthrough
-
-        case xr::SessionState::Focused:
-        case xr::SessionState::Synchronized:
-        case xr::SessionState::Visible:
-            _instanceManager.pollActions();
-            break;
-
-        default:
-            break;
-    }
-
-    std::queue<gpu::FramePointer> pendingFrames;
-    std::queue<QSize> pendingSize;
-
     {
-        std::unique_lock<std::mutex> lock(_frameLock);
-        pendingFrames.swap(_pendingFrames);
-        pendingSize.swap(_pendingSize);
+        std::queue<gpu::FramePointer> pendingFrames;
+        std::queue<QSize> pendingSize;
+        {
+            std::unique_lock<std::mutex> lock(_frameLock);
+            pendingFrames.swap(_pendingFrames);
+            pendingSize.swap(_pendingSize);
+        }
+
+        while (!pendingFrames.empty()) {
+            _activeFrame = pendingFrames.front();
+            pendingFrames.pop();
+            _gpuContext->consumeFrameUpdates(_activeFrame);
+        }
+        while (!pendingSize.empty()) {
+            pendingSize.pop();
+        }
     }
 
-    while (!pendingFrames.empty()) {
-        _activeFrame = pendingFrames.front();
-        pendingFrames.pop();
-        _gpuContext->consumeFrameUpdates(_activeFrame);
-    }
-    while (!pendingSize.empty()) {
-        pendingSize.pop();
-    }
-
-    if (_instanceManager.isSessionActive()) {
+    if (_sessionManager->shouldRender()) {
         renderFrame();
     }
 

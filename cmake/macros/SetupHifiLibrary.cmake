@@ -12,7 +12,7 @@ macro(SETUP_HIFI_LIBRARY)
   project(${TARGET_NAME})
 
   # grab the implementation and header files
-  file(GLOB_RECURSE LIB_SRCS "src/*.h" "src/*.cpp" "src/*.c" "src/*.qrc")
+  file(GLOB_RECURSE LIB_SRCS "src/*.h" "src/*.hpp" "src/*.cpp" "src/*.c" "src/*.qrc")
   list(APPEND ${TARGET_NAME}_SRCS ${LIB_SRCS})
 
   include(CheckCXXCompilerFlag)

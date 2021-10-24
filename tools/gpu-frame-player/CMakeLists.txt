@@ -16,8 +16,9 @@ endif()
 # link in the shared libraries
 link_hifi_libraries(
     shared ktx shaders gpu
-#    vk gpu-vk 
+#    vk gpu-vk
     gl ${PLATFORM_GL_BACKEND}
+    openxr
 )
 
 target_compile_definitions(${TARGET_NAME} PRIVATE USE_GL)

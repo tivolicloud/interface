@@ -12,7 +12,7 @@
 
 #include <GenericThread.h>
 #include <shared/RateCounter.h>
-#include "OpenXrHelpers.hpp"
+#include <xr/xr.hpp>
 
 #include <gl/Config.h>
 #include <gl/Context.h>
@@ -41,11 +41,7 @@ public:
     gpu::PipelinePointer _presentPipeline;
 
     // OpenXR
-    xr::FrameState _frameState;
-    xrs::InstanceManager _instanceManager;
-    std::array<xr::CompositionLayerProjectionView, 2> projectionLayerViews;
-    xr::CompositionLayerProjection projectionLayer{ {}, {}, 2, projectionLayerViews.data() };
-    std::vector<xr::CompositionLayerBaseHeader*> layersPointers;
+    xrs::SessionManager::Ptr _sessionManager;
 
     struct GLFBO {
         GLuint id{ 0 };
