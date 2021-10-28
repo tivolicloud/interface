@@ -54,7 +54,7 @@ try {
 
 // start services
 
-const autoUpdaterPath = "/root/auto-updater.js";
+// const autoUpdaterPath = "/root/auto-updater.js";
 const domainServerPath = "/root/server.AppDir/domain-server";
 const assignmentClientPath = "/root/server.AppDir/assignment-client";
 
@@ -63,9 +63,9 @@ const port = (name, fallback) =>
 
 module.exports = {
 	apps: [
-		...(process.env["AUTO_UPDATE_TIME"] != null
-			? [{ name: "Auto Updater", script: autoUpdaterPath }]
-			: []),
+		// ...(process.env["AUTO_UPDATE_TIME"] != null
+		// 	? [{ name: "Auto Updater", script: autoUpdaterPath }]
+		// 	: []),
 		{
 			name: "Domain Server",
 			script: domainServerPath,
