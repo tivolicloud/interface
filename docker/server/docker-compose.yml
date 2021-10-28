@@ -24,7 +24,6 @@ services:
             - com.centurylinklabs.watchtower.scope=tivoli-server
         volumes:
             - ./my-world:/root/.local/share/Tivoli Cloud VR
-            - /var/run/docker.sock:/var/run/docker.sock
         environment:
             - HIFI_DOMAIN_SERVER_HTTP_PORT=40100
             - HIFI_DOMAIN_SERVER_HTTPS_PORT=40101
