@@ -8,6 +8,8 @@ import { ScriptService } from "../../script.service";
 	styleUrls: ["./cache.component.scss"],
 })
 export class CacheComponent implements OnInit, OnDestroy {
+	parseInt = parseInt;
+
 	subs: Subscription[] = [];
 
 	constructor(private readonly script: ScriptService) {}

@@ -36,7 +36,7 @@
 	<button
 		mat-mini-fab
 		color="primary"
-		[disabled]="maximumCacheSizeInput.value == maximumCacheSize"
+		[disabled]="parseInt(maximumCacheSizeInput.value) == maximumCacheSize"
 		(click)="setMaximumCacheSize(maximumCacheSizeInput.value)"
 		style="margin-left: 8px"
 	>

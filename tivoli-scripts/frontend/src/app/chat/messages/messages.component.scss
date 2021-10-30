@@ -1,3 +1,5 @@
+@use "sass:math";
+
 ::ng-deep {
 	.mat-tooltip-handset {
 		margin: 8px !important;
@@ -86,8 +88,8 @@
 				margin: 0;
 			}
 			.image {
-				width: $height * 4/3;
-				min-width: $height * 4/3;
+				width: $height * math.div(4, 3);
+				min-width: $height * math.div(4, 3);
 				height: calc(100% - 4px);
 				margin: 2px 0;
 				margin-left: 12px;
@@ -107,7 +109,7 @@
 			border-radius: 4px;
 			margin-top: 4px;
 			&.widescreen {
-				width: $height * 16/9;
+				width: $height * math.div(16, 9);
 			}
 		}
 

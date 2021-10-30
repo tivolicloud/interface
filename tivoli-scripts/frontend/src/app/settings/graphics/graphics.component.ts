@@ -146,7 +146,7 @@ export class GraphicsComponent implements OnInit, OnDestroy {
 
 	farClip: number;
 	readonly defaultFarClip = 16384;
-	onFarClipChange(e: MatSliderChange) {
+	onFarClipChange(e: MatSliderChange | any) {
 		const value = e.value == null ? (e as any).target.value : e.value;
 		this.script.rpc("Render.farClip", value).subscribe(() => {
 			this.refresh();
