@@ -103,13 +103,20 @@
 
 		.image,
 		.video {
-			display: block;
 			$height: 200px;
-			height: $height;
+			$widescreenHeight: 220px;
+
+			display: block;
+			max-height: $height;
+			max-width: 100%;
 			border-radius: 4px;
 			margin-top: 4px;
+
 			&.widescreen {
-				width: $height * math.div(16, 9);
+				height: $widescreenHeight;
+				max-height: $widescreenHeight;
+				width: $widescreenHeight * math.div(16, 9);
+				max-width: $widescreenHeight * math.div(16, 9);
 			}
 		}
 
