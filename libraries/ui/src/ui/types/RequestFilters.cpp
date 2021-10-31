@@ -26,6 +26,31 @@
 
 namespace {
 
+    bool isAuthableTivoliURL(const QUrl& url) {
+        auto metaverseServerURL = NetworkingConstants::METAVERSE_SERVER_URL();
+        static const QStringList TIVOLI_HOSTS = {
+            metaverseServerURL.toString(),
+            "tivolicloud.com",
+        };
+        const auto& scheme = url.scheme();
+        const auto& host = url.host();
+
+        return (
+            (scheme == "https" && TIVOLI_HOSTS.contains(host)) ||
+            (
+                scheme == metaverseServerURL.scheme() &&
+                host == metaverseServerURL.host()
+            )
+        );
+    }
+
+    bool isFirstPartySafe(const QUrl& url) {
+        return (
+            url.isLocalFile() ||
+            url.host() == "things.tivolicloud.com"
+        );
+    }
+
     bool isScript(const QString filename) {
         return filename.endsWith(".js", Qt::CaseInsensitive);
     }
@@ -55,6 +80,21 @@ namespace {
 void RequestFilters::interceptTivoliWebEngineRequest(QWebEngineUrlRequestInfo& info, bool restricted) {
     if (restricted && blockLocalFiles(info)) {
         return;
+    }
+
+    // check if this is a request to a Tivoli URL coming from file:// page
+    if (
+        isAuthableTivoliURL(info.requestUrl()) &&
+        isFirstPartySafe(info.firstPartyUrl())
+    ) {
+        // if we have an access token, add it to the right HTTP header for authorization
+        auto accountManager = DependencyManager::get<AccountManager>();
+        if (accountManager->hasValidAccessToken()) {
+            static const QString OAUTH_AUTHORIZATION_HEADER = "Authorization";
+
+            QString bearerTokenString = "Bearer " + accountManager->getAccountInfo().getAccessToken().token;
+            info.setHttpHeader(OAUTH_AUTHORIZATION_HEADER.toLocal8Bit(), bearerTokenString.toLocal8Bit());
+        }
     }
 
     // line below causes crashes so i set it to what windows 10 would use
