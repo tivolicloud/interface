@@ -47,7 +47,7 @@ namespace {
     bool isFirstPartySafe(const QUrl& url) {
         return (
             url.isLocalFile() ||
-            url.host() == "things.tivolicloud.com"
+            url.host().compare("things.tivolicloud.com") == 0
         );
     }
 
