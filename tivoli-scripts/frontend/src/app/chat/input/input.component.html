@@ -1,5 +1,5 @@
 <div
-	class="fast-transition"
+	class="input-container fast-transition"
 	style="position: relative"
 	[style.opacity]="chatService.focused$.value ? '1' : '0'"
 >
@@ -8,6 +8,7 @@
 		class="input"
 		contenteditable
 		(keydown)="onKeyDown($event)"
+		(paste)="onPaste($event)"
 	></div>
 	<img
 		class="button emoji transition"
@@ -19,4 +20,18 @@
 		[open]="emojiMenuOpen"
 		(emojiShortcode)="onEmojiShortcode($event)"
 	></app-emoji-menu>
+	<div *ngIf="uploading" class="uploading">
+		<mat-icon class="icon">
+			{{ uploading.failed == null ? "file_upload" : "close" }}
+		</mat-icon>
+		{{
+			uploading.failed == null
+				? "Uploading..."
+				: "Failed to upload (" + uploading.failed + ")"
+		}}
+		<div
+			class="progress fast-transition"
+			[style.width]="uploading.done * 100 + '%'"
+		></div>
+	</div>
 </div>

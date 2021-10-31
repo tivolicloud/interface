@@ -1,3 +1,4 @@
+import { HttpClient, HttpEventType } from "@angular/common/http";
 import {
 	Component,
 	ElementRef,
@@ -27,7 +28,20 @@ export class InputComponent implements OnInit {
 		public readonly chatService: ChatService,
 		public readonly emojiService: EmojiService,
 		private readonly scriptService: ScriptService,
+		private readonly httpClient: HttpClient,
 	) {}
+
+	moveCursorToEnd() {
+		try {
+			this.input.nativeElement.focus();
+			const range = document.createRange();
+			range.selectNodeContents(this.input.nativeElement);
+			range.collapse(false);
+			const selection = window.getSelection();
+			selection.removeAllRanges();
+			selection.addRange(range);
+		} catch (err) {}
+	}
 
 	ngOnInit(): void {
 		this.subs.push(
@@ -42,15 +56,7 @@ export class InputComponent implements OnInit {
 							this.input.nativeElement.innerText = "/";
 						}
 
-						try {
-							this.input.nativeElement.focus();
-							const range = document.createRange();
-							range.selectNodeContents(this.input.nativeElement);
-							range.collapse(false);
-							const selection = window.getSelection();
-							selection.removeAllRanges();
-							selection.addRange(range);
-						} catch (err) {}
+						this.moveCursorToEnd();
 
 						break;
 					case "unfocus":
@@ -105,9 +111,10 @@ export class InputComponent implements OnInit {
 			}
 			if (getMessageFromHistory) {
 				const lastIndex = this.chatService.messageHistory.length - 1;
-				const message = this.chatService.messageHistory[
-					lastIndex - this.messageHistoryIndex
-				];
+				const message =
+					this.chatService.messageHistory[
+						lastIndex - this.messageHistoryIndex
+					];
 				if (message != null) {
 					this.input.nativeElement.innerText = message;
 					selection.collapseToStart();
@@ -151,6 +158,58 @@ export class InputComponent implements OnInit {
 				return this.unfocus();
 			}
 		}
+	}
+
+	uploading: { done: number; failed: string } = null;
+
+	async onPaste(event: ClipboardEvent) {
+		// only files
+		if (event.clipboardData.files.length == 0) return;
+		event.preventDefault();
+
+		// dont upload when already uploading
+		if (this.uploading != null) return;
+
+		const formData = new FormData();
+		const file = event.clipboardData.files[0];
+		formData.set("file", file, file.name);
+
+		this.uploading = { done: 0, failed: null };
+
+		this.httpClient
+			.post<{ size: number; url: string }>(
+				this.scriptService.metaverseUrl + "/api/attachments/upload",
+				formData,
+				{
+					reportProgress: true,
+					observe: "events",
+				},
+			)
+			.subscribe(
+				data => {
+					if (data.type == HttpEventType.UploadProgress) {
+						this.uploading.done = data.loaded / data.total;
+					} else if (data.type == HttpEventType.Response) {
+						// append to input
+						this.input.nativeElement.innerText = (
+							this.input.nativeElement.innerText +
+							" " +
+							data.body.url
+						).trim();
+						// move cursor to end
+						this.moveCursorToEnd();
+						// reset upload
+						this.uploading = null;
+					}
+				},
+				error => {
+					console.error(error);
+					this.uploading.failed = "code " + error.status;
+					setTimeout(() => {
+						this.uploading = null;
+					}, 2000);
+				},
+			);
 	}
 
 	onEmojiShortcode(shortcode: string) {

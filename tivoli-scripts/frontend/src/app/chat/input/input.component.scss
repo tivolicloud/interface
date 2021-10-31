@@ -1,12 +1,16 @@
+.input-container {
+	background-color: rgba(#1d1f21, 0.9);
+	border-radius: 0 0 8px 8px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	color: #fff;
+}
+
 .input {
 	width: 100%;
 	padding: 8px 12px;
-	background-color: rgba(#1d1f21, 0.9);
 	color: #fff;
 	font-family: "Roboto";
-	overflow-x: hidden;
-	overflow-y: auto;
-	border-radius: 0 0 8px 8px;
 
 	&:focus {
 		outline: none;
@@ -36,4 +40,31 @@
 	position: absolute;
 	bottom: calc(100% + 8px);
 	right: 0;
+}
+
+.uploading {
+	position: relative;
+	width: 100%;
+	background-color: #e91e63;
+	overflow-x: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(#fff, 0.7);
+	padding: 2px 0;
+	font-size: 0.8em;
+	font-weight: 500;
+
+	.icon {
+		margin-right: 2px;
+		transform: scale(0.8);
+	}
+
+	.progress {
+		position: absolute;
+		background-color: rgba(#fff, 0.3);
+		top: 0;
+		left: 0;
+		bottom: 0;
+	}
 }
