@@ -25,68 +25,6 @@ public:
 public slots:
     /**jsdoc
      * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getPopularWorlds
-     * @param {Object} details
-	 * @returns {Object[]}
-     */
-    QVariant getPopularWorlds(QVariantMap details);
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getLikedWorlds
-     * @param {Object} details
-	 * @returns {Object[]}
-     */
-    QVariant getLikedWorlds(QVariantMap details);
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getPrivateWorlds
-     * @param {Object} details
-	 * @returns {Object[]}
-     */
-    QVariant getPrivateWorlds(QVariantMap details);
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.likeWorld
-     * @param {string} id
-     * @param {boolean} [like=true]
-	 * @returns {Object}
-     */
-    QVariant likeWorld(const QString& id, const bool like = true);
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getFriends
-	 * @returns {Object[]}
-     */
-    QVariant getFriends();
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getAvatarsFromFiles
-	 * @returns {Object[]}
-     */
-    QVariant getAvatarsFromFiles();
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.getNametagDetails
-	 * @returns {Object}
-     */
-    QVariant getNametagDetails();
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
-     * @function Metaverse.setNametagDetails
-     * @param {Object} details
-	 * @returns {Object}
-     */
-    QVariant setNametagDetails(QVariantMap details);
-
-    /**jsdoc
-     * <p class="important">Only works over file:// or Tivoli things</p>
      * @function Metaverse.readyPlayerMe
      * @param {string} name
      * @param {string} avatarUrl

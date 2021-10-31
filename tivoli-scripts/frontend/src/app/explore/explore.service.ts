@@ -1,3 +1,4 @@
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { ScriptService } from "../script.service";
@@ -49,7 +50,10 @@ export class ExploreService {
 
 	friends$ = new Subject<Friend[]>();
 
-	constructor(private scriptService: ScriptService) {
+	constructor(
+		private scriptService: ScriptService,
+		private http: HttpClient,
+	) {
 		if (this.scriptService.hasQt) {
 			this.scriptService
 				.rpc<string>("Window.protocolSignature()")
@@ -68,19 +72,23 @@ export class ExploreService {
 		this.loading = true;
 		this.page = reset ? 1 : this.page + 1;
 
-		let fn = "Metaverse.";
-		if (this.type == "popular") fn += "getPopularWorlds()";
-		else if (this.type == "liked") fn += "getLikedWorlds()";
-		else if (this.type == "private") fn += "getPrivateWorlds()";
-		else return;
-
-		this.scriptService
-			.rpc<World[]>(fn, {
-				page: String(this.page),
-				amount: String(50),
-				search: this.search,
-				protocol: this.protocol,
-			})
+		this.http
+			.get<World[]>(
+				this.scriptService.metaverseUrl +
+					(() => {
+						const t = this.type;
+						if (t == "popular") return "/api/domains";
+						if (t == "liked") return "/api/user/domains/liked";
+						if (t == "private") return "/api/user/domains/private";
+					})(),
+				{
+					params: new HttpParams()
+						.set("page", this.page + "")
+						.set("amount", 50 + "")
+						.set("search", this.search)
+						.set("protocol", this.protocol),
+				},
+			)
 			.subscribe(
 				worlds => {
 					this.worlds = reset ? worlds : [...this.worlds, ...worlds];
@@ -94,15 +102,21 @@ export class ExploreService {
 	}
 
 	likeWorld(id: string, like = true) {
-		return this.scriptService.rpc<null>("Metaverse.likeWorld()", [
-			id,
-			like,
-		]);
+		return this.http.post(
+			this.scriptService.metaverseUrl +
+				"/api/domains/" +
+				id +
+				"/" +
+				(like ? "like" : "unlike"),
+			null,
+		);
 	}
 
 	loadFriends() {
-		return this.scriptService
-			.rpc<Friend[]>("Metaverse.getFriends()")
+		return this.http
+			.get<Friend[]>(
+				this.scriptService.metaverseUrl + "/api/user/friends",
+			)
 			.subscribe(
 				friends => {
 					this.friends$.next(friends);
