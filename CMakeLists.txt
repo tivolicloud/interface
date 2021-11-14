@@ -316,11 +316,6 @@ if (ANDROID)
   return()
 endif()
 
-if (BUILD_GPU_FRAME_PLAYER_ONLY)
-    # This is for CI build testing
-    add_subdirectory(tools/gpu-frame-player)
-else()
-
 # add subdirectories for all targets
 if (BUILD_SERVER)
   add_subdirectory(assignment-client)
@@ -343,31 +338,9 @@ if (BUILD_CLIENT OR BUILD_SERVER)
   # add_subdirectory(server-console)
 endif()
 
-# BUILD_TOOLS option will be handled inside the tools's CMakeLists.txt because 'scribe' tool is required for build anyway
-add_subdirectory(tools)
-
-add_subdirectory(tivoli-scripts)
-
+if (BUILD_GPU_FRAME_PLAYER_ONLY)
+    # This is for CI build testing
+    add_subdirectory(tools/gpu-frame-player)
+    return()
 endif()
 
-if (BUILD_TESTS)
-  # Turn on testing so that add_test works
-  # MUST be in the root cmake file for ctest to work
-  include(CTest)
-  enable_testing()
-  add_subdirectory(tests)
-  if (BUILD_MANUAL_TESTS)
-    add_subdirectory(tests-manual)
-  endif()
-endif()
-
-if (BUILD_INSTALLER)
-  if (UNIX)
-    install(
-        DIRECTORY "${CMAKE_SOURCE_DIR}/scripts"
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/interface
-        COMPONENT ${CLIENT_COMPONENT}
-    )
-  endif()
-  generate_installers()
-endif()

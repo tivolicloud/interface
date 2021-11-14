@@ -16,7 +16,7 @@
 #include <GLMHelpers.h>
 #include <controllers/InputDevice.h>
 #include <plugins/InputPlugin.h>
-#include "OpenXrHelpers.h"
+#include <xr/xr.hpp>
 
 class OpenXrInputPlugin : public InputPlugin {
     using Parent = InputPlugin ;

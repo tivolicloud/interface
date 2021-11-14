@@ -9,7 +9,7 @@
 #include <QtGlobal>
 
 #include <display-plugins/hmd/HmdDisplayPlugin.h>
-#include "OpenXrHelpers.h"
+#include <xr/xr.hpp>
 
 #include <graphics/Geometry.h>
 

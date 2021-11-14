@@ -30,8 +30,6 @@
 #include <ui-plugins/PluginContainer.h>
 #include <gl/OffscreenGLCanvas.h>
 
-#include "OpenXrHelpers.h"
-
 bool OpenXrDisplayPlugin::isSupported() const {
     return true;
 }
@@ -135,7 +133,7 @@ void OpenXrDisplayPlugin::customizeContext() {
     // Display plugins in DLLs must initialize GL locally
     gl::initModuleGl();
     Parent::customizeContext();
-    _xrSessionManager = std::make_shared<xrs::SessionManager>(xrs::SessionManager::GraphicsBinding{ wglGetCurrentDC(), wglGetCurrentContext() });
+    _xrSessionManager = std::make_shared<xrs::SessionManager>(xrs::GraphicsBinding{ wglGetCurrentDC(), wglGetCurrentContext() });
     // We should really try to start using the extensions that let us do stereo rendering using multiple layers of a texture array.
     _outputFramebuffer.reset(gpu::Framebuffer::create("OpenXR_Output", gpu::Element::COLOR_SRGBA_32, _renderTargetSize.x, _renderTargetSize.y));
 }

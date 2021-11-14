@@ -19,8 +19,6 @@
 #include <NumericalConstants.h>
 #include <StreamUtils.h>
 
-#include "OpenXrHelpers.h"
-
 const char* OpenXrInputPlugin::NAME = "OpenXrInput";
 
 bool OpenXrInputPlugin::isSupported() const {
