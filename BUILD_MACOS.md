@@ -1,10 +1,14 @@
 # Building Tivoli for macOS
 
+This build guide has only been **tested for M1 machines** where we purposefully cross-compile to **x86_64 Intel** because Qt5 and a couple other libraries are hard to get for arm64 right now.
+
+It might also be worth mentioning that we **link OpenGL to Mesa 3D instead (inc. Zink and MoltenVK)** to translate OpenGL 4.1 calls into Metal API. However, this is all part of the build pipeline so don't worry.
+
 ## Step 1. Installing dependencies
 
 Download and install these programs:
 
--   **Xcode 11.4 or higher**
+<!-- -   **Xcode 11.4 or higher**
 
     You can try to use the **latest Xcode** from the **App Store** but internally we use **Xcode 11.4**
 
@@ -18,9 +22,9 @@ Download and install these programs:
 
     ```bash
     sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-    ```
+    ``` -->
 
--   **MacOSX 10.13 SDK**
+<!-- -   **MacOSX 10.13 SDK**
 
     You'll have to download the **10.13 SDK** because compiling with newer SDKs like 10.15 (Catalina) causes lots of issues.
 
@@ -33,16 +37,22 @@ Download and install these programs:
 
     sudo tar -xf MacOSX10.13.sdk.tar.xz
     sudo rm -f MacOSX10.13.sdk.tar.xz
-    ```
+    ``` -->
+
+-   **macOS 12 Monterey**
+
+    We're only testing with an up to date OS. Might not work immediately otherwise.
+
+-   **Latest Xcode**
+
+    Available from the App Store
 
 -   **Homebrew package manager**: https://brew.sh
 
     Once installed, open the terminal and run:
 
     ```bash
-    brew install cmake ninja python node openssl@1.1
-
-    curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/86a44a0a552c673a05f11018459c9f5faae3becc/Formula/python@2.rb && brew install python@2.rb -f && rm -f python@2.rb
+    brew install cmake ninja python node
     ```
 
 ## Step 2. Configuring environment variables
@@ -103,7 +113,9 @@ Once you're checked out on the right version
 mkdir build
 cd build
 
-cmake -DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1i -DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1i/include -DOSX_SDK=10.13 -G Xcode ..
+cmake -GNinja ..
+# or if you're planning to use Xcode which is untested
+cmake -GXcode ..
 ```
 
 **Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
@@ -113,6 +125,18 @@ CMake will now download dependencies including Qt and prepare build files.
 Please wait. It will take a while... It really will!
 
 ## Step 4. Making a Build
+
+-   **Using the terminal**
+
+    Open the terminal
+
+    ```bash
+    cd /path/to/tivoli/interface/build
+
+    cmake --build . --target interface --config RelWithDebInfo
+    ```
+
+    Some available targets are: `interface`, `domain-server`, `assignment-client`
 
 -   **Using Xcode**
 
@@ -128,23 +152,11 @@ Please wait. It will take a while... It really will!
 
     Click the **play button** and it will start building.
 
--   **Using the terminal**
-
-    Open the terminal
-
-    ```bash
-    cd /path/to/tivoli/interface/build
-
-    cmake --build . --target interface --config RelWithDebInfo
-    ```
-
-    Some available targets are: `interface`, `domain-server`, `assignment-client`
-
 ## Step 5. Running interface
 
 You can run interface using the launcher: https://tivolicloud.com/download
 
-In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `/path/to/interface/build/interface/RelWithDebInfo` which should contain `interface` executable
+In the launcher under **Settings**, enable **Developer settings**. Then in the new menu, set **Interface dir** to `/path/to/interface/build/interface/RelWithDebInfo` (or without RelWithDebInfo if it's not there) which should contain `interface` executable
 
 If you want to run Tivoli without the launcher, run:
 

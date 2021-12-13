@@ -50,8 +50,13 @@ endif()
 # (needs to be set before first project() call and before prebuild.py)
 # Will affect VCPKG dependencies
 if (APPLE)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
-  set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.13)
+  # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)
+  # set(ENV{MACOSX_DEPLOYMENT_TARGET} 10.13)
+  
+  # until we have qt5 with webengine for arm64, we'll be cross compiling for x86_64
+  set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64" CACHE STRING "OSX link for x86_64" FORCE)
+  set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "OSX build for x86_64" FORCE)
+  set(CMAKE_SYSTEM_PROCESSOR "x86_64" CACHE STRING "OSX system processor is x86_64" FORCE)
 endif()
 
 set(RELEASE_TYPE "$ENV{RELEASE_TYPE}")

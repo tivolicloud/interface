@@ -81,8 +81,12 @@ endif()
             else:
                 raise Exception('Unsupported operating system')
         
-        elif arch == "aarch64":
-            if system == 'Linux':
+        elif arch == "aarch64" or arch == "arm64":
+            if system == 'Darwin':
+                # we dont have qt5 with webengine for arm64 yet so we're
+                # compiling under rosetta until we do
+                self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.2-macos.tar.gz'
+            elif system == 'Linux':
                 issue = open("/etc/issue", "r").read()
                 if issue.startswith("Ubuntu 18.04"): 
                     self.qtUrl = baseQtUrl + 'tivoli-qt5-install-5.15.2-ubuntu-18.04-arm64v8.tar.gz'

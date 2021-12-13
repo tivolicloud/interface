@@ -77,7 +77,13 @@ endif()
         # A format version attached to the tag file... increment when you want to force the build systems to rebuild 
         # without the contents of the ports changing
         self.version = 1
-        self.vcpkgVersion = "2021.05.12"
+
+        # when next vcpkg release, lets unify version again
+        if system == 'Darwin':
+            self.vcpkgVersion = "5ddd7f02689b7c5aab78711d77f61db5d2e5e79c"
+        else:
+            self.vcpkgVersion = "2021.05.12"
+
         self.tagContents = "{}_{}".format(self.id, self.version)
         self.bootstrapEnv = os.environ.copy()
         self.buildEnv = os.environ.copy()
@@ -236,8 +242,16 @@ endif()
     def run(self, commands):
         # TODO: causes Error: Invalid vcpkg root directory /interface/build/TIVOLI_VCPKG/5317b356-release/interface/build/TIVOLI_VCPKG/5317b356-release: No such file or directory
         # actualCommands = [self.exe, '--vcpkg-root', self.path]
-        actualCommands = [self.exe]
+
+        system = platform.system()
+        arch = platform.machine().lower()
+        if system == "Darwin" and (arch == "aarch64" or arch == "arm64"):
+            actualCommands = ["/usr/bin/arch", "-x86_64", self.exe]
+        else:
+            actualCommands = [self.exe]
+        
         actualCommands.extend(commands)
+        
         print("Running command")
         print(actualCommands)
         hifi_utils.executeSubprocess(actualCommands, folder=self.path, env=self.buildEnv)

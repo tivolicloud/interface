@@ -12,6 +12,13 @@ macro(TARGET_OPENSSL)
         set(OPENSSL_LIBRARIES "${OPENSSL_INSTALL_DIR}/lib/libcrypto.a;${OPENSSL_INSTALL_DIR}/lib/libssl.a" CACHE STRING INTERNAL)
     else()
     	# using VCPKG for OpenSSL
+        if (APPLE)
+            set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+            set(CMAKE_HAVE_THREADS_LIBRARY 1)
+            set(CMAKE_USE_WIN32_THREADS_INIT 0)
+            set(CMAKE_USE_PTHREADS_INIT 1)
+            set(THREADS_PREFER_PTHREAD_FLAG ON)
+        endif()
         find_package(OpenSSL REQUIRED)
     endif()
 

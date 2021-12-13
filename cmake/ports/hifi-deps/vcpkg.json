@@ -9,6 +9,10 @@
     "draco",
     "etc2comp",
     "glad",
+    {
+      "name": "mesa",
+      "platform": "osx"
+    },
     "glm",
     "hifi-audio-codec",
     "libsndfile",
@@ -19,7 +23,7 @@
     },
     {
       "name": "openssl",
-      "platform": "windows"
+      "platform": "windows | osx"
     },
     "polyvox",
     {

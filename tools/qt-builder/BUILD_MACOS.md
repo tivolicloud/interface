@@ -5,9 +5,12 @@
 ### Make sure Xcode and Brew are installed
 
 ```bash
-brew install git fontconfig dbus-glib pkg-config llvm
-sudo xcode-select --switch /Applications/Xcode.app
+brew install git fontconfig dbus-glib pkg-config llvm openssl
 ```
+
+<!-- ```bash
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+``` -->
 
 ## Inside this folder (interface/tools/qt-builder)
 
@@ -33,7 +36,7 @@ cd ..
 mkdir qt5-install qt5-build
 cd qt5-build
 
-../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -openssl OPENSSL_PREFIX="/usr/local/opt/openssl@1.1" -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtquick3d -skip qtlocation -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
+../qt5/configure -force-debug-info -release -opensource -confirm-license -recheck-all -openssl OPENSSL_PREFIX="/opt/homebrew/opt/openssl" -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -nomake tools -nomake tests -nomake examples -skip qttranslations -skip qtserialport -skip qt3d -skip qtquick3d -skip qtlocation -skip qtsensors -skip qtgamepad -skip qtspeech -skip qtcharts -skip qtx11extras -skip qtmacextras -skip qtvirtualkeyboard -skip qtpurchasing -skip qtdatavis3d -skip qtpim -skip qtdocgallery -webengine-proprietary-codecs -no-warnings-are-errors -no-pch -c++std c++14 -prefix ../qt5-install
 
 make -j$(sysctl -n hw.logicalcpu)
 make install -j$(sysctl -n hw.logicalcpu)
