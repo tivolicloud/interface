@@ -118,8 +118,6 @@ cmake -GNinja ..
 cmake -GXcode ..
 ```
 
-**Note:** OpenSSL will soon be a Vcpkg dependency. You won't have to install it and it will make the prepare command smaller.
-
 CMake will now download dependencies including Qt and prepare build files.
 
 Please wait. It will take a while... It really will!
