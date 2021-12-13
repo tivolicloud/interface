@@ -52,7 +52,8 @@ Download and install these programs:
     Once installed, open the terminal and run:
 
     ```bash
-    brew install cmake ninja python node
+    brew install cmake pkg-config python node ninja
+    pip3 install mako # needed for mesa
     ```
 
 ## Step 2. Configuring environment variables
