@@ -40,7 +40,7 @@ interface macos:
     artifacts:
         expire_in: 1 day
         paths:
-            - interface-linux-$CI_COMMIT_TAG.zip
+            - interface-macos-$CI_COMMIT_TAG.zip
 
 interface macos merge request:
     stage: build

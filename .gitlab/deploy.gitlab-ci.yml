@@ -169,6 +169,8 @@ upload interface:
           artifacts: true
         - job: all linux
           artifacts: true
+        - job: interface macos
+          artifacts: true
 
     script:
         - apk add jo
@@ -183,12 +185,17 @@ upload interface:
         - export LINUX_SIZE=$(wc -c interface-linux-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
         - export LINUX=$(jo filename=interface-linux-$CI_COMMIT_TAG.zip sha256=$LINUX_SHA256 size=$LINUX_SIZE)
 
-        - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) windows=$WINDOWS linux=$LINUX > latest.json
+        - export MACOS_SHA256=$(sha256sum interface-macos-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export MACOS_SIZE=$(wc -c interface-macos-$CI_COMMIT_TAG.zip | cut -d " " -f 1)
+        - export MACOS=$(jo filename=interface-macos-$CI_COMMIT_TAG.zip sha256=$MACOS_SHA256 size=$MACOS_SIZE)
+
+        - jo -p version=$CI_COMMIT_TAG date=$(date -Iseconds) windows=$WINDOWS linux=$LINUX macos=$MACOS > latest.json
 
         # upload interface
         - gsutil cp
           interface-windows-$CI_COMMIT_TAG.zip
           interface-linux-$CI_COMMIT_TAG.zip
+          interface-macos-$CI_COMMIT_TAG.zip
           gs://tivolicloud-cdn/releases/interface
 
         # upload latest.json last to avoid bad updates
