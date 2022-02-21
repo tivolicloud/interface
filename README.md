@@ -1,4 +1,4 @@
-<img height="150" src="https://tivolicloud.com/assets/logo-dark.svg" alt="Tivoli Cloud VR"/>
+<img height="150" src="https://raw.githubusercontent.com/tivolicloud/interface/main/logo-dark.svg" alt="Tivoli Cloud VR"/>
 
 # https://tivolicloud.com
 
