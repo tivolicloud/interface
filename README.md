@@ -19,7 +19,7 @@ There is also detailed documentation on [our coding standards](CODING_STANDARD.m
 
 # License
 
-Tivolis is [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.en.html)
+Tivoli was [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 Built atop HFVRP Copyright 2019 High Fidelity, Inc.
 
